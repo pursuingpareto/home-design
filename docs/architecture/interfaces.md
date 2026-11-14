@@ -1,19 +1,136 @@
-# Module interfaces and operation contracts
+# Interfaces and contracts — design specification
 
-**Status:** Provisional.
+**Version:** 0.2 draft · **Status:** Proposed API contracts for VS-01; subject to implementation review.
 
-All persisted dimensions use a canonical unit system (recommended: SI internally), with explicit unit conversion at UI/import/export boundaries. Coordinate conventions and geometric tolerances must be specified before geometry implementation.
+## 1. Ownership and boundaries
 
-Minimum conceptual entity fields: `id`, `kind`, `schema_version`, `parameters`, `relationships`, `metadata`. Materials and structural members have specialized typed schemas. Every operation includes an operation ID, actor, base revision, target IDs, typed arguments, and validation outcome.
+- `project`: identity, authorization, current head, revision persistence.
+- `model`: schema, typed operations, candidate snapshots, validation.
+- `timber`: deterministic member generation and stable generation keys.
+- `geometry`: derive 2D/3D render data from semantic snapshots; never mutate authoritative model.
+- `dependencies`: preview impacted outputs, invalidate, schedule, and track artifact freshness.
+- `estimating`: preliminary quantities and cost using explicit dated price inputs.
+- `ai` (future): produces typed proposed operations; has no direct persistence access.
 
-Example operation types: `CreateLevel`, `SetBuildingFootprint`, `SetRoofParameters`, `CreateTimberMember`, `MoveStructuralGridLine`, `SetMemberSection`, `AssignAssembly`, `DeleteComponent`. Operations must either commit atomically or return a structured error. Dependency invalidation produces an explicit list of affected artifacts.
+No module may write another module's private tables. Cross-module communication uses typed calls or durable events; one application-level command handler owns transactions.
 
-For AI: `natural-language request -> structured proposal -> model validation -> impact preview -> user confirmation -> transactional commit -> derived updates`. AI does not write directly to database tables or bypass permissions.
+## 2. Command envelope
 
-## Proposed module boundaries
+```json
+{
+  "command_id": "b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa",
+  "project_id": "b9531a91-9f14-49b9-8b1e-7eac1960c770",
+  "base_revision_id": "ab4c88f3-f5e9-47dd-8ee0-4c7a19a0b6cf",
+  "type": "SetFootprintDimensions",
+  "args": {"width_m": 13, "depth_m": 9}
+}
+```
 
-See [architecture overview](overview.md) for the twelve initial modules. Each module must expose typed, versioned contracts and avoid direct writes to another module’s private state.
+Actor identity is derived from authenticated server context, not trusted from the client body. `command_id` is an idempotency key scoped to project and actor. A repeated key with different payload returns `IDEMPOTENCY_CONFLICT`.
 
-## Agent-specific integrations
+VS-01 command set: `CreateReferenceProject`, `SetFootprintDimensions`, `SetLevelElevations`, `SetGableRoofParameters`, `SetTimberGrid`, `SetMemberSection` (only where supported), and `UndoToRevision` (if implemented; otherwise explicitly deferred). Commands use full typed arguments, not generic JSON patch paths.
 
-Agents may use vendor-specific instruction files, but authoritative requirements and acceptance criteria live in this repository.
+## 3. Preview contract
+
+`POST /api/v1/projects/{project_id}/commands/preview`
+
+Request: command envelope. Response (illustrative):
+
+```json
+{
+  "preview_id": "c5325c6c-2b62-4f45-87ab-7b289f1a4fbb",
+  "base_revision_id": "ab4c88f3-f5e9-47dd-8ee0-4c7a19a0b6cf",
+  "command_hash": "sha256:...",
+  "confirmation_required": true,
+  "changes": [{"entity_kind":"Footprint", "entity_id":"9b19e6a8-77a6-43e6-b6bd-9bd5a1167d3d", "field":"width_m", "before":12, "after":13}],
+  "impacted_artifacts": ["plan2d", "mesh3d", "timber_schedule", "preliminary_estimate"],
+  "warnings": ["Structural adequacy has not been assessed"],
+  "expires_at": "2026-11-14T18:00:00Z"
+}
+```
+
+The preview does not modify project head or create a revision. `command_hash` uses canonical serialization of the command and base revision. `expires_at` is server-issued, not client-chosen.
+
+## 4. Commit contract
+
+`POST /api/v1/projects/{project_id}/commands/commit`
+
+Body: `{ "command": <command envelope>, "preview_id": "..." }` for consequential edits; routine edits may omit preview only if server policy allows. Server revalidates all preconditions and commits atomically.
+
+Success: HTTP 201 with `{ "revision_id": "...", "parent_revision_id": "...", "operation_id": "...", "artifact_statuses": {...} }`. Idempotent retry returns the same committed revision (HTTP 200 or 201, consistently documented). A successful commit does **not** imply all derived artifacts are ready.
+
+## 5. Read endpoints (provisional)
+
+| Method/path | Purpose |
+|---|---|
+| `POST /api/v1/projects` | Create reference project |
+| `GET /api/v1/projects/{id}` | Metadata, permissions, head revision |
+| `GET /api/v1/projects/{id}/revisions/{rev}` | Immutable semantic snapshot |
+| `GET /api/v1/projects/{id}/artifacts?revision_id=...` | Artifact status manifest |
+| `GET /api/v1/projects/{id}/artifacts/{type}?revision_id=...` | Derived 2D, 3D, schedule, or estimate |
+| `GET /api/v1/projects/{id}/revisions` | Ordered revision history |
+
+Artifact responses include `source_revision_id`, `generator_version`, `input_fingerprint`, `status`, `units`, and optional warnings. Return 202 while computing, or a status manifest; do not serve stale data as current. Browser 2D/3D views must consume derived data tagged to the same revision.
+
+## 6. Typed module-level interfaces (Python-like pseudocode)
+
+```python
+class ModelService(Protocol):
+    def validate(self, snapshot: BuildingSnapshot) -> ValidationResult: ...
+    def propose(self, snapshot: BuildingSnapshot, command: ModelCommand) -> CandidateChange: ...
+
+class TimberGenerator(Protocol):
+    def generate(self, snapshot: BuildingSnapshot, previous: MemberInventory | None) -> MemberInventory: ...
+
+class DependencyService(Protocol):
+    def impacts(self, changed_keys: set[str]) -> ImpactReport: ...
+    def invalidate(self, revision_id: UUID, impacted: ImpactReport) -> None: ...
+
+class GeometryAdapter(Protocol):
+    def derive_plan(self, snapshot: BuildingSnapshot) -> Artifact: ...
+    def derive_mesh(self, snapshot: BuildingSnapshot) -> Artifact: ...
+
+class ScheduleService(Protocol):
+    def timber_schedule(self, inventory: MemberInventory) -> Artifact: ...
+```
+
+Interfaces are illustrative, not a binding choice of Python library or schema generator. Implement typed request/response DTOs with OpenAPI and generated TypeScript clients; avoid duplicating hand-maintained validation rules between frontend and backend.
+
+## 7. Error contract
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_FAILED",
+    "message": "Footprint width must be greater than zero",
+    "details": [{"path":"args.width_m", "code":"OUT_OF_RANGE", "value":-1}],
+    "request_id": "..."
+  }
+}
+```
+
+Stable codes: `VALIDATION_FAILED` (422), `UNSUPPORTED_CONFIGURATION` (422), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `REVISION_CONFLICT` (409), `IDEMPOTENCY_CONFLICT` (409), `PREVIEW_EXPIRED` (409), `DERIVATION_FAILED` (500/503 as appropriate). No internal stack traces in API responses.
+
+## 8. Concurrency, security, and compatibility
+
+- Every read/write is project-scoped and authorization-checked on server.
+- Use optimistic concurrency on project head and transactional outbox for derivation jobs.
+- Never accept arbitrary executable expressions, geometry scripts, or SQL from AI/client as commands.
+- API version prefix `/api/v1`; model schema versions independent of API version.
+- Schema changes require backward-compatible readers or explicit migrations, contract tests, and fixture upgrades.
+- Audit record includes actor, command, previous/new revision, timestamp, and result; protect sensitive project content.
+
+## 9. Contract test matrix
+
+1. OpenAPI validates example requests/responses; generated TS client compiles.
+2. Valid preview has no database side effects.
+3. Confirmed commit changes project head exactly once.
+4. Two concurrent commits against one base revision yield exactly one winner; loser receives 409.
+5. Idempotent retry does not duplicate revisions or derivation jobs.
+6. Unauthorized project access cannot read snapshots or artifacts.
+7. Derived plan, mesh, and schedule all identify matching source revision.
+8. Unsupported geometry returns structured error, never an unhandled exception or invented output.
+
+## 10. Deferred contracts
+
+Professional approval signatures, alternative branches/merges, IFC export, engineering load cases, natural-language proposals, multi-user live editing, and detailed connection machining are not VS-01 endpoints. Add them via separate versioned design documents.

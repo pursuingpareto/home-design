@@ -1,20 +1,84 @@
-# Dependency and change propagation
+# Dependency graph and change propagation — design specification
 
-**Status:** Behavior confirmed; algorithms and data structures provisional.
+**Version:** 0.2 draft · **Status:** Behavior confirmed (Decision 018); graph implementation provisional.
 
-A dependency graph connects semantic elements to derived geometry, schedules, analyses, estimates, documents, and approvals. Routine edits may propagate automatically; consequential edits require impact preview and confirmation.
+## 1. Goal
 
-## Invariants
+When an authoritative parameter changes, identify exactly which derived outputs are no longer current, recompute what is supported, and prevent stale outputs or approvals from being presented as valid. All changes are transactional; expensive derivations may be asynchronous.
 
-- Validate all operations against the current base revision and permissions.
-- Commit model changes atomically or return structured errors.
-- Explicitly invalidate dependent artifacts before showing refreshed results.
-- Tag every derived artifact with the model revision used to produce it.
-- Reevaluate only approvals whose relevant inputs or dependency scopes changed.
-- Never present stale calculations or documents as current.
+## 2. Graph model
 
-## VS-01 test
+A directed edge `A -> B` means **B depends on A**. Nodes represent semantic input fields or groups, derived entities, and artifacts. Graph node keys are stable logical identifiers, not transient UI objects.
 
-Changing the footprint width updates generated timber geometry and both views, invalidates the old member schedule, and produces a reconciled new schedule.
+Initial graph example:
 
-See [VS-01 acceptance tests](../implementation/acceptance-tests/vs-01.md).
+```text
+Footprint.width/depth -> TimberGrid.coordinates -> TimberMember.axes
+Footprint.width/depth -> RoofGeometry
+Level.elevation -> TimberMember.axes
+TimberMember.axes + Section -> TimberSchedule
+TimberMember.axes + Section -> RenderMesh3D
+TimberMember.axes -> PlanProjection2D
+TimberSchedule + CostDataset -> PreliminaryEstimate
+ModelRevision + analysis inputs -> AnalysisResult (future)
+AnalysisResult + reviewed inputs -> ProfessionalApproval (future)
+```
+
+Edges are registered by module-owned derivation rules with declared input selectors and output keys. Derived artifact nodes must form an acyclic graph in VS-01. If future iterative solvers require cycles, encapsulate them as a single solver node with explicit convergence criteria; do not allow unbounded recursive propagation.
+
+## 3. Artifact status machine
+
+`MISSING -> QUEUED -> COMPUTING -> CURRENT` or `FAILED`; a newer relevant input revision transitions `CURRENT|QUEUED|COMPUTING|FAILED -> STALE` (or superseded). Status is accompanied by `source_revision_id`, `generator_version`, `input_fingerprint`, `generated_at`, and error details if failed. A result is **CURRENT** only if its input fingerprint matches the latest applicable inputs; a matching revision ID alone is insufficient for independently versioned external datasets.
+
+UI must visibly label `STALE`, `COMPUTING`, `FAILED`, or `UNAVAILABLE`; it may show old results for comparison but must never label them current. Unknown cost inputs produce `UNAVAILABLE`, not zero.
+
+## 4. Change classification and confirmation
+
+- **Routine:** e.g. adjusting a nonstructural display property, or a supported footprint dimension within validated limits when no protected review is affected. Can auto-commit and queue recomputation.
+- **Consequential:** e.g. moving structural posts, altering load-path assumptions, changing reviewed members, deleting connected objects, or edits with potentially significant budget implications. Requires an impact preview and confirmation.
+- Classification is rule-based, versioned, conservative, and server-enforced; future AI may suggest classification but cannot override it.
+- For VS-01, any footprint/roof/grid change that regenerates framing is treated as **consequential** by default, until a more nuanced policy is approved.
+
+## 5. Change protocol
+
+1. Receive typed command with idempotency key, actor, `base_revision_id`, and arguments.
+2. Authenticate and authorize; validate syntax and base revision.
+3. Compute proposed semantic diff in an isolated candidate snapshot.
+4. Validate candidate model and determine changed input keys.
+5. Traverse reverse dependency index to build impacted-node closure, with deterministic ordering.
+6. Return preview: semantic diff, added/removed/updated member IDs, impacted artifacts, required confirmation, and unknown impacts.
+7. On confirmation, revalidate base revision and authorization (time-of-check/time-of-use protection).
+8. Atomically persist new immutable revision, operation record, and artifact invalidation records/outbox messages.
+9. Recompute synchronous lightweight derivations; queue expensive jobs with deduplication.
+10. Publish status updates and results only when their fingerprints still match current inputs; otherwise mark superseded.
+
+Preview is non-mutating. Confirmation must bind to a specific preview token, base revision, and operation hash; if anything changes, return a conflict requiring a fresh preview.
+
+## 6. Incremental recomputation
+
+Use a topological order of affected derivations. Cache by `(derivation_type, generator_version, input_fingerprint)`. Jobs are at-least-once, idempotent, and safe to retry. Workers must not overwrite a newer result with an older computation. Failure in a noncritical derived artifact must not corrupt the committed semantic model. Propagate failure or unknown statuses to dependent artifacts rather than fabricating fallback numbers.
+
+## 7. Professional review dependency scope (future)
+
+An approval records the reviewed revision, signer identity/authorization, review scope, applicable analysis version, and dependency fingerprints. A change to any scoped input marks that approval `REVIEW_REQUIRED` (not automatically revoked or re-approved). Unrelated changes leave its recorded status intact. This workflow does not constitute legal certification by itself.
+
+## 8. VS-01 examples and tests
+
+| Event | Required behavior |
+|---|---|
+| Change footprint width 12m -> 13m | New revision; grid and affected timber axes regenerate; plan/mesh/schedule become stale until regenerated |
+| Change display color only | No semantic geometry recomputation |
+| Change footprint to negative width | Validation error; no revision or invalidation |
+| Submit same command twice | Same committed outcome/idempotent response; no duplicate revision |
+| Confirm old preview after another edit | `REVISION_CONFLICT`; no commit |
+| Old worker finishes after new worker | Old result remains superseded; UI shows only new current result |
+| Remove grid bay | Retire removed generated member keys, preserve surviving member IDs, regenerate inventory |
+| Missing unit prices | Estimate `UNAVAILABLE` or partial with clear coverage; never $0 total by default |
+
+## 9. Observability
+
+Record operation ID, project ID, base/new revision, impacted-node count, derivation duration, generator version, cache hit/miss, and failure code. Exclude private project content from routine logs.
+
+## 10. Open issues
+
+Graph storage (in-memory rebuild versus persisted edge index), fine-grained field selectors, preview threshold rules, and job-queue selection are provisional. Benchmark with the reference house before optimizing.

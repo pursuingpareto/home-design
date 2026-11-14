@@ -1,6 +1,6 @@
 # Home Design Platform
 
-**Specification version:** 0.1 · **Status:** Working draft · **Date:** 2026-11-14
+**Specification version:** 0.2 architecture draft (product decisions through 0.1) · **Status:** Working draft · **Date:** 2026-11-14
 
 A tool-independent, version-controlled specification for a web-first, parametric home-design platform specializing initially in Vermont heavy-timber post-and-beam houses.
 
@@ -28,3 +28,7 @@ A tool-independent, version-controlled specification for a web-first, parametric
 ## Safety boundary
 
 Structural adequacy, jurisdictional compliance, and professional sign-off must not be inferred from renderings, preliminary schedules, or unverified calculations. Any engineering claims must be scoped, traceable, and reviewed as applicable.
+
+## Architecture deep-dive (v0.2)
+
+The [building model](docs/architecture/building-model.md), [dependency engine](docs/architecture/dependencies.md), and [module/API interfaces](docs/architecture/interfaces.md) now contain provisional schemas, operation protocols, status transitions, and acceptance tests. These are design contracts for review, not yet running code.

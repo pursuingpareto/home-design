@@ -10,3 +10,9 @@
 8. Hosting, identity provider, backups, security/privacy requirements, and deployment workflow.
 9. Drawing/export formats, interoperability priorities, and expected accuracy for each milestone.
 10. Detailed first-slice task breakdown and interface definitions.
+
+## Proposed defaults requiring confirmation
+
+- Architecture v0.2 proposes meters, +Z up, radians, UUIDs, JSONB revision snapshots, and optimistic concurrency. These are **not** confirmed product-owner decisions.
+- Confirm exact reference fixture geometry before coding generation rules.
+- Validate the geometric tolerance and exact-kernel choice experimentally before relying on fabrication dimensions.
