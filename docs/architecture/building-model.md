@@ -86,4 +86,4 @@ Each record has a schema version. Persist a top-level model schema version. Migr
 
 ## 10. Open decisions
 
-VS-01 reference-house geometry is confirmed ([D025](../product/decisions/D025-reference-house-001-vs01-fixture.md)). Units, axes, radians, UUIDs, JSONB snapshots, and optimistic concurrency are confirmed ([D026](../product/decisions/D026-canonical-units-identity-persistence.md)). Still open: exact geometry kernel; whether framing rules are embedded or plug-in modules. See [open questions](../product/open-questions.md).
+VS-01 reference-house geometry is confirmed ([D025](../product/decisions/D025-reference-house-001-vs01-fixture.md)). Units, axes, radians, UUIDs, JSONB snapshots, and optimistic concurrency are confirmed ([D026](../product/decisions/D026-canonical-units-identity-persistence.md)). Derived plan/mesh/schedule/estimate DTOs are confirmed ([D027](../product/decisions/D027-vs01-artifact-dtos.md)). Still open: exact geometry kernel; whether framing rules are embedded or plug-in modules. See [open questions](../product/open-questions.md).

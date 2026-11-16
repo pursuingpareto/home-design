@@ -16,7 +16,7 @@ Suggested first tasks: `MODEL-001` canonical units/coordinates; `MODEL-002` proj
 
 ## Task status
 
-The task IDs below are **candidates**, not implementation-ready work orders. Concrete schemas, interface contracts, and the reference-house fixture must be specified before parallel coding begins.
+Candidate task IDs still need per-task files. The reference-house fixture (D025), units/persistence (D026), and artifact DTOs (D027) are specified; work orders can now be written against those contracts.
 
 ## Suggested task file format
 

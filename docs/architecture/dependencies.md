@@ -16,10 +16,10 @@ Initial graph example:
 Footprint.width/depth -> TimberGrid.coordinates -> TimberMember.axes
 Footprint.width/depth -> RoofGeometry
 Level.elevation -> TimberMember.axes
-TimberMember.axes + Section -> TimberSchedule
-TimberMember.axes + Section -> RenderMesh3D
-TimberMember.axes -> PlanProjection2D
-TimberSchedule + CostDataset -> PreliminaryEstimate
+TimberMember.axes + Section -> timber_schedule
+TimberMember.axes + Section -> mesh3d
+TimberMember.axes -> plan2d
+timber_schedule + optional project price book -> preliminary_estimate
 ModelRevision + analysis inputs -> AnalysisResult (future)
 AnalysisResult + reviewed inputs -> ProfessionalApproval (future)
 ```
@@ -73,7 +73,7 @@ An approval records the reviewed revision, signer identity/authorization, review
 | Confirm old preview after another edit | `REVISION_CONFLICT`; no commit |
 | Old worker finishes after new worker | Old result remains superseded; UI shows only new current result |
 | Remove grid bay | Retire removed generated member keys, preserve surviving member IDs, regenerate inventory |
-| Missing unit prices | Estimate `UNAVAILABLE` or partial with clear coverage; never $0 total by default |
+| Missing unit prices | Estimate `UNAVAILABLE` or partial with clear coverage; never $0 total by default ([artifacts.md](artifacts.md) §8) |
 
 ## 9. Observability
 

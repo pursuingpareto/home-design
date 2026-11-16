@@ -8,8 +8,8 @@
 6. Source and licensing of materials, price, environmental-product, and climate datasets.
 7. ~~Project data storage strategy (normalized entities vs versioned document snapshots) and migrations.~~ **Resolved for VS-01:** immutable JSONB snapshots plus append-only operations ([D026](decisions/D026-canonical-units-identity-persistence.md)). Migration mechanics and later dual representations remain implementation work, not an open product fork.
 8. Hosting, identity provider, backups, security/privacy requirements, and deployment workflow.
-9. Drawing/export formats, interoperability priorities, and expected accuracy for each milestone.
-10. Detailed first-slice task breakdown and interface definitions.
+9. Drawing/export formats, interoperability priorities, and expected accuracy for each milestone. Internal VS-01 plan/mesh/schedule/estimate JSON is specified ([D027](decisions/D027-vs01-artifact-dtos.md)); this item remains about DXF/IFC and similar interchange.
+10. Detailed first-slice task breakdown. Interface and artifact contracts for VS-01 exist; executable `MODEL-001`… task files are still missing.
 
 ## Remaining research (not product forks for VS-01)
 

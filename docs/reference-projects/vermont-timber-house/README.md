@@ -34,7 +34,7 @@ Z = 0 is the **first-floor reference**, not grade. Ridge height for derived roof
 
 Rule [`vs01-post-beam-1`](generation-rules.md) produces **58** members: 24 posts and 34 beams. Lengths on the schedule are reference-axis lengths, not fabrication cut lengths.
 
-Complete snapshot: [`fixture.snapshot.json`](fixture.snapshot.json).
+Complete snapshot: [`fixture.snapshot.json`](fixture.snapshot.json). Derived `plan2d` / `mesh3d` / `timber_schedule` / `preliminary_estimate` shapes are [artifacts.md](../../architecture/artifacts.md) (D027). Default estimate for this fixture is `UNAVAILABLE` (no price book).
 
 ## Still open for this house (not VS-01)
 

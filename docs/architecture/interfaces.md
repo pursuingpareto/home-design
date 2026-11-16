@@ -59,7 +59,7 @@ Body: `{ "command": <command envelope>, "preview_id": "..." }` for consequential
 
 Success: HTTP 201 with `{ "revision_id": "...", "parent_revision_id": "...", "operation_id": "...", "artifact_statuses": {...} }`. Idempotent retry returns the same committed revision (HTTP 200 or 201, consistently documented). A successful commit does **not** imply all derived artifacts are ready.
 
-## 5. Read endpoints (provisional)
+## 5. Read endpoints
 
 | Method/path | Purpose |
 |---|---|
@@ -70,7 +70,7 @@ Success: HTTP 201 with `{ "revision_id": "...", "parent_revision_id": "...", "op
 | `GET /api/v1/projects/{id}/artifacts/{type}?revision_id=...` | Derived 2D, 3D, schedule, or estimate |
 | `GET /api/v1/projects/{id}/revisions` | Ordered revision history |
 
-Artifact responses include `source_revision_id`, `generator_version`, `input_fingerprint`, `status`, `units`, and optional warnings. Return 202 while computing, or a status manifest; do not serve stale data as current. Browser 2D/3D views must consume derived data tagged to the same revision.
+Artifact envelopes, payloads, and HTTP status mapping are specified in [artifacts.md](artifacts.md) (D027). `{type}` is one of `plan2d`, `mesh3d`, `timber_schedule`, `preliminary_estimate`. Return 202 while computing; do not serve stale data as current. Browser 2D/3D views must consume derived data tagged to the same revision.
 
 ## 6. Typed module-level interfaces (Python-like pseudocode)
 

@@ -1,6 +1,6 @@
 # Home Design Platform
 
-**Specification version:** 0.2 architecture draft (product decisions through D026) · **Status:** Working draft · **Date:** 2026-11-16
+**Specification version:** 0.2 architecture draft (product decisions through D027) · **Status:** Working draft · **Date:** 2026-11-16
 
 A tool-independent, version-controlled specification for a web-first, parametric home-design platform specializing initially in Vermont heavy-timber post-and-beam houses.
 
@@ -8,7 +8,7 @@ A tool-independent, version-controlled specification for a web-first, parametric
 
 1. [Product vision](docs/product/vision.md) and [principles](docs/product/principles.md)
 2. [User workflows](docs/product/workflows.md) and [requirements](docs/product/requirements.md)
-3. [Architecture overview](docs/architecture/overview.md), [building model](docs/architecture/building-model.md), [dependencies](docs/architecture/dependencies.md), and [interfaces](docs/architecture/interfaces.md)
+3. [Architecture overview](docs/architecture/overview.md), [building model](docs/architecture/building-model.md), [dependencies](docs/architecture/dependencies.md), [artifacts](docs/architecture/artifacts.md), and [interfaces](docs/architecture/interfaces.md)
 4. [Reference House 001](docs/reference-projects/vermont-timber-house/README.md)
 5. [Roadmap](docs/implementation/roadmap.md), [VS-01 scope and acceptance criteria](docs/implementation/acceptance-tests/vs-01.md), and [task index](docs/implementation/tasks/README.md)
 6. [Decision register](docs/product/decisions/README.md) and [open decisions](docs/product/open-questions.md)
