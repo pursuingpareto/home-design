@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D025. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D026. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -25,7 +25,8 @@
 - D023: Parametric semantic definitions as the source of truth.
 - D024: Tool-independent repository-based specifications.
 - D025: [Reference House 001 VS-01 fixture](D025-reference-house-001-vs01-fixture.md) — 36'×24' two-story rectangle, 3×2 bays, 9/12 gable, posts and beams only.
+- D026: [Canonical units, identity, snapshots, and concurrency](D026-canonical-units-identity-persistence.md) — meters, +Z up, radians, UUIDs, JSONB snapshots, optimistic concurrency.
 
-**Next recommended work:** Close remaining VS-01 specification gaps (units/coordinate confirmation, derived-artifact DTOs, estimate stub, then executable tasks). Architecture contracts are in v0.2 draft; do not reopen D001–D025 to accommodate implementation shortcuts.
+**Next recommended work:** Specify VS-01 derived-artifact DTOs and the gated preliminary-estimate stub, then write executable task files. Do not reopen D001–D026 to accommodate implementation shortcuts.
 
 See [requirements](../requirements.md) for functional implications and [architecture](../../architecture/overview.md) for provisional implementation choices.

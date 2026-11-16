@@ -19,6 +19,6 @@ Reference House 001 is the VS-01 golden fixture. Exact geometry, grid, roof, sec
 
 ## What this does not decide
 
-This is not an engineered design, mill certificate, or jurisdictional load case. It does not confirm units/coordinate policy for the product (still provisional in architecture v0.2), connection types, assemblies, rooms, or later reference houses.
+This is not an engineered design, mill certificate, or jurisdictional load case. It does not decide connection types, assemblies, rooms, or later reference houses.
 
-Canonical storage uses meters and `1 ft = 0.3048 m` because that is the current provisional model policy, not because D025 confirms that policy as a product-wide decision.
+Canonical meters and `1 ft = 0.3048 m` follow [D026](D026-canonical-units-identity-persistence.md).

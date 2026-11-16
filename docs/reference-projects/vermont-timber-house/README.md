@@ -14,7 +14,7 @@ This is a recurring integration fixture, not the limit of the supported product.
 
 ## Accepted VS-01 dimensions
 
-Imperial values are design intent. Canonical stored values use meters with `1 ft = 0.3048 m` under the provisional model policy.
+Imperial values are design intent. Canonical stored values use meters with `1 ft = 0.3048 m` ([D026](../../product/decisions/D026-canonical-units-identity-persistence.md)).
 
 | Parameter | Intent | Canonical |
 |---|---|---|

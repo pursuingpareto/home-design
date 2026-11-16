@@ -14,12 +14,12 @@
 6. Engineering approval is never inferred from a geometry or framing-generation success.
 7. A reference to a deleted entity must not remain silently dangling.
 
-## 2. Units, axes, and numeric policy (provisional)
+## 2. Units, axes, and numeric policy (confirmed, D026)
 
 - **Canonical geometry:** meters, right-handed Cartesian frame; +X east/right in plan, +Y north/up in plan, +Z vertically upward. Building-local origin at the southwest footprint corner at reference ground datum. Project may also carry a separate georeferenced site transform.
 - **Angles:** radians in APIs and persistence; pitch may be entered as degrees or rise/run in UI.
 - **Numeric encoding:** finite IEEE-754 double values at computational boundaries; validate against configured bounds and avoid comparing floats for semantic identity. Serialized JSON numeric fields must be finite. Engineering/calculation modules may use higher precision when justified.
-- **Tolerance policy:** geometry adapters own numerical tolerance; initial target 1e-6 m for coordinate comparisons, subject to kernel proof-of-concept. Do **not** interpret this as construction/fabrication tolerance.
+- **Tolerance policy:** geometry adapters own kernel-internal tolerance; published coordinate comparison epsilon is **1e-6 m** (D026). Do **not** interpret this as construction/fabrication tolerance.
 - **Displayed dimensions:** user-selectable imperial/metric, with conversion at the boundary. Material nominal sizes are labels distinct from actual dimensions.
 - **Money:** integer minor currency units plus ISO 4217 currency code; never binary floating-point money.
 - **Environmental metrics:** explicit quantity and scope (e.g. kgCO2e, A1–A3); unknown is not zero.
@@ -66,9 +66,9 @@ Generated framing uses a stable `generation_key` such as `frame/grid-x-1/grid-y-
 
 Validation returns stable machine-readable codes and field paths, with human-readable messages. Failures do not create a new revision.
 
-## 7. Revision and storage policy (provisional)
+## 7. Revision and storage policy (confirmed, D026)
 
-Treat revisions as immutable snapshots or reconstructible event checkpoints; initial implementation may use PostgreSQL JSONB snapshots plus an append-only operation/audit table. Transactionally persist a revision and its operation record. A revision has exactly one parent in VS-01; branching and merge semantics are deferred. Optimistic concurrency requires `base_revision_id` equal to the project's current head; conflicts return `REVISION_CONFLICT`, never silently overwrite.
+Persist each revision as an immutable PostgreSQL JSONB snapshot plus an append-only operation/audit table. Transactionally persist a revision and its operation record. A revision has exactly one parent in VS-01; branching and merge semantics are deferred. Optimistic concurrency requires `base_revision_id` equal to the project's current head; conflicts return `REVISION_CONFLICT`, never silently overwrite.
 
 ## 8. Migration rules
 
@@ -86,4 +86,4 @@ Each record has a schema version. Persist a top-level model schema version. Migr
 
 ## 10. Open decisions
 
-VS-01 reference-house dimensions, bays, sections, roof, and post/beam generation rules are confirmed ([D025](../product/decisions/D025-reference-house-001-vs01-fixture.md)). Still open: precision/tolerance with geometry kernel testing; whether framing rules are embedded or plug-in modules; storage representation after performance experiments. See [open questions](../product/open-questions.md).
+VS-01 reference-house geometry is confirmed ([D025](../product/decisions/D025-reference-house-001-vs01-fixture.md)). Units, axes, radians, UUIDs, JSONB snapshots, and optimistic concurrency are confirmed ([D026](../product/decisions/D026-canonical-units-identity-persistence.md)). Still open: exact geometry kernel; whether framing rules are embedded or plug-in modules. See [open questions](../product/open-questions.md).

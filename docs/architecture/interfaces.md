@@ -114,7 +114,7 @@ Stable codes: `VALIDATION_FAILED` (422), `UNSUPPORTED_CONFIGURATION` (422), `UNA
 ## 8. Concurrency, security, and compatibility
 
 - Every read/write is project-scoped and authorization-checked on server.
-- Use optimistic concurrency on project head and transactional outbox for derivation jobs.
+- Use optimistic concurrency on project head (D026) and a transactional outbox for derivation jobs.
 - Never accept arbitrary executable expressions, geometry scripts, or SQL from AI/client as commands.
 - API version prefix `/api/v1`; model schema versions independent of API version.
 - Schema changes require backward-compatible readers or explicit migrations, contract tests, and fixture upgrades.
