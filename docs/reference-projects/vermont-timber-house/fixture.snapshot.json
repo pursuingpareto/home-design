@@ -1,0 +1,1273 @@
+{
+  "model_schema_version": 1,
+  "project_id": "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
+  "revision_id": "01b311c6-7a51-528d-befe-b2e592819b66",
+  "parent_revision_id": null,
+  "created_at": "2026-11-16T00:00:00Z",
+  "building": {
+    "id": "b4d57ae8-a2e8-568d-a2d8-0f83ef42682f",
+    "kind": "Building",
+    "schema_version": 1,
+    "name": "Reference House 001",
+    "footprint_id": "9ba359f1-6354-5019-9b3f-d15f8e53523b",
+    "level_ids": [
+      "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "85281672-fc1f-5723-a2e1-f85e25b1d336"
+    ],
+    "roof_id": "488040a1-800d-5b05-a1d6-84d22c8f3929",
+    "frame_system_id": "00f66257-d812-58c6-8b69-f90baae2e70e"
+  },
+  "entities": [
+    {
+      "id": "9ba359f1-6354-5019-9b3f-d15f8e53523b",
+      "kind": "Footprint",
+      "schema_version": 1,
+      "origin_m": [
+        0.0,
+        0.0
+      ],
+      "width_m": 10.9728,
+      "depth_m": 7.3152,
+      "rotation_rad": 0.0
+    },
+    {
+      "id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "kind": "Level",
+      "schema_version": 1,
+      "index": 0,
+      "elevation_m": 0.0,
+      "clear_height_m": 3.048
+    },
+    {
+      "id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "kind": "Level",
+      "schema_version": 1,
+      "index": 1,
+      "elevation_m": 3.048,
+      "clear_height_m": 2.7432
+    },
+    {
+      "id": "488040a1-800d-5b05-a1d6-84d22c8f3929",
+      "kind": "GableRoof",
+      "schema_version": 1,
+      "ridge_axis": "X",
+      "pitch_rad": 0.6435011087932844,
+      "eave_overhang_m": 0.6096,
+      "ridge_offset_m": 0.0
+    },
+    {
+      "id": "4223b175-1758-59fc-95fc-073ee00eaf99",
+      "kind": "TimberGrid",
+      "schema_version": 1,
+      "x_fractions": [
+        0.0,
+        0.3333333333333333,
+        0.6666666666666666,
+        1.0
+      ],
+      "y_fractions": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "generation_rule_version": "vs01-post-beam-1"
+    },
+    {
+      "id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "kind": "Section",
+      "schema_version": 1,
+      "shape": "rectangular",
+      "actual_width_m": 0.2032,
+      "actual_depth_m": 0.2032,
+      "nominal_label": "8x8"
+    },
+    {
+      "id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "kind": "Section",
+      "schema_version": 1,
+      "shape": "rectangular",
+      "actual_width_m": 0.2032,
+      "actual_depth_m": 0.3048,
+      "nominal_label": "8x12"
+    },
+    {
+      "id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Eastern white pine",
+      "species": "eastern-white-pine",
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "00f66257-d812-58c6-8b69-f90baae2e70e",
+      "kind": "FrameSystem",
+      "schema_version": 1,
+      "grid_id": "4223b175-1758-59fc-95fc-073ee00eaf99",
+      "member_ids": [
+        "2354313a-7ce0-556f-afd4-e80ebe664ef9",
+        "6922f2ea-808f-54a1-b0bf-d8054cb604ad",
+        "e455350e-d7c5-591b-b56f-e907d479c4c2",
+        "610a2cb2-9645-5563-b4b2-74dbc6f915b8",
+        "bd69634c-0727-5907-92ed-f4864d940d6d",
+        "5375b284-4700-530c-9e31-a2e6f3eb6d80",
+        "845c5899-6148-5814-abe0-7def0e92586c",
+        "46f85243-09d2-57ed-b0b3-f134e0a3de89",
+        "511df67f-2585-5c2c-9fb8-9a4aa7cc5529",
+        "17f16149-9d8f-59e3-a1dc-0727f4d23d15",
+        "00f26aa6-1d62-53a8-a389-591835b162bd",
+        "67cb6d19-0caf-5949-b858-e77fc9a4c4db",
+        "7c6f8231-66bd-5f7d-a1cf-f413b5a1cd6e",
+        "8e1b94e9-78d5-5e1d-a932-f3f891809715",
+        "cfb2d463-49db-5972-89da-74d88b29338b",
+        "8342a928-6e68-5a78-b1e8-f57b63600d66",
+        "4c6b8502-b741-5569-8ee4-9e089ee9ad26",
+        "4e810cdc-8ba3-5561-9c3e-92f9fb1680be",
+        "d4bb2e26-cedc-5d30-ae44-d0431928cca9",
+        "aaad09dc-7383-5b63-a119-84dce422099c",
+        "4390b687-87d8-5b32-92f5-9b0920935b2e",
+        "ce532ff2-2b51-568a-8db7-352d12071544",
+        "2046d699-3ac2-5714-9e30-5ed8dd04b22f",
+        "78571ee2-172b-5da6-bbde-8c790f205279",
+        "949b726c-e991-5377-97f2-23b0232f30cb",
+        "f4743247-a114-5653-8ec5-5936c6d5bebe",
+        "bd7f4165-cf17-5181-99dd-3f9b778b7145",
+        "914d11f8-06c6-53a2-97dc-1d9012156ad1",
+        "bcf552f1-682f-58e9-a777-9fc8a04f7a7e",
+        "020f904a-7887-5ae1-8d23-6494b2d3cbee",
+        "59bdb824-6ba8-5c86-963d-c12ce489e8fc",
+        "8eab0db0-a013-5027-ba6b-7e75f2210c1a",
+        "b3109820-88b5-553b-a6b8-fb17ddfb68b4",
+        "8cc896a8-f3ac-58aa-a9f0-f30cbf67f42d",
+        "10c2f35d-2841-582c-ba55-6ca6ecac009d",
+        "600f0d9a-cc76-5623-a7d5-0cf4ff6aeb98",
+        "1d0848c2-2150-5319-a236-8ef1a9e65075",
+        "2d639561-b04d-5bec-bae8-2154c898f89b",
+        "62a327d4-8386-5394-be0f-e3d7c0977c04",
+        "cd3e07f8-0185-5822-adc3-ce1535cc5ce6",
+        "b3d66062-0c0b-5ff2-aa15-8391da008b6b",
+        "e4c4d48f-8619-5816-80f1-90a17a554ef4",
+        "40b17d4b-76ed-5832-bb24-b106a84d0c48",
+        "14ae72c2-ecc7-5478-9aaf-3b69ca0a382d",
+        "97a702eb-8f2a-54e8-9e0a-3a01a96ce6bb",
+        "cbaa9710-44bd-507a-ab8b-0862f5a4f879",
+        "20acc2ee-3920-5e9e-83ac-cd52ca6789fa",
+        "4b95eb1f-4714-518b-95ff-9d3947c594d0",
+        "4d464088-1b71-5e60-9991-fa2905b20a55",
+        "48c2f0ce-9928-576b-b025-94496a3919ec",
+        "3b99e190-71b8-525d-8f9c-dffe56ae4f33",
+        "3b57a1d3-a986-5c85-9da6-c7b2cf3d4cc7",
+        "ce4b923c-6d4f-565c-a823-24c0a67664f1",
+        "8b3c220b-2008-5b14-953b-347da017bef6",
+        "b4f15712-1f88-5d0f-b9a2-b9d3a61d30b9",
+        "2b6cdf4a-4e13-51ae-9fa9-0aad168beeee",
+        "f5dd47b3-e9e8-559c-a4fe-74a3307d4b07",
+        "1d383b8f-aeb8-531e-8f5c-d338a944ff30"
+      ],
+      "generation_mode": "DETERMINISTIC_RULE"
+    },
+    {
+      "id": "2354313a-7ce0-556f-afd4-e80ebe664ef9",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        3.6576,
+        0.0,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-0/bay-0/plane-L1/beam"
+    },
+    {
+      "id": "6922f2ea-808f-54a1-b0bf-d8054cb604ad",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        0.0,
+        5.7912
+      ],
+      "end_m": [
+        3.6576,
+        0.0,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-0/bay-0/plane-eave/beam"
+    },
+    {
+      "id": "e455350e-d7c5-591b-b56f-e907d479c4c2",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        7.3152,
+        0.0,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-0/bay-1/plane-L1/beam"
+    },
+    {
+      "id": "610a2cb2-9645-5563-b4b2-74dbc6f915b8",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        0.0,
+        5.7912
+      ],
+      "end_m": [
+        7.3152,
+        0.0,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-0/bay-1/plane-eave/beam"
+    },
+    {
+      "id": "bd69634c-0727-5907-92ed-f4864d940d6d",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        0.0,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-0/bay-2/plane-L1/beam"
+    },
+    {
+      "id": "5375b284-4700-530c-9e31-a2e6f3eb6d80",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        0.0,
+        5.7912
+      ],
+      "end_m": [
+        10.9728,
+        0.0,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-0/bay-2/plane-eave/beam"
+    },
+    {
+      "id": "845c5899-6148-5814-abe0-7def0e92586c",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        3.6576,
+        3.6576,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-1/bay-0/plane-L1/beam"
+    },
+    {
+      "id": "46f85243-09d2-57ed-b0b3-f134e0a3de89",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        3.6576,
+        5.7912
+      ],
+      "end_m": [
+        3.6576,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-1/bay-0/plane-eave/beam"
+    },
+    {
+      "id": "511df67f-2585-5c2c-9fb8-9a4aa7cc5529",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        7.3152,
+        3.6576,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-1/bay-1/plane-L1/beam"
+    },
+    {
+      "id": "17f16149-9d8f-59e3-a1dc-0727f4d23d15",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        3.6576,
+        5.7912
+      ],
+      "end_m": [
+        7.3152,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-1/bay-1/plane-eave/beam"
+    },
+    {
+      "id": "00f26aa6-1d62-53a8-a389-591835b162bd",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        3.6576,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-1/bay-2/plane-L1/beam"
+    },
+    {
+      "id": "67cb6d19-0caf-5949-b858-e77fc9a4c4db",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        3.6576,
+        5.7912
+      ],
+      "end_m": [
+        10.9728,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-1/bay-2/plane-eave/beam"
+    },
+    {
+      "id": "7c6f8231-66bd-5f7d-a1cf-f413b5a1cd6e",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        3.6576,
+        7.3152,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-2/bay-0/plane-L1/beam"
+    },
+    {
+      "id": "8e1b94e9-78d5-5e1d-a932-f3f891809715",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        7.3152,
+        5.7912
+      ],
+      "end_m": [
+        3.6576,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-2/bay-0/plane-eave/beam"
+    },
+    {
+      "id": "cfb2d463-49db-5972-89da-74d88b29338b",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        7.3152,
+        7.3152,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-2/bay-1/plane-L1/beam"
+    },
+    {
+      "id": "8342a928-6e68-5a78-b1e8-f57b63600d66",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        7.3152,
+        5.7912
+      ],
+      "end_m": [
+        7.3152,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-2/bay-1/plane-eave/beam"
+    },
+    {
+      "id": "4c6b8502-b741-5569-8ee4-9e089ee9ad26",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-2/bay-2/plane-L1/beam"
+    },
+    {
+      "id": "4e810cdc-8ba3-5561-9c3e-92f9fb1680be",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        7.3152,
+        5.7912
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-x/y-2/bay-2/plane-eave/beam"
+    },
+    {
+      "id": "d4bb2e26-cedc-5d30-ae44-d0431928cca9",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        0.0,
+        3.6576,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-0/bay-0/plane-L1/beam"
+    },
+    {
+      "id": "aaad09dc-7383-5b63-a119-84dce422099c",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        0.0,
+        5.7912
+      ],
+      "end_m": [
+        0.0,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-0/bay-0/plane-eave/beam"
+    },
+    {
+      "id": "4390b687-87d8-5b32-92f5-9b0920935b2e",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        0.0,
+        7.3152,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-0/bay-1/plane-L1/beam"
+    },
+    {
+      "id": "ce532ff2-2b51-568a-8db7-352d12071544",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        0.0,
+        3.6576,
+        5.7912
+      ],
+      "end_m": [
+        0.0,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-0/bay-1/plane-eave/beam"
+    },
+    {
+      "id": "2046d699-3ac2-5714-9e30-5ed8dd04b22f",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        3.6576,
+        3.6576,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-1/bay-0/plane-L1/beam"
+    },
+    {
+      "id": "78571ee2-172b-5da6-bbde-8c790f205279",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        0.0,
+        5.7912
+      ],
+      "end_m": [
+        3.6576,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-1/bay-0/plane-eave/beam"
+    },
+    {
+      "id": "949b726c-e991-5377-97f2-23b0232f30cb",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        3.6576,
+        7.3152,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-1/bay-1/plane-L1/beam"
+    },
+    {
+      "id": "f4743247-a114-5653-8ec5-5936c6d5bebe",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        3.6576,
+        3.6576,
+        5.7912
+      ],
+      "end_m": [
+        3.6576,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-1/bay-1/plane-eave/beam"
+    },
+    {
+      "id": "bd7f4165-cf17-5181-99dd-3f9b778b7145",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        7.3152,
+        3.6576,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-2/bay-0/plane-L1/beam"
+    },
+    {
+      "id": "914d11f8-06c6-53a2-97dc-1d9012156ad1",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        0.0,
+        5.7912
+      ],
+      "end_m": [
+        7.3152,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-2/bay-0/plane-eave/beam"
+    },
+    {
+      "id": "bcf552f1-682f-58e9-a777-9fc8a04f7a7e",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        7.3152,
+        7.3152,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-2/bay-1/plane-L1/beam"
+    },
+    {
+      "id": "020f904a-7887-5ae1-8d23-6494b2d3cbee",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        7.3152,
+        3.6576,
+        5.7912
+      ],
+      "end_m": [
+        7.3152,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-2/bay-1/plane-eave/beam"
+    },
+    {
+      "id": "59bdb824-6ba8-5c86-963d-c12ce489e8fc",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        10.9728,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        3.6576,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-3/bay-0/plane-L1/beam"
+    },
+    {
+      "id": "8eab0db0-a013-5027-ba6b-7e75f2210c1a",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        10.9728,
+        0.0,
+        5.7912
+      ],
+      "end_m": [
+        10.9728,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-3/bay-0/plane-eave/beam"
+    },
+    {
+      "id": "b3109820-88b5-553b-a6b8-fb17ddfb68b4",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        10.9728,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        3.048
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-3/bay-1/plane-L1/beam"
+    },
+    {
+      "id": "8cc896a8-f3ac-58aa-a9f0-f30cbf67f42d",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "BEAM",
+      "start_m": [
+        10.9728,
+        3.6576,
+        5.7912
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/axis-y/x-3/bay-1/plane-eave/beam"
+    },
+    {
+      "id": "10c2f35d-2841-582c-ba55-6ca6ecac009d",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        0.0,
+        0.0,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-0/y-0/level-0/post"
+    },
+    {
+      "id": "600f0d9a-cc76-5623-a7d5-0cf4ff6aeb98",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        0.0,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        0.0,
+        0.0,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-0/y-0/level-1/post"
+    },
+    {
+      "id": "1d0848c2-2150-5319-a236-8ef1a9e65075",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        0.0,
+        3.6576,
+        0.0
+      ],
+      "end_m": [
+        0.0,
+        3.6576,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-0/y-1/level-0/post"
+    },
+    {
+      "id": "2d639561-b04d-5bec-bae8-2154c898f89b",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        0.0,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        0.0,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-0/y-1/level-1/post"
+    },
+    {
+      "id": "62a327d4-8386-5394-be0f-e3d7c0977c04",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        0.0,
+        7.3152,
+        0.0
+      ],
+      "end_m": [
+        0.0,
+        7.3152,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-0/y-2/level-0/post"
+    },
+    {
+      "id": "cd3e07f8-0185-5822-adc3-ce1535cc5ce6",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        0.0,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        0.0,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-0/y-2/level-1/post"
+    },
+    {
+      "id": "b3d66062-0c0b-5ff2-aa15-8391da008b6b",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        3.6576,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        3.6576,
+        0.0,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-1/y-0/level-0/post"
+    },
+    {
+      "id": "e4c4d48f-8619-5816-80f1-90a17a554ef4",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        3.6576,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        3.6576,
+        0.0,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-1/y-0/level-1/post"
+    },
+    {
+      "id": "40b17d4b-76ed-5832-bb24-b106a84d0c48",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        3.6576,
+        3.6576,
+        0.0
+      ],
+      "end_m": [
+        3.6576,
+        3.6576,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-1/y-1/level-0/post"
+    },
+    {
+      "id": "14ae72c2-ecc7-5478-9aaf-3b69ca0a382d",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        3.6576,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        3.6576,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-1/y-1/level-1/post"
+    },
+    {
+      "id": "97a702eb-8f2a-54e8-9e0a-3a01a96ce6bb",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        3.6576,
+        7.3152,
+        0.0
+      ],
+      "end_m": [
+        3.6576,
+        7.3152,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-1/y-2/level-0/post"
+    },
+    {
+      "id": "cbaa9710-44bd-507a-ab8b-0862f5a4f879",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        3.6576,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        3.6576,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-1/y-2/level-1/post"
+    },
+    {
+      "id": "20acc2ee-3920-5e9e-83ac-cd52ca6789fa",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        7.3152,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        7.3152,
+        0.0,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-2/y-0/level-0/post"
+    },
+    {
+      "id": "4b95eb1f-4714-518b-95ff-9d3947c594d0",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        7.3152,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        7.3152,
+        0.0,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-2/y-0/level-1/post"
+    },
+    {
+      "id": "4d464088-1b71-5e60-9991-fa2905b20a55",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        7.3152,
+        3.6576,
+        0.0
+      ],
+      "end_m": [
+        7.3152,
+        3.6576,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-2/y-1/level-0/post"
+    },
+    {
+      "id": "48c2f0ce-9928-576b-b025-94496a3919ec",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        7.3152,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        7.3152,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-2/y-1/level-1/post"
+    },
+    {
+      "id": "3b99e190-71b8-525d-8f9c-dffe56ae4f33",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        7.3152,
+        7.3152,
+        0.0
+      ],
+      "end_m": [
+        7.3152,
+        7.3152,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-2/y-2/level-0/post"
+    },
+    {
+      "id": "3b57a1d3-a986-5c85-9da6-c7b2cf3d4cc7",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        7.3152,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        7.3152,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-2/y-2/level-1/post"
+    },
+    {
+      "id": "ce4b923c-6d4f-565c-a823-24c0a67664f1",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        10.9728,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        10.9728,
+        0.0,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-3/y-0/level-0/post"
+    },
+    {
+      "id": "8b3c220b-2008-5b14-953b-347da017bef6",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        10.9728,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        0.0,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-3/y-0/level-1/post"
+    },
+    {
+      "id": "b4f15712-1f88-5d0f-b9a2-b9d3a61d30b9",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        10.9728,
+        3.6576,
+        0.0
+      ],
+      "end_m": [
+        10.9728,
+        3.6576,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-3/y-1/level-0/post"
+    },
+    {
+      "id": "2b6cdf4a-4e13-51ae-9fa9-0aad168beeee",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        10.9728,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        3.6576,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-3/y-1/level-1/post"
+    },
+    {
+      "id": "f5dd47b3-e9e8-559c-a4fe-74a3307d4b07",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        10.9728,
+        7.3152,
+        0.0
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        3.048
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-3/y-2/level-0/post"
+    },
+    {
+      "id": "1d383b8f-aeb8-531e-8f5c-d338a944ff30",
+      "kind": "TimberMember",
+      "schema_version": 1,
+      "member_role": "POST",
+      "start_m": [
+        10.9728,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        5.7912
+      ],
+      "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+      "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37",
+      "generation_key": "frame/x-3/y-2/level-1/post"
+    }
+  ]
+}

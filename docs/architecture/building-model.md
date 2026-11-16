@@ -48,30 +48,9 @@ All records include `id: UUID`, `kind: discriminator`, and `schema_version: posi
 
 `Wall`, `Opening`, `AssemblyDefinition`, `AssemblyInstance`, `Layer`, `Connection`, `MEPSystem`, `MEPElement`, `LoadCase`, `AnalysisResult`, `CostDataset`, `EnvironmentalDataset`, `Approval`, `DesignAlternative`. Reserve type namespaces and IDs; do not create empty pretend engineering objects in VS-01.
 
-## 4. Canonical JSON example (illustrative, abbreviated)
+## 4. Canonical snapshot
 
-```json
-{
-  "model_schema_version": 1,
-  "project_id": "b9531a91-9f14-49b9-8b1e-7eac1960c770",
-  "revision_id": "ab4c88f3-f5e9-47dd-8ee0-4c7a19a0b6cf",
-  "parent_revision_id": null,
-  "building": {
-    "id": "db5e6b5d-1478-4f8b-98b9-0809d10dc7e3",
-    "kind": "Building",
-    "schema_version": 1,
-    "footprint_id": "9b19e6a8-77a6-43e6-b6bd-9bd5a1167d3d",
-    "level_ids": ["a7f62a3c-78dd-43cf-b00b-38898573a1e8", "b52c2a48-555d-4b4e-82cf-01f105bb6aa1"],
-    "roof_id": "e5f278eb-9cf0-4d4b-a8b2-3f574c6b24b0",
-    "frame_system_id": "c37a11d6-0d93-44b1-a04d-92ec1466d394"
-  },
-  "entities": [
-    {"id":"9b19e6a8-77a6-43e6-b6bd-9bd5a1167d3d", "kind":"Footprint", "schema_version":1, "origin_m":[0,0], "width_m":12, "depth_m":9, "rotation_rad":0}
-  ]
-}
-```
-
-Example omits referenced records intentionally; **not** a valid complete snapshot. Complete snapshots must pass referential validation.
+The VS-01 golden snapshot is [Reference House 001](../reference-projects/vermont-timber-house/fixture.snapshot.json) (D025). Complete snapshots must pass referential validation. Do not use abbreviated examples as fixtures.
 
 ## 5. Identity and deterministic regeneration
 
@@ -107,4 +86,4 @@ Each record has a schema version. Persist a top-level model schema version. Migr
 
 ## 10. Open decisions
 
-Choose initial reference-house exact dimensions, bay counts, member sections, and roof parameters; settle precision/tolerance with geometry kernel testing; decide whether framing rules are embedded or plug-in modules; select storage representation after performance experiments. See [open questions](../product/open-questions.md).
+VS-01 reference-house dimensions, bays, sections, roof, and post/beam generation rules are confirmed ([D025](../product/decisions/D025-reference-house-001-vs01-fixture.md)). Still open: precision/tolerance with geometry kernel testing; whether framing rules are embedded or plug-in modules; storage representation after performance experiments. See [open questions](../product/open-questions.md).
