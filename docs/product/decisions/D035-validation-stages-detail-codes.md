@@ -2,7 +2,8 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-18  
-**Scope:** Semantic snapshot validation and the error details it returns, for snapshots and for command candidates. Approved from [MODEL-001](../../implementation/tasks/MODEL-001.md) §9, item 1.
+**Scope:** Semantic snapshot validation and the error details it returns, for snapshots and for command candidates. Approved from [MODEL-001](../../implementation/tasks/MODEL-001.md) §9, item 1.  
+**Amended by:** [D046](D046-conformance-validation-stage.md) — adds stage 5 (conformance, `VALIDATION_FAILED`), which runs only when stages 1–4 pass.
 
 ## Decision
 

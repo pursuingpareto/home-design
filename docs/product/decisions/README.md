@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D045. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D046. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -45,7 +45,8 @@
 - D043: [VS-01 command set and arguments](D043-vs01-command-set.md) — strict args for `CreateReferenceProject`, `SetFootprintDimensions`, `SetStoryHeights` (renamed from `SetLevelElevations`), `SetGableRoofParameters`, `SetMemberSection`, `SetTimberGrid` (full replacement, interfaces.md §2.1), `AddSection`.
 - D044: [Undo and redo with `UndoToRevision`](D044-undo-to-revision.md) — new revision equal to the target's content, linear history, original IDs restored (exception to D041), validated against current rules.
 - D045: [No-op commands create no revision](D045-no-op-commits.md) — a preview has `revision_id: null` and no confirmation; the commit returns 200 with the current head; the attempt is still logged.
+- D046: [Generation-rule conformance as validation stage 5](D046-conformance-validation-stage.md) — members must equal rule output (keys, roles, defaults, endpoints within 1e-6 m); four new codes; runs after stage 4; `VALIDATION_FAILED`.
 
-**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D045. Do not reopen D001–D045 to accommodate implementation shortcuts.
+**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D046. Do not reopen D001–D046 to accommodate implementation shortcuts.
 
 See [requirements](../requirements.md) for functional implications and [architecture](../../architecture/overview.md) for provisional implementation choices.

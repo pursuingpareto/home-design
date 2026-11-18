@@ -3,7 +3,8 @@
 **Status:** Confirmed  
 **Date:** 2026-11-18  
 **Scope:** The error detail object in [interfaces.md §7](../../architecture/interfaces.md#7-error-contract). Approved from [MODEL-001](../../implementation/tasks/MODEL-001.md) §9, item 3.  
-**Amended by:** [D042](D042-stable-grid-line-ids.md). The bay-length row's `path` is now the grid's `x_lines` or `y_lines`, replacing `x_fractions` / `y_fractions`. A new row, `DUPLICATE_LINE_ID`, takes each later occurrence's `id` as `path` and the first occurrence's `id` as `related_paths`. The other rows are unchanged.
+**Amended by:** [D042](D042-stable-grid-line-ids.md). The bay-length row's `path` is now the grid's `x_lines` or `y_lines`, replacing `x_fractions` / `y_fractions`. A new row, `DUPLICATE_LINE_ID`, takes each later occurrence's `id` as `path` and the first occurrence's `id` as `related_paths`. The other rows are unchanged.  
+**Amended by:** [D046](D046-conformance-validation-stage.md) — new row: for `MEMBER_ASSIGNMENT_MISMATCH` on `section_id` or `material_id`, `related_paths` is the role's `member_defaults` field.
 
 ## Decision
 

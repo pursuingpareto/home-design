@@ -154,7 +154,7 @@ CandidateChange:
 `instantiate_template` copies the Reference House 001 non-member records with new IDs, using the creation key `"template/" + fixture record ID` (D041). It rewrites every reference to use the new IDs, sets the building name, and then generates all members through `TIMBER-001`, using creation keys `"generation/" + key`.
 
 - `parent_revision_id` is `null`.
-- The result must validate. It must also equal the fixture **semantically**: same values, same keys, same 58 members, with only IDs and revision metadata differing. A test checks this by mapping IDs through creation keys.
+- The result must validate. It must also equal the fixture **semantically**: same values, same keys, same 58 members, with generated member coordinates within 1e-6 m (they are generator output; the fixture stores hand-entered decimals, see generation-rules.md "Numeric evaluation"), and with only IDs and revision metadata otherwise differing. A test checks this by mapping IDs through creation keys.
 
 ## 7. Errors
 
@@ -175,7 +175,7 @@ CandidateChange:
 7. **ID vector:** the D041 vector, reproduced by `tests/vectors/` and confirmed by an independent implementation (for example, Node in `generate.mjs`).
 8. **Two actors, one `command_id`:** two actors using the same `command_id` mint different IDs.
 9. **Undo round trip:** after a width change, `UndoToRevision` back gives entities canonically equal to the original, with the original member IDs.
-10. **Template:** `CreateReferenceProject` equals the fixture semantically (§6), and two projects share no entity IDs.
+10. **Template:** `CreateReferenceProject` equals the fixture semantically (§6; member coordinates within 1e-6 m), and two projects share no entity IDs.
 11. **No-op:** setting the current width gives `is_noop: true` and an empty diff.
 12. **Robustness:** property tests confirm that random argument values never raise, and every accepted candidate passes MODEL-001.
 13. The committed command JSON Schema is current, and validates the examples in this file.
