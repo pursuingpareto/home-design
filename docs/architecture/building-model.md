@@ -42,7 +42,7 @@ This matches the Reference House 001 fixture (D025). Supporting several building
 |---|---|---|
 | `Building` | `id`, `name`, `footprint_id`, `level_ids[]`, `roof_id`, `frame_system_id` | Exactly one primary footprint in VS-01; references exist |
 | `Footprint` | `id`, `origin_m: [x,y]`, `width_m`, `depth_m`, `rotation_rad` | Rectangle only; dimensions positive and bounded |
-| `Level` | `id`, `index`, `elevation_m`, `clear_height_m` | Two ordered levels in VS-01; unique index; elevations strictly increasing |
+| `Level` | `id`, `index`, `elevation_m`, `story_height_m` | Two ordered levels in VS-01; unique index; elevations strictly increasing; `story_height_m` > 0 and, except on the top level, equal to the next level's elevation minus this one (1e-6 m); top level's story height locates the eave plate ([D033](../product/decisions/D033-level-story-height.md)) |
 | `GableRoof` | `id`, `ridge_axis: X|Y`, `pitch_rad`, `eave_overhang_m`, `ridge_offset_m` | Supported roof domain only; derived from footprint and upper level |
 | `TimberGrid` | `id`, `x_fractions[]`, `y_fractions[]`, `generation_rule_version` | Sorted fractions from 0 to 1; endpoints present; regular grid VS-01 |
 | `FrameSystem` | `id`, `grid_id`, `member_ids[]`, `generation_mode` | Member IDs reference existing `TimberMember` records |

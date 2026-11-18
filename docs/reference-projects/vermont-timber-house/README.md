@@ -20,8 +20,8 @@ Imperial values are design intent. Canonical stored values use meters with `1 ft
 |---|---|---|
 | Footprint | 36'-0" (X) × 24'-0" (Y) | `width_m` 10.9728, `depth_m` 7.3152, origin `[0, 0]`, rotation 0 |
 | Bays | 3 × 2 equal 12'-0" bays | `x_fractions` `[0, 1/3, 2/3, 1]`, `y_fractions` `[0, 0.5, 1]` |
-| Level 0 | First floor at Z = 0, 10'-0" clear | `elevation_m` 0, `clear_height_m` 3.048 |
-| Level 1 | Second floor at 10'-0", 9'-0" clear | `elevation_m` 3.048, `clear_height_m` 2.7432 |
+| Level 0 | First floor at Z = 0, 10'-0" story height | `elevation_m` 0, `story_height_m` 3.048 |
+| Level 1 | Second floor at 10'-0", 9'-0" story height to eave plate | `elevation_m` 3.048, `story_height_m` 2.7432 |
 | Eave plane | 19'-0" | `z_eave` 5.7912 m |
 | Roof | Gable, ridge along X, 9/12, 2'-0" eaves, centered | `ridge_axis` X, `pitch_rad` atan(0.75), `eave_overhang_m` 0.6096, `ridge_offset_m` 0 |
 | Posts | 8×8 full-sawn | `actual_width_m` / `actual_depth_m` 0.2032 |

@@ -12,7 +12,7 @@ Applies when `TimberGrid.generation_rule_version` is `vs01-post-beam-1` and `Fra
 - `GableRoof` (used for derived roof geometry; not for member generation in this rule version)
 - Regular `TimberGrid` fractions from 0 to 1 inclusive
 
-Eave plane: `z_eave = level[1].elevation_m + level[1].clear_height_m`.
+Eave plane: `z_eave = level[1].elevation_m + level[1].story_height_m` ([D033](../../product/decisions/D033-level-story-height.md)).
 
 Station coordinates:
 

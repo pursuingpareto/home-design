@@ -2,7 +2,8 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-16  
-**Scope:** VS-01 integration fixture only
+**Scope:** VS-01 integration fixture only  
+**Amended by:** [D033](D033-level-story-height.md) — "clear height" below means **story height** (`Level.story_height_m`); values unchanged.
 
 ## Decision
 

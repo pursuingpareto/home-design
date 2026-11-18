@@ -36,7 +36,7 @@
       "schema_version": 1,
       "index": 0,
       "elevation_m": 0.0,
-      "clear_height_m": 3.048
+      "story_height_m": 3.048
     },
     {
       "id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
@@ -44,7 +44,7 @@
       "schema_version": 1,
       "index": 1,
       "elevation_m": 3.048,
-      "clear_height_m": 2.7432
+      "story_height_m": 2.7432
     },
     {
       "id": "488040a1-800d-5b05-a1d6-84d22c8f3929",

@@ -4,7 +4,7 @@
 
 ## Complete
 
-- Product decisions D001–D032.
+- Product decisions D001–D033.
 - Architecture v0.2 drafts (entity schemas remain engineering detail, not construction rules).
 - VS-01 scope and acceptance criteria.
 - Reference House 001 VS-01 golden snapshot and `vs01-post-beam-1` generation rules (D025).
@@ -15,6 +15,7 @@
 - Canonical snapshot form: `entities` sorted by `id`, lowercase UUIDs (D030).
 - VS-01 rejects rotated footprints, Y-axis ridges, and offset ridges; origin fixed at `[0, 0]` (D031).
 - VS-01 numeric bounds for footprint, bays, grid, pitch, and overhang (D032); level-height bounds pending.
+- `Level.clear_height_m` renamed to `story_height_m`, with a consistency check against elevations (D033).
 
 ## Incomplete
 
