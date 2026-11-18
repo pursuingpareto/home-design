@@ -69,7 +69,7 @@ Generated framing uses a stable `generation_key` such as `frame/grid-x-1/grid-y-
 - **Syntactic:** required fields, enums, schema versions, finite numbers, canonical lowercase UUID syntax (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys.
 - **Referential:** every referenced ID exists and is of the expected type; no duplicate IDs; `Building.level_ids` in ascending `Level.index` and `FrameSystem.member_ids` in ascending `generation_key` order (D030).
 - **Geometric:** valid dimensions, roof pitch in supported domain, nonzero member axes, valid level ordering, grid fractions sorted/unique.
-- **Domain:** only supported VS-01 configurations; do not assert structural adequacy or building-code compliance. VS-01 requires `Footprint.rotation_rad = 0`, `GableRoof.ridge_axis = "X"`, and `GableRoof.ridge_offset_m = 0` (otherwise `UNSUPPORTED_CONFIGURATION`), and `Footprint.origin_m = [0, 0]` (otherwise `VALIDATION_FAILED`, per D026) — see [D031](../product/decisions/D031-vs01-unsupported-configurations.md). Numeric bounds are still to be specified.
+- **Domain:** only supported VS-01 configurations; do not assert structural adequacy or building-code compliance. VS-01 requires `Footprint.rotation_rad = 0`, `GableRoof.ridge_axis = "X"`, and `GableRoof.ridge_offset_m = 0` (otherwise `UNSUPPORTED_CONFIGURATION`), and `Footprint.origin_m = [0, 0]` (otherwise `VALIDATION_FAILED`, per D026) — see [D031](../product/decisions/D031-vs01-unsupported-configurations.md). Footprint, bay length, grid station count, pitch, and overhang bounds are in [D032](../product/decisions/D032-vs01-numeric-bounds.md). They are checked on the full candidate snapshot, so a footprint change can be rejected because of the bay lengths it produces. Level-height bounds are still to be specified.
 - **Authorization:** caller has rights to perform requested operation on project/revision.
 
 Validation returns stable machine-readable codes and field paths, with human-readable messages. Failures do not create a new revision.
@@ -85,7 +85,7 @@ Each record has a schema version. Persist a top-level model schema version. Migr
 ## 9. VS-01 model acceptance tests
 
 1. Complete reference-house snapshot validates and round-trips without semantic loss; canonical bytes before and after the round trip are identical (D029).
-2. Negative/NaN/infinite footprint dimensions and unsupported roof geometry are rejected.
+2. Negative/NaN/infinite footprint dimensions (`VALIDATION_FAILED`) and out-of-range or unsupported footprint, grid, and roof configurations (`UNSUPPORTED_CONFIGURATION`, D031/D032) are rejected.
 3. Missing material, section, or building reference is rejected with an actionable path.
 4. Width change produces a new revision and preserves member IDs for unchanged generation keys.
 5. Same snapshot + same generator version yields byte-equivalent canonical schedules (RFC 8785, [D029](../product/decisions/D029-canonical-json-rfc8785.md)) after deterministic ordering.
