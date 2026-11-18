@@ -1,4 +1,4 @@
-"""Validation codes (D035).
+"""Validation codes (D035; stage 5 added by D046).
 
 The detail-code catalog here must match building-model.md §6.1 exactly; a test
 enforces that. Each detail code belongs to one stage, and the stage determines
@@ -18,6 +18,7 @@ class Stage(IntEnum):
     REFERENTIAL = 2
     GEOMETRIC = 3
     DOMAIN = 4
+    CONFORMANCE = 5
 
     @property
     def top_level_code(self) -> str:
@@ -65,6 +66,12 @@ OUT_OF_SUPPORTED_RANGE = "OUT_OF_SUPPORTED_RANGE"
 UNSUPPORTED_VALUE = "UNSUPPORTED_VALUE"
 ENTITY_COUNT = "ENTITY_COUNT"
 
+# Stage 5 — conformance (D046)
+MISSING_GENERATED_MEMBER = "MISSING_GENERATED_MEMBER"
+UNEXPECTED_MEMBER = "UNEXPECTED_MEMBER"
+MEMBER_GEOMETRY_MISMATCH = "MEMBER_GEOMETRY_MISMATCH"
+MEMBER_ASSIGNMENT_MISMATCH = "MEMBER_ASSIGNMENT_MISMATCH"
+
 CATALOG: dict[str, Stage] = {
     MALFORMED_JSON: Stage.SYNTACTIC,
     DUPLICATE_KEY: Stage.SYNTACTIC,
@@ -99,4 +106,8 @@ CATALOG: dict[str, Stage] = {
     OUT_OF_SUPPORTED_RANGE: Stage.DOMAIN,
     UNSUPPORTED_VALUE: Stage.DOMAIN,
     ENTITY_COUNT: Stage.DOMAIN,
+    MISSING_GENERATED_MEMBER: Stage.CONFORMANCE,
+    UNEXPECTED_MEMBER: Stage.CONFORMANCE,
+    MEMBER_GEOMETRY_MISMATCH: Stage.CONFORMANCE,
+    MEMBER_ASSIGNMENT_MISMATCH: Stage.CONFORMANCE,
 }

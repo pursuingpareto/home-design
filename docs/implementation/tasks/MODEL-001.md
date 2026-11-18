@@ -266,7 +266,7 @@ A further ad hoc fuzz run of 20,000 random fixture mutations produced no excepti
 
 **Limitations:**
 
-- Members are not checked against `vs01-post-beam-1`. A snapshot with moved member endpoints, or with a member whose section differs from its role default (D039), but otherwise valid references and geometry, passes. That conformance check belongs to `TIMBER-001`.
+- ~~Members are not checked against `vs01-post-beam-1`.~~ **Resolved by [TIMBER-001](TIMBER-001.md)** (stage 5 conformance, D046). That conformance check belongs to `TIMBER-001`.
 - Messages are English-only and not part of the contract.
 - Regenerating the JCS vectors requires Node; running the tests does not.
 - No TypeScript implementation exists yet. When one is added, it must pass `tests/vectors/jcs/vectors.json`.

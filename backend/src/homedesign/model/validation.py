@@ -1,4 +1,4 @@
-"""Four-stage snapshot validation (building-model.md §6, D035).
+"""Five-stage snapshot validation (building-model.md §6; D035, D046).
 
 Stages run in order; a later stage runs only if all earlier stages passed, and
 each stage reports every issue it finds. Validation is a pure function of its
@@ -133,7 +133,7 @@ def _validate_parsed(value: Any, max_depth: int) -> ValidationResult:
     if syntactic is not None:
         return syntactic
     assert snapshot is not None
-    for stage_check in (_stage_referential, _stage_geometric, _stage_domain):
+    for stage_check in (_stage_referential, _stage_geometric, _stage_domain, _stage_conformance):
         failed = stage_check(snapshot)
         if failed is not None:
             return failed
@@ -328,12 +328,13 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
             check_ref(idx.path(index, "member_defaults", role, "section_id"), default.section_id, "Section")
             check_ref(idx.path(index, "member_defaults", role, "material_id"), default.material_id, "Material")
         grid_hit = idx.resolve(frame.grid_id, "TimberGrid")
-        if grid_hit is not None and grid_hit[1].generation_rule_version == vs01.SUPPORTED_GENERATION_RULE:
-            for role in sorted(vs01.RULE_MEMBER_ROLES - frame.member_defaults.keys()):
+        rule = _rule(grid_hit[1].generation_rule_version) if grid_hit is not None else None
+        if rule is not None:
+            for role in sorted(rule.generated_roles - frame.member_defaults.keys()):
                 out.add(
                     idx.path(index, "member_defaults"),
                     codes.MISSING_ROLE_DEFAULT,
-                    f"member_defaults needs a {role} entry: {vs01.SUPPORTED_GENERATION_RULE} generates {role} members (D039).",
+                    f"member_defaults needs a {role} entry: {rule.version} generates {role} members (D039).",
                     role,
                 )
     # D042: grid line IDs are unique per axis.
@@ -562,14 +563,49 @@ def _stage_domain(snapshot: Snapshot) -> ValidationResult | None:
             )
 
     # Generation rule and mode.
-    rule_supported = grid.generation_rule_version == vs01.SUPPORTED_GENERATION_RULE
-    if not rule_supported:
-        out.add(idx.path(grid_loc, "generation_rule_version"), codes.UNSUPPORTED_VALUE, f"Only generation rule {vs01.SUPPORTED_GENERATION_RULE} is supported.", grid.generation_rule_version)
+    rule = _rule(grid.generation_rule_version)
+    if rule is None:
+        out.add(idx.path(grid_loc, "generation_rule_version"), codes.UNSUPPORTED_VALUE, f"Supported generation rules: {', '.join(_registered_rules())}.", grid.generation_rule_version)
     if frame.generation_mode != vs01.SUPPORTED_GENERATION_MODE:
         out.add(idx.path(frame_loc, "generation_mode"), codes.UNSUPPORTED_VALUE, f"Only generation mode {vs01.SUPPORTED_GENERATION_MODE} is supported.", frame.generation_mode)
-    if rule_supported:
+    if rule is not None:
         for index, member in idx.of_kind("TimberMember"):
-            if member.member_role not in vs01.RULE_MEMBER_ROLES:
-                out.add(idx.path(index, "member_role"), codes.UNSUPPORTED_VALUE, f"Rule {vs01.SUPPORTED_GENERATION_RULE} generates only posts and beams.", member.member_role)
+            if member.member_role not in rule.generated_roles:
+                out.add(idx.path(index, "member_role"), codes.UNSUPPORTED_VALUE, f"Rule {rule.version} generates only {', '.join(sorted(rule.generated_roles))} members.", member.member_role)
 
     return out.result(Stage.DOMAIN)
+
+
+# ---------------------------------------------------------------------------
+# Stage 5 — conformance (D046)
+
+
+def _rule(version: str):
+    """Look up a generation rule in the timber registry (TIMBER-001 §6)."""
+    from homedesign.timber.rules import get_rule  # imported lazily: timber depends on model types
+
+    return get_rule(version)
+
+
+def _registered_rules() -> tuple[str, ...]:
+    from homedesign.timber.rules import registered_versions
+
+    return registered_versions()
+
+
+def _stage_conformance(snapshot: Snapshot) -> ValidationResult | None:
+    out = _Collector()
+    r = _resolve_all(snapshot)
+    idx = r.idx
+    rule = _rule(r.grid[1].generation_rule_version)
+    assert rule is not None, "stage 4 guarantees a registered rule"
+    locator = {entity.id: index for index, entity in enumerate(snapshot.entities)}
+    for finding in rule.conformance(snapshot):
+        out.add(
+            idx.path(locator[finding.entity_id], *finding.field),
+            finding.code,
+            finding.message,
+            finding.value,
+            [idx.path(locator[entity_id], *field) for entity_id, field in finding.related],
+        )
+    return out.result(Stage.CONFORMANCE)

@@ -36,10 +36,9 @@ LEVEL_COUNT = 2
 STORY_HEIGHT_MIN_M = 2.4384  # 8'-0"
 STORY_HEIGHT_MAX_M = 4.2672  # 14'-0"
 
-# D031 / generation-rules.md: the only supported rule and mode.
-SUPPORTED_GENERATION_RULE = "vs01-post-beam-1"
+# The only supported generation mode. Supported generation rules are those registered
+# in homedesign.timber.rules (TIMBER-001 §6).
 SUPPORTED_GENERATION_MODE = "DETERMINISTIC_RULE"
-RULE_MEMBER_ROLES = frozenset({"POST", "BEAM"})
 
 # MODEL-001 §5.1 parser defaults.
 DEFAULT_MAX_BYTES = 4 * 1024 * 1024

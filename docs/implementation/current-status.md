@@ -18,7 +18,7 @@
 - `Level.clear_height_m` renamed to `story_height_m`, with a consistency check against elevations (D033).
 - Level datum (Level 0 at elevation 0) and story-height bounds of 8'–14' (D034).
 - Validation stages and detail-code catalog (D035); error path syntax (D036); `related_paths` (D037); required keys and catalog records (D038).
-- `MODEL-001` implemented: Pydantic schema, four-stage validator, RFC 8785 canonicalization and fingerprints, committed JSON Schema, cross-language JCS vectors; 126 tests passing.
+- `MODEL-001` implemented: Pydantic schema, four-stage validator, RFC 8785 canonicalization and fingerprints, committed JSON Schema, cross-language JCS vectors.
 - Per-role section and material defaults on `FrameSystem` (D039), applied to the fixture, schema, validator, and tests; `SetMemberSection` changes a role default (D040).
 - Deterministic UUIDv5 ID minting from the command (D041).
 - Stable grid-line IDs and line-based generation keys (D042), applied to the fixture, rule, schema, validator, and tests.
@@ -26,6 +26,7 @@
 ## Incomplete
 
 - Hosting, identity provider, and production operations.
-- `MODEL-003` task file ready (all proposals approved: D043–D045; interfaces.md §2–4 and §7.1; dependencies.md §4.1). Gap M5 and all P1 gaps are closed. Implementation is blocked on `TIMBER-001`, whose task file is ready (all proposals approved; stage 5 conformance is D046).
+- `MODEL-003` task file ready (all proposals approved: D043–D045; interfaces.md §2–4 and §7.1; dependencies.md §4.1). Gap M5 and all P1 gaps are closed. Ready for implementation.
+- `TIMBER-001` implemented: `vs01-post-beam-1` generator, rule registry, and stage 5 conformance (D046); inventory matches an independent ECMAScript implementation byte for byte; 181 tests passing.
 - Task files beyond `MODEL-003`.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

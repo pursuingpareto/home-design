@@ -1,6 +1,6 @@
 # TIMBER-001 — Deterministic post/beam generator and rule conformance
 
-**Status:** Ready for implementation — all §10 proposals approved (2026-11-18)  
+**Status:** Implemented (2026-11-18). See §12 for implementation notes.  
 **Owner module:** `timber`  
 **Slice:** VS-01  
 **Depends on:** `MODEL-001` (done)  
@@ -148,3 +148,43 @@ Proposed new detail codes (stage 5):
 - All §7 tests pass, including updated MODEL-001 tests. The exported JSON Schema is unchanged; stage 5 adds no schema fields. The JCS and inventory vectors are regenerated and committed.
 - building-model.md, generation-rules.md, interfaces.md, MODEL-001 §13, MODEL-003 §6, the decision register, and the status docs are updated.
 - Changed files, tests, limitations, and next steps are summarized (AGENTS.md).
+
+## 12. Implementation notes (2026-11-18)
+
+**Delivered:**
+- `backend/src/homedesign/timber/`:
+  - `inventory.py`: `GeneratedMember` and `ConformanceIssue`;
+  - `rules/__init__.py`: the registry;
+  - `rules/vs01_post_beam_1.py`: `generate` and `conformance`.
+- Stage 5 in `model/validation.py`, and the four codes in `model/codes.py`.
+- An independent ECMAScript implementation of the rule in `tests/vectors/jcs/generate.mjs`, with the new `inventories` entry in `vectors.json` (58 members, 14,431 canonical bytes, `sha256:a9a26fff…`).
+
+**Tests:** 181 pytest tests pass, 55 of them new or changed by this task:
+- the fixture inventory, with the 38 bit-level differences asserted exactly;
+- byte equality with the ECMAScript inventory;
+- determinism and independence from entity order;
+- the count formula for all 36 grid sizes allowed by D032;
+- line insertion and removal;
+- member defaults;
+- conformance mutations: endpoint inside and outside the epsilon, swapped endpoints, missing member, unexpected member, wrong section with its D037 related path, and wrong role;
+- stage gating;
+- an unregistered rule;
+- a regenerated snapshot that is exact.
+
+A 10,000-case random-mutation fuzz run produced no exceptions; 145 cases reached stage 5.
+
+**Choices made during implementation:**
+
+- **The validator holds no rule knowledge:** stage 2's required roles (`MISSING_ROLE_DEFAULT`) and stage 4's "supported rule" check now come from the registry, not from constants. `vs01.py` no longer lists a rule name or its roles.
+- **Lazy imports:** validation imports the registry lazily, because `timber` depends on model types and `homedesign.model` imports `validation`.
+- **Neutral conformance findings:** conformance returns findings addressed by entity ID and field steps. The validator renders them as D036 paths, so `timber` never formats paths.
+- **One issue per missing key:** missing keys each produce one `MISSING_GENERATED_MEMBER` at the frame's `member_ids`, with the key as `value`.
+- **Test helper:** `tests/conftest.py` gains `regenerate(doc)`, which rebuilds members for a doc's parameters with test-only IDs. Production ID assignment remains `MODEL-003`'s job.
+- **Updated MODEL-001 cases:** case 29 and `d042-line-ids-need-not-be-sequential` now regenerate members. A new case shows that renaming a line without regenerating fails conformance. `test_catalog_doc.py` reads stages 1–5.
+
+**Limitations:**
+
+- Only `vs01-post-beam-1` is registered.
+- Conformance compares coordinates per axis within 1e-6 m. It does not report how far off a member is.
+- Messages are English-only and not part of the contract.
+

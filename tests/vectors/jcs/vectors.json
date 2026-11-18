@@ -143,6 +143,16 @@
       "canonical": "1424953923781206.2"
     }
   ],
+  "inventories": [
+    {
+      "name": "reference-house-001-vs01-post-beam-1",
+      "source": "docs/reference-projects/vermont-timber-house/fixture.snapshot.json",
+      "rule": "vs01-post-beam-1",
+      "members": 58,
+      "canonical_bytes": 14431,
+      "fingerprint": "sha256:a9a26fff77901da0fba4e7edef8524693d44fcd01d2c1c22c784d26d28317702"
+    }
+  ],
   "snapshots": [
     {
       "name": "reference-house-001",

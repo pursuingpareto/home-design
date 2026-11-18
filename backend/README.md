@@ -1,6 +1,6 @@
 # Backend
 
-Python backend for the Home Design Platform. Currently contains the `model` module from [MODEL-001](../docs/implementation/tasks/MODEL-001.md): the authoritative Pydantic schema for VS-01 snapshots (D028), four-stage validation (D035), and RFC 8785 canonical serialization and fingerprints (D029, D030). No HTTP API, persistence, or UI yet.
+Python backend for the Home Design Platform. Currently contains the `model` module from [MODEL-001](../docs/implementation/tasks/MODEL-001.md) and the `timber` module from [TIMBER-001](../docs/implementation/tasks/TIMBER-001.md). Together they provide the authoritative Pydantic schema for VS-01 snapshots (D028), five-stage validation including rule conformance (D035, D046), the `vs01-post-beam-1` generator, and RFC 8785 canonical serialization and fingerprints (D029, D030). No HTTP API, persistence, or UI yet.
 
 ## Setup
 
@@ -39,9 +39,10 @@ else:
 | Path | Contents |
 |---|---|
 | `src/homedesign/model/schema.py` | Pydantic models (stage 1 contract; JSON Schema is exported from here) |
-| `src/homedesign/model/validation.py` | Stages 1–4, issue paths, `related_paths` |
+| `src/homedesign/model/validation.py` | Stages 1–5, issue paths, `related_paths` |
 | `src/homedesign/model/codes.py` | Detail-code catalog (must match building-model.md §6.1) |
 | `src/homedesign/model/vs01.py` | VS-01 bounds and tolerances (D031–D034) |
 | `src/homedesign/model/jcs.py`, `canonical.py` | RFC 8785 and snapshot fingerprints |
 | `src/homedesign/model/strict_json.py`, `paths.py` | Strict parser and D036 path rendering |
-| `tests/` | Fixture, mutation table, JCS vectors, property tests, catalog-doc sync |
+| `src/homedesign/timber/` | Rule registry, `vs01-post-beam-1` (`generate`, `conformance`), `GeneratedMember` |
+| `tests/` | Fixture, mutation table, generator, JCS and inventory vectors, property tests, catalog-doc sync |

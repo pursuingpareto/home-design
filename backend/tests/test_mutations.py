@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 
 import pytest
 
-from conftest import FIXTURE, FIXTURE_BYTES, entities_of, epath, fresh_fixture, index_of
+from conftest import FIXTURE, FIXTURE_BYTES, entities_of, epath, fresh_fixture, index_of, regenerate
 from homedesign.model import codes, validate_bytes, validate_value
 from homedesign.model.validation import ValidationResult
 
@@ -79,6 +79,45 @@ def _grid_fractions(axis, fractions):
 
 def _line_id(axis, k, new_id):
     return lambda d: _find(d, GRID["id"])[axis][k].__setitem__("id", new_id)
+
+
+def _member_with_key(key):
+    return next(m for m in MEMBERS if m["generation_key"] == key)
+
+
+STRAY = _member_with_key("frame/axis-x/y0/x0-x1/plane-L1/beam")
+A_POST = _member_with_key("frame/x0/y0/level-0/post")
+BEAM_SECTION_ID = FRAME["member_defaults"]["BEAM"]["section_id"]
+
+
+def _shift_end(member, dx):
+    def mutate(d):
+        end = _find(d, member["id"])["end_m"]
+        end[0] = end[0] + dx
+    return mutate
+
+
+def _swap_endpoints(member):
+    def mutate(d):
+        m = _find(d, member["id"])
+        m["start_m"], m["end_m"] = m["end_m"], m["start_m"]
+    return mutate
+
+
+def _remove_member(member):
+    def mutate(d):
+        d["entities"] = [e for e in d["entities"] if e["id"] != member["id"]]
+        _find(d, FRAME["id"])["member_ids"].remove(member["id"])
+    return mutate
+
+
+def _add_member(key):
+    def mutate(d):
+        d["entities"].append(dict(_find(d, A_POST["id"]), id=NEW_ID, generation_key=key))
+        frame = _find(d, FRAME["id"])
+        keys = {e["id"]: e["generation_key"] for e in d["entities"] if e["kind"] == "TimberMember"}
+        frame["member_ids"] = sorted([*frame["member_ids"], NEW_ID], key=lambda i: keys[i])
+    return mutate
 
 
 def _swap_member_ids(d):
@@ -175,7 +214,9 @@ CASES: list[Case] = [
     doc_case("28-stage-gating",
              lambda d: (_set(FOOTPRINT["id"], "width_m", -1)(d), _set(FOOTPRINT["id"], "rotation_rad", 0.1)(d)), VF,
              [Expect(codes.OUT_OF_RANGE, epath(FOOTPRINT, "width_m"))], only=True),
-    doc_case("29-width-inside-epsilon", _set(FOOTPRINT["id"], "width_m", 3.6576 - 5e-7), None, [], only=True),
+    # Parameter-only edits leave members stale; stage 5 (D046) would then fail, so valid
+    # cases regenerate members first.
+    doc_case("29-width-inside-epsilon", lambda d: (_set(FOOTPRINT["id"], "width_m", 3.6576 - 5e-7)(d), regenerate(d)), None, [], only=True),
     doc_case("30-width-outside-epsilon", _set(FOOTPRINT["id"], "width_m", 3.6576 - 2e-6), UC,
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FOOTPRINT, "width_m"))], only=True),
     text_case("31-truncated", lambda b: b[: len(b) // 2], VF, [Expect(codes.MALFORMED_JSON, "")], only=True),
@@ -229,7 +270,28 @@ CASES: list[Case] = [
              [Expect(codes.INVALID_LINE_ID, epath(GRID, "y_lines", 1, "id"))], only=True),
     doc_case("d042-duplicate-line-id", _line_id("x_lines", 2, "x1"), VF,
              [Expect(codes.DUPLICATE_LINE_ID, epath(GRID, "x_lines", 2, "id"), (epath(GRID, "x_lines", 1, "id"),))], only=True),
-    doc_case("d042-line-ids-need-not-be-sequential", _line_id("x_lines", 1, "x9"), None, [], only=True),
+    doc_case("d042-line-ids-need-not-be-sequential", lambda d: (_line_id("x_lines", 1, "x9")(d), regenerate(d)), None, [], only=True),
+    doc_case("d042-renamed-line-without-regeneration", _line_id("x_lines", 1, "x9"), VF,
+             [Expect(codes.MISSING_GENERATED_MEMBER, epath(FRAME, "member_ids")),
+              Expect(codes.UNEXPECTED_MEMBER, epath(_member_with_key("frame/x1/y0/level-0/post"), "generation_key"))]),
+    # TIMBER-001 / D046: stage 5 conformance
+    doc_case("t001-endpoint-inside-epsilon", _shift_end(STRAY, 5e-7), None, [], only=True),
+    doc_case("t001-endpoint-outside-epsilon", _shift_end(STRAY, 2e-6), VF,
+             [Expect(codes.MEMBER_GEOMETRY_MISMATCH, epath(STRAY, "end_m"))], only=True),
+    doc_case("t001-swapped-endpoints", _swap_endpoints(STRAY), VF,
+             [Expect(codes.MEMBER_GEOMETRY_MISMATCH, epath(STRAY, "start_m")),
+              Expect(codes.MEMBER_GEOMETRY_MISMATCH, epath(STRAY, "end_m"))], only=True),
+    doc_case("t001-missing-member", _remove_member(STRAY), VF,
+             [Expect(codes.MISSING_GENERATED_MEMBER, epath(FRAME, "member_ids"))], only=True),
+    doc_case("t001-unexpected-member", _add_member("frame/x9/y0/level-0/post"), VF,
+             [Expect(codes.UNEXPECTED_MEMBER, f"entities[{NEW_ID}].generation_key")], only=True),
+    doc_case("t001-post-with-beam-section", _set(A_POST["id"], "section_id", BEAM_SECTION_ID), VF,
+             [Expect(codes.MEMBER_ASSIGNMENT_MISMATCH, epath(A_POST, "section_id"),
+                     (epath(FRAME, "member_defaults", "POST", "section_id"),))], only=True),
+    doc_case("t001-post-labelled-beam", _set(A_POST["id"], "member_role", "BEAM"), VF,
+             [Expect(codes.MEMBER_ASSIGNMENT_MISMATCH, epath(A_POST, "member_role"))], only=True),
+    doc_case("t001-stale-members-outside-domain", _set(FOOTPRINT["id"], "width_m", 30), UC,
+             [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FOOTPRINT, "width_m"))]),
     # D036 path forms: quoted keys
     doc_case("d036-quoted-entity-key", _set(FOOTPRINT["id"], "a.b", 1), VF,
              [Expect(codes.UNKNOWN_FIELD, f'entities[{FOOTPRINT["id"]}]["a.b"]')], only=True),
