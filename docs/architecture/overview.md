@@ -6,6 +6,12 @@
 
 **Provisional stack:** React + TypeScript; Three.js for 3D rendering; SVG/Canvas for 2D editing; Python + FastAPI; PostgreSQL; Python background workers; evaluate OpenCascade and alternatives for exact geometry; provider-neutral AI integration.
 
+**Chosen in implementation tasks:**
+
+- Python tooling: uv, with a locked environment.
+- Schemas: Pydantic v2, authoritative per D028.
+- Database access: psycopg 3 (synchronous), with **plain numbered SQL migrations** applied by a small in-repo runner. There is no ORM: the schema relies on triggers, partial unique indexes, and row locks that are clearest in SQL ([MODEL-004](../implementation/tasks/MODEL-004.md) §10, item 3).
+
 **Core modules:**
 
 1. `project`: project metadata, permissions, revisions, persistence.

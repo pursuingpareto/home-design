@@ -130,6 +130,16 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 
 Persist each revision as an immutable PostgreSQL JSONB snapshot plus an append-only operation/audit table. Transactionally persist a revision and its operation record. A revision has exactly one parent in VS-01; branching and merge semantics are deferred. Optimistic concurrency requires `base_revision_id` equal to the project's current head; conflicts return `REVISION_CONFLICT`, never silently overwrite.
 
+Storage schema ([MODEL-004](../implementation/tasks/MODEL-004.md) §5, approved as §10 item 4):
+
+- **`projects`** holds the head revision and its `head_sequence`. Only these head fields ever change.
+- **`revisions`** holds `project_id`, `parent_revision_id`, and a per-project `sequence` starting at 1 (unique, for readable positions and ordered history). It also holds `model_schema_version`, the snapshot as **JSONB**, and its canonical **fingerprint**, which is checked on every read.
+- **`operations`** is the append-only audit log, with one row per commit attempt.
+- **`schema_migrations`** records applied SQL migrations.
+- **Idempotency** is enforced by partial unique indexes: (`project_id`, `actor_id`, `command_id`) for committed or no-op rows, and (`actor_id`, `command_id`) for project creation.
+- **Immutability:** triggers reject `UPDATE` and `DELETE` on `revisions` and `operations`.
+- **Numbers:** JSONB keeps each number as the exact decimal Python writes (shortest round-trip form), so doubles read back bit-identical. `-0` reads back as `0`, which RFC 8785 already treats as equal (D029).
+
 ## 8. Migration rules
 
 Each record has a schema version. Persist a top-level model schema version. Migrations must be deterministic, tested with golden fixtures, and preserve stable IDs. Reject unsupported future schema versions explicitly. Do not silently discard unknown data.

@@ -35,7 +35,7 @@ No module may write another module's private tables. Cross-module communication 
 
 Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 9.
 
-Actor identity is derived from authenticated server context, not trusted from the client body. `command_id` is an idempotency key scoped to project and actor. IDs a command creates (entities, revision, operation) are UUIDv5 values derived from the project, actor, `command_id`, and a per-record creation key, so a preview reports exactly the IDs its commit will create ([D041](../product/decisions/D041-deterministic-id-minting.md)). A repeated key with a different payload (compared in canonical form, [D029](../product/decisions/D029-canonical-json-rfc8785.md)) returns `IDEMPOTENCY_CONFLICT`.
+Actor identity is derived from authenticated server context, not trusted from the client body. `command_id` is an idempotency key scoped to project and actor; for `CreateReferenceProject`, which has no project yet, it is scoped to the actor. Only commits that succeed (a new revision or a no-op) reserve a `command_id`. A rejected attempt is audited but does not block a retry under the same ID ([MODEL-004](../implementation/tasks/MODEL-004.md) §4.4). IDs a command creates (entities, revision, operation) are UUIDv5 values derived from the project, actor, `command_id`, and a per-record creation key, so a preview reports exactly the IDs its commit will create ([D041](../product/decisions/D041-deterministic-id-minting.md)). A repeated key with a different payload (compared in canonical form, [D029](../product/decisions/D029-canonical-json-rfc8785.md)) returns `IDEMPOTENCY_CONFLICT`.
 
 VS-01 command set ([D043](../product/decisions/D043-vs01-command-set.md)); arguments are strict, with all listed keys required and unknown keys rejected:
 
@@ -77,7 +77,7 @@ Request: command envelope. Response (illustrative; result contract approved from
 
 ```json
 {
-  "preview_id": "c5325c6c-2b62-4f45-87ab-7b289f1a4fbb",
+  "preview_token": "<opaque signed string, D047>",
   "base_revision_id": "ab4c88f3-f5e9-47dd-8ee0-4c7a19a0b6cf",
   "revision_id": "<minted per D041; the revision the commit will create>",
   "command_hash": "sha256:...",
@@ -116,15 +116,29 @@ Request: command envelope. Response (illustrative; result contract approved from
 - **`classification`** comes from the versioned table in [dependencies.md §4.1](dependencies.md#41-vs-01-classification-table-vs01-change-classes-1), and `classification_version` names that table.
 - **`confirmation_required`** is `true` exactly when `classification` is `consequential` ([dependencies.md](dependencies.md) §4) and `is_noop` is `false`.
 
-The preview does not modify project head or create a revision. `command_hash` is SHA-256 over the RFC 8785 canonical serialization ([D029](../product/decisions/D029-canonical-json-rfc8785.md)) of the command envelope, which includes the base revision. `preview_id` and `expires_at` are server-issued, not client-chosen.
+The preview does not modify project head or create a revision. `command_hash` is SHA-256 over the RFC 8785 canonical serialization ([D029](../product/decisions/D029-canonical-json-rfc8785.md)) of the command envelope, which includes the base revision. `preview_token` and `expires_at` are server-issued, not client-chosen. The token is an HMAC-SHA-256 signature over the canonical `{project_id, actor_id, base_revision_id, command_hash, expires_at}`, valid for 15 minutes, and nothing is stored when it is issued ([D047](../product/decisions/D047-stateless-preview-tokens.md)).
 
 ## 4. Commit contract
 
 `POST /api/v1/projects/{project_id}/commands/commit`
 
-Body: `{ "command": <command envelope>, "preview_id": "..." }` for consequential edits; routine edits may omit preview only if server policy allows. Server revalidates all preconditions and commits atomically.
+Body: `{ "command": <command envelope>, "preview_token": "..." }`. The token is required for consequential commands that are not no-ops; routine commands and no-ops may omit it ([D047](../product/decisions/D047-stateless-preview-tokens.md), [dependencies.md §4.1](dependencies.md#41-vs-01-classification-table-vs01-change-classes-1)). Errors: a missing token where one is required is `PREVIEW_REQUIRED` (428); a token that does not verify or does not match the commit's project, actor, base revision, or `command_hash` is `PREVIEW_INVALID` (409); an expired token is `PREVIEW_EXPIRED` (409). Server revalidates all preconditions and commits atomically.
 
-Success: HTTP 201 with `{ "revision_id": "...", "parent_revision_id": "...", "operation_id": "...", "artifact_statuses": {...} }`. Idempotent retry returns the same committed revision (HTTP 200 or 201, consistently documented). A successful commit does **not** imply all derived artifacts are ready.
+Commit runs in one transaction ([MODEL-004](../implementation/tasks/MODEL-004.md) §4.3, approved as §10 item 1):
+
+1. Lock the project.
+2. Check idempotency.
+3. Check that `base_revision_id` is the head (`REVISION_CONFLICT` otherwise).
+4. Re-run the command, which deterministically yields the preview's IDs and diff.
+5. Check the preview requirement: a consequential command needs a preview; a routine command or a no-op does not.
+6. Persist the revision and operation, and advance the head.
+
+Responses:
+
+- **New revision:** HTTP 201 with `{ "revision_id", "parent_revision_id", "operation_id", "sequence", "is_noop": false, "artifact_statuses" }`. `sequence` numbers revisions within the project from 1. Until the artifact tasks exist, `artifact_statuses` reports every VS-01 artifact type as `MISSING` (never computed, [artifacts.md](artifacts.md) §2.1).
+- **Idempotent retry** (same `command_id` and `command_hash`): HTTP **200** with the original result body plus `"replayed": true`; nothing is written.
+- **Creation:** `POST /api/v1/projects` follows the same rules: 201 when created, 200 on retry.
+- A successful commit does **not** imply all derived artifacts are ready.
 
 A no-op commit creates no revision: it returns HTTP 200 with `revision_id` equal to the current head, `is_noop: true`, and unchanged artifact statuses. The operation log still records the attempt ([D045](../product/decisions/D045-no-op-commits.md)).
 
@@ -189,7 +203,7 @@ Interfaces are illustrative. Schema definition is confirmed by [D028](../product
 }
 ```
 
-Stable codes: `VALIDATION_FAILED` (422), `UNSUPPORTED_CONFIGURATION` (422), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `REVISION_CONFLICT` (409), `IDEMPOTENCY_CONFLICT` (409), `PREVIEW_EXPIRED` (409), `DERIVATION_FAILED` (500/503 as appropriate). No internal stack traces in API responses.
+Stable codes: `VALIDATION_FAILED` (422), `UNSUPPORTED_CONFIGURATION` (422), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `REVISION_CONFLICT` (409), `IDEMPOTENCY_CONFLICT` (409), `PREVIEW_EXPIRED` (409), `PREVIEW_INVALID` (409), `PREVIEW_REQUIRED` (428) ([D047](../product/decisions/D047-stateless-preview-tokens.md)), `DERIVATION_FAILED` (500/503 as appropriate). No internal stack traces in API responses.
 
 Detail `code` values for model validation are cataloged in [building-model.md §6.1](building-model.md#61-detail-codes); each belongs to one validation stage, which determines whether the top-level code is `VALIDATION_FAILED` or `UNSUPPORTED_CONFIGURATION` ([D035](../product/decisions/D035-validation-stages-detail-codes.md)).
 
@@ -219,7 +233,7 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 8. Th
 - Never accept arbitrary executable expressions, geometry scripts, or SQL from AI/client as commands.
 - API version prefix `/api/v1`; model schema versions independent of API version.
 - Schema changes require backward-compatible readers or explicit migrations, contract tests, and fixture upgrades.
-- Audit record includes actor, command, previous/new revision, timestamp, and result; protect sensitive project content.
+- An audit record is appended for **every commit attempt**: actor, command, `command_hash`, base revision, result (`committed`, `noop`, or `rejected`), top-level error code if rejected, new revision if any, classification and its version, and timestamp. Audit rows are never updated or deleted. Routine logs carry no snapshot content ([MODEL-004](../implementation/tasks/MODEL-004.md) §4.5).
 
 ## 9. Contract test matrix
 

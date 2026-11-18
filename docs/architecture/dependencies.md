@@ -72,7 +72,7 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7. Th
 9. Recompute synchronous lightweight derivations; queue expensive jobs with deduplication.
 10. Publish status updates and results only when their fingerprints still match current inputs; otherwise mark superseded.
 
-Preview is non-mutating. Confirmation must bind to a specific preview token, base revision, and operation hash; if anything changes, return a conflict requiring a fresh preview.
+Preview is non-mutating. Confirmation must bind to a specific preview token, base revision, and operation hash; if anything changes, return a conflict requiring a fresh preview. The token is stateless and signed: it covers project, actor, base revision, `command_hash`, and a 15-minute expiry ([D047](../product/decisions/D047-stateless-preview-tokens.md)). Commits check, in order: idempotency, base revision (`REVISION_CONFLICT`), command validation, then the preview (`PREVIEW_REQUIRED`, `PREVIEW_INVALID`, `PREVIEW_EXPIRED`).
 
 ## 6. Incremental recomputation
 

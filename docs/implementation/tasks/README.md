@@ -21,6 +21,7 @@ Suggested first tasks: `MODEL-001` canonical units/coordinates; `MODEL-002` proj
 | [MODEL-001](MODEL-001.md) | Snapshot schema, validation, and canonical serialization (merges the suggested MODEL-001 and MODEL-002) | Done (2026-11-18) |
 | [TIMBER-001](TIMBER-001.md) | Deterministic post/beam generator and generation-rule conformance | Done (2026-11-18) |
 | [MODEL-003](MODEL-003.md) | Typed commands and candidate snapshots (closes gap M5) | Done (2026-11-18) |
+| [MODEL-004](MODEL-004.md) | Revision persistence, concurrency, idempotency, and previews | Ready for implementation |
 
 The remaining candidate IDs still need task files. P1 gaps that block `TIMBER-001` and `MODEL-003` are listed in MODEL-001 §12.
 

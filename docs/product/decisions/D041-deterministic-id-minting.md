@@ -3,7 +3,8 @@
 **Status:** Confirmed  
 **Date:** 2026-11-18  
 **Scope:** How the server creates IDs for entities, revisions, and operations produced by a command. Closes gap M2. IDs remain opaque UUIDs ([D026](D026-canonical-units-identity-persistence.md)).  
-**Amended by:** [D044](D044-undo-to-revision.md) — `UndoToRevision` restores records with their original IDs, an exception to "re-added keys get new IDs".
+**Amended by:** [D044](D044-undo-to-revision.md) — `UndoToRevision` restores records with their original IDs, an exception to "re-added keys get new IDs".  
+**Amended by:** [D047](D047-stateless-preview-tokens.md) — previews have no ID; `preview_id` is replaced by a stateless signed `preview_token`. `project_id` remains random UUIDv4.
 
 ## Decision
 
