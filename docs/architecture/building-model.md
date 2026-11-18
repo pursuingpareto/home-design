@@ -26,7 +26,13 @@
 
 ## 3. Core record contracts
 
-All records include `id: UUID`, `kind: discriminator`, and `schema_version: positive integer`. A project snapshot contains `project_id`, `revision_id`, `parent_revision_id | null`, `created_at`, `entities`, and `model_schema_version`.
+All records include `id: UUID`, `kind: discriminator`, and `schema_version: positive integer`. A project snapshot contains `model_schema_version`, `project_id`, `revision_id`, `parent_revision_id | null`, `created_at`, `building`, and `entities`.
+
+- `building` is the snapshot's single `Building` record. VS-01 has exactly one building per snapshot, so this is a structural rule, not a validation check. A `Building` inside `entities` is rejected.
+- `entities` holds every other entity record (the remaining rows of the table below).
+- IDs are unique across `building` and `entities` combined, and references may point to records in either place.
+
+This matches the Reference House 001 fixture (D025). Supporting several buildings per project is a future schema change requiring a migration.
 
 ### 3.1 Entity types for VS-01
 
