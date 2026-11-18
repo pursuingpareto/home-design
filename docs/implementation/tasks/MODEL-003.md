@@ -1,6 +1,6 @@
 # MODEL-003 — Typed commands and candidate snapshots
 
-**Status:** Ready for implementation once `TIMBER-001` is done — all §10 proposals approved (2026-11-18)  
+**Status:** Implemented (2026-11-18). See §12 for implementation notes.  
 **Owner module:** `model` (uses `timber` for regeneration)  
 **Slice:** VS-01  
 **Depends on:** `MODEL-001` (done), **`TIMBER-001`** (deterministic generator and rule-conformance check; to be specified and implemented first)  
@@ -166,7 +166,7 @@ CandidateChange:
 
 ## 8. Acceptance criteria and automated tests
 
-1. **Width change** (building-model.md §9 test 4): a new candidate, all 58 member IDs and keys preserved, endpoints moved, `members.updated` lists all 58, and the classification is consequential.
+1. **Width change** (building-model.md §9 test 4): a new candidate, all 58 member IDs and keys preserved, endpoints moved, `members.updated` lists the **48** members that move, and the classification is consequential. *(Corrected during implementation: the 10 members lying entirely on line `x0`, at x = 0, do not move when the width changes; the draft said "all 58".)*
 2. **Remove an interior grid line** (dependencies.md §8): removing `x2` keeps every ID on `x0`, `x1`, `x3`. It retires the `x2` posts and the `x1-x2` and `x2-x3` beams and adds `x1-x3` beams with D041 IDs.
 3. **Insert a line:** a new line gets ID `x4`; the split bay's beams are retired and new ones added; the endpoint posts keep their IDs.
 4. **Invalid commands are rejected with exact codes and paths:** negative width, a 30 m width, a bay over 24' (with `args.width_m` in `related_paths`), an unknown type, an unknown line ID, a non-generated role in `SetMemberSection`, a missing argument, and an unknown argument.
@@ -205,3 +205,47 @@ Approved items that change contracts update interfaces.md §2–4 and dependenci
 - All §8 tests pass. The command JSON Schema is exported and drift-checked. The D041 vector is committed and independently confirmed.
 - interfaces.md and dependencies.md are updated for approved items. The task index and status docs are updated.
 - Changed files, tests, limitations, and next steps are summarized (AGENTS.md).
+
+## 12. Implementation notes (2026-11-18)
+
+**Delivered:**
+- `backend/src/homedesign/model/commands/`:
+  - `envelope.py`: argument and envelope models, the `type`-discriminated union, and `parse_command`;
+  - `mint.py`: D041 minting with the fixed namespace;
+  - `propose.py`: `propose`, `propose_create`, `CandidateChange.to_preview_dict()`, the classification table, the diff, and argument linking;
+  - `templates/reference-house-001.json`: a packaged copy of the fixture, kept byte-identical by a test.
+- `docs/architecture/schemas/commands.v1.schema.json`: the exported command schema, drift-checked by `schema_export --check`.
+- An `ids` section in `tests/vectors/jcs/vectors.json`, computed by an independent ECMAScript UUIDv5, which reproduces the D041 vector `5f9ff518…`.
+
+**Tests:** 232 pytest tests pass, 51 of them new, covering every §8 criterion:
+- width change (48 members updated, IDs preserved, also on a fixture base);
+- interior line removal (22 retired, 6 added with D041 IDs, survivors kept);
+- line insertion (new ID `x4`), and new line numbers that skip a removed end line;
+- story heights, the routine roof command, and `AddSection` followed by `SetMemberSection`;
+- 18 rejection cases with exact codes, paths, and argument-linked `related_paths`, plus `REVISION_CONFLICT` and envelope misuse;
+- base immutability;
+- preview and commit agreement (identical except `created_at`);
+- the UUIDv5 vectors, and two actors minting different IDs;
+- an undo round trip that restores original IDs, and an undo no-op;
+- template semantic equality through creation keys, and two projects sharing no IDs;
+- the no-op contract, and the fixture-base regeneration rewriting 38 members' last bits;
+- the preview shape, the classification table matching dependencies.md §4.1, never-raises properties, and the command schema.
+
+An ad hoc fuzz run of 2,000 random command chains (up to six commands each, including undo) produced no exceptions and never mutated a base. Every accepted candidate re-validated.
+
+**Choices made during implementation:**
+
+- **Pipeline:** the draft is validated first. If only stage 5 fails, the draft just has stale members, and a regenerating command then regenerates them. Members keep the base's ID per surviving key, and new keys are minted. The result is validated again. Any stage 1–4 failure is returned with arguments linked through each command's field map.
+- **`REVISION_CONFLICT`:** it has no detail issues, and it is checked before the envelope is parsed whenever `base_revision_id` is a readable string.
+- **Project mismatch:** it uses detail code `DANGLING_REFERENCE` at `project_id` (interfaces.md §7.1 named only the top-level code).
+- **A new line sent with `"id": null`:** this is `WRONG_TYPE` at the line's path. New lines must omit `id`.
+- **Envelope misuse:** sending the creation envelope to `propose`, or another type to `propose_create`, is `INVALID_ENUM` at `type`. A creation command wrapped in a normal envelope fails stage 1 on `project_id` and `base_revision_id`.
+- **`command_hash`:** SHA-256 over the canonical envelope with unset optional fields omitted, so `{"fraction": 0.5}` is never hashed as `{"id": null, …}`.
+- **Shared error mapping:** the snapshot validator's Pydantic-to-code mapping was extracted (`code_for_pydantic_error`) so command errors use identical codes.
+
+**Limitations:**
+
+- No persistence, idempotency store, preview tokens, or authorization (`MODEL-004` and the API task).
+- `propose` trusts the caller to pass the right `target` snapshot for `UndoToRevision`. It checks only the ID and project.
+- Messages are English-only and not part of the contract.
+

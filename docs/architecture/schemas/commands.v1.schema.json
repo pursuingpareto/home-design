@@ -1,0 +1,511 @@
+{
+  "$defs": {
+    "AddSection": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/AddSectionArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "AddSection",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "AddSection",
+      "type": "object"
+    },
+    "AddSectionArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_depth_m": {
+          "title": "Actual Depth M",
+          "type": "number"
+        },
+        "actual_width_m": {
+          "title": "Actual Width M",
+          "type": "number"
+        },
+        "nominal_label": {
+          "title": "Nominal Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "nominal_label",
+        "actual_width_m",
+        "actual_depth_m"
+      ],
+      "title": "AddSectionArgs",
+      "type": "object"
+    },
+    "CreateReferenceProject": {
+      "additionalProperties": false,
+      "description": "Creation envelope: no project or base revision exists yet (interfaces.md §2).",
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/NoArgs"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "CreateReferenceProject",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "type",
+        "args"
+      ],
+      "title": "CreateReferenceProject",
+      "type": "object"
+    },
+    "FootprintArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "depth_m": {
+          "title": "Depth M",
+          "type": "number"
+        },
+        "width_m": {
+          "title": "Width M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "width_m",
+        "depth_m"
+      ],
+      "title": "FootprintArgs",
+      "type": "object"
+    },
+    "GableRoofArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "eave_overhang_m": {
+          "title": "Eave Overhang M",
+          "type": "number"
+        },
+        "pitch_rad": {
+          "title": "Pitch Rad",
+          "type": "number"
+        }
+      },
+      "required": [
+        "pitch_rad",
+        "eave_overhang_m"
+      ],
+      "title": "GableRoofArgs",
+      "type": "object"
+    },
+    "GridLineArg": {
+      "additionalProperties": false,
+      "description": "Either ``{\"id\", \"fraction\"}`` (keep an existing line) or ``{\"fraction\"}`` (new line).",
+      "properties": {
+        "fraction": {
+          "title": "Fraction",
+          "type": "number"
+        },
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        }
+      },
+      "required": [
+        "fraction"
+      ],
+      "title": "GridLineArg",
+      "type": "object"
+    },
+    "MemberSectionArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "enum": [
+            "POST",
+            "BEAM",
+            "FLOOR_JOIST",
+            "RAFTER"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "section_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Section Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "section_id"
+      ],
+      "title": "MemberSectionArgs",
+      "type": "object"
+    },
+    "NoArgs": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "NoArgs",
+      "type": "object"
+    },
+    "SetFootprintDimensions": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/FootprintArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetFootprintDimensions",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetFootprintDimensions",
+      "type": "object"
+    },
+    "SetGableRoofParameters": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/GableRoofArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetGableRoofParameters",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetGableRoofParameters",
+      "type": "object"
+    },
+    "SetMemberSection": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/MemberSectionArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetMemberSection",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetMemberSection",
+      "type": "object"
+    },
+    "SetStoryHeights": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/StoryHeightsArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetStoryHeights",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetStoryHeights",
+      "type": "object"
+    },
+    "SetTimberGrid": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/TimberGridArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetTimberGrid",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetTimberGrid",
+      "type": "object"
+    },
+    "StoryHeightsArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "story_heights_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Story Heights M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "story_heights_m"
+      ],
+      "title": "StoryHeightsArgs",
+      "type": "object"
+    },
+    "TimberGridArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "x_lines": {
+          "items": {
+            "$ref": "#/$defs/GridLineArg"
+          },
+          "title": "X Lines",
+          "type": "array"
+        },
+        "y_lines": {
+          "items": {
+            "$ref": "#/$defs/GridLineArg"
+          },
+          "title": "Y Lines",
+          "type": "array"
+        }
+      },
+      "required": [
+        "x_lines",
+        "y_lines"
+      ],
+      "title": "TimberGridArgs",
+      "type": "object"
+    },
+    "UndoArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "target_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Target Revision Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target_revision_id"
+      ],
+      "title": "UndoArgs",
+      "type": "object"
+    },
+    "UndoToRevision": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/UndoArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "UndoToRevision",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "UndoToRevision",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Stage 1 (syntactic) contract for VS-01 command envelopes, discriminated by `type`. Generated from backend/src/homedesign/model/commands/envelope.py; do not edit by hand. Semantics: docs/architecture/interfaces.md §2–4 and §7.1.",
+  "discriminator": {
+    "mapping": {
+      "AddSection": "#/$defs/AddSection",
+      "CreateReferenceProject": "#/$defs/CreateReferenceProject",
+      "SetFootprintDimensions": "#/$defs/SetFootprintDimensions",
+      "SetGableRoofParameters": "#/$defs/SetGableRoofParameters",
+      "SetMemberSection": "#/$defs/SetMemberSection",
+      "SetStoryHeights": "#/$defs/SetStoryHeights",
+      "SetTimberGrid": "#/$defs/SetTimberGrid",
+      "UndoToRevision": "#/$defs/UndoToRevision"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/CreateReferenceProject"
+    },
+    {
+      "$ref": "#/$defs/SetFootprintDimensions"
+    },
+    {
+      "$ref": "#/$defs/SetStoryHeights"
+    },
+    {
+      "$ref": "#/$defs/SetGableRoofParameters"
+    },
+    {
+      "$ref": "#/$defs/SetTimberGrid"
+    },
+    {
+      "$ref": "#/$defs/SetMemberSection"
+    },
+    {
+      "$ref": "#/$defs/AddSection"
+    },
+    {
+      "$ref": "#/$defs/UndoToRevision"
+    }
+  ],
+  "title": "VS-01 command envelopes (MODEL-003)"
+}

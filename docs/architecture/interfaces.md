@@ -50,7 +50,7 @@ VS-01 command set ([D043](../product/decisions/D043-vs01-command-set.md)); argum
 | `AddSection` | `{nominal_label, actual_width_m, actual_depth_m}`: adds a rectangular `Section` to the project catalog ([D038](../product/decisions/D038-field-presence-catalog-records.md)). Its ID is minted with creation key `"section"` ([D041](../product/decisions/D041-deterministic-id-minting.md)). It changes no members; use `SetMemberSection` to apply it. Dimensions must be greater than zero (stage 3). Labels need not be unique (D026) |
 | `UndoToRevision` | `{target_revision_id}`: a new revision whose content equals the target revision's, with the current head as parent; restores original IDs; redo targets a later revision ([D044](../product/decisions/D044-undo-to-revision.md)) |
 
-Commands use full typed arguments, not generic JSON patch paths.
+Commands use full typed arguments, not generic JSON patch paths. The envelopes' JSON Schema is exported to [`schemas/commands.v1.schema.json`](schemas/commands.v1.schema.json) (D028).
 
 ### 2.1 `SetTimberGrid` arguments
 
@@ -203,8 +203,8 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 8. Th
 
 | Situation | Top-level code | Detail paths |
 |---|---|---|
-| `base_revision_id` differs from the base snapshot's revision | `REVISION_CONFLICT` (409) | Checked first; nothing is computed |
-| `project_id` differs from the base snapshot's project | `VALIDATION_FAILED` | `project_id` |
+| `base_revision_id` differs from the base snapshot's revision | `REVISION_CONFLICT` (409) | Checked first; nothing is computed; no detail issues |
+| `project_id` differs from the base snapshot's project | `VALIDATION_FAILED` | `project_id`, detail code `DANGLING_REFERENCE` |
 | Malformed envelope or arguments: unknown `type`, missing, unknown, or wrong-type argument | `VALIDATION_FAILED` (stage 1) | Envelope paths: `type`, `args.width_m`, `args.x_lines[2].fraction`. Processing stops |
 | Argument references a missing or wrong-kind item: line ID, section, target revision | `VALIDATION_FAILED` (stage 2) | `args.…` paths (for example `args.section_id`, `args.x_lines[1].id`) |
 | The candidate snapshot fails validation | Code of the first failing stage ([D035](../product/decisions/D035-validation-stages-detail-codes.md)) | Snapshot paths. When a failing field (`path` or any `related_paths` entry) was set directly by an argument, that argument's path is added to `related_paths` ([D037](../product/decisions/D037-error-related-paths.md)) |

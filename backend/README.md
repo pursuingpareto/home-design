@@ -1,6 +1,6 @@
 # Backend
 
-Python backend for the Home Design Platform. Currently contains the `model` module from [MODEL-001](../docs/implementation/tasks/MODEL-001.md) and the `timber` module from [TIMBER-001](../docs/implementation/tasks/TIMBER-001.md). Together they provide the authoritative Pydantic schema for VS-01 snapshots (D028), five-stage validation including rule conformance (D035, D046), the `vs01-post-beam-1` generator, and RFC 8785 canonical serialization and fingerprints (D029, D030). No HTTP API, persistence, or UI yet.
+Python backend for the Home Design Platform. Currently contains the `model` module from [MODEL-001](../docs/implementation/tasks/MODEL-001.md) (with typed commands from [MODEL-003](../docs/implementation/tasks/MODEL-003.md)) and the `timber` module from [TIMBER-001](../docs/implementation/tasks/TIMBER-001.md). Together they provide the authoritative Pydantic schema for VS-01 snapshots (D028), five-stage validation including rule conformance (D035, D046), the `vs01-post-beam-1` generator, and RFC 8785 canonical serialization and fingerprints (D029, D030). No HTTP API, persistence, or UI yet.
 
 ## Setup
 
@@ -15,7 +15,7 @@ uv sync
 
 ```bash
 uv run pytest                                      # full test suite
-uv run python -m homedesign.model.schema_export    # regenerate docs/architecture/schemas/snapshot.v1.schema.json
+uv run python -m homedesign.model.schema_export    # regenerate the snapshot and command JSON Schemas in docs/architecture/schemas/
 uv run python -m homedesign.model.schema_export --check   # fail if the committed schema is stale
 ```
 
@@ -44,5 +44,6 @@ else:
 | `src/homedesign/model/vs01.py` | VS-01 bounds and tolerances (D031–D034) |
 | `src/homedesign/model/jcs.py`, `canonical.py` | RFC 8785 and snapshot fingerprints |
 | `src/homedesign/model/strict_json.py`, `paths.py` | Strict parser and D036 path rendering |
+| `src/homedesign/model/commands/` | Typed commands: envelopes, `propose`/`propose_create`, D041 minting, diff and classification, packaged template |
 | `src/homedesign/timber/` | Rule registry, `vs01-post-beam-1` (`generate`, `conformance`), `GeneratedMember` |
 | `tests/` | Fixture, mutation table, generator, JCS and inventory vectors, property tests, catalog-doc sync |

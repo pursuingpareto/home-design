@@ -143,6 +143,55 @@
       "canonical": "1424953923781206.2"
     }
   ],
+  "ids": {
+    "namespace": "6652101f-3d1d-4a2b-bd82-9d87e0207354",
+    "cases": [
+      {
+        "parts": [
+          "entity",
+          "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
+          "00000000-0000-4000-8000-000000000001",
+          "b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa",
+          "generation/frame/x0/y0/level-0/post"
+        ],
+        "name": "[\"entity\",\"17ac32e0-0b3b-518e-b568-adf98f41bcd0\",\"00000000-0000-4000-8000-000000000001\",\"b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa\",\"generation/frame/x0/y0/level-0/post\"]",
+        "id": "5f9ff518-e552-59c3-b2a6-798263c3f9ac"
+      },
+      {
+        "parts": [
+          "revision",
+          "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
+          "00000000-0000-4000-8000-000000000001",
+          "b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa",
+          null
+        ],
+        "name": "[\"revision\",\"17ac32e0-0b3b-518e-b568-adf98f41bcd0\",\"00000000-0000-4000-8000-000000000001\",\"b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa\",null]",
+        "id": "3b9c8781-2272-5ba4-a116-0b70d4fa4133"
+      },
+      {
+        "parts": [
+          "entity",
+          "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
+          "00000000-0000-4000-8000-000000000002",
+          "b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa",
+          "generation/frame/x0/y0/level-0/post"
+        ],
+        "name": "[\"entity\",\"17ac32e0-0b3b-518e-b568-adf98f41bcd0\",\"00000000-0000-4000-8000-000000000002\",\"b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa\",\"generation/frame/x0/y0/level-0/post\"]",
+        "id": "f7c87f56-c3f3-50dc-9843-28553c2cfe3d"
+      },
+      {
+        "parts": [
+          "entity",
+          "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
+          "00000000-0000-4000-8000-000000000001",
+          "b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa",
+          "template/9ba359f1-6354-5019-9b3f-d15f8e53523b"
+        ],
+        "name": "[\"entity\",\"17ac32e0-0b3b-518e-b568-adf98f41bcd0\",\"00000000-0000-4000-8000-000000000001\",\"b8f9d645-5a10-4eb5-b2ca-38ce46e5d4aa\",\"template/9ba359f1-6354-5019-9b3f-d15f8e53523b\"]",
+        "id": "81ed3839-5cfe-5b66-b16b-08f1b9389f6a"
+      }
+    ]
+  },
   "inventories": [
     {
       "name": "reference-house-001-vs01-post-beam-1",

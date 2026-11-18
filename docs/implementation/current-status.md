@@ -26,7 +26,7 @@
 ## Incomplete
 
 - Hosting, identity provider, and production operations.
-- `MODEL-003` task file ready (all proposals approved: D043–D045; interfaces.md §2–4 and §7.1; dependencies.md §4.1). Gap M5 and all P1 gaps are closed. Ready for implementation.
-- `TIMBER-001` implemented: `vs01-post-beam-1` generator, rule registry, and stage 5 conformance (D046); inventory matches an independent ECMAScript implementation byte for byte; 181 tests passing.
+- `MODEL-003` implemented: typed commands, deterministic ID minting (D041), candidate snapshots with diff, classification, no-op handling, undo, and template creation; command JSON Schema exported; 232 tests passing.
+- `TIMBER-001` implemented: `vs01-post-beam-1` generator, rule registry, and stage 5 conformance (D046); inventory matches an independent ECMAScript implementation byte for byte.
 - Task files beyond `MODEL-003`.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

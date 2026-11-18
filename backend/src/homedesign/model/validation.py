@@ -208,6 +208,25 @@ _MESSAGES = {
 }
 
 
+def code_for_pydantic_error(error: dict[str, Any]) -> str:
+    """Map a Pydantic error to a D035 detail code (shared by snapshot and command validation)."""
+    error_type = error["type"]
+    code = _PYDANTIC_CODE.get(error_type, codes.WRONG_TYPE)
+    if error_type == "string_pattern_mismatch":
+        pattern = (error.get("ctx") or {}).get("pattern")
+        if pattern == UUID_PATTERN:
+            code = codes.INVALID_UUID
+        elif pattern == TIMESTAMP_PATTERN:
+            code = codes.INVALID_TIMESTAMP
+        elif pattern in (X_LINE_ID_PATTERN, Y_LINE_ID_PATTERN):
+            code = codes.INVALID_LINE_ID
+    return code
+
+
+def message_for(code: str) -> str:
+    return _MESSAGES.get(code, "Invalid value.")
+
+
 def _pydantic_issue(error: dict[str, Any], addresser: EntityAddresser) -> tuple[str, str, Any]:
     error_type = error["type"]
     loc = [step for step in error["loc"]]
@@ -222,15 +241,7 @@ def _pydantic_issue(error: dict[str, Any], addresser: EntityAddresser) -> tuple[
     if error_type in ("union_tag_invalid", "union_tag_not_found"):
         loc.append("kind")
         raw_input = raw_input.get("kind") if isinstance(raw_input, dict) else None
-    code = _PYDANTIC_CODE.get(error_type, codes.WRONG_TYPE)
-    if error_type == "string_pattern_mismatch":
-        pattern = (error.get("ctx") or {}).get("pattern")
-        if pattern == UUID_PATTERN:
-            code = codes.INVALID_UUID
-        elif pattern == TIMESTAMP_PATTERN:
-            code = codes.INVALID_TIMESTAMP
-        elif pattern in (X_LINE_ID_PATTERN, Y_LINE_ID_PATTERN):
-            code = codes.INVALID_LINE_ID
+    code = code_for_pydantic_error(error)
     if error_type == "literal_error" and loc and loc[-1] == "kind" and not invalid_key:
         code = codes.UNKNOWN_KIND
     if code == codes.MISSING_FIELD and error_type == "missing":

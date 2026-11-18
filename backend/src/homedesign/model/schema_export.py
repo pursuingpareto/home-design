@@ -1,7 +1,7 @@
 """Export the snapshot JSON Schema committed under docs/ (D028).
 
 Usage (from backend/):
-    uv run python -m homedesign.model.schema_export          # write the file
+    uv run python -m homedesign.model.schema_export          # write snapshot and command schemas
     uv run python -m homedesign.model.schema_export --check  # exit 1 if it is stale
 """
 
@@ -15,7 +15,9 @@ from typing import Any
 from .schema import Snapshot
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
-SCHEMA_PATH = REPO_ROOT / "docs" / "architecture" / "schemas" / "snapshot.v1.schema.json"
+SCHEMA_DIR = REPO_ROOT / "docs" / "architecture" / "schemas"
+SCHEMA_PATH = SCHEMA_DIR / "snapshot.v1.schema.json"
+COMMANDS_SCHEMA_PATH = SCHEMA_DIR / "commands.v1.schema.json"
 JSON_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
 
 
@@ -30,22 +32,44 @@ def snapshot_json_schema() -> dict[str, Any]:
     return schema
 
 
+def commands_json_schema() -> dict[str, Any]:
+    from .commands.envelope import COMMAND_ADAPTER
+
+    schema = COMMAND_ADAPTER.json_schema(mode="validation")
+    schema["$schema"] = JSON_SCHEMA_DIALECT
+    schema["title"] = "VS-01 command envelopes (MODEL-003)"
+    schema["description"] = (
+        "Stage 1 (syntactic) contract for VS-01 command envelopes, discriminated by `type`. "
+        "Generated from backend/src/homedesign/model/commands/envelope.py; do not edit by hand. "
+        "Semantics: docs/architecture/interfaces.md §2–4 and §7.1."
+    )
+    return schema
+
+
+def _render(schema: dict[str, Any]) -> str:
+    return json.dumps(schema, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
 def render_schema() -> str:
-    return json.dumps(snapshot_json_schema(), indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    return _render(snapshot_json_schema())
+
+
+def render_commands_schema() -> str:
+    return _render(commands_json_schema())
 
 
 def main(argv: list[str] | None = None) -> int:
     args = sys.argv[1:] if argv is None else argv
-    rendered = render_schema()
+    outputs = {SCHEMA_PATH: render_schema(), COMMANDS_SCHEMA_PATH: render_commands_schema()}
     if "--check" in args:
-        current = SCHEMA_PATH.read_text(encoding="utf-8") if SCHEMA_PATH.exists() else ""
-        if current != rendered:
-            print(f"{SCHEMA_PATH} is out of date; run without --check to regenerate.", file=sys.stderr)
-            return 1
-        return 0
-    SCHEMA_PATH.parent.mkdir(parents=True, exist_ok=True)
-    SCHEMA_PATH.write_text(rendered, encoding="utf-8")
-    print(f"Wrote {SCHEMA_PATH}")
+        stale = [p for p, text in outputs.items() if (p.read_text(encoding="utf-8") if p.exists() else "") != text]
+        for path in stale:
+            print(f"{path} is out of date; run without --check to regenerate.", file=sys.stderr)
+        return 1 if stale else 0
+    SCHEMA_DIR.mkdir(parents=True, exist_ok=True)
+    for path, text in outputs.items():
+        path.write_text(text, encoding="utf-8")
+        print(f"Wrote {path}")
     return 0
 
 

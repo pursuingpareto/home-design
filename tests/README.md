@@ -5,7 +5,7 @@ Language-neutral test data used by every implementation. Unit tests for each lan
 ## `vectors/jcs/` — RFC 8785 canonical JSON (D029)
 
 - `inputs/*.json` — raw JSON documents. Files are kept byte-exact so that literal spellings (`1.0`, `-0`, `4.50`, `\u` escapes) are preserved.
-- `vectors.json` — expected canonical bytes and `sha256:` fingerprints for each input, RFC 8785 Appendix B number samples, the canonical fingerprint of Reference House 001 (`entities` sorted by `id`, D030), and the canonical `vs01-post-beam-1` inventory for its parameters, computed by an independent ECMAScript implementation of the rule (TIMBER-001).
+- `vectors.json` — expected canonical bytes and `sha256:` fingerprints for each input, RFC 8785 Appendix B number samples, the canonical fingerprint of Reference House 001 (`entities` sorted by `id`, D030), and the canonical `vs01-post-beam-1` inventory for its parameters, computed by an independent ECMAScript implementation of the rule (TIMBER-001), and D041 UUIDv5 ID-minting cases computed by an independent ECMAScript UUIDv5 (MODEL-003).
 - `generate.mjs` — regenerates `vectors.json` using an ECMAScript engine, the reference that RFC 8785 is defined against. Do not edit `vectors.json` by hand.
 
 ```bash
