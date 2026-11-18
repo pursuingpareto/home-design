@@ -40,6 +40,25 @@ UI must visibly label `STALE`, `COMPUTING`, `FAILED`, or `UNAVAILABLE`; it may s
 - Classification is rule-based, versioned, conservative, and server-enforced; future AI may suggest classification but cannot override it.
 - For VS-01, any footprint/roof/grid change that regenerates framing is treated as **consequential** by default, until a more nuanced policy is approved.
 
+### 4.1 VS-01 classification table (`vs01-change-classes-1`)
+
+Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7. The server applies this table; clients cannot override it.
+
+| Command | Class | Reason |
+|---|---|---|
+| `SetGableRoofParameters` | routine | Changes roof display geometry only; `vs01-post-beam-1` does not use the roof, so no members regenerate |
+| `AddSection` | routine | Adds a catalog record; no member changes |
+| `SetFootprintDimensions` | consequential | Regenerates framing |
+| `SetStoryHeights` | consequential | Regenerates framing |
+| `SetTimberGrid` | consequential | Regenerates framing; may retire and create members |
+| `SetMemberSection` | consequential | Changes every member of a role ([D040](../product/decisions/D040-setmembersection-role-default.md)) |
+| `UndoToRevision` | consequential | Can change anything ([D044](../product/decisions/D044-undo-to-revision.md)) |
+| `CreateReferenceProject` | consequential | Creates the whole model |
+
+- **Routine** commands may be committed without a preview, and the commit still validates fully. **Consequential** commands require a preview and a confirmation bound to it (§5).
+- A no-op never requires confirmation ([D045](../product/decisions/D045-no-op-commits.md)).
+- Every preview and commit result records the table version. Changing the table, for example once professional approvals exist and must make some routine edits consequential, means publishing a new version and updating this section.
+
 ## 5. Change protocol
 
 1. Receive typed command with idempotency key, actor, `base_revision_id`, and arguments.

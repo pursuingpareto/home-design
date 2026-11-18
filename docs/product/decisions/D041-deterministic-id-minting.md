@@ -2,7 +2,8 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-18  
-**Scope:** How the server creates IDs for entities, revisions, and operations produced by a command. Closes gap M2. IDs remain opaque UUIDs ([D026](D026-canonical-units-identity-persistence.md)).
+**Scope:** How the server creates IDs for entities, revisions, and operations produced by a command. Closes gap M2. IDs remain opaque UUIDs ([D026](D026-canonical-units-identity-persistence.md)).  
+**Amended by:** [D044](D044-undo-to-revision.md) — `UndoToRevision` restores records with their original IDs, an exception to "re-added keys get new IDs".
 
 ## Decision
 

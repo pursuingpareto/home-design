@@ -2,7 +2,8 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-18  
-**Scope:** Domain validation of `Level` records in VS-01 snapshots and command candidates. Completes the bounds left open by [D032](D032-vs01-numeric-bounds.md), using the `story_height_m` field from [D033](D033-level-story-height.md).
+**Scope:** Domain validation of `Level` records in VS-01 snapshots and command candidates. Completes the bounds left open by [D032](D032-vs01-numeric-bounds.md), using the `story_height_m` field from [D033](D033-level-story-height.md).  
+**Amended by:** [D043](D043-vs01-command-set.md) — `SetLevelElevations` is renamed `SetStoryHeights`; the rules are unchanged.
 
 ## Decision
 

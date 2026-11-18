@@ -1,10 +1,10 @@
 # Current project status
 
-**As of 2026-11-18:** Specification work through D042. First application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
+**As of 2026-11-18:** Specification work through D045. First application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
 
 ## Complete
 
-- Product decisions D001–D042.
+- Product decisions D001–D045.
 - Architecture v0.2 drafts (entity schemas remain engineering detail, not construction rules).
 - VS-01 scope and acceptance criteria.
 - Reference House 001 VS-01 golden snapshot and `vs01-post-beam-1` generation rules (D025).
@@ -26,5 +26,6 @@
 ## Incomplete
 
 - Hosting, identity provider, and production operations.
-- Executable task files beyond `MODEL-001`.
+- `MODEL-003` task file ready (all proposals approved: D043–D045; interfaces.md §2–4 and §7.1; dependencies.md §4.1). Gap M5 and all P1 gaps are closed. Implementation is blocked on `TIMBER-001`, which is not yet drafted.
+- Task files beyond `MODEL-003`.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

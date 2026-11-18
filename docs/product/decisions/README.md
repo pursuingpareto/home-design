@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D042. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D045. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -42,7 +42,10 @@
 - D040: [`SetMemberSection` changes a role default](D040-setmembersection-role-default.md) — sets one role's section in `member_defaults` and regenerates that role; consequential; no per-member overrides in VS-01.
 - D041: [Deterministic ID minting from the command](D041-deterministic-id-minting.md) — UUIDv5 over canonical `[purpose, project, actor, command_id, creation_key]`; preview equals commit; replay is deterministic; re-added keys get new IDs.
 - D042: [Stable grid-line identities and generation keys](D042-stable-grid-line-ids.md) — `x_lines`/`y_lines` of `{id, fraction}` with IDs `x<n>`/`y<n>`; keys such as `frame/x0/y1/level-0/post` and `frame/axis-x/y0/x0-x1/plane-L1/beam`; amends D025/D030/D032/D037 wording.
+- D043: [VS-01 command set and arguments](D043-vs01-command-set.md) — strict args for `CreateReferenceProject`, `SetFootprintDimensions`, `SetStoryHeights` (renamed from `SetLevelElevations`), `SetGableRoofParameters`, `SetMemberSection`, `SetTimberGrid` (full replacement, interfaces.md §2.1), `AddSection`.
+- D044: [Undo and redo with `UndoToRevision`](D044-undo-to-revision.md) — new revision equal to the target's content, linear history, original IDs restored (exception to D041), validated against current rules.
+- D045: [No-op commands create no revision](D045-no-op-commits.md) — a preview has `revision_id: null` and no confirmation; the commit returns 200 with the current head; the attempt is still logged.
 
-**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D042. Do not reopen D001–D042 to accommodate implementation shortcuts.
+**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D045. Do not reopen D001–D045 to accommodate implementation shortcuts.
 
 See [requirements](../requirements.md) for functional implications and [architecture](../../architecture/overview.md) for provisional implementation choices.

@@ -1,6 +1,7 @@
 # Next steps
 
-1. Close the remaining P1 gap before `TIMBER-001` and `MODEL-003`: command argument schemas (including whether VS-01 needs commands to add sections or change role materials). Section and material defaults (D039) `SetMemberSection` semantics (D040), ID minting (D041), and grid-line identity (D042) are closed.
-2. Then write and implement `TIMBER-001` (deterministic post/beam generator plus generation-rule conformance checks, the main `MODEL-001` limitation) and `MODEL-003` (typed operation engine).
+1. Draft and implement `TIMBER-001`: the deterministic `vs01-post-beam-1` generator (D039 member defaults, D042 line-based keys) and the generation-rule conformance check (the main `MODEL-001` limitation).
+2. Implement [`MODEL-003`](tasks/MODEL-003.md) (ready; all P1 gaps, including M5, are closed).
+3. Then `MODEL-004` (revision persistence, idempotency, preview storage, no-op logging per D045).
 
-Unresolved questions that should not reopen D025–D042: exact CAD kernel, Vermont code editions, datasets, hosting, and drawing export formats.
+Unresolved questions that should not reopen D025–D045: exact CAD kernel, Vermont code editions, datasets, hosting, and drawing export formats.
