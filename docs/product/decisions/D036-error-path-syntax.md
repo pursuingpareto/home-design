@@ -2,7 +2,8 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-18  
-**Scope:** The `path` field of error details ([interfaces.md §7](../../architecture/interfaces.md#7-error-contract)) for snapshot validation and command arguments. Approved from [MODEL-001](../../implementation/tasks/MODEL-001.md) §9, item 2.
+**Scope:** The `path` field of error details ([interfaces.md §7](../../architecture/interfaces.md#7-error-contract)) for snapshot validation and command arguments. Approved from [MODEL-001](../../implementation/tasks/MODEL-001.md) §9, item 2.  
+**Amended by:** [D042](D042-stable-grid-line-ids.md) — grid fractions are now `x_lines[k].fraction` / `y_lines[k].fraction`; values unchanged.
 
 ## Decision
 

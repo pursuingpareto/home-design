@@ -133,6 +133,21 @@
           "title": "Kind",
           "type": "string"
         },
+        "member_defaults": {
+          "additionalProperties": {
+            "$ref": "#/$defs/RoleDefault"
+          },
+          "propertyNames": {
+            "enum": [
+              "POST",
+              "BEAM",
+              "FLOOR_JOIST",
+              "RAFTER"
+            ]
+          },
+          "title": "Member Defaults",
+          "type": "object"
+        },
         "member_ids": {
           "items": {
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
@@ -153,7 +168,8 @@
         "kind",
         "grid_id",
         "member_ids",
-        "generation_mode"
+        "generation_mode",
+        "member_defaults"
       ],
       "title": "FrameSystem",
       "type": "object"
@@ -333,6 +349,28 @@
       "title": "Material",
       "type": "object"
     },
+    "RoleDefault": {
+      "additionalProperties": false,
+      "description": "Section and material assigned to every generated member of one role (D039).",
+      "properties": {
+        "material_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Material Id",
+          "type": "string"
+        },
+        "section_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Section Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "section_id",
+        "material_id"
+      ],
+      "title": "RoleDefault",
+      "type": "object"
+    },
     "Section": {
       "additionalProperties": false,
       "properties": {
@@ -403,18 +441,18 @@
           "title": "Schema Version",
           "type": "integer"
         },
-        "x_fractions": {
+        "x_lines": {
           "items": {
-            "type": "number"
+            "$ref": "#/$defs/XGridLine"
           },
-          "title": "X Fractions",
+          "title": "X Lines",
           "type": "array"
         },
-        "y_fractions": {
+        "y_lines": {
           "items": {
-            "type": "number"
+            "$ref": "#/$defs/YGridLine"
           },
-          "title": "Y Fractions",
+          "title": "Y Lines",
           "type": "array"
         }
       },
@@ -422,8 +460,8 @@
         "id",
         "schema_version",
         "kind",
-        "x_fractions",
-        "y_fractions",
+        "x_lines",
+        "y_lines",
         "generation_rule_version"
       ],
       "title": "TimberGrid",
@@ -502,6 +540,48 @@
         "generation_key"
       ],
       "title": "TimberMember",
+      "type": "object"
+    },
+    "XGridLine": {
+      "additionalProperties": false,
+      "description": "A grid line across X with a stable identity (D042).",
+      "properties": {
+        "fraction": {
+          "title": "Fraction",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^x(0|[1-9][0-9]{0,8})$",
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "fraction"
+      ],
+      "title": "XGridLine",
+      "type": "object"
+    },
+    "YGridLine": {
+      "additionalProperties": false,
+      "description": "A grid line across Y with a stable identity (D042).",
+      "properties": {
+        "fraction": {
+          "title": "Fraction",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^y(0|[1-9][0-9]{0,8})$",
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "fraction"
+      ],
+      "title": "YGridLine",
       "type": "object"
     }
   },

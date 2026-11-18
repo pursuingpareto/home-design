@@ -46,8 +46,8 @@ This matches the Reference House 001 fixture (D025). Supporting several building
 | `Footprint` | `id`, `origin_m: [x,y]`, `width_m`, `depth_m`, `rotation_rad` | Rectangle only; dimensions positive and bounded |
 | `Level` | `id`, `index`, `elevation_m`, `story_height_m` | Two ordered levels in VS-01; unique index; elevations strictly increasing; `story_height_m` > 0 and, except on the top level, equal to the next level's elevation minus this one (1e-6 m); top level's story height locates the eave plate ([D033](../product/decisions/D033-level-story-height.md)) |
 | `GableRoof` | `id`, `ridge_axis: X|Y`, `pitch_rad`, `eave_overhang_m`, `ridge_offset_m` | Supported roof domain only; derived from footprint and upper level |
-| `TimberGrid` | `id`, `x_fractions[]`, `y_fractions[]`, `generation_rule_version` | Sorted fractions from 0 to 1; endpoints present; regular grid VS-01 |
-| `FrameSystem` | `id`, `grid_id`, `member_ids[]`, `generation_mode` | Member IDs reference existing `TimberMember` records |
+| `TimberGrid` | `id`, `x_lines[]`, `y_lines[]`, `generation_rule_version` | Each line is `{id, fraction}` with a stable line ID (`x<n>` / `y<n>`, unique per axis); lines strictly ascending by fraction from 0 to 1; regular grid VS-01 ([D042](../product/decisions/D042-stable-grid-line-ids.md)) |
+| `FrameSystem` | `id`, `grid_id`, `member_ids[]`, `generation_mode`, `member_defaults` | Member IDs reference existing `TimberMember` records; `member_defaults` maps each member role to `{section_id, material_id}` and must cover every role the generation rule generates ([D039](../product/decisions/D039-frame-member-defaults.md)) |
 | `TimberMember` | `id`, `member_role`, `start_m`, `end_m`, `section_id`, `material_id`, `generation_key` | Nonzero length; section/material exist; deterministic generation key |
 | `Section` | `id`, `shape`, `actual_width_m`, `actual_depth_m`, `nominal_label` | Rectangular only in VS-01; actual dimensions positive |
 | `Material` | `id`, `name`, `species?`, `grade?`, `density_kg_m3?`, `provenance?` | Unknown grade and properties explicitly nullable; not assumed |
@@ -64,7 +64,7 @@ The VS-01 golden snapshot is [Reference House 001](../reference-projects/vermont
 
 ## 5. Identity and deterministic regeneration
 
-Generated framing uses a stable `generation_key` such as `frame/grid-x-1/grid-y-2/level-0/post`. On regeneration, preserve the ID when the semantic generation key still exists; create a new ID for new keys; retire IDs for removed keys. Never reassign a retired ID to a different member. The generated member's geometry and attributes may change without changing its ID. Explicitly distinguish user-authored and generated entities and record rule versions. A change that invalidates a generation key reports an entity removal and dependent artifact invalidation.
+Generated framing uses a stable `generation_key` built from stable grid-line IDs, such as `frame/x1/y2/level-0/post` ([D042](../product/decisions/D042-stable-grid-line-ids.md)). On regeneration, preserve the ID when the semantic generation key still exists; create a new ID for new keys, derived deterministically from the command ([D041](../product/decisions/D041-deterministic-id-minting.md)); retire IDs for removed keys. Never reassign a retired ID to a different member. The generated member's geometry and attributes may change without changing its ID. Explicitly distinguish user-authored and generated entities and record rule versions. In VS-01 every member is generated and takes its section and material from its role's `FrameSystem.member_defaults` (D039); per-member overrides are deferred ([D040](../product/decisions/D040-setmembersection-role-default.md)). A change that invalidates a generation key reports an entity removal and dependent artifact invalidation.
 
 ## 6. Validation levels
 
@@ -73,8 +73,8 @@ Validation runs in four ordered stages ([D035](../product/decisions/D035-validat
 | Stage | Checks | Top-level code |
 |---|---|---|
 | 1 Syntactic | Required fields present, no unknown fields, types, enums, schema versions, finite numbers, canonical lowercase UUIDs (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys, timestamps | `VALIDATION_FAILED` |
-| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; unique generation keys; `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030) | `VALIDATION_FAILED` |
-| 3 Geometric | Positive, finite dimensions; pitch in (0, π/2); overhang ≥ 0; grid fractions strictly ascending with endpoints 0 and 1; strictly increasing level elevations; story-height consistency (D033); datums: `Footprint.origin_m = [0, 0]` (D031) and Level 0 elevation `0` (D034); nonzero member axes | `VALIDATION_FAILED` |
+| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; `member_defaults` references resolve and cover every role the rule generates (D039); unique generation keys; `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030) | `VALIDATION_FAILED` |
+| 3 Geometric | Positive, finite dimensions; pitch in (0, π/2); overhang ≥ 0; grid line fractions strictly ascending with endpoints 0 and 1; strictly increasing level elevations; story-height consistency (D033); datums: `Footprint.origin_m = [0, 0]` (D031) and Level 0 elevation `0` (D034); nonzero member axes | `VALIDATION_FAILED` |
 | 4 Domain | Supported VS-01 configurations only: D031 unsupported values; D032 and D034 bounds, checked on the full candidate snapshot (so a footprint change can be rejected for the bay lengths it produces); exactly two levels; supported generation rule and mode; member roles allowed by that rule. Never asserts structural adequacy or code compliance | `UNSUPPORTED_CONFIGURATION` |
 
 Authorization (the caller's rights on the project or revision) is checked by the API layer before validation (`UNAUTHORIZED`, `FORBIDDEN`). It is not a stage of the model validator.
@@ -97,6 +97,7 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `INVALID_ENUM` | 1 | Value outside the schema's enumeration |
 | `INVALID_UUID` | 1 | Not a lowercase, hyphenated UUID (D030) |
 | `INVALID_TIMESTAMP` | 1 | Not an RFC 3339 UTC timestamp |
+| `INVALID_LINE_ID` | 1 | Grid line ID is not `x<n>` in `x_lines` or `y<n>` in `y_lines` (D042) |
 | `INTEGER_OUT_OF_RANGE` | 1 | Integer field non-integral or outside ±(2⁵³ − 1) (D029) |
 | `UNKNOWN_KIND` | 1 | `kind` is not a VS-01 entity kind |
 | `UNSUPPORTED_SCHEMA_VERSION` | 1 | `model_schema_version` or record `schema_version` is not supported |
@@ -108,6 +109,8 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `MEMBER_SET_MISMATCH` | 2 | `FrameSystem.member_ids` differs from the set of `TimberMember` records |
 | `DUPLICATE_GENERATION_KEY` | 2 | Two members share a `generation_key` |
 | `ORDER_VIOLATION` | 2 | An array with a required order is out of order (D030) |
+| `DUPLICATE_LINE_ID` | 2 | A grid line ID repeats within an axis; `path` is each later occurrence's `id`, `related_paths` the first occurrence's (D042, D037) |
+| `MISSING_ROLE_DEFAULT` | 2 | `FrameSystem.member_defaults` lacks an entry for a role the generation rule generates (D039) |
 | `OUT_OF_RANGE` | 3 | Physically meaningless value: non-positive length, pitch outside (0, π/2), negative overhang |
 | `NOT_STRICTLY_ASCENDING` | 3 | Grid fractions or level elevations not strictly increasing |
 | `GRID_ENDPOINT_MISSING` | 3 | Grid fractions do not start at 0 and end at 1 |

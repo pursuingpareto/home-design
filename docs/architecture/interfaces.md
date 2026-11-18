@@ -26,9 +26,9 @@ No module may write another module's private tables. Cross-module communication 
 }
 ```
 
-Actor identity is derived from authenticated server context, not trusted from the client body. `command_id` is an idempotency key scoped to project and actor. A repeated key with a different payload (compared in canonical form, [D029](../product/decisions/D029-canonical-json-rfc8785.md)) returns `IDEMPOTENCY_CONFLICT`.
+Actor identity is derived from authenticated server context, not trusted from the client body. `command_id` is an idempotency key scoped to project and actor. IDs a command creates (entities, revision, operation) are UUIDv5 values derived from the project, actor, `command_id`, and a per-record creation key, so a preview reports exactly the IDs its commit will create ([D041](../product/decisions/D041-deterministic-id-minting.md)). A repeated key with a different payload (compared in canonical form, [D029](../product/decisions/D029-canonical-json-rfc8785.md)) returns `IDEMPOTENCY_CONFLICT`.
 
-VS-01 command set: `CreateReferenceProject`, `SetFootprintDimensions`, `SetLevelElevations`, `SetGableRoofParameters`, `SetTimberGrid`, `SetMemberSection` (only where supported), and `UndoToRevision` (if implemented; otherwise explicitly deferred). Commands use full typed arguments, not generic JSON patch paths.
+VS-01 command set: `CreateReferenceProject`, `SetFootprintDimensions`, `SetLevelElevations`, `SetGableRoofParameters`, `SetTimberGrid`, `SetMemberSection` (changes one role's section default in `FrameSystem.member_defaults` and regenerates that role's members; never a single member in VS-01, [D040](../product/decisions/D040-setmembersection-role-default.md)), and `UndoToRevision` (if implemented; otherwise explicitly deferred). Commands use full typed arguments, not generic JSON patch paths.
 
 ## 3. Preview contract
 
@@ -113,7 +113,7 @@ Stable codes: `VALIDATION_FAILED` (422), `UNSUPPORTED_CONFIGURATION` (422), `UNA
 
 Detail `code` values for model validation are cataloged in [building-model.md §6.1](building-model.md#61-detail-codes); each belongs to one validation stage, which determines whether the top-level code is `VALIDATION_FAILED` or `UNSUPPORTED_CONFIGURATION` ([D035](../product/decisions/D035-validation-stages-detail-codes.md)).
 
-Detail `path` syntax ([D036](../product/decisions/D036-error-path-syntax.md)): paths start at the root of the validated document (`""` is the whole document). Fields are joined with `.` (`args.width_m`, `building.footprint_id`), and keys that are not identifiers use `["…"]`. Snapshot entities are addressed by ID (`entities[<id>].width_m`), or by position (`entities[#12]`) when the ID is missing, malformed, or duplicated. Other arrays use zero-based indexes (`x_fractions[2]`).
+Detail `path` syntax ([D036](../product/decisions/D036-error-path-syntax.md)): paths start at the root of the validated document (`""` is the whole document). Fields are joined with `.` (`args.width_m`, `building.footprint_id`), and keys that are not identifiers use `["…"]`. Snapshot entities are addressed by ID (`entities[<id>].width_m`), or by position (`entities[#12]`) when the ID is missing, malformed, or duplicated. Other arrays use zero-based indexes (`x_lines[2].fraction`).
 
 A detail may include an optional `related_paths` array listing other fields that contribute to the issue, such as the footprint width behind a bay-length violation. Entries are unique, sorted, and never repeat `path`, and the array is left out when empty ([D037](../product/decisions/D037-error-related-paths.md)). Each detail is `{"path", "code", "value"?, "related_paths"?}`; `message` text on the envelope is human-readable and not part of the contract.
 

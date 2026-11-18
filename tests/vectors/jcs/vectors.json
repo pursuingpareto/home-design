@@ -147,8 +147,8 @@
     {
       "name": "reference-house-001",
       "source": "docs/reference-projects/vermont-timber-house/fixture.snapshot.json",
-      "canonical_bytes": 23085,
-      "fingerprint": "sha256:f0d8e036cbbef10508cccf7c1204bd1a4098c19afb8c7ddc36c37d314b9f59bc"
+      "canonical_bytes": 23404,
+      "fingerprint": "sha256:588f54c43c6dd0feb437995b406f779bcff591ba03c2e8b46222439607277b08"
     }
   ]
 }

@@ -2,7 +2,8 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-18  
-**Scope:** Domain validation of snapshots and command candidates in VS-01. Level-height bounds are **not** covered here; they wait on the meaning of `Level.clear_height_m`.
+**Scope:** Domain validation of snapshots and command candidates in VS-01. Level-height bounds are **not** covered here; they wait on the meaning of `Level.clear_height_m`.  
+**Amended by:** [D042](D042-stable-grid-line-ids.md) — grid fractions are now `x_lines[k].fraction` / `y_lines[k].fraction`; values unchanged.
 
 ## Decision
 

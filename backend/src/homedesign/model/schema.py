@@ -26,6 +26,9 @@ from .paths import UUID_PATTERN
 from .vs01 import MAX_SAFE_INTEGER, MODEL_SCHEMA_VERSION, RECORD_SCHEMA_VERSION
 
 TIMESTAMP_PATTERN = r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$"
+# D042: stable grid-line IDs, x<n> / y<n> without leading zeros.
+X_LINE_ID_PATTERN = r"^x(0|[1-9][0-9]{0,8})$"
+Y_LINE_ID_PATTERN = r"^y(0|[1-9][0-9]{0,8})$"
 _TIMESTAMP_RE = re.compile(TIMESTAMP_PATTERN)
 
 
@@ -84,6 +87,7 @@ Timestamp = Annotated[
 ]
 Point2 = Annotated[list[float], Field(min_length=2, max_length=2)]
 Point3 = Annotated[list[float], Field(min_length=3, max_length=3)]
+MemberRole = Literal["POST", "BEAM", "FLOOR_JOIST", "RAFTER"]
 
 
 class _Strict(BaseModel):
@@ -127,11 +131,32 @@ class GableRoof(_Record):
     ridge_offset_m: float
 
 
+class XGridLine(_Strict):
+    """A grid line across X with a stable identity (D042)."""
+
+    id: Annotated[str, StringConstraints(pattern=X_LINE_ID_PATTERN)]
+    fraction: float
+
+
+class YGridLine(_Strict):
+    """A grid line across Y with a stable identity (D042)."""
+
+    id: Annotated[str, StringConstraints(pattern=Y_LINE_ID_PATTERN)]
+    fraction: float
+
+
 class TimberGrid(_Record):
     kind: Literal["TimberGrid"]
-    x_fractions: list[float]
-    y_fractions: list[float]
+    x_lines: list[XGridLine]
+    y_lines: list[YGridLine]
     generation_rule_version: str
+
+
+class RoleDefault(_Strict):
+    """Section and material assigned to every generated member of one role (D039)."""
+
+    section_id: Uuid
+    material_id: Uuid
 
 
 class FrameSystem(_Record):
@@ -139,11 +164,12 @@ class FrameSystem(_Record):
     grid_id: Uuid
     member_ids: list[Uuid]
     generation_mode: str
+    member_defaults: dict[MemberRole, RoleDefault]
 
 
 class TimberMember(_Record):
     kind: Literal["TimberMember"]
-    member_role: Literal["POST", "BEAM", "FLOOR_JOIST", "RAFTER"]
+    member_role: MemberRole
     start_m: Point3
     end_m: Point3
     section_id: Uuid

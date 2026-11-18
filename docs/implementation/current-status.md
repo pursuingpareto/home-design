@@ -1,10 +1,10 @@
 # Current project status
 
-**As of 2026-11-18:** Specification work through D038. First application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
+**As of 2026-11-18:** Specification work through D042. First application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
 
 ## Complete
 
-- Product decisions D001–D038.
+- Product decisions D001–D042.
 - Architecture v0.2 drafts (entity schemas remain engineering detail, not construction rules).
 - VS-01 scope and acceptance criteria.
 - Reference House 001 VS-01 golden snapshot and `vs01-post-beam-1` generation rules (D025).
@@ -18,7 +18,10 @@
 - `Level.clear_height_m` renamed to `story_height_m`, with a consistency check against elevations (D033).
 - Level datum (Level 0 at elevation 0) and story-height bounds of 8'–14' (D034).
 - Validation stages and detail-code catalog (D035); error path syntax (D036); `related_paths` (D037); required keys and catalog records (D038).
-- `MODEL-001` implemented: Pydantic schema, four-stage validator, RFC 8785 canonicalization and fingerprints, committed JSON Schema, cross-language JCS vectors; 114 tests passing.
+- `MODEL-001` implemented: Pydantic schema, four-stage validator, RFC 8785 canonicalization and fingerprints, committed JSON Schema, cross-language JCS vectors; 126 tests passing.
+- Per-role section and material defaults on `FrameSystem` (D039), applied to the fixture, schema, validator, and tests; `SetMemberSection` changes a role default (D040).
+- Deterministic UUIDv5 ID minting from the command (D041).
+- Stable grid-line IDs and line-based generation keys (D042), applied to the fixture, rule, schema, validator, and tests.
 
 ## Incomplete
 

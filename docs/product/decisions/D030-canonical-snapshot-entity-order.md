@@ -2,7 +2,8 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-18  
-**Scope:** The semantic snapshot as input to fingerprints, comparisons, and determinism tests. Builds on [D029](D029-canonical-json-rfc8785.md).
+**Scope:** The semantic snapshot as input to fingerprints, comparisons, and determinism tests. Builds on [D029](D029-canonical-json-rfc8785.md).  
+**Amended by:** [D042](D042-stable-grid-line-ids.md) — grid fractions are now `x_lines[k].fraction` / `y_lines[k].fraction`; values unchanged.
 
 ## Decision
 

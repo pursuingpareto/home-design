@@ -69,6 +69,18 @@ def _set(entity_id, key, value):
     return lambda d: _find(d, entity_id).__setitem__(key, value)
 
 
+def _grid_fractions(axis, fractions):
+    def mutate(d):
+        for line, fraction in zip(_find(d, GRID["id"])[axis], fractions, strict=True):
+            line["fraction"] = fraction
+
+    return mutate
+
+
+def _line_id(axis, k, new_id):
+    return lambda d: _find(d, GRID["id"])[axis][k].__setitem__("id", new_id)
+
+
 def _swap_member_ids(d):
     ids = _find(d, FRAME["id"])["member_ids"]
     ids[0], ids[1] = ids[1], ids[0]
@@ -112,7 +124,7 @@ CASES: list[Case] = [
     doc_case("04-width-30m", _set(FOOTPRINT["id"], "width_m", 30), UC,
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FOOTPRINT, "width_m"))]),
     doc_case("05-width-23m-bays-too-long", _set(FOOTPRINT["id"], "width_m", 23), UC,
-             [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(GRID, "x_fractions"), (epath(FOOTPRINT, "width_m"),))], only=True),
+             [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(GRID, "x_lines"), (epath(FOOTPRINT, "width_m"),))], only=True),
     doc_case("06-dangling-section", _set(MEMBERS[0]["id"], "section_id", NEW_ID), VF,
              [Expect(codes.DANGLING_REFERENCE, epath(MEMBERS[0], "section_id"))], only=True),
     doc_case("07-section-points-to-material", _set(MEMBERS[0]["id"], "section_id", MATERIAL["id"]), VF,
@@ -123,10 +135,10 @@ CASES: list[Case] = [
              [Expect(codes.DUPLICATE_ID, f"entities[#{LAST}]", (f"entities[#{MATERIAL_INDEX}]",))], only=True),
     text_case("10-uppercase-uuid", lambda b: b.replace(SECTION_8X8["id"].encode(), UPPER_SECTION_ID.encode()), VF,
               [Expect(codes.INVALID_UUID, f"entities[#{SECTION_INDEX}].id")]),
-    doc_case("11-fractions-out-of-order", _set(GRID["id"], "x_fractions", [0.0, 2 / 3, 1 / 3, 1.0]), VF,
-             [Expect(codes.NOT_STRICTLY_ASCENDING, epath(GRID, "x_fractions", 2))], only=True),
-    doc_case("12-missing-grid-endpoint", _set(GRID["id"], "y_fractions", [0.0, 0.5]), VF,
-             [Expect(codes.GRID_ENDPOINT_MISSING, epath(GRID, "y_fractions"))], only=True),
+    doc_case("11-fractions-out-of-order", _grid_fractions("x_lines", [0.0, 2 / 3, 1 / 3, 1.0]), VF,
+             [Expect(codes.NOT_STRICTLY_ASCENDING, epath(GRID, "x_lines", 2, "fraction"))], only=True),
+    doc_case("12-missing-grid-endpoint", lambda d: _find(d, GRID["id"])["y_lines"].pop(), VF,
+             [Expect(codes.GRID_ENDPOINT_MISSING, epath(GRID, "y_lines"))], only=True),
     doc_case("13-model-schema-version-2", lambda d: d.__setitem__("model_schema_version", 2), VF,
              [Expect(codes.UNSUPPORTED_SCHEMA_VERSION, "model_schema_version")], only=True),
     doc_case("14-unknown-field", _set(FOOTPRINT["id"], "color", "red"), VF,
@@ -190,6 +202,34 @@ CASES: list[Case] = [
     doc_case("d037-elevations-not-ascending", _set(LEVEL1["id"], "elevation_m", 0.0), VF,
              [Expect(codes.NOT_STRICTLY_ASCENDING, epath(LEVEL1, "elevation_m"), (epath(LEVEL0, "elevation_m"),)),
               Expect(codes.STORY_HEIGHT_MISMATCH, epath(LEVEL0, "story_height_m"), (epath(LEVEL1, "elevation_m"),))]),
+    # D039: per-role member defaults on FrameSystem
+    doc_case("d039-dangling-default-section",
+             lambda d: _find(d, FRAME["id"])["member_defaults"]["POST"].__setitem__("section_id", NEW_ID), VF,
+             [Expect(codes.DANGLING_REFERENCE, epath(FRAME, "member_defaults", "POST", "section_id"))], only=True),
+    doc_case("d039-default-material-wrong-kind",
+             lambda d: _find(d, FRAME["id"])["member_defaults"]["BEAM"].__setitem__("material_id", SECTION_8X8["id"]), VF,
+             [Expect(codes.WRONG_REFERENCE_KIND, epath(FRAME, "member_defaults", "BEAM", "material_id"))], only=True),
+    doc_case("d039-missing-beam-default", lambda d: _find(d, FRAME["id"])["member_defaults"].pop("BEAM"), VF,
+             [Expect(codes.MISSING_ROLE_DEFAULT, epath(FRAME, "member_defaults"))], only=True),
+    doc_case("d039-invalid-role-key",
+             lambda d: _find(d, FRAME["id"])["member_defaults"].__setitem__("COLUMN", dict(FRAME["member_defaults"]["POST"])), VF,
+             [Expect(codes.INVALID_ENUM, epath(FRAME, "member_defaults", "COLUMN"))], only=True),
+    doc_case("d039-member-defaults-absent", lambda d: _find(d, FRAME["id"]).pop("member_defaults"), VF,
+             [Expect(codes.MISSING_FIELD, epath(FRAME, "member_defaults"))], only=True),
+    doc_case("d039-unused-role-default-allowed",
+             lambda d: _find(d, FRAME["id"])["member_defaults"].__setitem__("FLOOR_JOIST", dict(FRAME["member_defaults"]["BEAM"])),
+             None, [], only=True),
+    doc_case("d039-incomplete-role-default",
+             lambda d: _find(d, FRAME["id"])["member_defaults"]["POST"].pop("material_id"), VF,
+             [Expect(codes.MISSING_FIELD, epath(FRAME, "member_defaults", "POST", "material_id"))], only=True),
+    # D042: stable grid-line IDs
+    doc_case("d042-wrong-axis-letter", _line_id("x_lines", 1, "y1"), VF,
+             [Expect(codes.INVALID_LINE_ID, epath(GRID, "x_lines", 1, "id"))], only=True),
+    doc_case("d042-leading-zero", _line_id("y_lines", 1, "y01"), VF,
+             [Expect(codes.INVALID_LINE_ID, epath(GRID, "y_lines", 1, "id"))], only=True),
+    doc_case("d042-duplicate-line-id", _line_id("x_lines", 2, "x1"), VF,
+             [Expect(codes.DUPLICATE_LINE_ID, epath(GRID, "x_lines", 2, "id"), (epath(GRID, "x_lines", 1, "id"),))], only=True),
+    doc_case("d042-line-ids-need-not-be-sequential", _line_id("x_lines", 1, "x9"), None, [], only=True),
     # D036 path forms: quoted keys
     doc_case("d036-quoted-entity-key", _set(FOOTPRINT["id"], "a.b", 1), VF,
              [Expect(codes.UNKNOWN_FIELD, f'entities[{FOOTPRINT["id"]}]["a.b"]')], only=True),
@@ -218,6 +258,16 @@ def test_mutation(case: Case):
 def test_every_catalog_code_is_exercised():
     exercised = {e.code for case in CASES for e in case.expect}
     assert exercised == set(codes.CATALOG)
+
+
+def test_missing_role_defaults_report_each_role():
+    doc = fresh_fixture()
+    _find(doc, FRAME["id"])["member_defaults"] = {}
+    result = validate_value(doc)
+    assert [(i.code, i.path, i.value) for i in result.issues] == [
+        (codes.MISSING_ROLE_DEFAULT, epath(FRAME, "member_defaults"), "BEAM"),
+        (codes.MISSING_ROLE_DEFAULT, epath(FRAME, "member_defaults"), "POST"),
+    ]
 
 
 def test_issue_values_are_finite_scalars_only():

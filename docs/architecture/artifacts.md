@@ -124,7 +124,7 @@ Historical `GET` with an explicit `revision_id` returns the artifact **for that 
       "posts": [
         {
           "member_id": "…",
-          "generation_key": "frame/x-0/y-0/level-0/post",
+          "generation_key": "frame/x0/y0/level-0/post",
           "xy_m": [0.0, 0.0],
           "section_id": "…"
         }
@@ -139,7 +139,7 @@ Historical `GET` with an explicit `revision_id` returns the artifact **for that 
       "beams": [
         {
           "member_id": "…",
-          "generation_key": "frame/axis-x/y-0/bay-0/plane-L1/beam",
+          "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/beam",
           "start_xy_m": [0.0, 0.0],
           "end_xy_m": [3.6576, 0.0],
           "section_id": "…"
@@ -209,7 +209,7 @@ This is a **display primitive** list. The client (or a later adapter) tessellate
   "members": [
     {
       "member_id": "…",
-      "generation_key": "frame/x-0/y-0/level-0/post",
+      "generation_key": "frame/x0/y0/level-0/post",
       "role": "POST",
       "primitive": "oriented_box",
       "axis_start_m": [0.0, 0.0, 0.0],
@@ -282,7 +282,7 @@ Box orientation:
   "members": [
     {
       "member_id": "…",
-      "generation_key": "frame/axis-x/y-0/bay-0/plane-L1/beam",
+      "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/beam",
       "role": "BEAM",
       "nominal_section": "8x12",
       "section_id": "…",

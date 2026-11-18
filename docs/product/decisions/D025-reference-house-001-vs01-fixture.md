@@ -3,7 +3,8 @@
 **Status:** Confirmed  
 **Date:** 2026-11-16  
 **Scope:** VS-01 integration fixture only  
-**Amended by:** [D033](D033-level-story-height.md) — "clear height" below means **story height** (`Level.story_height_m`); values unchanged.
+**Amended by:** [D033](D033-level-story-height.md) — "clear height" below means **story height** (`Level.story_height_m`); values unchanged.  
+**Amended by:** [D042](D042-stable-grid-line-ids.md) — grid lines carry stable IDs (`x0`–`x3`, `y0`–`y2`) and generation keys use them; geometry and member IDs unchanged.
 
 ## Decision
 

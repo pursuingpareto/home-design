@@ -16,6 +16,7 @@ Initial graph example:
 Footprint.width/depth -> TimberGrid.coordinates -> TimberMember.axes
 Footprint.width/depth -> RoofGeometry
 Level.elevation -> TimberMember.axes
+FrameSystem.member_defaults -> TimberMember.section_id/material_id (D039, D040)
 TimberMember.axes + Section -> timber_schedule
 TimberMember.axes + Section -> mesh3d
 TimberMember.axes -> plan2d
@@ -72,7 +73,7 @@ An approval records the reviewed revision, signer identity/authorization, review
 | Submit same command twice | Same committed outcome/idempotent response; no duplicate revision |
 | Confirm old preview after another edit | `REVISION_CONFLICT`; no commit |
 | Old worker finishes after new worker | Old result remains superseded; UI shows only new current result |
-| Remove grid bay | Retire removed generated member keys, preserve surviving member IDs, regenerate inventory |
+| Remove grid bay | Retire removed generated member keys, preserve surviving member IDs, regenerate inventory (stable line IDs make this hold for interior bays, [D042](../product/decisions/D042-stable-grid-line-ids.md)) |
 | Missing unit prices | Estimate `UNAVAILABLE` or partial with clear coverage; never $0 total by default ([artifacts.md](artifacts.md) §8) |
 
 ## 9. Observability

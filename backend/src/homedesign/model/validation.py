@@ -18,7 +18,7 @@ from pydantic import ValidationError
 from . import codes, vs01
 from .codes import Stage
 from .paths import UUID_PATTERN, EntityAddresser, Step, render
-from .schema import ENTITY_KINDS, TIMESTAMP_PATTERN, Snapshot
+from .schema import ENTITY_KINDS, TIMESTAMP_PATTERN, X_LINE_ID_PATTERN, Y_LINE_ID_PATTERN, Snapshot
 from .strict_json import DuplicateKeyDict, NonFinite, check_depth, parse
 
 
@@ -200,6 +200,7 @@ _MESSAGES = {
     codes.INVALID_ENUM: "Value is not one of the allowed values.",
     codes.INVALID_UUID: "Must be a lowercase, hyphenated UUID.",
     codes.INVALID_TIMESTAMP: "Must be an RFC 3339 UTC timestamp ending in Z.",
+    codes.INVALID_LINE_ID: "Grid line IDs must be x<n> in x_lines and y<n> in y_lines (D042).",
     codes.INTEGER_OUT_OF_RANGE: "Must be an integer within ±(2^53 − 1).",
     codes.UNSUPPORTED_SCHEMA_VERSION: "Schema version is not supported.",
     codes.NON_FINITE_NUMBER: "Numbers must be finite.",
@@ -213,6 +214,10 @@ def _pydantic_issue(error: dict[str, Any], addresser: EntityAddresser) -> tuple[
     # Drop the discriminator tag that Pydantic inserts after an entity index.
     if len(loc) >= 3 and loc[0] == "entities" and isinstance(loc[1], int) and loc[2] in ENTITY_KINDS:
         del loc[2]
+    # Pydantic marks errors in a mapping's key with a trailing "[key]" step.
+    invalid_key = bool(loc) and loc[-1] == "[key]"
+    if invalid_key:
+        del loc[-1]
     raw_input = error.get("input")
     if error_type in ("union_tag_invalid", "union_tag_not_found"):
         loc.append("kind")
@@ -224,7 +229,9 @@ def _pydantic_issue(error: dict[str, Any], addresser: EntityAddresser) -> tuple[
             code = codes.INVALID_UUID
         elif pattern == TIMESTAMP_PATTERN:
             code = codes.INVALID_TIMESTAMP
-    if error_type == "literal_error" and loc and loc[-1] == "kind":
+        elif pattern in (X_LINE_ID_PATTERN, Y_LINE_ID_PATTERN):
+            code = codes.INVALID_LINE_ID
+    if error_type == "literal_error" and loc and loc[-1] == "kind" and not invalid_key:
         code = codes.UNKNOWN_KIND
     if code == codes.MISSING_FIELD and error_type == "missing":
         raw_input = None  # Pydantic reports the parent object as input
@@ -316,6 +323,34 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
         check_ref(idx.path(index, "grid_id"), frame.grid_id, "TimberGrid")
         for k, member_id in enumerate(frame.member_ids):
             check_ref(idx.path(index, "member_ids", k), member_id, "TimberMember")
+        # D039: per-role section and material defaults.
+        for role, default in frame.member_defaults.items():
+            check_ref(idx.path(index, "member_defaults", role, "section_id"), default.section_id, "Section")
+            check_ref(idx.path(index, "member_defaults", role, "material_id"), default.material_id, "Material")
+        grid_hit = idx.resolve(frame.grid_id, "TimberGrid")
+        if grid_hit is not None and grid_hit[1].generation_rule_version == vs01.SUPPORTED_GENERATION_RULE:
+            for role in sorted(vs01.RULE_MEMBER_ROLES - frame.member_defaults.keys()):
+                out.add(
+                    idx.path(index, "member_defaults"),
+                    codes.MISSING_ROLE_DEFAULT,
+                    f"member_defaults needs a {role} entry: {vs01.SUPPORTED_GENERATION_RULE} generates {role} members (D039).",
+                    role,
+                )
+    # D042: grid line IDs are unique per axis.
+    for index, grid in idx.of_kind("TimberGrid"):
+        for axis in ("x_lines", "y_lines"):
+            first_seen: dict[str, int] = {}
+            for k, line in enumerate(getattr(grid, axis)):
+                if line.id in first_seen:
+                    out.add(
+                        idx.path(index, axis, k, "id"),
+                        codes.DUPLICATE_LINE_ID,
+                        "Grid line ID repeats within the axis.",
+                        line.id,
+                        [idx.path(index, axis, first_seen[line.id], "id")],
+                    )
+                else:
+                    first_seen[line.id] = k
     for index, member in idx.of_kind("TimberMember"):
         check_ref(idx.path(index, "section_id"), member.section_id, "Section")
         check_ref(idx.path(index, "material_id"), member.material_id, "Material")
@@ -444,13 +479,13 @@ def _stage_geometric(snapshot: Snapshot) -> ValidationResult | None:
         out.add(idx.path(roof_loc, "eave_overhang_m"), codes.OUT_OF_RANGE, "Eave overhang must not be negative.", roof.eave_overhang_m)
 
     grid_loc, grid = r.grid
-    for axis in ("x_fractions", "y_fractions"):
-        fractions = getattr(grid, axis)
+    for axis in ("x_lines", "y_lines"):
+        fractions = [line.fraction for line in getattr(grid, axis)]
         if len(fractions) < 2 or fractions[0] != 0 or fractions[-1] != 1:
-            out.add(idx.path(grid_loc, axis), codes.GRID_ENDPOINT_MISSING, "Grid fractions must start at 0 and end at 1.")
+            out.add(idx.path(grid_loc, axis), codes.GRID_ENDPOINT_MISSING, "Grid line fractions must start at 0 and end at 1.")
         for k in range(1, len(fractions)):
             if not fractions[k] > fractions[k - 1]:
-                out.add(idx.path(grid_loc, axis, k), codes.NOT_STRICTLY_ASCENDING, "Grid fractions must strictly increase.", fractions[k])
+                out.add(idx.path(grid_loc, axis, k, "fraction"), codes.NOT_STRICTLY_ASCENDING, "Grid line fractions must strictly increase.", fractions[k])
 
     for index, member in idx.of_kind("TimberMember"):
         if math.dist(member.start_m, member.end_m) <= vs01.LENGTH_EPSILON_M:
@@ -510,8 +545,8 @@ def _stage_domain(snapshot: Snapshot) -> ValidationResult | None:
     if roof.eave_overhang_m > vs01.EAVE_OVERHANG_MAX_M + vs01.LENGTH_EPSILON_M:
         out.add(idx.path(roof_loc, "eave_overhang_m"), codes.OUT_OF_SUPPORTED_RANGE, "Eave overhang must not exceed 3'-0\" (D032).", roof.eave_overhang_m)
 
-    for axis, length_name in (("x_fractions", "width_m"), ("y_fractions", "depth_m")):
-        fractions = getattr(grid, axis)
+    for axis, length_name in (("x_lines", "width_m"), ("y_lines", "depth_m")):
+        fractions = [line.fraction for line in getattr(grid, axis)]
         if not vs01.GRID_STATIONS_MIN <= len(fractions) <= vs01.GRID_STATIONS_MAX:
             out.add(idx.path(grid_loc, axis), codes.OUT_OF_SUPPORTED_RANGE, "A grid axis must have 2 to 7 stations (D032).", len(fractions))
             continue

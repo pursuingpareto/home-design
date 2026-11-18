@@ -146,14 +146,14 @@ Each case applies one mutation to the fixture and asserts the exact top-level co
 | 2 | `width_m: NaN` (raw token) | VF · `NON_FINITE_NUMBER` |
 | 3 | `width_m: 1e400` | VF · `NON_FINITE_NUMBER` |
 | 4 | `width_m: 30` | UC · `OUT_OF_SUPPORTED_RANGE` · `…width_m` |
-| 5 | `width_m: 23` (bays 7.67 m) | UC · `OUT_OF_SUPPORTED_RANGE` · grid `x_fractions`, related `…width_m` |
+| 5 | `width_m: 23` (bays 7.67 m) | UC · `OUT_OF_SUPPORTED_RANGE` · grid `x_lines`, related `…width_m` |
 | 6 | member `section_id` → random UUID | VF · `DANGLING_REFERENCE` |
 | 7 | member `section_id` → the material's ID | VF · `WRONG_REFERENCE_KIND` |
 | 8 | delete `building.footprint_id` | VF · `MISSING_FIELD` · `building.footprint_id` |
 | 9 | two entities share an ID | VF · `DUPLICATE_ID` |
 | 10 | one ID uppercased (both the record and its references) | VF · `INVALID_UUID` |
-| 11 | `x_fractions` out of order | VF · `NOT_STRICTLY_ASCENDING` |
-| 12 | `y_fractions: [0, 0.5]` | VF · `GRID_ENDPOINT_MISSING` |
+| 11 | `x_lines` fractions out of order | VF · `NOT_STRICTLY_ASCENDING` · `…x_lines[2].fraction` |
+| 12 | `y_lines` fractions `[0, 0.5]` | VF · `GRID_ENDPOINT_MISSING` |
 | 13 | `model_schema_version: 2` | VF · `UNSUPPORTED_SCHEMA_VERSION` |
 | 14 | extra field on `Footprint` | VF · `UNKNOWN_FIELD` |
 | 15 | duplicate JSON key | VF · `DUPLICATE_KEY` |
@@ -235,14 +235,14 @@ Each case applies one mutation to the fixture and asserts the exact top-level co
 
 ## 12. Known adjacent issues (not fixed by this task)
 
-- building-model.md §5 uses the example key `frame/grid-x-1/grid-y-2/level-0/post`, which does not match the confirmed key format `frame/x-1/y-2/level-0/post` (generation-rules.md). This should be fixed alongside `TIMBER-001`.
+- ~~building-model.md §5 example key mismatch.~~ Resolved by [D042](../../product/decisions/D042-stable-grid-line-ids.md), which replaced both the key format and the example.
 - Open P1 gaps that this task does not need: section and material defaults for generated members (M1), ID minting and the retired-ID ledger (M2), positional grid keys (C4), command argument schemas (M5).
 
 ## 13. Implementation notes (2026-11-18)
 
 **Delivered:** `backend/src/homedesign/model/` (schema, strict parser, four-stage validator, D036 paths, D037 `related_paths`, RFC 8785, fingerprints, schema export). Also `docs/architecture/schemas/snapshot.v1.schema.json` and `tests/vectors/jcs/`. Toolchain: Python 3.12 via uv, Pydantic 2.14, versions locked in `backend/uv.lock`.
 
-**Tests:** 114 pytest tests, all passing:
+**Tests:** 114 pytest tests at completion, all passing (122 after D039 added `member_defaults`, 126 after D042 added grid-line IDs):
 - the fixture, round trip, entity-shuffle invariance, and golden fingerprint;
 - independent JSON Schema validation and the schema drift check;
 - all 40 rows of the mutation table, plus D036 path forms and D037 mapping rows;
@@ -262,9 +262,11 @@ A further ad hoc fuzz run of 20,000 random fixture mutations produced no excepti
 - **Duplicate level indices:** these are reported by the strict ordering check on `Building.level_ids` (`ORDER_VIOLATION`). Negative indices are `OUT_OF_RANGE` (stage 3), and indices other than exactly 0 and 1 are `UNSUPPORTED_VALUE` (stage 4).
 - **Generation mode and rule version:** `FrameSystem.generation_mode` and `TimberGrid.generation_rule_version` are free strings in the schema, so an unknown value is `UNSUPPORTED_VALUE` (stage 4), not `INVALID_ENUM`.
 
+**Later change:** [D039](../../product/decisions/D039-frame-member-defaults.md) added `FrameSystem.member_defaults` and the stage-2 code `MISSING_ROLE_DEFAULT`. The fixture, exported schema, golden fingerprint (`sha256:ab02e225…`, 23,333 bytes, still matching the ECMAScript engine), and tests were updated in the same change. [D042](../../product/decisions/D042-stable-grid-line-ids.md) then replaced `x_fractions`/`y_fractions` with `x_lines`/`y_lines` and added `INVALID_LINE_ID` (stage 1) and `DUPLICATE_LINE_ID` (stage 2); the golden fingerprint is now `sha256:588f54c4…` (23,404 bytes), again matching the ECMAScript engine.
+
 **Limitations:**
 
-- Members are not checked against `vs01-post-beam-1`. A snapshot with moved member endpoints, but otherwise valid references and geometry, passes. That conformance check belongs to `TIMBER-001`.
+- Members are not checked against `vs01-post-beam-1`. A snapshot with moved member endpoints, or with a member whose section differs from its role default (D039), but otherwise valid references and geometry, passes. That conformance check belongs to `TIMBER-001`.
 - Messages are English-only and not part of the contract.
 - Regenerating the JCS vectors requires Node; running the tests does not.
 - No TypeScript implementation exists yet. When one is added, it must pass `tests/vectors/jcs/vectors.json`.

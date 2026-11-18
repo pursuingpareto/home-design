@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D038. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D042. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -38,7 +38,11 @@
 - D036: [Error detail path syntax](D036-error-path-syntax.md) — dotted fields, `["…"]` for non-identifier keys, `entities[<id>]` with an `entities[#<index>]` fallback, zero-based indexes for other arrays.
 - D037: [`related_paths` on error details](D037-error-related-paths.md) — optional, sorted, left out when empty; main and related fields mapped for each check that spans fields.
 - D038: [Required keys, explicit nulls, and catalog records](D038-field-presence-catalog-records.md) — nullable fields are present as `null`, never omitted; `Section`/`Material` may be unreferenced; other kinds must be referenced.
+- D039: [Per-role section and material defaults on `FrameSystem`](D039-frame-member-defaults.md) — `member_defaults` maps each role to `{section_id, material_id}`; must cover every role the rule generates (`MISSING_ROLE_DEFAULT`); pre-release correction of schema v1.
+- D040: [`SetMemberSection` changes a role default](D040-setmembersection-role-default.md) — sets one role's section in `member_defaults` and regenerates that role; consequential; no per-member overrides in VS-01.
+- D041: [Deterministic ID minting from the command](D041-deterministic-id-minting.md) — UUIDv5 over canonical `[purpose, project, actor, command_id, creation_key]`; preview equals commit; replay is deterministic; re-added keys get new IDs.
+- D042: [Stable grid-line identities and generation keys](D042-stable-grid-line-ids.md) — `x_lines`/`y_lines` of `{id, fraction}` with IDs `x<n>`/`y<n>`; keys such as `frame/x0/y1/level-0/post` and `frame/axis-x/y0/x0-x1/plane-L1/beam`; amends D025/D030/D032/D037 wording.
 
-**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D038. Do not reopen D001–D038 to accommodate implementation shortcuts.
+**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D042. Do not reopen D001–D042 to accommodate implementation shortcuts.
 
 See [requirements](../requirements.md) for functional implications and [architecture](../../architecture/overview.md) for provisional implementation choices.
