@@ -94,7 +94,7 @@ class ScheduleService(Protocol):
     def timber_schedule(self, inventory: MemberInventory) -> Artifact: ...
 ```
 
-Interfaces are illustrative, not a binding choice of Python library or schema generator. Implement typed request/response DTOs with OpenAPI and generated TypeScript clients; avoid duplicating hand-maintained validation rules between frontend and backend.
+Interfaces are illustrative. Schema definition is confirmed by [D028](../product/decisions/D028-pydantic-authoritative-schema.md): Pydantic models are authoritative, JSON Schema for the snapshot is exported and committed, and the OpenAPI generated from the same models produces the TypeScript clients. Cross-record and domain validation runs only on the server; the frontend does not duplicate it.
 
 ## 7. Error contract
 

@@ -4,12 +4,13 @@
 
 ## Complete
 
-- Product decisions D001–D027.
+- Product decisions D001–D028.
 - Architecture v0.2 drafts (entity schemas remain engineering detail, not construction rules).
 - VS-01 scope and acceptance criteria.
 - Reference House 001 VS-01 golden snapshot and `vs01-post-beam-1` generation rules (D025).
 - Canonical meters/+Z-up/radians, UUIDs, JSONB snapshots, and optimistic concurrency (D026).
 - VS-01 artifact DTOs: plan, mesh, timber schedule, gated estimate (D027).
+- Pydantic models as the authoritative schema, with committed JSON Schema export and generated TypeScript clients (D028).
 
 ## Incomplete
 

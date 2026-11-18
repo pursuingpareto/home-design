@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D027. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D028. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -27,7 +27,8 @@
 - D025: [Reference House 001 VS-01 fixture](D025-reference-house-001-vs01-fixture.md) — 36'×24' two-story rectangle, 3×2 bays, 9/12 gable, posts and beams only.
 - D026: [Canonical units, identity, snapshots, and concurrency](D026-canonical-units-identity-persistence.md) — meters, +Z up, radians, UUIDs, JSONB snapshots, optimistic concurrency.
 - D027: [VS-01 derived artifact DTOs](D027-vs01-artifact-dtos.md) — plan2d, mesh3d, timber_schedule, preliminary_estimate; gated costs; preliminary suitability.
+- D028: [Pydantic models as the authoritative schema definition](D028-pydantic-authoritative-schema.md) — committed JSON Schema export, OpenAPI → generated TypeScript, cross-record rules server-side only.
 
-**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D027. Do not reopen D001–D027 to accommodate implementation shortcuts.
+**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D028. Do not reopen D001–D028 to accommodate implementation shortcuts.
 
 See [requirements](../requirements.md) for functional implications and [architecture](../../architecture/overview.md) for provisional implementation choices.
