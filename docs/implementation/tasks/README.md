@@ -16,7 +16,11 @@ Suggested first tasks: `MODEL-001` canonical units/coordinates; `MODEL-002` proj
 
 ## Task status
 
-Candidate task IDs still need per-task files. The reference-house fixture (D025), units/persistence (D026), and artifact DTOs (D027) are specified; work orders can now be written against those contracts.
+| Task | Title | Status |
+|---|---|---|
+| [MODEL-001](MODEL-001.md) | Snapshot schema, validation, and canonical serialization (merges the suggested MODEL-001 and MODEL-002) | Ready for implementation |
+
+The remaining candidate IDs still need task files. P1 gaps that block `TIMBER-001` and `MODEL-003` are listed in MODEL-001 §12.
 
 ## Suggested task file format
 

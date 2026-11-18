@@ -111,6 +111,12 @@ Interfaces are illustrative. Schema definition is confirmed by [D028](../product
 
 Stable codes: `VALIDATION_FAILED` (422), `UNSUPPORTED_CONFIGURATION` (422), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `REVISION_CONFLICT` (409), `IDEMPOTENCY_CONFLICT` (409), `PREVIEW_EXPIRED` (409), `DERIVATION_FAILED` (500/503 as appropriate). No internal stack traces in API responses.
 
+Detail `code` values for model validation are cataloged in [building-model.md §6.1](building-model.md#61-detail-codes); each belongs to one validation stage, which determines whether the top-level code is `VALIDATION_FAILED` or `UNSUPPORTED_CONFIGURATION` ([D035](../product/decisions/D035-validation-stages-detail-codes.md)).
+
+Detail `path` syntax ([D036](../product/decisions/D036-error-path-syntax.md)): paths start at the root of the validated document (`""` is the whole document). Fields are joined with `.` (`args.width_m`, `building.footprint_id`), and keys that are not identifiers use `["…"]`. Snapshot entities are addressed by ID (`entities[<id>].width_m`), or by position (`entities[#12]`) when the ID is missing, malformed, or duplicated. Other arrays use zero-based indexes (`x_fractions[2]`).
+
+A detail may include an optional `related_paths` array listing other fields that contribute to the issue, such as the footprint width behind a bay-length violation. Entries are unique, sorted, and never repeat `path`, and the array is left out when empty ([D037](../product/decisions/D037-error-related-paths.md)). Each detail is `{"path", "code", "value"?, "related_paths"?}`; `message` text on the envelope is human-readable and not part of the contract.
+
 ## 8. Concurrency, security, and compatibility
 
 - Every read/write is project-scoped and authorization-checked on server.

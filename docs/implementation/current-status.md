@@ -1,10 +1,10 @@
 # Current project status
 
-**As of 2026-11-16:** Specification and fixture work only. No application code in `frontend/`, `backend/`, or `tests/`.
+**As of 2026-11-18:** Specification and fixture work only. No application code in `frontend/`, `backend/`, or `tests/`.
 
 ## Complete
 
-- Product decisions D001–D034.
+- Product decisions D001–D038.
 - Architecture v0.2 drafts (entity schemas remain engineering detail, not construction rules).
 - VS-01 scope and acceptance criteria.
 - Reference House 001 VS-01 golden snapshot and `vs01-post-beam-1` generation rules (D025).
@@ -17,10 +17,11 @@
 - VS-01 numeric bounds for footprint, bays, grid, pitch, and overhang (D032).
 - `Level.clear_height_m` renamed to `story_height_m`, with a consistency check against elevations (D033).
 - Level datum (Level 0 at elevation 0) and story-height bounds of 8'–14' (D034).
+- Validation stages and detail-code catalog (D035); error path syntax (D036); `related_paths` (D037); required keys and catalog records (D038).
 
 ## Incomplete
 
-- Application implementation.
 - Hosting, identity provider, and production operations.
-- Executable task files.
+- Application implementation of `MODEL-001` (task file ready).
+- Executable task files beyond `MODEL-001`.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

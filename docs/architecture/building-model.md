@@ -33,6 +33,8 @@ All records include `id: UUID`, `kind: discriminator`, and `schema_version: posi
 - IDs are unique across `building` and `entities` combined, and references may point to records in either place.
 - The order of `entities` has no semantic meaning. Hashing and comparison use the canonical snapshot (`entities` sorted by `id`, then RFC 8785). All other arrays have a semantic order, and required orders are validated, not re-sorted ([D030](../product/decisions/D030-canonical-snapshot-entity-order.md)).
 - UUIDs are written as lowercase, hyphenated 8-4-4-4-12 hex; any other form is rejected ([D030](../product/decisions/D030-canonical-snapshot-entity-order.md)).
+- Every field listed below is a required key. Fields marked `?` must be present and may be `null`; they are never omitted. Unknown keys are rejected ([D038](../product/decisions/D038-field-presence-catalog-records.md)).
+- `Section` and `Material` records may be unreferenced (a project catalog). Every other kind must be referenced from `building` or the `FrameSystem` ([D038](../product/decisions/D038-field-presence-catalog-records.md)).
 
 This matches the Reference House 001 fixture (D025). Supporting several buildings per project is a future schema change requiring a migration.
 
@@ -66,13 +68,55 @@ Generated framing uses a stable `generation_key` such as `frame/grid-x-1/grid-y-
 
 ## 6. Validation levels
 
-- **Syntactic:** required fields, enums, schema versions, finite numbers, canonical lowercase UUID syntax (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys.
-- **Referential:** every referenced ID exists and is of the expected type; no duplicate IDs; `Building.level_ids` in ascending `Level.index` and `FrameSystem.member_ids` in ascending `generation_key` order (D030).
-- **Geometric:** valid dimensions, roof pitch in supported domain, nonzero member axes, valid level ordering, grid fractions sorted/unique.
-- **Domain:** only supported VS-01 configurations; do not assert structural adequacy or building-code compliance. VS-01 requires `Footprint.rotation_rad = 0`, `GableRoof.ridge_axis = "X"`, and `GableRoof.ridge_offset_m = 0` (otherwise `UNSUPPORTED_CONFIGURATION`), and `Footprint.origin_m = [0, 0]` (otherwise `VALIDATION_FAILED`, per D026) — see [D031](../product/decisions/D031-vs01-unsupported-configurations.md). Footprint, bay length, grid station count, pitch, and overhang bounds are in [D032](../product/decisions/D032-vs01-numeric-bounds.md). They are checked on the full candidate snapshot, so a footprint change can be rejected because of the bay lengths it produces. Level datum and story-height bounds are in [D034](../product/decisions/D034-vs01-level-bounds.md).
-- **Authorization:** caller has rights to perform requested operation on project/revision.
+Validation runs in four ordered stages ([D035](../product/decisions/D035-validation-stages-detail-codes.md)). A stage runs only if every earlier stage passed; within a stage, all issues are reported. Each stage maps to one top-level error code ([interfaces.md §7](interfaces.md#7-error-contract)).
 
-Validation returns stable machine-readable codes and field paths, with human-readable messages. Failures do not create a new revision.
+| Stage | Checks | Top-level code |
+|---|---|---|
+| 1 Syntactic | Required fields present, no unknown fields, types, enums, schema versions, finite numbers, canonical lowercase UUIDs (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys, timestamps | `VALIDATION_FAILED` |
+| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; unique generation keys; `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030) | `VALIDATION_FAILED` |
+| 3 Geometric | Positive, finite dimensions; pitch in (0, π/2); overhang ≥ 0; grid fractions strictly ascending with endpoints 0 and 1; strictly increasing level elevations; story-height consistency (D033); datums: `Footprint.origin_m = [0, 0]` (D031) and Level 0 elevation `0` (D034); nonzero member axes | `VALIDATION_FAILED` |
+| 4 Domain | Supported VS-01 configurations only: D031 unsupported values; D032 and D034 bounds, checked on the full candidate snapshot (so a footprint change can be rejected for the bay lengths it produces); exactly two levels; supported generation rule and mode; member roles allowed by that rule. Never asserts structural adequacy or code compliance | `UNSUPPORTED_CONFIGURATION` |
+
+Authorization (the caller's rights on the project or revision) is checked by the API layer before validation (`UNAUTHORIZED`, `FORBIDDEN`). It is not a stage of the model validator.
+
+Validation returns stable machine-readable codes and field paths, with human-readable messages; the messages are not part of the contract. Failures do not create a new revision.
+
+### 6.1 Detail codes
+
+Each detail code belongs to one stage, and the stage determines its top-level code. Adding a code is backward compatible. Renaming, removing, or moving a code to another stage requires a decision (D035). Checks that span several fields report the main field as `path` and the other contributing fields as `related_paths`, using the mapping in [D037](../product/decisions/D037-error-related-paths.md).
+
+| Detail code | Stage | Meaning |
+|---|---|---|
+| `MALFORMED_JSON` | 1 | Not valid UTF-8 JSON |
+| `DUPLICATE_KEY` | 1 | An object key appears more than once (D029) |
+| `NON_FINITE_NUMBER` | 1 | `NaN`, `Infinity`, or a literal that overflows a double (D026) |
+| `PAYLOAD_LIMIT_EXCEEDED` | 1 | Input exceeds the configured size or nesting limit |
+| `MISSING_FIELD` | 1 | A required key is absent |
+| `UNKNOWN_FIELD` | 1 | A key not defined by the schema (never silently dropped, §8) |
+| `WRONG_TYPE` | 1 | Value of the wrong JSON type; no coercion from strings |
+| `INVALID_ENUM` | 1 | Value outside the schema's enumeration |
+| `INVALID_UUID` | 1 | Not a lowercase, hyphenated UUID (D030) |
+| `INVALID_TIMESTAMP` | 1 | Not an RFC 3339 UTC timestamp |
+| `INTEGER_OUT_OF_RANGE` | 1 | Integer field non-integral or outside ±(2⁵³ − 1) (D029) |
+| `UNKNOWN_KIND` | 1 | `kind` is not a VS-01 entity kind |
+| `UNSUPPORTED_SCHEMA_VERSION` | 1 | `model_schema_version` or record `schema_version` is not supported |
+| `DUPLICATE_ID` | 2 | Two records share an ID |
+| `DANGLING_REFERENCE` | 2 | A referenced ID does not exist |
+| `WRONG_REFERENCE_KIND` | 2 | A referenced ID exists but is the wrong kind |
+| `BUILDING_IN_ENTITIES` | 2 | A `Building` record appears in `entities` (§3) |
+| `UNREFERENCED_ENTITY` | 2 | A record that must be referenced is not |
+| `MEMBER_SET_MISMATCH` | 2 | `FrameSystem.member_ids` differs from the set of `TimberMember` records |
+| `DUPLICATE_GENERATION_KEY` | 2 | Two members share a `generation_key` |
+| `ORDER_VIOLATION` | 2 | An array with a required order is out of order (D030) |
+| `OUT_OF_RANGE` | 3 | Physically meaningless value: non-positive length, pitch outside (0, π/2), negative overhang |
+| `NOT_STRICTLY_ASCENDING` | 3 | Grid fractions or level elevations not strictly increasing |
+| `GRID_ENDPOINT_MISSING` | 3 | Grid fractions do not start at 0 and end at 1 |
+| `STORY_HEIGHT_MISMATCH` | 3 | A non-top level's story height differs from the elevation gap to the next level (D033) |
+| `DATUM_MISMATCH` | 3 | Footprint origin is not `[0, 0]`, or Level 0 elevation is not `0` (D031, D034) |
+| `ZERO_LENGTH_MEMBER` | 3 | Member axis length ≤ 1e-6 m |
+| `OUT_OF_SUPPORTED_RANGE` | 4 | Well-formed value outside the VS-01 bounds (D032, D034) |
+| `UNSUPPORTED_VALUE` | 4 | Well-formed value VS-01 does not handle: rotation, Y ridge, ridge offset (D031), unsupported generation rule or mode, disallowed member role |
+| `ENTITY_COUNT` | 4 | Unsupported number of records of a kind, such as not exactly two levels (D034) |
 
 ## 7. Revision and storage policy (confirmed, D026)
 

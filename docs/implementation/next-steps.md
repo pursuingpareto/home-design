@@ -1,6 +1,6 @@
 # Next steps
 
-1. Write executable task files (`MODEL-001` onward) against D025–D034.
-2. Smallest first implementation, once coding starts: in-memory snapshot validation and canonical round-trip of `fixture.snapshot.json`.
+1. Implement [`MODEL-001`](tasks/MODEL-001.md) (ready; all proposals approved in D035–D038): in-memory snapshot validation, canonical serialization, JSON Schema export, and round-trip of `fixture.snapshot.json`.
+2. Close the P1 gaps before `TIMBER-001` and `MODEL-003`: section and material defaults for generated members, ID minting and the retired-ID ledger, positional grid keys, command argument schemas.
 
-Unresolved questions that should not reopen D025–D027: exact CAD kernel, Vermont code editions, datasets, hosting, and drawing export formats.
+Unresolved questions that should not reopen D025–D038: exact CAD kernel, Vermont code editions, datasets, hosting, and drawing export formats.

@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D034. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D038. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -34,7 +34,11 @@
 - D032: [VS-01 numeric bounds](D032-vs01-numeric-bounds.md) — footprint 12'–80', bays 4'–24', 2–7 stations per axis, pitch 3/12–12/12, overhang 0'–3'; supported-range limits, not structural limits.
 - D033: [`Level.story_height_m` replaces `clear_height_m`](D033-level-story-height.md) — floor to next datum (next level or eave plate); lower levels must match elevation gaps; true clear height becomes a derived value later. Amends D025 terminology only.
 - D034: [VS-01 level datum and story-height bounds](D034-vs01-level-bounds.md) — exactly levels 0 and 1; Level 0 at elevation 0; story heights 8'–14'; supported-range limits, not code requirements.
+- D035: [Validation stages and detail-code catalog](D035-validation-stages-detail-codes.md) — syntactic → referential → geometric → domain, each stage gating the next; stages 1–3 `VALIDATION_FAILED`, stage 4 `UNSUPPORTED_CONFIGURATION`; catalog in building-model.md §6.1.
+- D036: [Error detail path syntax](D036-error-path-syntax.md) — dotted fields, `["…"]` for non-identifier keys, `entities[<id>]` with an `entities[#<index>]` fallback, zero-based indexes for other arrays.
+- D037: [`related_paths` on error details](D037-error-related-paths.md) — optional, sorted, left out when empty; main and related fields mapped for each check that spans fields.
+- D038: [Required keys, explicit nulls, and catalog records](D038-field-presence-catalog-records.md) — nullable fields are present as `null`, never omitted; `Section`/`Material` may be unreferenced; other kinds must be referenced.
 
-**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D034. Do not reopen D001–D034 to accommodate implementation shortcuts.
+**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D038. Do not reopen D001–D038 to accommodate implementation shortcuts.
 
 See [requirements](../requirements.md) for functional implications and [architecture](../../architecture/overview.md) for provisional implementation choices.
