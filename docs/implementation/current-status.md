@@ -4,7 +4,7 @@
 
 ## Complete
 
-- Product decisions D001–D030.
+- Product decisions D001–D031.
 - Architecture v0.2 drafts (entity schemas remain engineering detail, not construction rules).
 - VS-01 scope and acceptance criteria.
 - Reference House 001 VS-01 golden snapshot and `vs01-post-beam-1` generation rules (D025).
@@ -13,6 +13,7 @@
 - Pydantic models as the authoritative schema, with committed JSON Schema export and generated TypeScript clients (D028).
 - RFC 8785 canonical JSON for hashing, comparison, and determinism tests (D029).
 - Canonical snapshot form: `entities` sorted by `id`, lowercase UUIDs (D030).
+- VS-01 rejects rotated footprints, Y-axis ridges, and offset ridges; origin fixed at `[0, 0]` (D031).
 
 ## Incomplete
 

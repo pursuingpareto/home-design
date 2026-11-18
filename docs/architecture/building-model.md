@@ -69,7 +69,7 @@ Generated framing uses a stable `generation_key` such as `frame/grid-x-1/grid-y-
 - **Syntactic:** required fields, enums, schema versions, finite numbers, canonical lowercase UUID syntax (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys.
 - **Referential:** every referenced ID exists and is of the expected type; no duplicate IDs; `Building.level_ids` in ascending `Level.index` and `FrameSystem.member_ids` in ascending `generation_key` order (D030).
 - **Geometric:** valid dimensions, roof pitch in supported domain, nonzero member axes, valid level ordering, grid fractions sorted/unique.
-- **Domain:** only supported VS-01 configurations; do not assert structural adequacy or building-code compliance.
+- **Domain:** only supported VS-01 configurations; do not assert structural adequacy or building-code compliance. VS-01 requires `Footprint.rotation_rad = 0`, `GableRoof.ridge_axis = "X"`, and `GableRoof.ridge_offset_m = 0` (otherwise `UNSUPPORTED_CONFIGURATION`), and `Footprint.origin_m = [0, 0]` (otherwise `VALIDATION_FAILED`, per D026) — see [D031](../product/decisions/D031-vs01-unsupported-configurations.md). Numeric bounds are still to be specified.
 - **Authorization:** caller has rights to perform requested operation on project/revision.
 
 Validation returns stable machine-readable codes and field paths, with human-readable messages. Failures do not create a new revision.

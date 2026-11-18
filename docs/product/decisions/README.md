@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D030. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D031. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -30,7 +30,8 @@
 - D028: [Pydantic models as the authoritative schema definition](D028-pydantic-authoritative-schema.md) — committed JSON Schema export, OpenAPI → generated TypeScript, cross-record rules server-side only.
 - D029: [Canonical JSON serialization](D029-canonical-json-rfc8785.md) — RFC 8785 (JCS) for fingerprints, command hashes, idempotency comparison, and determinism tests.
 - D030: [Canonical snapshot form and entity ordering](D030-canonical-snapshot-entity-order.md) — `entities` order has no meaning, canonical form sorts by `id`; lowercase UUIDs; other arrays' required orders are validated, not re-sorted.
+- D031: [VS-01 unsupported footprint and roof configurations](D031-vs01-unsupported-configurations.md) — rotation, Y ridge, and ridge offset rejected as `UNSUPPORTED_CONFIGURATION`; origin must be `[0, 0]`.
 
-**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D030. Do not reopen D001–D030 to accommodate implementation shortcuts.
+**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D031. Do not reopen D001–D031 to accommodate implementation shortcuts.
 
 See [requirements](../requirements.md) for functional implications and [architecture](../../architecture/overview.md) for provisional implementation choices.

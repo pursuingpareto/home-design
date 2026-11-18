@@ -7,7 +7,7 @@ Applies when `TimberGrid.generation_rule_version` is `vs01-post-beam-1` and `Fra
 
 ## Inputs
 
-- Rectangular `Footprint` origin, width (X), depth (Y)
+- Rectangular `Footprint` origin, width (X), depth (Y); the rule requires `origin_m = [0, 0]` and `rotation_rad = 0` ([D031](../../product/decisions/D031-vs01-unsupported-configurations.md))
 - Two `Level` records, indices 0 and 1, elevations strictly increasing
 - `GableRoof` (used for derived roof geometry; not for member generation in this rule version)
 - Regular `TimberGrid` fractions from 0 to 1 inclusive
