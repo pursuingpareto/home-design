@@ -31,6 +31,8 @@ All records include `id: UUID`, `kind: discriminator`, and `schema_version: posi
 - `building` is the snapshot's single `Building` record. VS-01 has exactly one building per snapshot, so this is a structural rule, not a validation check. A `Building` inside `entities` is rejected.
 - `entities` holds every other entity record (the remaining rows of the table below).
 - IDs are unique across `building` and `entities` combined, and references may point to records in either place.
+- The order of `entities` has no semantic meaning. Hashing and comparison use the canonical snapshot (`entities` sorted by `id`, then RFC 8785). All other arrays have a semantic order, and required orders are validated, not re-sorted ([D030](../product/decisions/D030-canonical-snapshot-entity-order.md)).
+- UUIDs are written as lowercase, hyphenated 8-4-4-4-12 hex; any other form is rejected ([D030](../product/decisions/D030-canonical-snapshot-entity-order.md)).
 
 This matches the Reference House 001 fixture (D025). Supporting several buildings per project is a future schema change requiring a migration.
 
@@ -64,8 +66,8 @@ Generated framing uses a stable `generation_key` such as `frame/grid-x-1/grid-y-
 
 ## 6. Validation levels
 
-- **Syntactic:** required fields, enums, schema versions, finite numbers, UUID syntax.
-- **Referential:** every referenced ID exists and is of the expected type; no duplicate IDs.
+- **Syntactic:** required fields, enums, schema versions, finite numbers, canonical lowercase UUID syntax (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys.
+- **Referential:** every referenced ID exists and is of the expected type; no duplicate IDs; `Building.level_ids` in ascending `Level.index` and `FrameSystem.member_ids` in ascending `generation_key` order (D030).
 - **Geometric:** valid dimensions, roof pitch in supported domain, nonzero member axes, valid level ordering, grid fractions sorted/unique.
 - **Domain:** only supported VS-01 configurations; do not assert structural adequacy or building-code compliance.
 - **Authorization:** caller has rights to perform requested operation on project/revision.

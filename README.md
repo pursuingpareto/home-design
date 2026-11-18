@@ -1,6 +1,6 @@
 # Home Design Platform
 
-**Specification version:** 0.2 architecture draft (product decisions through D029) · **Status:** Working draft · **Date:** 2026-11-16
+**Specification version:** 0.2 architecture draft (product decisions through D030) · **Status:** Working draft · **Date:** 2026-11-16
 
 A tool-independent, version-controlled specification for a web-first, parametric home-design platform specializing initially in Vermont heavy-timber post-and-beam houses.
 

@@ -73,7 +73,7 @@ Same machine as [dependencies](dependencies.md#3-artifact-status-machine), plus 
 
 `input_fingerprint` is `sha256:` plus lowercase hex of SHA-256 over the canonical input object for that generator:
 
-- `plan2d` / `mesh3d` / `timber_schedule`: `{ "revision_id", "model_schema_version", "generator_id", "generator_version", "snapshot" }` where `snapshot` is the semantic building snapshot (not derived meshes).
+- `plan2d` / `mesh3d` / `timber_schedule`: `{ "revision_id", "model_schema_version", "generator_id", "generator_version", "snapshot" }` where `snapshot` is the canonical semantic building snapshot ([D030](../product/decisions/D030-canonical-snapshot-entity-order.md): `entities` sorted by `id`), not derived meshes.
 - `preliminary_estimate`: the above plus `{ "price_book_id", "price_book_version", "as_of", "currency" }` or an explicit `"price_book": null`.
 
 Canonical bytes: RFC 8785 JSON Canonicalization Scheme, UTF-8 ([D029](../product/decisions/D029-canonical-json-rfc8785.md)). Object keys are ordered by JCS, arrays keep their documented order, and `null` is preserved. Do not include derived artifacts in the hashed snapshot.
