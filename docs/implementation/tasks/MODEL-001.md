@@ -1,6 +1,6 @@
 # MODEL-001 — Snapshot schema, validation, and canonical serialization
 
-**Status:** Ready for implementation — all §9 proposals approved (2026-11-18)  
+**Status:** Implemented (2026-11-18) — see §13 for implementation notes and limitations  
 **Owner module:** `model`  
 **Slice:** VS-01  
 **Depends on:** none (first implementation task)  
@@ -197,7 +197,7 @@ Each case applies one mutation to the fixture and asserts the exact top-level co
 ## 8. Implementation guidance (not prescriptive)
 
 - **Location:** a Python package under `backend/` (suggested `backend/src/homedesign/model/`), with tests under `backend/tests/`. Shared vectors live in the top-level `tests/vectors/`.
-- **Runtime dependencies:** Pydantic v2 (D028). For JCS, use an RFC 8785 library, for example the `rfc8785` package on PyPI, or a small implementation of our own.
+- **Runtime dependencies:** Pydantic v2 (D028). For JCS, use an RFC 8785 library, for example the `rfc8785` package on PyPI, or a small implementation of our own. *(Chosen: in-house; see §13.)*
   - Tradeoff: a library is less code to maintain, but it is an outside dependency.
   - An in-house implementation is roughly 100 lines, but number formatting is easy to get wrong.
   - Either way, the vectors in §7.3 are the arbiter.
@@ -237,3 +237,35 @@ Each case applies one mutation to the fixture and asserts the exact top-level co
 
 - building-model.md §5 uses the example key `frame/grid-x-1/grid-y-2/level-0/post`, which does not match the confirmed key format `frame/x-1/y-2/level-0/post` (generation-rules.md). This should be fixed alongside `TIMBER-001`.
 - Open P1 gaps that this task does not need: section and material defaults for generated members (M1), ID minting and the retired-ID ledger (M2), positional grid keys (C4), command argument schemas (M5).
+
+## 13. Implementation notes (2026-11-18)
+
+**Delivered:** `backend/src/homedesign/model/` (schema, strict parser, four-stage validator, D036 paths, D037 `related_paths`, RFC 8785, fingerprints, schema export). Also `docs/architecture/schemas/snapshot.v1.schema.json` and `tests/vectors/jcs/`. Toolchain: Python 3.12 via uv, Pydantic 2.14, versions locked in `backend/uv.lock`.
+
+**Tests:** 114 pytest tests, all passing:
+- the fixture, round trip, entity-shuffle invariance, and golden fingerprint;
+- independent JSON Schema validation and the schema drift check;
+- all 40 rows of the mutation table, plus D036 path forms and D037 mapping rows;
+- the JCS vectors and properties;
+- never-raises properties on arbitrary values, bytes, and fixture mutations;
+- the catalog-doc sync test.
+
+A further ad hoc fuzz run of 20,000 random fixture mutations produced no exceptions.
+
+**Choices made during implementation:**
+
+- **JCS is implemented in-house** (`jcs.py`, about 100 lines, no dependency). Its correctness is checked against vectors produced by an ECMAScript engine (`generate.mjs`, using Node's `JSON.stringify` and UTF-16 key sorting). RFC 8785 is defined in terms of those algorithms. The engine's fingerprint for Reference House 001 matches the Python implementation byte for byte (`sha256:f0d8e036…`, 23,085 bytes).
+- **Coordinates** are modeled as fixed-length JSON arrays (`minItems` = `maxItems` = 2 or 3). Pydantic's strict mode rejects JSON arrays for tuple types.
+- **`Building` in the `entities` union:** `Building` is accepted at the type level so that stage 2 reports `BUILDING_IN_ENTITIES` instead of `UNKNOWN_KIND`. The exported JSON Schema therefore admits it, and stage 2 rejects it.
+- **Parser problems:** duplicate keys, non-finite literals, and lone surrogates are collected along with the Pydantic errors in stage 1. A Pydantic error at a path that has already been reported is suppressed, so each problem is reported once.
+- **Unlisted members:** `MEMBER_SET_MISMATCH` reports one issue for the frame system's `member_ids`, with every unlisted member in `related_paths`.
+- **Duplicate level indices:** these are reported by the strict ordering check on `Building.level_ids` (`ORDER_VIOLATION`). Negative indices are `OUT_OF_RANGE` (stage 3), and indices other than exactly 0 and 1 are `UNSUPPORTED_VALUE` (stage 4).
+- **Generation mode and rule version:** `FrameSystem.generation_mode` and `TimberGrid.generation_rule_version` are free strings in the schema, so an unknown value is `UNSUPPORTED_VALUE` (stage 4), not `INVALID_ENUM`.
+
+**Limitations:**
+
+- Members are not checked against `vs01-post-beam-1`. A snapshot with moved member endpoints, but otherwise valid references and geometry, passes. That conformance check belongs to `TIMBER-001`.
+- Messages are English-only and not part of the contract.
+- Regenerating the JCS vectors requires Node; running the tests does not.
+- No TypeScript implementation exists yet. When one is added, it must pass `tests/vectors/jcs/vectors.json`.
+

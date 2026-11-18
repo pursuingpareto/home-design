@@ -18,7 +18,7 @@ Suggested first tasks: `MODEL-001` canonical units/coordinates; `MODEL-002` proj
 
 | Task | Title | Status |
 |---|---|---|
-| [MODEL-001](MODEL-001.md) | Snapshot schema, validation, and canonical serialization (merges the suggested MODEL-001 and MODEL-002) | Ready for implementation |
+| [MODEL-001](MODEL-001.md) | Snapshot schema, validation, and canonical serialization (merges the suggested MODEL-001 and MODEL-002) | Done (2026-11-18) |
 
 The remaining candidate IDs still need task files. P1 gaps that block `TIMBER-001` and `MODEL-003` are listed in MODEL-001 §12.
 

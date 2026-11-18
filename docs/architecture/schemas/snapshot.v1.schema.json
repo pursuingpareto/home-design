@@ -1,0 +1,608 @@
+{
+  "$defs": {
+    "Building": {
+      "additionalProperties": false,
+      "properties": {
+        "footprint_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Footprint Id",
+          "type": "string"
+        },
+        "frame_system_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Frame System Id",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "Building",
+          "title": "Kind",
+          "type": "string"
+        },
+        "level_ids": {
+          "items": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "type": "string"
+          },
+          "title": "Level Ids",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "roof_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Roof Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "name",
+        "footprint_id",
+        "level_ids",
+        "roof_id",
+        "frame_system_id"
+      ],
+      "title": "Building",
+      "type": "object"
+    },
+    "Footprint": {
+      "additionalProperties": false,
+      "properties": {
+        "depth_m": {
+          "title": "Depth M",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "Footprint",
+          "title": "Kind",
+          "type": "string"
+        },
+        "origin_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Origin M",
+          "type": "array"
+        },
+        "rotation_rad": {
+          "title": "Rotation Rad",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "width_m": {
+          "title": "Width M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "origin_m",
+        "width_m",
+        "depth_m",
+        "rotation_rad"
+      ],
+      "title": "Footprint",
+      "type": "object"
+    },
+    "FrameSystem": {
+      "additionalProperties": false,
+      "properties": {
+        "generation_mode": {
+          "title": "Generation Mode",
+          "type": "string"
+        },
+        "grid_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Grid Id",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "FrameSystem",
+          "title": "Kind",
+          "type": "string"
+        },
+        "member_ids": {
+          "items": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "type": "string"
+          },
+          "title": "Member Ids",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "grid_id",
+        "member_ids",
+        "generation_mode"
+      ],
+      "title": "FrameSystem",
+      "type": "object"
+    },
+    "GableRoof": {
+      "additionalProperties": false,
+      "properties": {
+        "eave_overhang_m": {
+          "title": "Eave Overhang M",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "GableRoof",
+          "title": "Kind",
+          "type": "string"
+        },
+        "pitch_rad": {
+          "title": "Pitch Rad",
+          "type": "number"
+        },
+        "ridge_axis": {
+          "enum": [
+            "X",
+            "Y"
+          ],
+          "title": "Ridge Axis",
+          "type": "string"
+        },
+        "ridge_offset_m": {
+          "title": "Ridge Offset M",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "ridge_axis",
+        "pitch_rad",
+        "eave_overhang_m",
+        "ridge_offset_m"
+      ],
+      "title": "GableRoof",
+      "type": "object"
+    },
+    "Level": {
+      "additionalProperties": false,
+      "properties": {
+        "elevation_m": {
+          "title": "Elevation M",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "index": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Index",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "Level",
+          "title": "Kind",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "story_height_m": {
+          "title": "Story Height M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "index",
+        "elevation_m",
+        "story_height_m"
+      ],
+      "title": "Level",
+      "type": "object"
+    },
+    "Material": {
+      "additionalProperties": false,
+      "properties": {
+        "density_kg_m3": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Density Kg M3"
+        },
+        "grade": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Grade"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "Material",
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "provenance": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Provenance"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "species": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Species"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "name",
+        "species",
+        "grade",
+        "density_kg_m3",
+        "provenance"
+      ],
+      "title": "Material",
+      "type": "object"
+    },
+    "Section": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_depth_m": {
+          "title": "Actual Depth M",
+          "type": "number"
+        },
+        "actual_width_m": {
+          "title": "Actual Width M",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "Section",
+          "title": "Kind",
+          "type": "string"
+        },
+        "nominal_label": {
+          "title": "Nominal Label",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "shape": {
+          "const": "rectangular",
+          "title": "Shape",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "shape",
+        "actual_width_m",
+        "actual_depth_m",
+        "nominal_label"
+      ],
+      "title": "Section",
+      "type": "object"
+    },
+    "TimberGrid": {
+      "additionalProperties": false,
+      "properties": {
+        "generation_rule_version": {
+          "title": "Generation Rule Version",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "TimberGrid",
+          "title": "Kind",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "x_fractions": {
+          "items": {
+            "type": "number"
+          },
+          "title": "X Fractions",
+          "type": "array"
+        },
+        "y_fractions": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Y Fractions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "x_fractions",
+        "y_fractions",
+        "generation_rule_version"
+      ],
+      "title": "TimberGrid",
+      "type": "object"
+    },
+    "TimberMember": {
+      "additionalProperties": false,
+      "properties": {
+        "end_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "End M",
+          "type": "array"
+        },
+        "generation_key": {
+          "title": "Generation Key",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "TimberMember",
+          "title": "Kind",
+          "type": "string"
+        },
+        "material_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Material Id",
+          "type": "string"
+        },
+        "member_role": {
+          "enum": [
+            "POST",
+            "BEAM",
+            "FLOOR_JOIST",
+            "RAFTER"
+          ],
+          "title": "Member Role",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "section_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Section Id",
+          "type": "string"
+        },
+        "start_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Start M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "schema_version",
+        "kind",
+        "member_role",
+        "start_m",
+        "end_m",
+        "section_id",
+        "material_id",
+        "generation_key"
+      ],
+      "title": "TimberMember",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Stage 1 (syntactic) contract for VS-01 snapshots. Generated from the Pydantic models in backend/src/homedesign/model/schema.py; do not edit by hand. Referential, geometric, and domain rules are in docs/architecture/building-model.md §6.",
+  "properties": {
+    "building": {
+      "$ref": "#/$defs/Building"
+    },
+    "created_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$",
+      "title": "Created At",
+      "type": "string"
+    },
+    "entities": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "Building": "#/$defs/Building",
+            "Footprint": "#/$defs/Footprint",
+            "FrameSystem": "#/$defs/FrameSystem",
+            "GableRoof": "#/$defs/GableRoof",
+            "Level": "#/$defs/Level",
+            "Material": "#/$defs/Material",
+            "Section": "#/$defs/Section",
+            "TimberGrid": "#/$defs/TimberGrid",
+            "TimberMember": "#/$defs/TimberMember"
+          },
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/Building"
+          },
+          {
+            "$ref": "#/$defs/Footprint"
+          },
+          {
+            "$ref": "#/$defs/Level"
+          },
+          {
+            "$ref": "#/$defs/GableRoof"
+          },
+          {
+            "$ref": "#/$defs/TimberGrid"
+          },
+          {
+            "$ref": "#/$defs/FrameSystem"
+          },
+          {
+            "$ref": "#/$defs/TimberMember"
+          },
+          {
+            "$ref": "#/$defs/Section"
+          },
+          {
+            "$ref": "#/$defs/Material"
+          }
+        ]
+      },
+      "title": "Entities",
+      "type": "array"
+    },
+    "model_schema_version": {
+      "const": 1,
+      "title": "Model Schema Version",
+      "type": "integer"
+    },
+    "parent_revision_id": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Parent Revision Id"
+    },
+    "project_id": {
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Project Id",
+      "type": "string"
+    },
+    "revision_id": {
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "Revision Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "model_schema_version",
+    "project_id",
+    "revision_id",
+    "parent_revision_id",
+    "created_at",
+    "building",
+    "entities"
+  ],
+  "title": "VS-01 semantic building snapshot (model schema version 1)",
+  "type": "object"
+}

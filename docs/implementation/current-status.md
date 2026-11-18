@@ -1,6 +1,6 @@
 # Current project status
 
-**As of 2026-11-18:** Specification and fixture work only. No application code in `frontend/`, `backend/`, or `tests/`.
+**As of 2026-11-18:** Specification work through D038. First application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
 
 ## Complete
 
@@ -18,10 +18,10 @@
 - `Level.clear_height_m` renamed to `story_height_m`, with a consistency check against elevations (D033).
 - Level datum (Level 0 at elevation 0) and story-height bounds of 8'–14' (D034).
 - Validation stages and detail-code catalog (D035); error path syntax (D036); `related_paths` (D037); required keys and catalog records (D038).
+- `MODEL-001` implemented: Pydantic schema, four-stage validator, RFC 8785 canonicalization and fingerprints, committed JSON Schema, cross-language JCS vectors; 114 tests passing.
 
 ## Incomplete
 
 - Hosting, identity provider, and production operations.
-- Application implementation of `MODEL-001` (task file ready).
 - Executable task files beyond `MODEL-001`.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

@@ -1,0 +1,9 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.hypothesis/
+
+# macOS
+.DS_Store

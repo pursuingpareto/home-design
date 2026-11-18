@@ -23,7 +23,7 @@ A tool-independent, version-controlled specification for a web-first, parametric
 
 ## Repository layout
 
-`docs/` contains the working specification. `frontend/`, `backend/`, and `tests/` are placeholders for future implementation, not working applications.
+`docs/` contains the working specification. `backend/` contains the Python `model` library from [MODEL-001](docs/implementation/tasks/MODEL-001.md) (schema, validation, canonical serialization); see [backend/README.md](backend/README.md). `tests/vectors/` holds language-neutral test vectors. `frontend/` is still a placeholder.
 
 ## Safety boundary
 
