@@ -76,11 +76,11 @@ Each record has a schema version. Persist a top-level model schema version. Migr
 
 ## 9. VS-01 model acceptance tests
 
-1. Complete reference-house snapshot validates and round-trips without semantic loss.
+1. Complete reference-house snapshot validates and round-trips without semantic loss; canonical bytes before and after the round trip are identical (D029).
 2. Negative/NaN/infinite footprint dimensions and unsupported roof geometry are rejected.
 3. Missing material, section, or building reference is rejected with an actionable path.
 4. Width change produces a new revision and preserves member IDs for unchanged generation keys.
-5. Same snapshot + same generator version yields byte-equivalent canonical schedules after deterministic ordering.
+5. Same snapshot + same generator version yields byte-equivalent canonical schedules (RFC 8785, [D029](../product/decisions/D029-canonical-json-rfc8785.md)) after deterministic ordering.
 6. Every member's endpoints lie in the expected model coordinate system; schedule totals reconcile with member inventory.
 7. Invalid operation and stale base revision leave project head and stored model unchanged.
 

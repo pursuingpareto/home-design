@@ -26,7 +26,7 @@ No module may write another module's private tables. Cross-module communication 
 }
 ```
 
-Actor identity is derived from authenticated server context, not trusted from the client body. `command_id` is an idempotency key scoped to project and actor. A repeated key with different payload returns `IDEMPOTENCY_CONFLICT`.
+Actor identity is derived from authenticated server context, not trusted from the client body. `command_id` is an idempotency key scoped to project and actor. A repeated key with a different payload (compared in canonical form, [D029](../product/decisions/D029-canonical-json-rfc8785.md)) returns `IDEMPOTENCY_CONFLICT`.
 
 VS-01 command set: `CreateReferenceProject`, `SetFootprintDimensions`, `SetLevelElevations`, `SetGableRoofParameters`, `SetTimberGrid`, `SetMemberSection` (only where supported), and `UndoToRevision` (if implemented; otherwise explicitly deferred). Commands use full typed arguments, not generic JSON patch paths.
 
@@ -49,7 +49,7 @@ Request: command envelope. Response (illustrative):
 }
 ```
 
-The preview does not modify project head or create a revision. `command_hash` uses canonical serialization of the command and base revision. `expires_at` is server-issued, not client-chosen.
+The preview does not modify project head or create a revision. `command_hash` is SHA-256 over the RFC 8785 canonical serialization ([D029](../product/decisions/D029-canonical-json-rfc8785.md)) of the command and base revision. `expires_at` is server-issued, not client-chosen.
 
 ## 4. Commit contract
 

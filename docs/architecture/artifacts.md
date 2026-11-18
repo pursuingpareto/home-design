@@ -76,7 +76,7 @@ Same machine as [dependencies](dependencies.md#3-artifact-status-machine), plus 
 - `plan2d` / `mesh3d` / `timber_schedule`: `{ "revision_id", "model_schema_version", "generator_id", "generator_version", "snapshot" }` where `snapshot` is the semantic building snapshot (not derived meshes).
 - `preliminary_estimate`: the above plus `{ "price_book_id", "price_book_version", "as_of", "currency" }` or an explicit `"price_book": null`.
 
-Canonical bytes: UTF-8 JSON with object keys sorted lexicographically, arrays in documented order, `null` preserved. Do not include derived artifacts in the hashed snapshot.
+Canonical bytes: RFC 8785 JSON Canonicalization Scheme, UTF-8 ([D029](../product/decisions/D029-canonical-json-rfc8785.md)). Object keys are ordered by JCS, arrays keep their documented order, and `null` is preserved. Do not include derived artifacts in the hashed snapshot.
 
 ### 2.4 Coordinates and units
 
