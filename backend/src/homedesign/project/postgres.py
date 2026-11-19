@@ -57,6 +57,12 @@ class _PostgresTx:
         )
         return _project(row) if row else None
 
+    def list_projects(self, created_by):
+        rows = self.conn.execute(
+            "SELECT * FROM projects WHERE created_by = %s ORDER BY created_at DESC, project_id", (created_by,)
+        ).fetchall()
+        return [_project(r) for r in rows]
+
     def get_revision(self, project_id, revision_id):
         row = self._one(
             f"SELECT {_REVISION_COLUMNS} FROM revisions WHERE project_id = %s AND revision_id = %s",

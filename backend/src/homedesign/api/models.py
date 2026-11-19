@@ -65,6 +65,17 @@ class ProjectResponse(_Strict):
     permissions: list[Literal["read", "write"]]
 
 
+class ProjectSummary(_Strict):
+    project_id: str
+    head_revision_id: str
+    head_sequence: int
+    created_at: str
+
+
+class ProjectList(_Strict):
+    projects: list[ProjectSummary] = Field(description="The caller's own projects, newest first (UI-001 §8.1).")
+
+
 class CommitResponse(_Strict):
     project_id: str
     revision_id: str

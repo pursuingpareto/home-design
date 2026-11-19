@@ -187,6 +187,31 @@ def test_vs01_flow(api):
     assert api.get(f"/api/v1/projects/{pid}").json()["permissions"] == ["read", "write"]
 
 
+# --- project list (UI-001 §8.1) ---------------------------------------------------------------
+
+
+def test_project_list_is_owner_only_and_newest_first(store):
+    # Fresh actors: the PostgreSQL test database is shared by every test in the session.
+    tokens = {"tok-a": str(uuid.uuid4()), "tok-b": str(uuid.uuid4())}
+    clock = Clock()
+    api = Api(create_app(Settings(preview_key=KEY, store="memory", dev_tokens=tokens), store=store, clock=clock), clock)
+    assert api.get("/api/v1/projects").json() == {"projects": []}
+    first = api.create()
+    api.clock.now = T0 + timedelta(minutes=1)
+    tied = sorted([api.create(), api.create()])  # same created_at: ordered by project_id
+    api.clock.now = T0 + timedelta(minutes=2)
+    newest = api.create()
+    api.create(token="tok-b")
+    api.commit(first, api.roof(first, 0.6))
+    listed = api.get("/api/v1/projects").json()["projects"]
+    assert [p["project_id"] for p in listed] == [newest, *tied, first]
+    assert listed[-1]["head_sequence"] == 2 and listed[-1]["head_revision_id"] == api.head(first)
+    assert listed[-1] == {k: v for k, v in api.get(f"/api/v1/projects/{first}").json().items() if k != "permissions"}
+    assert len(api.get("/api/v1/projects", token="tok-b").json()["projects"]) == 1
+    for token in (None, "nope"):
+        assert api.get("/api/v1/projects", token=token).status_code == 401
+
+
 # --- 2. contract matrix (interfaces.md §9) ---------------------------------------------------
 
 
@@ -586,3 +611,11 @@ def test_openapi_and_docs_are_served_outside_api_v1():
     assert client.get("/openapi.json").json() == OPENAPI
     assert client.get("/docs").status_code == 200
     assert client.get("/api/v1/openapi.json").status_code == 404
+
+
+def test_ui_fixtures_are_current():
+    from homedesign.api.ui_fixtures import FIXTURE_PATH, render
+
+    assert FIXTURE_PATH.read_text(encoding="utf-8") == render(), (
+        "frontend/tests/fixtures/reference-house-001.json is stale. Run `uv run python -m homedesign.api.ui_fixtures` and commit the result."
+    )

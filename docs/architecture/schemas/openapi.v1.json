@@ -214,6 +214,25 @@
         "title": "VS-01 artifact envelope (artifacts.md §2)",
         "type": "object"
       },
+      "Assumption": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "Assumption",
+        "type": "object"
+      },
       "Building": {
         "additionalProperties": false,
         "properties": {
@@ -509,6 +528,92 @@
           "args"
         ],
         "title": "CreateReferenceProject",
+        "type": "object"
+      },
+      "Dimension": {
+        "additionalProperties": false,
+        "properties": {
+          "end_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "End M",
+            "type": "array"
+          },
+          "id": {
+            "enum": [
+              "footprint-width",
+              "footprint-depth"
+            ],
+            "title": "Id",
+            "type": "string"
+          },
+          "start_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Start M",
+            "type": "array"
+          },
+          "value_m": {
+            "title": "Value M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "start_m",
+          "end_m",
+          "value_m"
+        ],
+        "title": "Dimension",
+        "type": "object"
+      },
+      "Envelope3d": {
+        "additionalProperties": false,
+        "properties": {
+          "footprint_ring_m": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "title": "Footprint Ring M",
+            "type": "array"
+          },
+          "level_z_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Level Z M",
+            "type": "array"
+          },
+          "roof": {
+            "$ref": "#/components/schemas/GableRoofGeometry"
+          },
+          "z_eave_m": {
+            "title": "Z Eave M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "footprint_ring_m",
+          "level_z_m",
+          "z_eave_m",
+          "roof"
+        ],
+        "title": "Envelope3d",
         "type": "object"
       },
       "ErrorBody": {
@@ -832,6 +937,62 @@
         "title": "GableRoofArgs",
         "type": "object"
       },
+      "GableRoofGeometry": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "gable",
+            "default": "gable",
+            "title": "Kind",
+            "type": "string"
+          },
+          "pitch_rad": {
+            "title": "Pitch Rad",
+            "type": "number"
+          },
+          "ridge_axis": {
+            "const": "X",
+            "title": "Ridge Axis",
+            "type": "string"
+          },
+          "ridge_end_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Ridge End M",
+            "type": "array"
+          },
+          "ridge_start_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Ridge Start M",
+            "type": "array"
+          },
+          "surfaces": {
+            "items": {
+              "$ref": "#/components/schemas/RoofSurface"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Surfaces",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ridge_axis",
+          "pitch_rad",
+          "ridge_start_m",
+          "ridge_end_m",
+          "surfaces"
+        ],
+        "title": "GableRoofGeometry",
+        "type": "object"
+      },
       "GridLineArg": {
         "additionalProperties": false,
         "description": "Either ``{\"id\", \"fraction\"}`` (keep an existing line) or ``{\"fraction\"}`` (new line).",
@@ -901,6 +1062,74 @@
           "story_height_m"
         ],
         "title": "Level",
+        "type": "object"
+      },
+      "LineItem": {
+        "additionalProperties": false,
+        "properties": {
+          "amount_minor": {
+            "anyOf": [
+              {
+                "ge": -9007199254740991,
+                "le": 9007199254740991,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount Minor"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "nominal_section": {
+            "title": "Nominal Section",
+            "type": "string"
+          },
+          "priced": {
+            "title": "Priced",
+            "type": "boolean"
+          },
+          "quantity_unit": {
+            "const": "m",
+            "default": "m",
+            "title": "Quantity Unit",
+            "type": "string"
+          },
+          "quantity_value": {
+            "title": "Quantity Value",
+            "type": "number"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "unit_price_minor": {
+            "anyOf": [
+              {
+                "ge": -9007199254740991,
+                "le": 9007199254740991,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price Minor"
+          }
+        },
+        "required": [
+          "key",
+          "role",
+          "nominal_section",
+          "quantity_value",
+          "unit_price_minor",
+          "amount_minor",
+          "priced"
+        ],
+        "title": "LineItem",
         "type": "object"
       },
       "Manifest": {
@@ -1154,6 +1383,100 @@
         "title": "MemberSectionArgs",
         "type": "object"
       },
+      "Mesh3dPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "envelope": {
+            "$ref": "#/components/schemas/Envelope3d"
+          },
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/MeshMember"
+            },
+            "title": "Members",
+            "type": "array"
+          },
+          "units": {
+            "const": "m",
+            "default": "m",
+            "title": "Units",
+            "type": "string"
+          }
+        },
+        "required": [
+          "members",
+          "envelope"
+        ],
+        "title": "mesh3d payload (artifacts.md §6)",
+        "type": "object"
+      },
+      "MeshMember": {
+        "additionalProperties": false,
+        "properties": {
+          "axis_end_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Axis End M",
+            "type": "array"
+          },
+          "axis_start_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Axis Start M",
+            "type": "array"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "member_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Member Id",
+            "type": "string"
+          },
+          "primitive": {
+            "const": "oriented_box",
+            "default": "oriented_box",
+            "title": "Primitive",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "POST",
+              "BEAM",
+              "FLOOR_JOIST",
+              "RAFTER"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "section_depth_m": {
+            "title": "Section Depth M",
+            "type": "number"
+          },
+          "section_width_m": {
+            "title": "Section Width M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "member_id",
+          "generation_key",
+          "role",
+          "axis_start_m",
+          "axis_end_m",
+          "section_width_m",
+          "section_depth_m"
+        ],
+        "title": "MeshMember",
+        "type": "object"
+      },
       "Message": {
         "additionalProperties": false,
         "properties": {
@@ -1177,6 +1500,317 @@
         "additionalProperties": false,
         "properties": {},
         "title": "NoArgs",
+        "type": "object"
+      },
+      "Plan2dPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/Dimension"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Dimensions",
+            "type": "array"
+          },
+          "footprint": {
+            "$ref": "#/components/schemas/PlanFootprint"
+          },
+          "planes": {
+            "items": {
+              "$ref": "#/components/schemas/PlanPlane"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Planes",
+            "type": "array"
+          },
+          "roof_plan": {
+            "$ref": "#/components/schemas/RoofPlan"
+          },
+          "units": {
+            "const": "m",
+            "default": "m",
+            "title": "Units",
+            "type": "string"
+          }
+        },
+        "required": [
+          "planes",
+          "footprint",
+          "roof_plan",
+          "dimensions"
+        ],
+        "title": "plan2d payload (artifacts.md §5)",
+        "type": "object"
+      },
+      "PlanBeam": {
+        "additionalProperties": false,
+        "properties": {
+          "end_xy_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "End Xy M",
+            "type": "array"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "member_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Member Id",
+            "type": "string"
+          },
+          "section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Section Id",
+            "type": "string"
+          },
+          "start_xy_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Start Xy M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "member_id",
+          "generation_key",
+          "start_xy_m",
+          "end_xy_m",
+          "section_id"
+        ],
+        "title": "PlanBeam",
+        "type": "object"
+      },
+      "PlanFootprint": {
+        "additionalProperties": false,
+        "properties": {
+          "depth_m": {
+            "title": "Depth M",
+            "type": "number"
+          },
+          "origin_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Origin M",
+            "type": "array"
+          },
+          "ring_m": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "title": "Ring M",
+            "type": "array"
+          },
+          "rotation_rad": {
+            "title": "Rotation Rad",
+            "type": "number"
+          },
+          "width_m": {
+            "title": "Width M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "origin_m",
+          "width_m",
+          "depth_m",
+          "rotation_rad",
+          "ring_m"
+        ],
+        "title": "PlanFootprint",
+        "type": "object"
+      },
+      "PlanLine": {
+        "additionalProperties": false,
+        "properties": {
+          "end_xy_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "End Xy M",
+            "type": "array"
+          },
+          "start_xy_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Start Xy M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "start_xy_m",
+          "end_xy_m"
+        ],
+        "title": "PlanLine",
+        "type": "object"
+      },
+      "PlanPlane": {
+        "additionalProperties": false,
+        "properties": {
+          "beams": {
+            "items": {
+              "$ref": "#/components/schemas/PlanBeam"
+            },
+            "title": "Beams",
+            "type": "array"
+          },
+          "level_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level Id"
+          },
+          "plane_id": {
+            "enum": [
+              "level-0",
+              "level-1",
+              "eave"
+            ],
+            "title": "Plane Id",
+            "type": "string"
+          },
+          "posts": {
+            "items": {
+              "$ref": "#/components/schemas/PlanPost"
+            },
+            "title": "Posts",
+            "type": "array"
+          },
+          "z_m": {
+            "title": "Z M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "plane_id",
+          "level_id",
+          "z_m",
+          "posts",
+          "beams"
+        ],
+        "title": "PlanPlane",
+        "type": "object"
+      },
+      "PlanPost": {
+        "additionalProperties": false,
+        "properties": {
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "member_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Member Id",
+            "type": "string"
+          },
+          "section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Section Id",
+            "type": "string"
+          },
+          "xy_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Xy M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "member_id",
+          "generation_key",
+          "xy_m",
+          "section_id"
+        ],
+        "title": "PlanPost",
+        "type": "object"
+      },
+      "PreliminaryEstimatePayload": {
+        "additionalProperties": false,
+        "properties": {
+          "coverage": {
+            "enum": [
+              "none",
+              "partial",
+              "complete"
+            ],
+            "title": "Coverage",
+            "type": "string"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "const": "USD",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "line_items": {
+            "items": {
+              "$ref": "#/components/schemas/LineItem"
+            },
+            "title": "Line Items",
+            "type": "array"
+          },
+          "price_book": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PriceBookInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "totals": {
+            "$ref": "#/components/schemas/Totals"
+          }
+        },
+        "required": [
+          "coverage",
+          "currency",
+          "price_book",
+          "line_items",
+          "totals"
+        ],
+        "title": "preliminary_estimate payload (artifacts.md §8)",
         "type": "object"
       },
       "PreviewResponse": {
@@ -1327,6 +1961,47 @@
         "title": "Price book (artifacts.md §8.2)",
         "type": "object"
       },
+      "PriceBookInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "title": "As Of",
+            "type": "string"
+          },
+          "currency": {
+            "const": "USD",
+            "title": "Currency",
+            "type": "string"
+          },
+          "geography": {
+            "title": "Geography",
+            "type": "string"
+          },
+          "price_book_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Price Book Id",
+            "type": "string"
+          },
+          "price_book_version": {
+            "title": "Price Book Version",
+            "type": "integer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "price_book_id",
+          "price_book_version",
+          "currency",
+          "as_of",
+          "source",
+          "geography"
+        ],
+        "title": "PriceBookInfo",
+        "type": "object"
+      },
       "PriceBookResponse": {
         "additionalProperties": false,
         "properties": {
@@ -1398,6 +2073,24 @@
         "title": "PriceRow",
         "type": "object"
       },
+      "ProjectList": {
+        "additionalProperties": false,
+        "properties": {
+          "projects": {
+            "description": "The caller's own projects, newest first (UI-001 §8.1).",
+            "items": {
+              "$ref": "#/components/schemas/ProjectSummary"
+            },
+            "title": "Projects",
+            "type": "array"
+          }
+        },
+        "required": [
+          "projects"
+        ],
+        "title": "ProjectList",
+        "type": "object"
+      },
       "ProjectResponse": {
         "additionalProperties": false,
         "properties": {
@@ -1437,6 +2130,35 @@
           "permissions"
         ],
         "title": "ProjectResponse",
+        "type": "object"
+      },
+      "ProjectSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "head_revision_id": {
+            "title": "Head Revision Id",
+            "type": "string"
+          },
+          "head_sequence": {
+            "title": "Head Sequence",
+            "type": "integer"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id",
+          "head_revision_id",
+          "head_sequence",
+          "created_at"
+        ],
+        "title": "ProjectSummary",
         "type": "object"
       },
       "RevisionList": {
@@ -1536,6 +2258,204 @@
           "material_id"
         ],
         "title": "RoleDefault",
+        "type": "object"
+      },
+      "RoofPlan": {
+        "additionalProperties": false,
+        "properties": {
+          "eave_ring_m": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "title": "Eave Ring M",
+            "type": "array"
+          },
+          "ridge_m": {
+            "$ref": "#/components/schemas/PlanLine"
+          }
+        },
+        "required": [
+          "ridge_m",
+          "eave_ring_m"
+        ],
+        "title": "RoofPlan",
+        "type": "object"
+      },
+      "RoofSurface": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "enum": [
+              "south",
+              "north"
+            ],
+            "title": "Id",
+            "type": "string"
+          },
+          "ring_m": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 3,
+              "minItems": 3,
+              "type": "array"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "title": "Ring M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "ring_m"
+        ],
+        "title": "RoofSurface",
+        "type": "object"
+      },
+      "ScheduleAggregate": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "nominal_section": {
+            "title": "Nominal Section",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "POST",
+              "BEAM",
+              "FLOOR_JOIST",
+              "RAFTER"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "total_length_m": {
+            "title": "Total Length M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "role",
+          "nominal_section",
+          "count",
+          "total_length_m"
+        ],
+        "title": "ScheduleAggregate",
+        "type": "object"
+      },
+      "ScheduleRow": {
+        "additionalProperties": false,
+        "properties": {
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grade"
+          },
+          "length_m": {
+            "title": "Length M",
+            "type": "number"
+          },
+          "material_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Material Id",
+            "type": "string"
+          },
+          "member_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Member Id",
+            "type": "string"
+          },
+          "nominal_section": {
+            "title": "Nominal Section",
+            "type": "string"
+          },
+          "quantity": {
+            "const": 1,
+            "default": 1,
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "role": {
+            "enum": [
+              "POST",
+              "BEAM",
+              "FLOOR_JOIST",
+              "RAFTER"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Section Id",
+            "type": "string"
+          },
+          "species": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Species"
+          }
+        },
+        "required": [
+          "member_id",
+          "generation_key",
+          "role",
+          "nominal_section",
+          "section_id",
+          "material_id",
+          "species",
+          "grade",
+          "length_m"
+        ],
+        "title": "ScheduleRow",
+        "type": "object"
+      },
+      "ScheduleUnits": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "const": "1",
+            "default": "1",
+            "title": "Count",
+            "type": "string"
+          },
+          "length": {
+            "const": "m",
+            "default": "m",
+            "title": "Length",
+            "type": "string"
+          }
+        },
+        "title": "ScheduleUnits",
         "type": "object"
       },
       "Section": {
@@ -2072,6 +2992,94 @@
         "title": "TimberMember",
         "type": "object"
       },
+      "TimberSchedulePayload": {
+        "additionalProperties": false,
+        "properties": {
+          "aggregates": {
+            "items": {
+              "$ref": "#/components/schemas/ScheduleAggregate"
+            },
+            "title": "Aggregates",
+            "type": "array"
+          },
+          "assumptions": {
+            "items": {
+              "$ref": "#/components/schemas/Assumption"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "length_basis": {
+            "const": "reference_axis",
+            "default": "reference_axis",
+            "title": "Length Basis",
+            "type": "string"
+          },
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/ScheduleRow"
+            },
+            "title": "Members",
+            "type": "array"
+          },
+          "units": {
+            "$ref": "#/components/schemas/ScheduleUnits",
+            "default": {
+              "count": "1",
+              "length": "m"
+            }
+          }
+        },
+        "required": [
+          "assumptions",
+          "members",
+          "aggregates"
+        ],
+        "title": "timber_schedule payload (artifacts.md §7)",
+        "type": "object"
+      },
+      "Totals": {
+        "additionalProperties": false,
+        "properties": {
+          "grand_total_minor": {
+            "anyOf": [
+              {
+                "ge": -9007199254740991,
+                "le": 9007199254740991,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grand Total Minor"
+          },
+          "priced_amount_minor": {
+            "anyOf": [
+              {
+                "ge": -9007199254740991,
+                "le": 9007199254740991,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priced Amount Minor"
+          },
+          "unpriced_line_count": {
+            "title": "Unpriced Line Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "priced_amount_minor",
+          "unpriced_line_count",
+          "grand_total_minor"
+        ],
+        "title": "Totals",
+        "type": "object"
+      },
       "UndoArgs": {
         "additionalProperties": false,
         "properties": {
@@ -2183,6 +3191,42 @@
   "openapi": "3.1.0",
   "paths": {
     "/api/v1/projects": {
+      "get": {
+        "operationId": "listProjects",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectList"
+                }
+              }
+            },
+            "description": "The projects."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "The caller's own projects, newest first (UI-001 §8.1)"
+      },
       "post": {
         "operationId": "createProject",
         "requestBody": {

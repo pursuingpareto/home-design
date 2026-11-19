@@ -295,10 +295,17 @@ class ProjectService:
 
     # --- reads ---------------------------------------------------------------
 
+    def list_projects(self, actor_id: str) -> list[dict[str, Any]]:
+        """The actor's own projects, newest first (UI-001 §8.1; D050: never other actors' projects)."""
+        _check_actor(actor_id)
+        with self.store.transaction() as tx:
+            rows = tx.list_projects(actor_id)
+        return [_project_dict(p) for p in rows]
+
     def get_project(self, project_id: str) -> dict[str, Any]:
         with self.store.transaction() as tx:
             p = _project(tx, project_id, lock=False)
-        return {"project_id": p.project_id, "head_revision_id": p.head_revision_id, "head_sequence": p.head_sequence, "created_at": format_timestamp(p.created_at)}
+        return _project_dict(p)
 
     def get_revision(self, project_id: str, revision_id: str) -> Snapshot:
         with self.store.transaction() as tx:
@@ -329,6 +336,10 @@ class ProjectService:
 
 
 # --- helpers ---------------------------------------------------------------------
+
+
+def _project_dict(p: ProjectRow) -> dict[str, Any]:
+    return {"project_id": p.project_id, "head_revision_id": p.head_revision_id, "head_sequence": p.head_sequence, "created_at": format_timestamp(p.created_at)}
 
 
 def _check_actor(actor_id: str) -> None:

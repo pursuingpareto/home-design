@@ -1,6 +1,6 @@
 # Current project status
 
-**As of 2026-11-19:** Specification work through D050. Application code in `backend/`: the model, commands, timber generator, persistence, artifacts, geometry, estimating, and the VS-01 HTTP API (`MODEL-001` through `API-001`), with shared vectors in `tests/vectors/`. No frontend yet.
+**As of 2026-11-19:** Specification work through D050. Application code in `backend/` (the model, commands, timber generator, persistence, artifacts, geometry, estimating, and the HTTP API: `MODEL-001` through `API-001`) and `frontend/` (the browser client, `UI-001`), with shared vectors in `tests/vectors/`.
 
 ## Complete
 
@@ -33,5 +33,5 @@
 - `GEOM-001` implemented: `plan2d` and `mesh3d` derived for every revision (D048 roof planes), matching an independent ECMAScript implementation.
 - `EST-001` implemented: `timber_schedule`, gated `preliminary_estimate` (never a fabricated total), and versioned per-project price books; all four VS-01 artifacts are derived for every revision; 383 tests passing.
 - `API-001` implemented: the VS-01 HTTP API at `/api/v1` (FastAPI), with strict bodies, the error envelope, request IDs, development bearer tokens and owner-only access (D050), and a committed OpenAPI document; 436 tests passing. The three contract points found during implementation (405, 415, unknown routes) are approved (API-001 §13).
-- Task file for the UI (`UI-001`).
+- `UI-001` implemented: the VS-01 browser client in `frontend/` (React, TypeScript, Three.js, SVG) with synchronized 2D and 3D views, footprint edits through preview and confirmation, undo, the schedule, the estimate, a price-book form, and the project list route; 439 backend, 34 frontend, and 8 browser end-to-end tests passing. VS-01's user-visible acceptance criteria are covered end to end.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

@@ -7,7 +7,7 @@ Python backend for the Home Design Platform. It contains:
 - the artifact, geometry, and estimating modules ([ART-001](../docs/implementation/tasks/ART-001.md), [GEOM-001](../docs/implementation/tasks/GEOM-001.md), [EST-001](../docs/implementation/tasks/EST-001.md));
 - the HTTP API ([API-001](../docs/implementation/tasks/API-001.md)).
 
-Together they provide the authoritative Pydantic schema for VS-01 snapshots (D028), five-stage validation (D035, D046), the `vs01-post-beam-1` generator, RFC 8785 canonical serialization (D029, D030), typed commands, PostgreSQL revision persistence with concurrency, idempotency, and preview tokens, the four derived artifacts, and the `/api/v1` HTTP API. No UI yet.
+Together they provide the authoritative Pydantic schema for VS-01 snapshots (D028), five-stage validation (D035, D046), the `vs01-post-beam-1` generator, RFC 8785 canonical serialization (D029, D030), typed commands, PostgreSQL revision persistence with concurrency, idempotency, and preview tokens, the four derived artifacts, and the `/api/v1` HTTP API. The browser client is in [`frontend/`](../frontend/README.md) ([UI-001](../docs/implementation/tasks/UI-001.md)).
 
 ## Setup
 
@@ -58,6 +58,7 @@ Call it with `Authorization: Bearer dev-token`. Interactive docs are at `/docs`,
 uv run pytest                                      # full test suite
 uv run python -m homedesign.model.schema_export    # regenerate the JSON Schemas and openapi.v1.json in docs/architecture/schemas/
 uv run python -m homedesign.model.schema_export --check   # fail if the committed schema is stale
+uv run python -m homedesign.api.ui_fixtures        # regenerate the frontend's captured Reference House 001 fixtures
 ```
 
 ## Using the library

@@ -149,6 +149,7 @@ All routes are under `/api/v1` and require authentication ([API-001](../implemen
 | Method and path | Purpose | Success |
 |---|---|---|
 | `POST /api/v1/projects` | Create reference project (creation envelope, §2) | 201; 200 for an idempotent retry (`"replayed": true`) |
+| `GET /api/v1/projects` | The caller's own projects, newest first: `{projects: [{project_id, head_revision_id, head_sequence, created_at}]}` ([UI-001](../implementation/tasks/UI-001.md) §8.1, approved as §11 item 8) | 200 |
 | `GET /api/v1/projects/{id}` | Metadata, head revision, and the caller's `permissions` (`["read", "write"]` for the owner in VS-01) | 200 |
 | `POST /api/v1/projects/{id}/commands/preview` | Preview a command (§3) | 200 |
 | `POST /api/v1/projects/{id}/commands/commit` | Commit `{command, preview_token?}` (§4) | 201 new revision; 200 no-op or retry |

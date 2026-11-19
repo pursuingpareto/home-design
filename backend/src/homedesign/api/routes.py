@@ -29,6 +29,7 @@ from .models import (
     PriceBookResponse,
     PriceBookSet,
     PreviewResponse,
+    ProjectList,
     ProjectResponse,
     RevisionList,
 )
@@ -123,6 +124,17 @@ async def create_project(request: Request) -> Response:
     command = await read_json(request)
     result = await _run(_service(request).create_project, command, actor_id=actor, now=_now(request))
     return JSONResponse(result.body(), status_code=result.http_status)
+
+
+@router.get(
+    "/projects",
+    operation_id="listProjects",
+    summary="The caller's own projects, newest first (UI-001 §8.1)",
+    responses={200: {"model": ProjectList, "description": "The projects."}, **_errors(401)},
+)
+async def list_projects(request: Request) -> Response:
+    actor = _actor(request)
+    return JSONResponse({"projects": await _run(_service(request).list_projects, actor)})
 
 
 @router.get(

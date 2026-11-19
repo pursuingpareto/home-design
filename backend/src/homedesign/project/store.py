@@ -73,6 +73,7 @@ class ArtifactRow:
 
 class StoreTx(Protocol):
     def get_project(self, project_id: str, *, lock: bool = False) -> ProjectRow | None: ...
+    def list_projects(self, created_by: str) -> list[ProjectRow]: ...  # newest first, then project_id
     def get_revision(self, project_id: str, revision_id: str) -> RevisionRow | None: ...
     def list_revisions(self, project_id: str) -> list[tuple[RevisionRow, OperationRow | None]]: ...
     def find_operation(self, project_id: str, actor_id: str, command_id: str) -> OperationRow | None: ...
@@ -112,6 +113,10 @@ class _MemoryTx:
 
     def get_project(self, project_id, *, lock=False):
         return self.projects.get(project_id)
+
+    def list_projects(self, created_by):
+        rows = sorted((p for p in self.projects.values() if p.created_by == created_by), key=lambda p: p.project_id)
+        return sorted(rows, key=lambda p: p.created_at, reverse=True)  # stable: ties stay in project_id order
 
     def get_revision(self, project_id, revision_id):
         row = self.revisions.get(revision_id)
