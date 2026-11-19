@@ -125,6 +125,7 @@ def create_app(
     registry: Any = None,
     authenticator: Authenticator | None = None,
     clock: Callable[[], datetime] | None = None,
+    project_id_factory: Callable[[], str] | None = None,  # tests: deterministic project IDs (TEST-001)
 ) -> FastAPI:
     """Build the API. Settings come from the environment unless given; startup fails on invalid ones."""
     from .openapi import install_openapi
@@ -147,7 +148,8 @@ def create_app(
         redoc_url=None,
         openapi_url="/openapi.json",
     )
-    app.state.service = ProjectService(store, token_key=settings.preview_key, registry=registry)
+    extra = {"project_id_factory": project_id_factory} if project_id_factory else {}
+    app.state.service = ProjectService(store, token_key=settings.preview_key, registry=registry, **extra)
     app.state.authenticator = authenticator or DevTokenAuthenticator(settings.dev_tokens)
     app.state.clock = clock or (lambda: datetime.now(UTC))
     app.include_router(router)

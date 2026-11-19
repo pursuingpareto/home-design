@@ -59,6 +59,8 @@ uv run pytest                                      # full test suite
 uv run python -m homedesign.model.schema_export    # regenerate the JSON Schemas and openapi.v1.json in docs/architecture/schemas/
 uv run python -m homedesign.model.schema_export --check   # fail if the committed schema is stale
 uv run python -m homedesign.api.ui_fixtures        # regenerate the frontend's captured Reference House 001 fixtures
+uv run python tests/integration/golden.py          # regenerate the golden scenario record (review the diff; TEST-001 §6)
+HYPOTHESIS_PROFILE=thorough uv run pytest tests/integration/test_sequences.py   # 500 random command sequences instead of 40
 ```
 
 ## Using the library
@@ -93,4 +95,5 @@ else:
 | `src/homedesign/api/` | FastAPI app factory, routes, strict bodies, error envelope, request IDs, settings, development authentication (API-001) |
 | `src/homedesign/project/` | `ProjectService` (create, preview, commit, reads), in-memory and PostgreSQL stores, preview tokens, migrations |
 | `src/homedesign/timber/` | Rule registry, `vs01-post-beam-1` (`generate`, `conformance`), `GeneratedMember`, and the `timber_schedule` builder (EST-001) |
+| `tests/integration/` | Reference-house scenario, whole-house invariants, golden record, and property-based sequences (TEST-001) |
 | `tests/` | Fixture, mutation table, generator, JCS and inventory vectors, property tests, catalog-doc sync |

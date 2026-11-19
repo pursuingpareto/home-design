@@ -32,122 +32,14 @@ from homedesign.project import MemoryStore
 from homedesign.project.postgres import PostgresStore
 from test_project import ACTOR, ACTOR_B, KEY, T0, cid
 
-TOKENS = {"tok-a": ACTOR, "tok-b": ACTOR_B}
-OPENAPI = json.loads(OPENAPI_PATH.read_text(encoding="utf-8"))
-POST_KEY, BEAM_KEY = "timber.POST.8x8", "timber.BEAM.8x12"
-UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 
-
-def schema_for(ref: str) -> dict[str, Any]:
-    return {"$schema": "https://json-schema.org/draft/2020-12/schema", "$ref": ref, "components": OPENAPI["components"]}
-
-
-def conforms(component: str, value: Any) -> None:
-    jsonschema.Draft202012Validator(schema_for(f"#/components/schemas/{component}")).validate(value)
-
-
-def _operation(method: str, path: str) -> dict[str, Any]:
-    path = path.split("?")[0]
-    for template, operations in OPENAPI["paths"].items():
-        if re.fullmatch(re.sub(r"\{[^}]+\}", "[^/]+", template), path) and method.lower() in operations:
-            return operations[method.lower()]
-    raise AssertionError(f"{method} {path} is not in openapi.v1.json")
-
-
-class Clock:
-    def __init__(self) -> None:
-        self.now = T0
-
-    def __call__(self):
-        return self.now
-
-
-class Api:
-    """A TestClient that checks each response against the OpenAPI document and the request-ID rules."""
-
-    def __init__(self, app, clock: Clock) -> None:
-        self.app, self.clock = app, clock
-        self.client = TestClient(app)
-        self.service = app.state.service
-
-    def call(self, method: str, path: str, *, token: str | None = "tok-a", json_body: Any = None, raw: bytes | None = None, content_type: str = "application/json", headers: dict[str, str] | None = None):
-        sent = dict(headers or {})
-        if token is not None:
-            sent["Authorization"] = f"Bearer {token}"
-        if json_body is not None or raw is not None:
-            sent["Content-Type"] = content_type
-            raw = raw if raw is not None else json.dumps(json_body).encode()
-        response = self.client.request(method, path, content=raw, headers=sent)
-        request_id = response.headers.get("x-request-id", "")
-        assert UUID_RE.match(request_id), response.headers
-        documented = _operation(method, path)["responses"]
-        spec = documented.get(str(response.status_code)) or documented["default"]
-        body = response.json()
-        jsonschema.Draft202012Validator(schema_for(spec["content"]["application/json"]["schema"]["$ref"])).validate(body)
-        if response.status_code >= 400:
-            assert body["error"]["request_id"] == request_id
-        return response
-
-    # shortcuts
-    def get(self, path, **kw):
-        return self.call("GET", path, **kw)
-
-    def post(self, path, body=None, **kw):
-        return self.call("POST", path, json_body=body, **kw)
-
-    def put(self, path, body=None, **kw):
-        return self.call("PUT", path, json_body=body, **kw)
-
-    # VS-01 flow helpers
-    def create(self, token="tok-a") -> str:
-        response = self.post("/api/v1/projects", {"command_id": cid(), "type": "CreateReferenceProject", "args": {}}, token=token)
-        assert response.status_code == 201, response.json()
-        return response.json()["project_id"]
-
-    def head(self, pid) -> str:
-        return self.get(f"/api/v1/projects/{pid}").json()["head_revision_id"]
-
-    def snapshot(self, pid, rev=None) -> dict:
-        return self.get(f"/api/v1/projects/{pid}/revisions/{rev or self.head(pid)}").json()
-
-    def command(self, pid, type_, args, **kw) -> dict:
-        return {"command_id": kw.get("command_id") or cid(), "project_id": pid, "base_revision_id": kw.get("base") or self.head(pid), "type": type_, "args": args}
-
-    def width(self, pid, width, **kw) -> dict:
-        footprint = next(e for e in self.snapshot(pid)["entities"] if e["kind"] == "Footprint")
-        return self.command(pid, "SetFootprintDimensions", {"width_m": width, "depth_m": footprint["depth_m"]}, **kw)
-
-    def roof(self, pid, pitch=0.5, **kw) -> dict:
-        return self.command(pid, "SetGableRoofParameters", {"pitch_rad": pitch, "eave_overhang_m": 0.6096}, **kw)
-
-    def preview(self, pid, command, **kw):
-        return self.post(f"/api/v1/projects/{pid}/commands/preview", command, **kw)
-
-    def commit(self, pid, command, preview_token=None, **kw):
-        body = {"command": command} | ({"preview_token": preview_token} if preview_token else {})
-        return self.post(f"/api/v1/projects/{pid}/commands/commit", body, **kw)
-
-    def preview_commit(self, pid, command):
-        token = self.preview(pid, command).json()["preview_token"]
-        return self.commit(pid, command, token)
-
-
-def make_api(store, registry=None) -> Api:
-    clock = Clock()
-    settings = Settings(preview_key=KEY, store="memory", dev_tokens=TOKENS)
-    return Api(create_app(settings, store=store, registry=registry, clock=clock), clock)
+from api_support import BEAM_KEY, OPENAPI, POST_KEY, TOKENS, UUID_RE, Api, Clock, book, conforms, make_api, schema_for  # noqa: E402,F401
 
 
 @pytest.fixture
 def api(store) -> Api:
     return make_api(store)
 
-
-def book(**prices):
-    return {
-        "currency": "USD", "as_of": "2026-11-01", "source": "Supplier quote #123", "geography": "Chittenden County, VT",
-        "rows": [{"key": key, "unit": "m", "unit_price_minor": price} for key, price in prices.items()],
-    }
 
 
 # --- 1. the VS-01 flow end to end (AC-01, AC-02, AC-05, AC-07, AC-08) ----------------------

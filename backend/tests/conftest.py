@@ -8,6 +8,13 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from hypothesis import settings as hypothesis_settings
+
+# TEST-001 §7: deterministic by default (no flakes in CI); `HYPOTHESIS_PROFILE=thorough` for long runs.
+# Tests that set max_examples explicitly keep their own counts.
+hypothesis_settings.register_profile("ci", derandomize=True, max_examples=40, print_blob=True)
+hypothesis_settings.register_profile("thorough", derandomize=False, max_examples=500, print_blob=True)
+hypothesis_settings.load_profile(os.environ.get("HYPOTHESIS_PROFILE", "ci"))
 
 from homedesign.model.schema import Snapshot
 from homedesign.timber import get_rule
