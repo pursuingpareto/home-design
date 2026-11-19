@@ -39,8 +39,9 @@ class Derivation:
     generator_version: str
     derive: Callable[[DerivationContext], Outcome]
     depends_on: tuple[str, ...] = ()
-    # Returns extra fingerprinted inputs from outside the snapshot, given (tx, project_id).
-    # They are merged into the fingerprint input object and passed as context.external.
+    # Returns extra inputs from outside the snapshot, given (tx, project_id). Keys are merged into
+    # the fingerprint input object, except keys starting with "_", which are context only and must
+    # be fully determined by the fingerprinted keys. All keys are passed as context.external.
     external_inputs: Callable[[Any, str], dict[str, Any]] | None = None
 
 
@@ -84,7 +85,9 @@ def registry_of(derivations: Iterable[Derivation]) -> Registry:
 
 
 def default_registry() -> Registry:
-    """Production registry: GEOM-001 geometry views (EST-001 adds the schedule and estimate)."""
-    from homedesign.geometry import MESH3D, PLAN2D  # lazy: geometry imports this module
+    """Production registry: GEOM-001 views and EST-001 schedule and estimate."""
+    from homedesign.estimating import ESTIMATE  # lazy: these modules import this one
+    from homedesign.geometry import MESH3D, PLAN2D
+    from homedesign.timber.schedule import SCHEDULE
 
-    return registry_of([PLAN2D, MESH3D])
+    return registry_of([PLAN2D, MESH3D, SCHEDULE, ESTIMATE])

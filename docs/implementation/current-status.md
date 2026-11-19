@@ -30,7 +30,7 @@
 - `TIMBER-001` implemented: `vs01-post-beam-1` generator, rule registry, and stage 5 conformance (D046); inventory matches an independent ECMAScript implementation byte for byte.
 - `MODEL-004` implemented: `ProjectService` over in-memory and PostgreSQL stores, with immutable revisions, optimistic concurrency, idempotent retries, an audit log, and signed preview tokens (D047).
 - `ART-001` implemented: derivation registry, envelope and manifest, `artifacts` storage, derive-after-commit with lazy recompute, real `artifact_statuses`.
-- `GEOM-001` implemented: `plan2d` and `mesh3d` derived for every revision (D048 roof planes), matching an independent ECMAScript implementation; 334 tests passing.
-- `EST-001` is ready (all proposals settled, including D049).
+- `GEOM-001` implemented: `plan2d` and `mesh3d` derived for every revision (D048 roof planes), matching an independent ECMAScript implementation.
+- `EST-001` implemented: `timber_schedule`, gated `preliminary_estimate` (never a fabricated total), and versioned per-project price books; all four VS-01 artifacts are derived for every revision; 383 tests passing.
 - Task files for the API and UI.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

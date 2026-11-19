@@ -248,6 +248,42 @@ class ProjectService:
         tx.set_head(project_id, change.revision_id, sequence)
         return CommitResult(201, project_id, change.revision_id, head.revision_id, change.operation_id, sequence, False)
 
+    # --- price books (EST-001 §5; artifacts.md §8.2) ----------------------------
+
+    def set_price_book(self, project_id: str, book: Any, *, actor_id: str, now: datetime) -> dict[str, Any]:
+        """Store a new price-book version. Not a model command: creates no revision.
+
+        The head's estimate becomes STALE through its fingerprint and is recomputed on read.
+        """
+        from homedesign.estimating import validate_price_book
+
+        _check_actor(actor_id)
+        validated, error = validate_price_book(book)
+        if error is not None:
+            raise CommandRejected(error)
+        with self.store.transaction() as tx:
+            _project(tx, project_id, lock=True)  # serializes concurrent version numbering
+            latest = tx.get_price_book(project_id)
+            row = {
+                "project_id": project_id,
+                "version": 1 if latest is None else latest["version"] + 1,
+                "price_book_id": str(uuid.uuid4()) if latest is None else latest["price_book_id"],
+                "book": validated.model_dump(mode="json"),
+                "set_by": actor_id,
+                "set_at": now,
+            }
+            tx.insert_price_book(row)
+        return {"price_book_id": row["price_book_id"], "version": row["version"], "set_at": format_timestamp(now)}
+
+    def get_price_book(self, project_id: str) -> dict[str, Any] | None:
+        with self.store.transaction() as tx:
+            _project(tx, project_id, lock=False)
+            row = tx.get_price_book(project_id)
+        if row is None:
+            return None
+        return {"price_book_id": row["price_book_id"], "version": row["version"], "book": row["book"],
+                "set_by": row["set_by"], "set_at": format_timestamp(row["set_at"])}
+
     # --- reads ---------------------------------------------------------------
 
     def get_project(self, project_id: str) -> dict[str, Any]:

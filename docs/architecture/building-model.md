@@ -112,6 +112,7 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `ORDER_VIOLATION` | 2 | An array with a required order is out of order (D030) |
 | `DUPLICATE_LINE_ID` | 2 | A grid line ID repeats within an axis; `path` is each later occurrence's `id`, `related_paths` the first occurrence's (D042, D037) |
 | `DUPLICATE_SECTION_LABEL` | 2 | Two sections share a `nominal_label`; `path` is each later section's label (by `id` order), `related_paths` the first's (D049, D037) |
+| `DUPLICATE_PRICE_KEY` | 2 | A price-book row key repeats; `path` is the later row's `key`, `related_paths` the first's (price-book validation, EST-001) |
 | `MISSING_ROLE_DEFAULT` | 2 | `FrameSystem.member_defaults` lacks an entry for a role the generation rule generates (D039) |
 | `OUT_OF_RANGE` | 3 | Physically meaningless value: non-positive length, pitch outside (0, π/2), negative overhang |
 | `NOT_STRICTLY_ASCENDING` | 3 | Grid fractions or level elevations not strictly increasing |

@@ -401,7 +401,8 @@ Approved from [EST-001](../implementation/tasks/EST-001.md) §5, §7 item 4:
 - **In the payload:** the book-level fields, `price_book_id`, and `price_book_version` are copied onto the estimate payload's `price_book`, and the estimate fingerprint includes `price_book_id`, `price_book_version`, `as_of`, and `currency` (§2.3).
 - **Versions:** books are versioned per project and append-only. Setting a book creates version n+1 and keeps a stable `price_book_id`. Clearing a book is not supported in VS-01.
 - **Outside the model:** setting a book is not a model command and creates no revision. It makes only the head's `preliminary_estimate` `STALE`, which is then recomputed on read; the other artifacts are unaffected.
-- **Unused rows:** rows whose key matches no line item are ignored and listed in a warning, not rejected.
+- **Unused rows:** rows whose key matches no line item are ignored and listed in a `PRICE_ROWS_UNUSED` warning, not rejected.
+- **Validation:** invalid books are rejected with D035 codes and paths relative to the book: shape and type errors first, then `DUPLICATE_PRICE_KEY` for repeated row keys, then `OUT_OF_RANGE` for negative prices ([EST-001](../implementation/tasks/EST-001.md) §8).
 
 If coverage is `none` or `partial`, include warning code `COST_INPUTS_MISSING`.
 

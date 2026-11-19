@@ -59,8 +59,9 @@ else:
 | `src/homedesign/model/jcs.py`, `canonical.py` | RFC 8785 and snapshot fingerprints |
 | `src/homedesign/model/strict_json.py`, `paths.py` | Strict parser and D036 path rendering |
 | `src/homedesign/model/commands/` | Typed commands: envelopes, `propose`/`propose_create`, D041 minting, diff and classification, packaged template |
+| `src/homedesign/estimating/` | Price-book model and validation, `preliminary_estimate` builder, exact half-even money rounding (EST-001) |
 | `src/homedesign/geometry/` | `plan2d` and `mesh3d` builders and payload models (GEOM-001) |
 | `src/homedesign/dependencies/` | Artifact registry, envelope and manifest, `ArtifactService` (derive after commit, lazy recompute, status) |
 | `src/homedesign/project/` | `ProjectService` (create, preview, commit, reads), in-memory and PostgreSQL stores, preview tokens, migrations |
-| `src/homedesign/timber/` | Rule registry, `vs01-post-beam-1` (`generate`, `conformance`), `GeneratedMember` |
+| `src/homedesign/timber/` | Rule registry, `vs01-post-beam-1` (`generate`, `conformance`), `GeneratedMember`, and the `timber_schedule` builder (EST-001) |
 | `tests/` | Fixture, mutation table, generator, JCS and inventory vectors, property tests, catalog-doc sync |

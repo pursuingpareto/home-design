@@ -176,6 +176,37 @@ function mesh3d(snapshot) {
 }
 const plan2dCanonical = canonicalize(plan2d(fixture));
 
+// Independent ECMAScript implementation of timber_schedule (artifacts.md §7, EST-001 §3):
+// naive sqrt length, one aggregate per (role, nominal_section) summed in generation_key order.
+function timberSchedule(snapshot) {
+  const byId = new Map(snapshot.entities.map((e) => [e.id, e]));
+  const members = snapshot.entities
+    .filter((e) => e.kind === "TimberMember")
+    .sort((a, b) => (a.generation_key < b.generation_key ? -1 : a.generation_key > b.generation_key ? 1 : 0));
+  const totals = new Map();
+  const rows = members.map((m) => {
+    const s = byId.get(m.section_id), mat = byId.get(m.material_id);
+    const dx = m.end_m[0] - m.start_m[0], dy = m.end_m[1] - m.start_m[1], dz = m.end_m[2] - m.start_m[2];
+    const length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    const key = m.member_role + "\u0000" + s.nominal_label;
+    const t = totals.get(key) || { role: m.member_role, nominal_section: s.nominal_label, count: 0, total_length_m: 0 };
+    t.count += 1; t.total_length_m += length; totals.set(key, t);
+    return { member_id: m.id, generation_key: m.generation_key, role: m.member_role, nominal_section: s.nominal_label,
+      section_id: s.id, material_id: mat.id, species: mat.species, grade: mat.grade, length_m: length, quantity: 1 };
+  });
+  const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  const aggregates = [...totals.values()].sort((a, b) => cmp(a.role, b.role) || cmp(a.nominal_section, b.nominal_section));
+  return {
+    units: { length: "m", count: "1" }, length_basis: "reference_axis",
+    assumptions: [
+      { code: "REFERENCE_AXIS_LENGTH", message: "Lengths are reference-axis distances, not fabrication cut lengths." },
+      { code: "NO_CONNECTIONS", message: "Joinery and machining are not included." },
+    ],
+    members: rows, aggregates,
+  };
+}
+const scheduleCanonical = canonicalize(timberSchedule(fixture));
+
 // Independent UUIDv5 (RFC 9562) over the canonical name array, for D041 ID minting.
 function uuidv5(namespace, name) {
   const ns = Buffer.from(namespace.replace(/-/g, ""), "hex");
@@ -213,6 +244,7 @@ const output = {
     plan2d: { canonical_bytes: Buffer.byteLength(plan2dCanonical, "utf8"), fingerprint: sha256(plan2dCanonical) },
     // Full payload: values derived from tan(pitch) are compared within 1e-12 m, the rest exactly.
     mesh3d: { tan: Math.tan(fixture.entities.find((e) => e.kind === "GableRoof").pitch_rad), payload: mesh3d(fixture) },
+    timber_schedule: { canonical_bytes: Buffer.byteLength(scheduleCanonical, "utf8"), fingerprint: sha256(scheduleCanonical), aggregates: timberSchedule(fixture).aggregates },
   },
   inventories: [
     {

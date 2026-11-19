@@ -37,7 +37,9 @@ class ArtifactService:
             "generator_id": derivation.generator_id,
             "generator_version": derivation.generator_version,
             "snapshot": canonical_snapshot_value(snapshot),
-            **external,
+            # Keys starting with "_" reach the derivation but are not fingerprinted; they must be
+            # fully determined by the fingerprinted keys (e.g. a price book's rows by its version).
+            **{k: v for k, v in external.items() if not k.startswith("_")},
         }
         return inputs, external
 

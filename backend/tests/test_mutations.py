@@ -329,9 +329,14 @@ def test_mutation(case: Case):
         assert codes.CATALOG[issue.code].top_level_code == result.code
 
 
+# Codes raised only outside snapshot validation, with the test that exercises them.
+NON_SNAPSHOT_CODES = {codes.DUPLICATE_PRICE_KEY: "test_estimating.py::test_invalid_books_are_rejected"}
+
+
 def test_every_catalog_code_is_exercised():
     exercised = {e.code for case in CASES for e in case.expect}
-    assert exercised == set(codes.CATALOG)
+    assert exercised | set(NON_SNAPSHOT_CODES) == set(codes.CATALOG)
+    assert not exercised & set(NON_SNAPSHOT_CODES)
 
 
 def test_missing_role_defaults_report_each_role():

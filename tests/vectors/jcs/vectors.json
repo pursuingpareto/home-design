@@ -1341,6 +1341,24 @@
           }
         }
       }
+    },
+    "timber_schedule": {
+      "canonical_bytes": 19247,
+      "fingerprint": "sha256:fbe8bbeba74f0fb2cfaa5e524d00101f3f9b104866df2e08ec2f0a616453c746",
+      "aggregates": [
+        {
+          "role": "BEAM",
+          "nominal_section": "8x12",
+          "count": 34,
+          "total_length_m": 124.35840000000005
+        },
+        {
+          "role": "POST",
+          "nominal_section": "8x8",
+          "count": 24,
+          "total_length_m": 69.49440000000003
+        }
+      ]
     }
   },
   "inventories": [

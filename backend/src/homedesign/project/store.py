@@ -85,6 +85,8 @@ class StoreTx(Protocol):
     def get_artifacts(self, revision_id: str, artifact_type: str) -> list[ArtifactRow]: ...
     def put_artifact(self, row: ArtifactRow) -> None: ...  # keeps an existing row with the same key
     def delete_artifacts(self, revision_id: str) -> None: ...  # derived data may be discarded
+    def get_price_book(self, project_id: str) -> dict | None: ...  # latest version, or None
+    def insert_price_book(self, row: dict) -> None: ...  # append-only versions
 
 
 class RevisionStore(Protocol):
@@ -106,6 +108,7 @@ class _MemoryTx:
         self.revisions = dict(store.revisions)
         self.operations = list(store.operations)
         self.artifacts = dict(store.artifacts)
+        self.price_books = dict(store.price_books)
 
     def get_project(self, project_id, *, lock=False):
         return self.projects.get(project_id)
@@ -171,6 +174,16 @@ class _MemoryTx:
     def delete_artifacts(self, revision_id):
         self.artifacts = {k: v for k, v in self.artifacts.items() if k[0] != revision_id}
 
+    def get_price_book(self, project_id):
+        versions = [v for (pid, _), v in self.price_books.items() if pid == project_id]
+        return copy.deepcopy(max(versions, key=lambda r: r["version"])) if versions else None
+
+    def insert_price_book(self, row):
+        key = (row["project_id"], row["version"])
+        if key in self.price_books:
+            raise ValueError("price books are append-only")
+        self.price_books[key] = copy.deepcopy(row)
+
 
 class MemoryStore:
     """Serializable in-memory store: one transaction at a time, applied atomically on success."""
@@ -181,6 +194,7 @@ class MemoryStore:
         self.revisions: dict[str, RevisionRow] = {}
         self.operations: list[OperationRow] = []
         self.artifacts: dict[tuple[str, str, str], ArtifactRow] = {}
+        self.price_books: dict[tuple[str, int], dict] = {}
 
     @contextmanager
     def transaction(self) -> Iterator[_MemoryTx]:
@@ -189,6 +203,7 @@ class MemoryStore:
             yield tx
             self.projects, self.revisions, self.operations = tx.projects, tx.revisions, tx.operations
             self.artifacts = tx.artifacts
+            self.price_books = tx.price_books
 
     def corrupt_for_test(self, revision_id: str, snapshot: dict[str, Any]) -> None:
         """Test hook: replace a stored snapshot without updating its fingerprint (§8 test 14)."""

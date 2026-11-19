@@ -157,6 +157,19 @@ class _PostgresTx:
     def delete_artifacts(self, revision_id):
         self.conn.execute("DELETE FROM artifacts WHERE revision_id = %s", (revision_id,))
 
+    def get_price_book(self, project_id):
+        row = self._one("SELECT * FROM price_books WHERE project_id = %s ORDER BY version DESC LIMIT 1", (project_id,))
+        if row is None:
+            return None
+        return {"project_id": _s(row["project_id"]), "version": row["version"], "price_book_id": _s(row["price_book_id"]),
+                "book": row["book"], "set_by": _s(row["set_by"]), "set_at": row["set_at"]}
+
+    def insert_price_book(self, row):
+        self.conn.execute(
+            "INSERT INTO price_books (project_id, version, price_book_id, book, set_by, set_at) VALUES (%s, %s, %s, %s, %s, %s)",
+            (row["project_id"], row["version"], row["price_book_id"], Jsonb(row["book"]), row["set_by"], row["set_at"]),
+        )
+
 
 class PostgresStore:
     """One connection per transaction; ``conninfo`` is a libpq connection string or URL."""
