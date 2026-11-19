@@ -5,11 +5,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AppContext } from "../src/app/context";
 import { Plan2dView } from "../src/views/Plan2dView";
 import { placeDetails } from "../src/workspace/commands";
-import { EditPanel } from "../src/workspace/EditPanel";
+import { FootprintEditor } from "../src/workspace/editors/FootprintEditor";
 import { ImpactDialog } from "../src/workspace/ImpactDialog";
 import { EstimatePanel, PreliminaryBanner, SchedulePanel } from "../src/workspace/panels";
 import { buildBook, initialRows } from "../src/workspace/PriceBookForm";
 import { Workspace } from "../src/workspace/Workspace";
+import { editorProps } from "./editorProps";
 import { fakeApi } from "./fakeApi";
 import { estimateComplete, estimateNone, fixture, plan, schedule } from "./fixtures";
 
@@ -73,7 +74,7 @@ describe("panels", () => {
 describe("edit flow pieces", () => {
   it("previews with stored values for untouched fields and parsed values for edited ones", async () => {
     const onPreview = vi.fn();
-    render(<EditPanel projectId={fixture.project.project_id} snapshot={fixture.snapshot} units="imperial" flow={{ step: "idle" }} onPreview={onPreview} />);
+    render(<FootprintEditor {...editorProps(onPreview)} />);
     const width = screen.getByLabelText(/Width/);
     expect(width).toHaveValue(`36' 0"`);
     await userEvent.clear(width);
@@ -86,7 +87,7 @@ describe("edit flow pieces", () => {
 
   it("re-entering the current width sends the stored value exactly (a no-op)", async () => {
     const onPreview = vi.fn();
-    render(<EditPanel projectId={fixture.project.project_id} snapshot={fixture.snapshot} units="imperial" flow={{ step: "idle" }} onPreview={onPreview} />);
+    render(<FootprintEditor {...editorProps(onPreview)} />);
     const width = screen.getByLabelText(/Width/);
     await userEvent.clear(width);
     await userEvent.type(width, "36'");
@@ -96,7 +97,7 @@ describe("edit flow pieces", () => {
 
   it("shows parse errors without previewing", async () => {
     const onPreview = vi.fn();
-    render(<EditPanel projectId={fixture.project.project_id} snapshot={fixture.snapshot} units="imperial" flow={{ step: "idle" }} onPreview={onPreview} />);
+    render(<FootprintEditor {...editorProps(onPreview)} />);
     await userEvent.clear(screen.getByLabelText(/Depth/));
     await userEvent.type(screen.getByLabelText(/Depth/), "lots");
     await userEvent.click(screen.getByRole("button", { name: "Preview" }));
@@ -119,7 +120,7 @@ describe("edit flow pieces", () => {
   });
 
   it("renders the server's impact preview in display units", () => {
-    render(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: fixture.width_preview }} units="imperial" onConfirm={() => {}} onCancel={() => {}} />);
+    render(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: fixture.width_preview }} units="imperial" snapshot={fixture.snapshot} onConfirm={() => {}} onCancel={() => {}} />);
     const changes = screen.getByTestId("impact-changes");
     expect(changes).toHaveTextContent(`width_m36' 0"40' 0"`);
     const members = fixture.width_preview.members;

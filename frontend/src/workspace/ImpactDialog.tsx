@@ -5,7 +5,9 @@ import { useEffect, useRef } from "react";
 import { ApiError } from "../api/client";
 import { ErrorNotice } from "../app/ErrorNotice";
 import { formatLength, type UnitSystem } from "../units/length";
+import type { Snapshot } from "../api/types";
 import { describeDetail } from "./commands";
+import { otherTabs, TAB_LABEL, TAB_OF_COMMAND } from "./editors/model";
 import type { FlowState } from "./useCommandFlow";
 
 function displayValue(field: string, value: unknown, units: UnitSystem): string {
@@ -15,10 +17,30 @@ function displayValue(field: string, value: unknown, units: UnitSystem): string 
   return text.length > 80 ? `${text.slice(0, 77)}…` : text;
 }
 
-export function ImpactDialog({ state, units, onConfirm, onCancel }: { state: FlowState; units: UnitSystem; onConfirm: () => void; onCancel: () => void }) {
+export function ImpactDialog({
+  state,
+  units,
+  snapshot,
+  onConfirm,
+  onCancel,
+}: {
+  state: FlowState;
+  units: UnitSystem;
+  snapshot?: Snapshot | null;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => heading.current?.focus(), [state.step]);
   if (state.step === "idle") return null;
+
+  if (state.step === "applying") {
+    return (
+      <p className="saving" role="status">
+        Saving…
+      </p>
+    );
+  }
 
   if (state.step === "previewing") {
     return (
@@ -32,6 +54,7 @@ export function ImpactDialog({ state, units, onConfirm, onCancel }: { state: Flo
 
   if (state.step === "error") {
     const details = state.error instanceof ApiError ? state.error.details : [];
+    const pointers = otherTabs(details, snapshot ?? null, TAB_OF_COMMAND[state.command.type]);
     return (
       <div className="dialog" role="dialog" aria-modal="true" aria-labelledby="impact-heading">
         <h2 id="impact-heading" ref={heading} tabIndex={-1}>
@@ -48,6 +71,11 @@ export function ImpactDialog({ state, units, onConfirm, onCancel }: { state: Flo
             ))}
           </ul>
         )}
+        {pointers.map((tab) => (
+          <p key={tab} className="notice" data-testid="tab-pointer">
+            Also see the {TAB_LABEL[tab]} tab: its values are part of this problem.
+          </p>
+        ))}
         <button type="button" onClick={onCancel}>
           Close
         </button>

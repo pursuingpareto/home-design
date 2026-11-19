@@ -114,7 +114,7 @@ export function Mesh3dView({ mesh, units, selected, onSelect }: Mesh3dViewProps)
 
   const summary = `3D frame: ${mesh.members.length} members, footprint ${formatLength(extent.width, units)} × ${formatLength(extent.depth, units)}.`;
   return (
-    <figure className="mesh3d" aria-label={summary} data-member-count={mesh.members.length} data-footprint-width-m={extent.width} data-footprint-depth-m={extent.depth}>
+    <figure className="mesh3d" aria-label={summary} data-member-count={mesh.members.length} data-footprint-width-m={extent.width} data-footprint-depth-m={extent.depth} data-eave-z-m={mesh.envelope.z_eave_m}>
       <div ref={host} className="mesh3d-canvas" />
       {!webgl && <p className="notice">3D rendering is not available in this browser.</p>}
       <figcaption>{summary} Drag to orbit, scroll to zoom, click a member to select it.</figcaption>

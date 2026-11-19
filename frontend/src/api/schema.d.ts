@@ -545,11 +545,8 @@ export interface components {
         GridLineArg: {
             /** Fraction */
             fraction: number;
-            /**
-             * Id
-             * @default null
-             */
-            id: string | null;
+            /** Id */
+            id?: string;
         };
         /** Level */
         Level: {

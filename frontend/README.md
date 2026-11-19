@@ -1,6 +1,6 @@
 # Frontend
 
-Browser client for VS-01 ([UI-001](../docs/implementation/tasks/UI-001.md)): React 18, TypeScript (strict), and Vite, with plain Three.js for the 3D view and SVG for the 2D plan ([overview.md](../docs/architecture/overview.md)). It holds no building rules: it sends typed commands to the API and renders the derived artifacts exactly as served (D028).
+Browser client for VS-01 ([UI-001](../docs/implementation/tasks/UI-001.md), with editors from [UI-002](../docs/implementation/tasks/UI-002.md)): React 18, TypeScript (strict), and Vite, with plain Three.js for the 3D view and SVG for the 2D plan ([overview.md](../docs/architecture/overview.md)). It holds no building rules: it sends typed commands to the API and renders the derived artifacts exactly as served (D028).
 
 ## Setup
 
@@ -47,7 +47,8 @@ The component tests render payloads captured from the real backend in `tests/fix
 | `src/api/` | Generated `schema.d.ts` (committed), type names, and the typed client (openapi-fetch) with `ApiError` |
 | `src/units/` | Exact length and money input: imperial through 1/64-inch steps, cents via BigInt, half-even rounding |
 | `src/views/` | `pairViews` (the only path to rendering 2D and 3D together), `Plan2dView` (SVG), `Mesh3dView` and `meshScene` (Three.js) |
-| `src/workspace/` | Revision data, the preview → confirm command flow, the edit panel, impact dialog, panels, and price-book form |
+| `src/workspace/` | Revision data, the command flow (preview → confirm, or apply for routine commands), the impact dialog, panels, and the price-book form |
+| `src/workspace/editors/` | The tabbed editors (UI-002): footprint, stories, roof, grid, and sections |
 | `src/auth/`, `src/projects/`, `src/app/` | Sign-in, the project list, routing, preferences, and the app shell |
 | `tests/` | Vitest tests, the fixture, and an in-memory HTTP fake that drives the real client |
-| `e2e/` | Playwright tests for AC-01, AC-02, AC-05 to AC-08, undo, conflicts, price books, and access |
+| `e2e/` | Playwright tests for AC-01, AC-02, AC-05 to AC-08, undo, conflicts, price books, access, and every editor |

@@ -3,12 +3,13 @@
 import { useCallback, useState } from "react";
 
 import { ApiError } from "../api/client";
-import type { EstimatePayload } from "../api/types";
+import type { CommitResponse, EstimatePayload } from "../api/types";
 import { useApp } from "../app/context";
 import { ErrorNotice } from "../app/ErrorNotice";
 import { href, navigate } from "../app/routing";
 import { undoCommand } from "./commands";
-import { EditPanel } from "./EditPanel";
+import { Editors, tabForCommand } from "./editors/Editors";
+import type { TabId } from "./editors/model";
 import { ImpactDialog } from "./ImpactDialog";
 import { EstimatePanel, HistoryPanel, PreliminaryBanner, RevisionBar, SchedulePanel, ViewsPanel } from "./panels";
 import { PriceBookForm } from "./PriceBookForm";
@@ -21,6 +22,10 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
   // The line items the price-book form was opened with; kept while the estimate is re-read after a save.
   const [priceItems, setPriceItems] = useState<EstimatePayload | null>(null);
   const [notFound, setNotFound] = useState(false);
+  // After a tab's command commits, that tab is rebuilt from the new stored values (UI-002 §4).
+  const [versions, setVersions] = useState<Partial<Record<TabId, number>>>({});
+  // The notice for a routine command applied without a preview (UI-002 §5).
+  const [applied, setApplied] = useState<{ result: CommitResponse; summary: string; base: string } | null>(null);
 
   const onError = useCallback(
     (error: unknown) => {
@@ -34,8 +39,11 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
   const flow = useCommandFlow({
     api,
     projectId,
-    onCommitted: () => {
+    onCommitted: (_result, command) => {
       setSelected(null);
+      setApplied(null);
+      const tab = tabForCommand(command);
+      if (tab) setVersions((v) => ({ ...v, [tab]: (v[tab] ?? 0) + 1 }));
       if (revisionId) navigate({ name: "workspace", projectId, revisionId: null });
       else void reload();
     },
@@ -53,7 +61,11 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
   }
 
   const head = data.project?.head_revision_id ?? null;
-  const undoTo = (target: string) => head && flow.preview(undoCommand(projectId, head, target));
+  const undoTo = (target: string) => {
+    setApplied(null);
+    if (head) void flow.preview(undoCommand(projectId, head, target));
+  };
+  const busy = flow.state.step === "previewing" || flow.state.step === "committing" || flow.state.step === "applying";
 
   return (
     <main className="workspace">
@@ -72,7 +84,38 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
         <ViewsPanel data={data} units={units} selected={selected} onSelect={setSelected} />
         <aside className="side">
           {/* Shown for the head route even while reloading, so typed input survives a conflict reload. */}
-          {revisionId === null && <EditPanel projectId={projectId} snapshot={data.snapshot} units={units} flow={flow.state} onPreview={(c) => void flow.preview(c)} />}
+          {applied && (
+            <div className="notice" role="status" data-testid="applied-notice">
+              {applied.result.is_noop ? (
+                <p>No changes: the values match the current revision.</p>
+              ) : (
+                <p>
+                  Saved as revision {applied.result.sequence}. {applied.summary}
+                </p>
+              )}
+              <div className="actions">
+                {!applied.result.is_noop && (
+                  <button type="button" disabled={busy} onClick={() => undoTo(applied.base)}>
+                    Undo
+                  </button>
+                )}
+                <button type="button" onClick={() => setApplied(null)}>
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          )}
+          {revisionId === null && (
+            <Editors
+              projectId={projectId}
+              snapshot={data.snapshot}
+              units={units}
+              flow={flow}
+              versions={versions}
+              onApplied={(result, summary, base) => setApplied({ result, summary, base })}
+              onOpenPrices={data.isHead && data.estimate?.payload && !priceItems ? () => setPriceItems(data.estimate?.payload ?? null) : null}
+            />
+          )}
           <EstimatePanel
             estimate={data.estimate}
             units={units}
@@ -92,14 +135,14 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
             revisions={data.revisions}
             shownRevisionId={data.revisionId}
             headRevisionId={head}
-            busy={flow.state.step === "previewing" || flow.state.step === "committing"}
+            busy={busy}
             onOpen={(rev) => navigate({ name: "workspace", projectId, revisionId: rev })}
-            onUndo={(rev) => void undoTo(rev)}
+            onUndo={(rev) => undoTo(rev)}
           />
         </aside>
       </div>
       <SchedulePanel schedule={data.schedule} units={units} selected={selected} onSelect={setSelected} />
-      <ImpactDialog state={flow.state} units={units} onConfirm={() => void flow.confirm()} onCancel={flow.cancel} />
+      <ImpactDialog state={flow.state} units={units} snapshot={data.snapshot} onConfirm={() => void flow.confirm()} onCancel={flow.cancel} />
     </main>
   );
 }

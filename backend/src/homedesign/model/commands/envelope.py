@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Annotated, Any, Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError, model_validator
+from pydantic.json_schema import SkipJsonSchema
 from pydantic_core import PydanticCustomError
 
 from .. import codes
@@ -42,10 +43,15 @@ class GableRoofArgs(_Strict):
     eave_overhang_m: float
 
 
+def _drop_default(schema: dict[str, Any]) -> None:
+    schema.pop("default", None)
+
+
 class GridLineArg(_Strict):
     """Either ``{"id", "fraction"}`` (keep an existing line) or ``{"fraction"}`` (new line)."""
 
-    id: str | None = None
+    # Optional and never null in the published schema, matching the validator below (UI-002).
+    id: Annotated[str | SkipJsonSchema[None], Field(default=None, json_schema_extra=_drop_default)]
     fraction: float
 
     @model_validator(mode="before")

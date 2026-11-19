@@ -1002,16 +1002,8 @@
             "type": "number"
           },
           "id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Id"
+            "title": "Id",
+            "type": "string"
           }
         },
         "required": [
