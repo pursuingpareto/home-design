@@ -10,7 +10,7 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
-from .store import DuplicateCommand, OperationRow, ProjectRow, RevisionRow
+from .store import ArtifactRow, DuplicateCommand, OperationRow, ProjectRow, RevisionRow
 
 _REVISION_COLUMNS = "revision_id, project_id, parent_revision_id, sequence, model_schema_version, snapshot, fingerprint, created_at"
 _OPERATION_COLUMNS = (
@@ -130,6 +130,32 @@ class _PostgresTx:
             "UPDATE projects SET head_revision_id = %s, head_sequence = %s WHERE project_id = %s",
             (revision_id, sequence, project_id),
         )
+
+    def get_artifacts(self, revision_id, artifact_type):
+        rows = self.conn.execute(
+            "SELECT * FROM artifacts WHERE revision_id = %s AND artifact_type = %s ORDER BY generated_at, input_fingerprint",
+            (revision_id, artifact_type),
+        ).fetchall()
+        return [
+            ArtifactRow(_s(r["project_id"]), _s(r["revision_id"]), r["artifact_type"], r["input_fingerprint"],
+                        r["generator_id"], r["generator_version"], r["status"], r["payload"], r["error"],
+                        r["warnings"], r["generated_at"])
+            for r in rows
+        ]
+
+    def put_artifact(self, row):
+        self.conn.execute(
+            "INSERT INTO artifacts (project_id, revision_id, artifact_type, input_fingerprint, generator_id,"
+            " generator_version, status, payload, error, warnings, generated_at)"
+            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            " ON CONFLICT (revision_id, artifact_type, input_fingerprint) DO NOTHING",
+            (row.project_id, row.revision_id, row.artifact_type, row.input_fingerprint, row.generator_id,
+             row.generator_version, row.status, None if row.payload is None else Jsonb(row.payload),
+             None if row.error is None else Jsonb(row.error), Jsonb(row.warnings), row.generated_at),
+        )
+
+    def delete_artifacts(self, revision_id):
+        self.conn.execute("DELETE FROM artifacts WHERE revision_id = %s", (revision_id,))
 
 
 class PostgresStore:

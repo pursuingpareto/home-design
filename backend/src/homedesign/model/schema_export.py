@@ -1,7 +1,7 @@
 """Export the snapshot JSON Schema committed under docs/ (D028).
 
 Usage (from backend/):
-    uv run python -m homedesign.model.schema_export          # write snapshot and command schemas
+    uv run python -m homedesign.model.schema_export          # write snapshot, command, and artifact schemas
     uv run python -m homedesign.model.schema_export --check  # exit 1 if it is stale
 """
 
@@ -18,6 +18,7 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 SCHEMA_DIR = REPO_ROOT / "docs" / "architecture" / "schemas"
 SCHEMA_PATH = SCHEMA_DIR / "snapshot.v1.schema.json"
 COMMANDS_SCHEMA_PATH = SCHEMA_DIR / "commands.v1.schema.json"
+ARTIFACTS_SCHEMA_PATH = SCHEMA_DIR / "artifacts.v1.schema.json"
 JSON_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
 
 
@@ -46,6 +47,22 @@ def commands_json_schema() -> dict[str, Any]:
     return schema
 
 
+def artifacts_json_schema() -> dict[str, Any]:
+    """Envelope and manifest (ART-001); payload models are added by GEOM-001 and EST-001."""
+    from pydantic.json_schema import models_json_schema
+
+    from homedesign.dependencies.envelope import ArtifactEnvelope, Manifest
+
+    _, schema = models_json_schema([(ArtifactEnvelope, "validation"), (Manifest, "validation")])
+    schema["$schema"] = JSON_SCHEMA_DIALECT
+    schema["title"] = "VS-01 artifact envelope and manifest (ART-001)"
+    schema["description"] = (
+        "Definitions for artifacts.md §2-3, generated from backend/src/homedesign/dependencies/envelope.py; "
+        "do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope and a manifest against #/$defs/Manifest."
+    )
+    return schema
+
+
 def _render(schema: dict[str, Any]) -> str:
     return json.dumps(schema, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
 
@@ -58,9 +75,13 @@ def render_commands_schema() -> str:
     return _render(commands_json_schema())
 
 
+def render_artifacts_schema() -> str:
+    return _render(artifacts_json_schema())
+
+
 def main(argv: list[str] | None = None) -> int:
     args = sys.argv[1:] if argv is None else argv
-    outputs = {SCHEMA_PATH: render_schema(), COMMANDS_SCHEMA_PATH: render_commands_schema()}
+    outputs = {SCHEMA_PATH: render_schema(), COMMANDS_SCHEMA_PATH: render_commands_schema(), ARTIFACTS_SCHEMA_PATH: render_artifacts_schema()}
     if "--check" in args:
         stale = [p for p, text in outputs.items() if (p.read_text(encoding="utf-8") if p.exists() else "") != text]
         for path in stale:

@@ -29,7 +29,7 @@ uv run python -m homedesign.project.migrate postgresql:///homedesign   # apply p
 
 ```bash
 uv run pytest                                      # full test suite
-uv run python -m homedesign.model.schema_export    # regenerate the snapshot and command JSON Schemas in docs/architecture/schemas/
+uv run python -m homedesign.model.schema_export    # regenerate the snapshot, command, and artifact JSON Schemas in docs/architecture/schemas/
 uv run python -m homedesign.model.schema_export --check   # fail if the committed schema is stale
 ```
 
@@ -59,6 +59,7 @@ else:
 | `src/homedesign/model/jcs.py`, `canonical.py` | RFC 8785 and snapshot fingerprints |
 | `src/homedesign/model/strict_json.py`, `paths.py` | Strict parser and D036 path rendering |
 | `src/homedesign/model/commands/` | Typed commands: envelopes, `propose`/`propose_create`, D041 minting, diff and classification, packaged template |
+| `src/homedesign/dependencies/` | Artifact registry, envelope and manifest, `ArtifactService` (derive after commit, lazy recompute, status) |
 | `src/homedesign/project/` | `ProjectService` (create, preview, commit, reads), in-memory and PostgreSQL stores, preview tokens, migrations |
 | `src/homedesign/timber/` | Rule registry, `vs01-post-beam-1` (`generate`, `conformance`), `GeneratedMember` |
 | `tests/` | Fixture, mutation table, generator, JCS and inventory vectors, property tests, catalog-doc sync |

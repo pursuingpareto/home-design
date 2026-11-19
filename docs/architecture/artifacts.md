@@ -66,6 +66,8 @@ Same machine as [dependencies](dependencies.md#3-artifact-status-machine), plus 
 | `UNAVAILABLE` | Inputs insufficient (VS-01: no unit prices for the estimate) | 200 envelope, `payload` may list unpriced quantities; no grand total |
 | `SUPERSEDED` | A newer computation finished; this result must not be published | Not served |
 
+A `FAILED` envelope's `error` is `{code, message}` with code `DERIVATION_FAILED` (the derivation raised or produced a payload that is not I-JSON) or `UPSTREAM_NOT_CURRENT` (a declared dependency, such as the schedule for the estimate, is not `CURRENT`). Messages never expose internals. The manifest only reports stored state and never derives. Reading an individual artifact derives it when it is `MISSING` or `STALE` ([ART-001](../implementation/tasks/ART-001.md) §4, §6).
+
 `CURRENT` requires `input_fingerprint` to match the latest applicable inputs **for that artifact**. Matching `source_revision_id` alone is not enough when price books or generator versions differ.
 
 ### 2.2 Suitability (AC-08)

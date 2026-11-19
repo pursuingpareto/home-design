@@ -54,6 +54,23 @@ class OperationRow:
     created_at: datetime
 
 
+@dataclass(frozen=True)
+class ArtifactRow:
+    """A derived artifact (ART-001 §5). Recomputable; not part of the audit trail."""
+
+    project_id: str
+    revision_id: str
+    artifact_type: str
+    input_fingerprint: str
+    generator_id: str
+    generator_version: str
+    status: str  # CURRENT | UNAVAILABLE | FAILED
+    payload: Any
+    error: Any
+    warnings: list
+    generated_at: datetime
+
+
 class StoreTx(Protocol):
     def get_project(self, project_id: str, *, lock: bool = False) -> ProjectRow | None: ...
     def get_revision(self, project_id: str, revision_id: str) -> RevisionRow | None: ...
@@ -65,6 +82,9 @@ class StoreTx(Protocol):
     def insert_revision(self, row: RevisionRow) -> None: ...
     def insert_operation(self, row: OperationRow) -> None: ...
     def set_head(self, project_id: str, revision_id: str, sequence: int) -> None: ...
+    def get_artifacts(self, revision_id: str, artifact_type: str) -> list[ArtifactRow]: ...
+    def put_artifact(self, row: ArtifactRow) -> None: ...  # keeps an existing row with the same key
+    def delete_artifacts(self, revision_id: str) -> None: ...  # derived data may be discarded
 
 
 class RevisionStore(Protocol):
@@ -85,6 +105,7 @@ class _MemoryTx:
         self.projects = dict(store.projects)
         self.revisions = dict(store.revisions)
         self.operations = list(store.operations)
+        self.artifacts = dict(store.artifacts)
 
     def get_project(self, project_id, *, lock=False):
         return self.projects.get(project_id)
@@ -141,6 +162,15 @@ class _MemoryTx:
     def set_head(self, project_id, revision_id, sequence):
         self.projects[project_id] = replace(self.projects[project_id], head_revision_id=revision_id, head_sequence=sequence)
 
+    def get_artifacts(self, revision_id, artifact_type):
+        return [copy.deepcopy(r) for (rev, kind, _), r in self.artifacts.items() if (rev, kind) == (revision_id, artifact_type)]
+
+    def put_artifact(self, row):
+        self.artifacts.setdefault((row.revision_id, row.artifact_type, row.input_fingerprint), copy.deepcopy(row))
+
+    def delete_artifacts(self, revision_id):
+        self.artifacts = {k: v for k, v in self.artifacts.items() if k[0] != revision_id}
+
 
 class MemoryStore:
     """Serializable in-memory store: one transaction at a time, applied atomically on success."""
@@ -150,6 +180,7 @@ class MemoryStore:
         self.projects: dict[str, ProjectRow] = {}
         self.revisions: dict[str, RevisionRow] = {}
         self.operations: list[OperationRow] = []
+        self.artifacts: dict[tuple[str, str, str], ArtifactRow] = {}
 
     @contextmanager
     def transaction(self) -> Iterator[_MemoryTx]:
@@ -157,6 +188,7 @@ class MemoryStore:
             tx = _MemoryTx(self)
             yield tx
             self.projects, self.revisions, self.operations = tx.projects, tx.revisions, tx.operations
+            self.artifacts = tx.artifacts
 
     def corrupt_for_test(self, revision_id: str, snapshot: dict[str, Any]) -> None:
         """Test hook: replace a stored snapshot without updating its fingerprint (§8 test 14)."""

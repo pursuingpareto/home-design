@@ -22,9 +22,9 @@ Suggested first tasks: `MODEL-001` canonical units/coordinates; `MODEL-002` proj
 | [TIMBER-001](TIMBER-001.md) | Deterministic post/beam generator and generation-rule conformance | Done (2026-11-18) |
 | [MODEL-003](MODEL-003.md) | Typed commands and candidate snapshots (closes gap M5) | Done (2026-11-18) |
 | [MODEL-004](MODEL-004.md) | Revision persistence, concurrency, idempotency, and previews | Done (2026-11-19) |
-| [ART-001](ART-001.md) | Artifact infrastructure: derivation, storage, status, manifest | Ready for implementation |
-| [GEOM-001](GEOM-001.md) | `plan2d` and `mesh3d` derivations (closes C1) | Ready; after ART-001 |
-| [EST-001](EST-001.md) | `timber_schedule`, `preliminary_estimate`, and price books (closes C6, M9) | Ready; after ART-001 |
+| [ART-001](ART-001.md) | Artifact infrastructure: derivation, storage, status, manifest | Done (2026-11-19) |
+| [GEOM-001](GEOM-001.md) | `plan2d` and `mesh3d` derivations (closes C1) | Ready for implementation |
+| [EST-001](EST-001.md) | `timber_schedule`, `preliminary_estimate`, and price books (closes C6, M9) | Ready for implementation |
 
 The remaining candidate IDs still need task files. P1 gaps that block `TIMBER-001` and `MODEL-003` are listed in MODEL-001 §12.
 

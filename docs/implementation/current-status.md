@@ -28,7 +28,7 @@
 - Hosting, identity provider, and production operations.
 - `MODEL-003` implemented: typed commands, deterministic ID minting (D041), candidate snapshots with diff, classification, no-op handling, undo, and template creation; command JSON Schema exported.
 - `TIMBER-001` implemented: `vs01-post-beam-1` generator, rule registry, and stage 5 conformance (D046); inventory matches an independent ECMAScript implementation byte for byte.
-- `MODEL-004` implemented: `ProjectService` over in-memory and PostgreSQL stores, with immutable revisions, optimistic concurrency, idempotent retries, an audit log, and signed preview tokens (D047); 293 tests passing.
-- `ART-001`, `GEOM-001`, and `EST-001` task files ready: all proposals settled (D048 roof planes, D049 unique section labels; C1, C5, C6, M9, M10 closed).
+- `MODEL-004` implemented: `ProjectService` over in-memory and PostgreSQL stores, with immutable revisions, optimistic concurrency, idempotent retries, an audit log, and signed preview tokens (D047).
+- `ART-001` implemented: derivation registry, envelope and manifest, `artifacts` storage, derive-after-commit with lazy recompute, real `artifact_statuses`; 323 tests passing. `GEOM-001` and `EST-001` are ready (all proposals settled: D048, D049; C1, C5, C6, M9, M10 closed).
 - Task files for the API and UI.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

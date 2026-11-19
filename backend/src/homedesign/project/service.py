@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -30,9 +30,10 @@ from .errors import (
     RevisionConflict,
 )
 from .store import DuplicateCommand, OperationRow, ProjectRow, RevisionRow, RevisionStore
+from .loading import load_snapshot
 from .timefmt import format_timestamp
 
-ARTIFACT_TYPES = ("mesh3d", "plan2d", "preliminary_estimate", "timber_schedule")
+ARTIFACT_TYPES = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")  # artifacts.md §1
 PREVIEW_TTL = timedelta(minutes=15)  # D047
 
 
@@ -48,6 +49,7 @@ class CommitResult:
     sequence: int
     is_noop: bool
     replayed: bool = False
+    artifact_statuses: dict[str, str] | None = None  # filled by ART-001; MISSING until derived
 
     def body(self) -> dict[str, Any]:
         body = {
@@ -57,8 +59,7 @@ class CommitResult:
             "operation_id": self.operation_id,
             "sequence": self.sequence,
             "is_noop": self.is_noop,
-            # No artifact derivation exists yet: every type is MISSING (artifacts.md §2.1).
-            "artifact_statuses": {t: "MISSING" for t in ARTIFACT_TYPES},
+            "artifact_statuses": dict(self.artifact_statuses or {t: "MISSING" for t in ARTIFACT_TYPES}),
         }
         if self.replayed:
             body["replayed"] = True
@@ -86,10 +87,14 @@ class ProjectService:
         token_key: bytes,
         project_id_factory: Callable[[], str] = lambda: str(uuid.uuid4()),
         preview_ttl: timedelta = PREVIEW_TTL,
+        registry: Any = None,
     ) -> None:
         if not token_key:
             raise ValueError("token_key must be a non-empty secret (D047)")
+        from homedesign.dependencies.artifacts import ArtifactService  # lazy: the packages import each other's modules
+
         self.store = store
+        self.artifacts = ArtifactService(store, registry)
         self._key = token_key
         self._new_project_id = project_id_factory
         self._ttl = preview_ttl
@@ -106,7 +111,7 @@ class ProjectService:
             return self.create_project(command, actor_id=actor_id, now=now)
         if isinstance(outcome, _Failure):
             raise outcome.error  # the audit row (project_id null) is already committed
-        return outcome
+        return self._with_artifacts(outcome, now)
 
     def _create_in(self, tx, command, actor_id, now) -> CommitResult | _Failure:
         def fail(error: ProjectError, parsed: Any = None) -> _Failure:
@@ -175,7 +180,15 @@ class ProjectService:
             return self.commit(project_id, command, preview_token, actor_id=actor_id, now=now)
         if isinstance(outcome, _Failure):
             raise outcome.error  # the audit row is already committed
-        return outcome
+        return self._with_artifacts(outcome, now)
+
+    def _with_artifacts(self, result: CommitResult, now: datetime) -> CommitResult:
+        """Derive after a new revision (dependencies.md §6); otherwise report current statuses."""
+        if result.http_status == 201:
+            statuses = self.artifacts.derive_revision(result.project_id, result.revision_id, now=now)
+        else:
+            statuses = self.artifacts.statuses(result.project_id, result.revision_id)
+        return replace(result, artifact_statuses=statuses)
 
     def _commit_in(self, tx, project_id, command, preview_token, actor_id, now) -> CommitResult | _Failure:
         project = _project(tx, project_id, lock=True)
@@ -285,14 +298,7 @@ def _project(tx, project_id: str, *, lock: bool) -> ProjectRow:
     return row
 
 
-def _load(tx, project_id: str, revision_id: str) -> Snapshot:
-    row = tx.get_revision(project_id, revision_id) if is_canonical_uuid(revision_id) else None
-    if row is None:
-        raise NotFound("Revision not found.")
-    snapshot = Snapshot.model_validate(row.snapshot)
-    if snapshot_fingerprint(snapshot) != row.fingerprint:
-        raise CorruptRevision(f"Stored revision {revision_id} does not match its fingerprint.")
-    return snapshot
+_load = load_snapshot
 
 
 def _undo_target(tx, project_id: str, command: Any) -> Snapshot | None:
