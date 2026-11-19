@@ -81,6 +81,15 @@ def _line_id(axis, k, new_id):
     return lambda d: _find(d, GRID["id"])[axis][k].__setitem__("id", new_id)
 
 
+_BEAM_SECTION = next(e for e in entities_of(FIXTURE, "Section") if e["nominal_label"] == "8x12")
+
+
+def _label_paths():
+    # D049: sections ordered by id; the later one is reported, related to the first.
+    first, later = sorted([SECTION_8X8, _BEAM_SECTION], key=lambda s: s["id"])
+    return epath(later, "nominal_label"), (epath(first, "nominal_label"),)
+
+
 def _member_with_key(key):
     return next(m for m in MEMBERS if m["generation_key"] == key)
 
@@ -292,6 +301,9 @@ CASES: list[Case] = [
              [Expect(codes.MEMBER_ASSIGNMENT_MISMATCH, epath(A_POST, "member_role"))], only=True),
     doc_case("t001-stale-members-outside-domain", _set(FOOTPRINT["id"], "width_m", 30), UC,
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FOOTPRINT, "width_m"))]),
+    # D049: unique section labels
+    doc_case("d049-duplicate-section-label", _set(_BEAM_SECTION["id"], "nominal_label", "8x8"), VF,
+             [Expect(codes.DUPLICATE_SECTION_LABEL, *_label_paths())], only=True),
     # D036 path forms: quoted keys
     doc_case("d036-quoted-entity-key", _set(FOOTPRINT["id"], "a.b", 1), VF,
              [Expect(codes.UNKNOWN_FIELD, f'entities[{FOOTPRINT["id"]}]["a.b"]')], only=True),

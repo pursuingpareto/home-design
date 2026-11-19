@@ -2,7 +2,10 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-16  
-**Scope:** VS-01 read models for plan, mesh, timber schedule, and preliminary estimate.
+**Scope:** VS-01 read models for plan, mesh, timber schedule, and preliminary estimate.  
+**Amended (2026-11-19):** the envelope and manifest gain a `head` flag, true only when the artifact is for the current head ([ART-001](../../implementation/tasks/ART-001.md) §8, item 4). The change is additive; all other fields are unchanged.  
+**Amended by:** [D048](D048-roof-plane-through-wall-line.md) — the `mesh3d` roof surfaces' overhang edge is at 5.334 m (true 9/12 slope), not 5.7912 m; the ridge stays at 8.5344 m.  
+**Amended (2026-11-19):** price-book metadata (`currency`, `as_of`, `source`, `geography`) is book-level rather than per row; books are versioned per project ([EST-001](../../implementation/tasks/EST-001.md) §7, item 4; artifacts.md §8.2).
 
 ## Decision
 

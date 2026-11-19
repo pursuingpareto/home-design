@@ -3,7 +3,8 @@
 **Status:** Confirmed  
 **Date:** 2026-11-18  
 **Scope:** The VS-01 command types and the arguments of the commands listed below. Approved from [MODEL-003](../../implementation/tasks/MODEL-003.md) §10, item 1. Partially closes gap M5.  
-**Amends:** [D034](D034-vs01-level-bounds.md) (renames the command it mentions).
+**Amends:** [D034](D034-vs01-level-bounds.md) (renames the command it mentions).  
+**Amended by:** [D049](D049-unique-section-labels.md) — `AddSection` labels must be unique within a project (`DUPLICATE_SECTION_LABEL`).
 
 ## Decision
 

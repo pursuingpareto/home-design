@@ -27,6 +27,7 @@ Every artifact response, including 202 bodies, uses this envelope. `payload` is 
   "schema_version": 1,
   "project_id": "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
   "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66",
+  "head": true,
   "generator_id": "schedule-vs01",
   "generator_version": "1",
   "input_fingerprint": "sha256:…",
@@ -48,6 +49,8 @@ Every artifact response, including 202 bodies, uses this envelope. `payload` is 
   "payload": {}
 }
 ```
+
+`head` is `true` only when `source_revision_id` is the project's current head at the time of the request. An artifact requested for an older revision is served with `head: false` (§4; approved from [ART-001](../implementation/tasks/ART-001.md) §8, item 4).
 
 ### 2.1 Status
 
@@ -76,6 +79,8 @@ Same machine as [dependencies](dependencies.md#3-artifact-status-machine), plus 
 - `plan2d` / `mesh3d` / `timber_schedule`: `{ "revision_id", "model_schema_version", "generator_id", "generator_version", "snapshot" }` where `snapshot` is the canonical semantic building snapshot ([D030](../product/decisions/D030-canonical-snapshot-entity-order.md): `entities` sorted by `id`), not derived meshes.
 - `preliminary_estimate`: the above plus `{ "price_book_id", "price_book_version", "as_of", "currency" }` or an explicit `"price_book": null`.
 
+**Scope in VS-01** ([ART-001](../implementation/tasks/ART-001.md) §8, item 3): the input object includes `revision_id` and the whole snapshot, so a fingerprint never matches across revisions, and every revision derives its artifacts afresh. Per-artifact input selectors, where each artifact hashes only the fields it reads, are deferred. This is the intended VS-01 behavior, not a gap.
+
 Canonical bytes: RFC 8785 JSON Canonicalization Scheme, UTF-8 ([D029](../product/decisions/D029-canonical-json-rfc8785.md)). Object keys are ordered by JCS, arrays keep their documented order, and `null` is preserved. Do not include derived artifacts in the hashed snapshot.
 
 ### 2.4 Coordinates and units
@@ -86,12 +91,13 @@ Payload geometry uses D026: meters, +X east, +Y north, +Z up, radians. Display c
 
 `GET /api/v1/projects/{id}/artifacts?revision_id={rev}`
 
-`revision_id` omitted means project head. Response: envelope-like records **without** `payload`.
+`revision_id` omitted means project head. Response: envelope-like records **without** `payload`, plus a top-level `head` flag for the requested revision.
 
 ```json
 {
   "project_id": "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
   "revision_id": "01b311c6-7a51-528d-befe-b2e592819b66",
+  "head": true,
   "artifacts": [
     {"artifact_type": "plan2d", "status": "CURRENT", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "1", "input_fingerprint": "sha256:…"},
     {"artifact_type": "mesh3d", "status": "COMPUTING", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "1", "input_fingerprint": null},
@@ -107,7 +113,7 @@ All four types appear on every VS-01 revision manifest. Commit responses use the
 
 The browser may render 2D and 3D together only when `plan2d` and `mesh3d` share the same `source_revision_id` and both are `CURRENT`. If either is `COMPUTING`, `STALE`, or `FAILED`, the UI must show that status and must not pair a current view with a previous revision’s geometry.
 
-Historical `GET` with an explicit `revision_id` returns the artifact **for that revision**. That payload may be `CURRENT` for the requested revision after head has moved; it must not be labeled as the live project head.
+Historical `GET` with an explicit `revision_id` returns the artifact **for that revision**. That payload may be `CURRENT` for the requested revision after head has moved; it must not be labeled as the live project head, and its envelope carries `head: false`.
 
 ## 5. `plan2d` payload
 
@@ -195,7 +201,13 @@ Plane rules (must match `vs01-post-beam-1`):
 
 `footprint.ring_m` is the wall rectangle, counterclockwise from origin, **not** including eave overhang. `roof_plan.eave_ring_m` includes the 2'-0" north/south overhang (D025). Member `xy` values are reference-axis projections.
 
-`dimensions` must include footprint width and depth so AC-01 does not infer size from rendering.
+Further rules ([GEOM-001](../implementation/tasks/GEOM-001.md) §3, approved as §7 item 4):
+
+- **Ordering:** within each plane, `posts` and `beams` are each sorted by `generation_key`.
+- **Positions:** a post's `xy_m` is its `start_m` x and y. A beam's `start_xy_m` and `end_xy_m` are the plan projections of its `start_m` and `end_m`.
+- **Roof plan:** the ridge runs along X at `y = origin_y + depth_m / 2`, from `origin_x` to `origin_x + width_m`. The eave ring extends `eave_overhang_m` to the north and south only. There is **no rake (gable-end) overhang** in VS-01.
+
+`dimensions` contains **exactly** `footprint-width` and `footprint-depth`, with `value_m` copied from the footprint, never measured from rendered geometry (AC-01). Bay and grid dimension lines are not part of VS-01.
 
 ## 6. `mesh3d` payload
 
@@ -232,8 +244,8 @@ This is a **display primitive** list. The client (or a later adapter) tessellate
         {
           "id": "south",
           "ring_m": [
-            [0.0, -0.6096, 5.7912],
-            [10.9728, -0.6096, 5.7912],
+            [0.0, -0.6096, 5.334],
+            [10.9728, -0.6096, 5.334],
             [10.9728, 3.6576, 8.5344],
             [0.0, 3.6576, 8.5344]
           ]
@@ -241,10 +253,10 @@ This is a **display primitive** list. The client (or a later adapter) tessellate
         {
           "id": "north",
           "ring_m": [
-            [0.0, 7.9248, 5.7912],
+            [0.0, 7.9248, 5.334],
             [0.0, 3.6576, 8.5344],
             [10.9728, 3.6576, 8.5344],
-            [10.9728, 7.9248, 5.7912]
+            [10.9728, 7.9248, 5.334]
           ]
         }
       ]
@@ -260,6 +272,8 @@ Box orientation:
 - Posts: square section; `section_width_m` along +X, `section_depth_m` along +Y.
 
 `members` order: `generation_key` ascending. Count and IDs must match the semantic inventory. Envelope numbers for Reference House 001 must match D025 (ridge `z = 8.5344 m`).
+
+Roof surfaces ([D048](../product/decisions/D048-roof-plane-through-wall-line.md)): each plane passes through the wall line at `z_eave_m` at `pitch_rad`, so the overhang edge is at `z_eave − eave_overhang_m · tan(pitch_rad)` (5.334 m for Reference House 001) and the ridge at `z_eave + (depth_m / 2) · tan(pitch_rad)` (8.5344 m). `z_eave_m` stays the eave plate height.
 
 ## 7. `timber_schedule` payload
 
@@ -303,21 +317,18 @@ Box orientation:
 Invariants:
 
 - `members` sorted by `generation_key`. One row per semantic `TimberMember`. `quantity` is 1.
-- `length_m` is Euclidean length of `start_m`–`end_m`, compared with 1e-6 m.
+- `length_m` is the Euclidean length of `start_m`–`end_m`, computed as `sqrt(dx*dx + dy*dy + dz*dz)` with `d = end_m − start_m`, evaluated exactly as written in IEEE-754 doubles. Library `hypot`/`dist` functions are not used, because they can differ in the last bit across languages ([EST-001](../implementation/tasks/EST-001.md) §3, approved as §7 item 1). Compared with 1e-6 m.
 - `sum(members.quantity)` equals inventory size; `aggregates.count` sums to the same; `aggregates.total_length_m` equals the sum of `length_m` within 1e-6 m × n.
+- Exactly **one aggregate per role and section**; posts are never split by story. `count` and `total_length_m` are summed over the member rows in `generation_key` order ([EST-001](../implementation/tasks/EST-001.md) §3, approved as §7 item 2; closes C6).
 - `aggregates` sorted by `role`, then `nominal_section`.
 - Same snapshot + same `generator_version` yields the same IDs, keys, roles, sections, and lengths (numeric tolerance 1e-6 m).
 
 Reference House 001 expected aggregates (D025):
 
-| Role | Section | Count | Each (m) | Total (m) |
-|---|---|---|---|---|
-| POST | 8×8 | 12 | 3.048 | 36.576 |
-| POST | 8×8 | 12 | 2.7432 | 32.9184 |
-| POST combined | 8×8 | 24 | — | 69.4944 |
-| BEAM | 8×12 | 34 | 3.6576 | 124.3584 |
-
-VS-01 may emit one POST aggregate (count 24, total 69.4944) rather than splitting by story.
+| Role | Section | Count | Total (m) |
+|---|---|---|---|
+| BEAM | 8×12 | 34 | 124.3584 (34 × 3.6576) |
+| POST | 8×8 | 24 | 69.4944 (12 × 3.048 on level 0 + 12 × 2.7432 on level 1; informational breakdown, not separate rows) |
 
 ## 8. `preliminary_estimate` payload
 
@@ -336,6 +347,12 @@ VS-01 does **not** introduce a `CostDataset` entity. Optional dated unit prices 
 Never set a missing total to `0`. Never invent Vermont prices. Open question 6 (dataset licensing) stays open.
 
 Money: integer minor units + ISO 4217 code (D026). VS-01 uses `USD` when a book is present; `currency` is `null` when coverage is `none`.
+
+**Rounding** ([EST-001](../implementation/tasks/EST-001.md) §4, approved as §7 item 5):
+
+- **Line amounts:** `amount_minor` is `unit_price_minor × quantity_value`, multiplied **exactly**, using the double's exact binary value in decimal arithmetic. It is then rounded once to an integer with **round-half-even**.
+- **Totals:** `priced_amount_minor` and `grand_total_minor` are sums of the rounded line amounts, so totals always equal the visible lines.
+- **Reproducible:** the rule gives the same result in any language with exact decimal or big-integer arithmetic (for example Python `Decimal`, ECMAScript `BigInt`). It never uses binary floating-point rounding.
 
 ```json
 {
@@ -374,7 +391,15 @@ Money: integer minor units + ISO 4217 code (D026). VS-01 uses `USD` when a book 
 
 Line items are aggregated by `role` + `nominal_section`, sorted by `key`. Quantities come from the timber schedule for the **same** `source_revision_id`. If the schedule is not `CURRENT`, the estimate is `STALE` or `QUEUED`, not a fabricated quantity.
 
-When a price book exists, each book row must include `as_of` (date), `source`, `geography`, and `currency`. Those fields are copied onto `price_book` in the payload.
+### 8.2 Price book
+
+Approved from [EST-001](../implementation/tasks/EST-001.md) §5, §7 item 4:
+
+- **Book-level metadata:** a project's price book carries `currency`, `as_of` (ISO date), `source`, and `geography` once for the whole book. Rows are `{key, unit: "m", unit_price_minor}`, with `key` as `timber.<ROLE>.<nominal_label>` (unique labels, D049), keys unique, and `unit_price_minor` a non-negative integer within ±(2⁵³ − 1). In VS-01, `currency` must be `USD`.
+- **In the payload:** the book-level fields, `price_book_id`, and `price_book_version` are copied onto the estimate payload's `price_book`, and the estimate fingerprint includes `price_book_id`, `price_book_version`, `as_of`, and `currency` (§2.3).
+- **Versions:** books are versioned per project and append-only. Setting a book creates version n+1 and keeps a stable `price_book_id`. Clearing a book is not supported in VS-01.
+- **Outside the model:** setting a book is not a model command and creates no revision. It makes only the head's `preliminary_estimate` `STALE`, which is then recomputed on read; the other artifacts are unaffected.
+- **Unused rows:** rows whose key matches no line item are ignored and listed in a warning, not rejected.
 
 If coverage is `none` or `partial`, include warning code `COST_INPUTS_MISSING`.
 

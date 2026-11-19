@@ -413,6 +413,17 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
             for index, member in group[1:]:
                 out.add(idx.path(index, "generation_key"), codes.DUPLICATE_GENERATION_KEY, "generation_key is used by more than one member.", member.generation_key, [first_path])
 
+    # D049: section labels are unique (they key schedule aggregates and price-book rows).
+    by_label: dict[str, list[tuple[int, Any]]] = defaultdict(list)
+    for index, section in idx.of_kind("Section"):
+        by_label[section.nominal_label].append((index, section))
+    for group in by_label.values():
+        if len(group) > 1:
+            group = sorted(group, key=lambda item: item[1].id)
+            first_path = idx.path(group[0][0], "nominal_label")
+            for index, section in group[1:]:
+                out.add(idx.path(index, "nominal_label"), codes.DUPLICATE_SECTION_LABEL, "Section labels must be unique within a project (D049).", section.nominal_label, [first_path])
+
     resolved_levels = [idx.resolve(level_id, "Level") for level_id in building.level_ids]
     if all(hit is not None for hit in resolved_levels):
         indexes = [hit[1].index for hit in resolved_levels]  # type: ignore[index]

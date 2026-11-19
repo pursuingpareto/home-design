@@ -49,7 +49,7 @@ This matches the Reference House 001 fixture (D025). Supporting several building
 | `TimberGrid` | `id`, `x_lines[]`, `y_lines[]`, `generation_rule_version` | Each line is `{id, fraction}` with a stable line ID (`x<n>` / `y<n>`, unique per axis); lines strictly ascending by fraction from 0 to 1; regular grid VS-01 ([D042](../product/decisions/D042-stable-grid-line-ids.md)) |
 | `FrameSystem` | `id`, `grid_id`, `member_ids[]`, `generation_mode`, `member_defaults` | Member IDs reference existing `TimberMember` records; `member_defaults` maps each member role to `{section_id, material_id}` and must cover every role the generation rule generates ([D039](../product/decisions/D039-frame-member-defaults.md)) |
 | `TimberMember` | `id`, `member_role`, `start_m`, `end_m`, `section_id`, `material_id`, `generation_key` | Nonzero length; section/material exist; deterministic generation key |
-| `Section` | `id`, `shape`, `actual_width_m`, `actual_depth_m`, `nominal_label` | Rectangular only in VS-01; actual dimensions positive |
+| `Section` | `id`, `shape`, `actual_width_m`, `actual_depth_m`, `nominal_label` | Rectangular only in VS-01; actual dimensions positive; `nominal_label` unique within the snapshot ([D049](../product/decisions/D049-unique-section-labels.md)) |
 | `Material` | `id`, `name`, `species?`, `grade?`, `density_kg_m3?`, `provenance?` | Unknown grade and properties explicitly nullable; not assumed |
 
 `TimberMember.member_role` in VS-01: `POST`, `BEAM`, `FLOOR_JOIST` (only if generated), `RAFTER` (only if generated). Unsupported member families must not be fabricated by the generator. `start_m` and `end_m` describe the member reference axis; physical cut length can differ once connection machining is introduced. VS-01 schedules label length as **reference-axis length, not fabrication cut length**.
@@ -73,7 +73,7 @@ Validation runs in five ordered stages ([D035](../product/decisions/D035-validat
 | Stage | Checks | Top-level code |
 |---|---|---|
 | 1 Syntactic | Required fields present, no unknown fields, types, enums, schema versions, finite numbers, canonical lowercase UUIDs (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys, timestamps | `VALIDATION_FAILED` |
-| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; `member_defaults` references resolve and cover every role the rule generates (D039); unique generation keys; `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030) | `VALIDATION_FAILED` |
+| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; `member_defaults` references resolve and cover every role the rule generates (D039); unique generation keys; unique section labels (D049); `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030) | `VALIDATION_FAILED` |
 | 3 Geometric | Positive, finite dimensions; pitch in (0, π/2); overhang ≥ 0; grid line fractions strictly ascending with endpoints 0 and 1; strictly increasing level elevations; story-height consistency (D033); datums: `Footprint.origin_m = [0, 0]` (D031) and Level 0 elevation `0` (D034); nonzero member axes | `VALIDATION_FAILED` |
 | 4 Domain | Supported VS-01 configurations only: D031 unsupported values; D032 and D034 bounds, checked on the full candidate snapshot (so a footprint change can be rejected for the bay lengths it produces); exactly two levels; supported generation rule and mode; member roles allowed by that rule. Never asserts structural adequacy or code compliance | `UNSUPPORTED_CONFIGURATION` |
 | 5 Conformance | Members are exactly what the generation rule produces: same keys, roles, sections and materials (from `member_defaults`), and endpoints within 1e-6 m per coordinate (D046). Runs only when stages 1–4 pass | `VALIDATION_FAILED` |
@@ -111,6 +111,7 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `DUPLICATE_GENERATION_KEY` | 2 | Two members share a `generation_key` |
 | `ORDER_VIOLATION` | 2 | An array with a required order is out of order (D030) |
 | `DUPLICATE_LINE_ID` | 2 | A grid line ID repeats within an axis; `path` is each later occurrence's `id`, `related_paths` the first occurrence's (D042, D037) |
+| `DUPLICATE_SECTION_LABEL` | 2 | Two sections share a `nominal_label`; `path` is each later section's label (by `id` order), `related_paths` the first's (D049, D037) |
 | `MISSING_ROLE_DEFAULT` | 2 | `FrameSystem.member_defaults` lacks an entry for a role the generation rule generates (D039) |
 | `OUT_OF_RANGE` | 3 | Physically meaningless value: non-positive length, pitch outside (0, π/2), negative overhang |
 | `NOT_STRICTLY_ASCENDING` | 3 | Grid fractions or level elevations not strictly increasing |
@@ -135,6 +136,7 @@ Storage schema ([MODEL-004](../implementation/tasks/MODEL-004.md) §5, approved 
 - **`projects`** holds the head revision and its `head_sequence`. Only these head fields ever change.
 - **`revisions`** holds `project_id`, `parent_revision_id`, and a per-project `sequence` starting at 1 (unique, for readable positions and ordered history). It also holds `model_schema_version`, the snapshot as **JSONB**, and its canonical **fingerprint**, which is checked on every read.
 - **`operations`** is the append-only audit log, with one row per commit attempt, ordered by an identity column `log_position`.
+- **`artifacts`** holds derived data, keyed by (`revision_id`, `artifact_type`, `input_fingerprint`) ([ART-001](../implementation/tasks/ART-001.md) §5, approved as §8 item 2). Each row stores the generator ID and version, status (`CURRENT`, `UNAVAILABLE`, or `FAILED`), payload, error, warnings, and generation time. Rows are recomputable and may be deleted; they are **not** append-only. A write for an existing key keeps the first row, because results are deterministic.
 - **`schema_migrations`** records applied SQL migrations.
 - **Idempotency** is enforced by partial unique indexes: (`project_id`, `actor_id`, `command_id`) for committed or no-op rows, and (`actor_id`, `command_id`) for project creation.
 - **Immutability:** triggers reject `UPDATE` and `DELETE` on `revisions` and `operations`.

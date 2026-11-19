@@ -168,6 +168,13 @@ def test_roof_is_routine_and_regenerates_nothing():
     assert not (change.members_added or change.members_removed or change.members_updated)
 
 
+def test_add_section_with_existing_label_is_rejected():
+    result = run("AddSection", {"nominal_label": "8x8", "actual_width_m": 0.1905, "actual_depth_m": 0.1905})
+    assert result.rejection.code == VF
+    issue = next(i for i in result.rejection.issues if i.code == codes.DUPLICATE_SECTION_LABEL)
+    assert "args.nominal_label" in issue.related_paths  # D049 + interfaces.md §7.1 linking
+
+
 def test_add_section_then_use_it():
     added = run("AddSection", {"nominal_label": "10x12", "actual_width_m": 0.254, "actual_depth_m": 0.3048}).change
     section_id = mint("entity", P, ACTOR, CID, "section")

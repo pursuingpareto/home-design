@@ -76,7 +76,14 @@ Preview is non-mutating. Confirmation must bind to a specific preview token, bas
 
 ## 6. Incremental recomputation
 
-Use a topological order of affected derivations. Cache by `(derivation_type, generator_version, input_fingerprint)`. Jobs are at-least-once, idempotent, and safe to retry. Workers must not overwrite a newer result with an older computation. Failure in a noncritical derived artifact must not corrupt the committed semantic model. Propagate failure or unknown statuses to dependent artifacts rather than fabricating fallback numbers.
+**VS-01 execution model** ([ART-001](../implementation/tasks/ART-001.md) §4, approved as §8 item 1):
+
+- **After commit:** once the commit transaction has committed, the service derives every artifact for the new revision synchronously, in dependency order, storing each result in its own transaction.
+- **Failures:** a derivation that raises is stored as `FAILED` and never affects the committed revision.
+- **Lazy recompute:** reading an artifact whose stored result is missing or has a different fingerprint (after a crash, a generator version change, or a price-book change) derives it on demand.
+- **No workers or outbox in VS-01:** steps 8–9 of §5 reduce to "persist the revision, then derive". `QUEUED`, `COMPUTING`, and `SUPERSEDED` remain in the contract for a later asynchronous worker, but VS-01 never produces them.
+
+Use a topological order of affected derivations. Cache by `(derivation_type, generator_version, input_fingerprint)`. In VS-01 the fingerprint includes the revision, so the cache never hits across revisions. It only prevents re-deriving the same revision ([artifacts.md §2.3](artifacts.md#23-fingerprint)). Jobs are at-least-once, idempotent, and safe to retry. Workers must not overwrite a newer result with an older computation. Failure in a noncritical derived artifact must not corrupt the committed semantic model. Propagate failure or unknown statuses to dependent artifacts rather than fabricating fallback numbers.
 
 ## 7. Professional review dependency scope (future)
 

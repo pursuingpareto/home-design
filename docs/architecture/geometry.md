@@ -8,6 +8,14 @@ The semantic parametric building model is authoritative. Exact CAD representatio
 
 Given a valid revision of the rectangular two-story reference model, deterministically derive 2D plan geometry and 3D display primitives. Record the source revision for all derived artifacts. Payload shapes are [artifacts.md](artifacts.md) (`plan2d`, `mesh3d`) (D027).
 
+**Numeric evaluation** ([GEOM-001](../implementation/tasks/GEOM-001.md) §4, approved as §7 item 2):
+
+- **Exact formulas:** derived coordinates are IEEE-754 doubles evaluated exactly as written, left to right, with no fused multiply-add and no rounding or snapping, as in [generation-rules.md, "Numeric evaluation"](../reference-projects/vermont-timber-house/generation-rules.md#numeric-evaluation).
+- **The one exception is `tan(pitch_rad)`.** Library implementations of `tan` are not required to be correctly rounded, so values that depend on it (ridge height, overhang edge) must agree across implementations within **1e-12 m**. All other derived values must be bit-identical. The tolerance is a million times smaller than the D026 comparison epsilon and does not affect validation or display.
+- **Roof geometry** follows [D048](../product/decisions/D048-roof-plane-through-wall-line.md).
+
+**Member source** ([GEOM-001](../implementation/tasks/GEOM-001.md) §3, approved as §7 item 3): `plan2d` and `mesh3d` take each member's axis from the **stored** snapshot (`start_m`, `end_m`) and its section dimensions from the referenced `Section`. They never regenerate members from the rule, so the views always show exactly what was committed. Stage 5 conformance (D046) already guarantees agreement with the rule within 1e-6 m. Consequence: the hand-entered fixture shows its decimals (`3.6576`), while command-produced revisions show generator output (`3.6575999999999995`). Both display identically after unit conversion.
+
 Canonical units, axes, and the 1e-6 m comparison epsilon are confirmed ([D026](../product/decisions/D026-canonical-units-identity-persistence.md)). Display conversion is at the UI boundary.
 
 ## Open

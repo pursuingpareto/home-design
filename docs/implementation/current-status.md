@@ -1,10 +1,10 @@
 # Current project status
 
-**As of 2026-11-18:** Specification work through D047. Application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
+**As of 2026-11-18:** Specification work through D049. Application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
 
 ## Complete
 
-- Product decisions D001–D047.
+- Product decisions D001–D049.
 - Architecture v0.2 drafts (entity schemas remain engineering detail, not construction rules).
 - VS-01 scope and acceptance criteria.
 - Reference House 001 VS-01 golden snapshot and `vs01-post-beam-1` generation rules (D025).
@@ -29,5 +29,6 @@
 - `MODEL-003` implemented: typed commands, deterministic ID minting (D041), candidate snapshots with diff, classification, no-op handling, undo, and template creation; command JSON Schema exported.
 - `TIMBER-001` implemented: `vs01-post-beam-1` generator, rule registry, and stage 5 conformance (D046); inventory matches an independent ECMAScript implementation byte for byte.
 - `MODEL-004` implemented: `ProjectService` over in-memory and PostgreSQL stores, with immutable revisions, optimistic concurrency, idempotent retries, an audit log, and signed preview tokens (D047); 293 tests passing.
-- Task files beyond `MODEL-004`.
+- `ART-001`, `GEOM-001`, and `EST-001` task files ready: all proposals settled (D048 roof planes, D049 unique section labels; C1, C5, C6, M9, M10 closed).
+- Task files for the API and UI.
 - Engineering, assemblies, AI, collaboration, and documentation slices.
