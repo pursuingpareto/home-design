@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import uuid
 from pathlib import Path
 from typing import Any
@@ -47,6 +48,47 @@ def doc() -> dict[str, Any]:
 
 
 _TEST_ID_NAMESPACE = uuid.UUID("00000000-0000-4000-8000-0000000000aa")
+
+
+# --- MODEL-004 stores (MODEL-004 §7) ----------------------------------------------
+
+PG_URL = os.environ.get("HOMEDESIGN_TEST_DATABASE_URL", "postgresql:///homedesign_test")
+
+
+@pytest.fixture(scope="session")
+def pg_url() -> str:
+    """Recreate the name-guarded test database on the local server and apply migrations.
+
+    Only a database whose name starts with ``homedesign_test`` is ever dropped or created.
+    An unreachable server fails the tests instead of skipping them.
+    """
+    import psycopg
+    from psycopg import sql
+    from psycopg.conninfo import conninfo_to_dict, make_conninfo
+
+    from homedesign.project.migrate import migrate
+
+    dbname = conninfo_to_dict(PG_URL).get("dbname") or ""
+    if not dbname.startswith("homedesign_test"):
+        pytest.fail(f"Refusing to use database {dbname!r}: test database names must start with 'homedesign_test'.")
+    try:
+        with psycopg.connect(make_conninfo(PG_URL, dbname="postgres"), autocommit=True) as admin:
+            admin.execute(sql.SQL("DROP DATABASE IF EXISTS {} WITH (FORCE)").format(sql.Identifier(dbname)))
+            admin.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(dbname)))
+    except psycopg.OperationalError as exc:
+        pytest.fail(f"PostgreSQL is not reachable for {PG_URL!r} (set HOMEDESIGN_TEST_DATABASE_URL): {exc}")
+    migrate(PG_URL)
+    return PG_URL
+
+
+@pytest.fixture(params=["memory", "postgres"])
+def store(request):
+    from homedesign.project import MemoryStore
+    from homedesign.project.postgres import PostgresStore
+
+    if request.param == "memory":
+        return MemoryStore()
+    return PostgresStore(request.getfixturevalue("pg_url"))
 
 
 def regenerate(doc: dict[str, Any]) -> dict[str, Any]:

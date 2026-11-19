@@ -1,6 +1,6 @@
 # Backend
 
-Python backend for the Home Design Platform. Currently contains the `model` module from [MODEL-001](../docs/implementation/tasks/MODEL-001.md) (with typed commands from [MODEL-003](../docs/implementation/tasks/MODEL-003.md)) and the `timber` module from [TIMBER-001](../docs/implementation/tasks/TIMBER-001.md). Together they provide the authoritative Pydantic schema for VS-01 snapshots (D028), five-stage validation including rule conformance (D035, D046), the `vs01-post-beam-1` generator, and RFC 8785 canonical serialization and fingerprints (D029, D030). No HTTP API, persistence, or UI yet.
+Python backend for the Home Design Platform. Currently contains the `model` module from [MODEL-001](../docs/implementation/tasks/MODEL-001.md) (with typed commands from [MODEL-003](../docs/implementation/tasks/MODEL-003.md)) the `timber` module from [TIMBER-001](../docs/implementation/tasks/TIMBER-001.md), and the `project` module from [MODEL-004](../docs/implementation/tasks/MODEL-004.md). Together they provide the authoritative Pydantic schema for VS-01 snapshots (D028), five-stage validation including rule conformance (D035, D046), the `vs01-post-beam-1` generator, RFC 8785 canonical serialization and fingerprints (D029, D030), typed commands, and PostgreSQL revision persistence with concurrency, idempotency, and preview tokens. No HTTP API or UI yet.
 
 ## Setup
 
@@ -10,6 +10,20 @@ Requires [uv](https://docs.astral.sh/uv/). uv installs the pinned Python (`.pyth
 cd backend
 uv sync
 ```
+
+## Database
+
+Persistence uses PostgreSQL (psycopg 3, plain SQL migrations in `src/homedesign/project/migrations/`).
+
+```bash
+uv run python -m homedesign.project.migrate postgresql:///homedesign   # apply pending migrations
+```
+
+**Tests and your local server.** The test suite uses your local PostgreSQL server.
+- **Connection:** `HOMEDESIGN_TEST_DATABASE_URL`, default `postgresql:///homedesign_test`.
+- **Name guard:** the suite only accepts a database whose name starts with `homedesign_test`.
+- **Clean start:** each session drops and recreates that one database and migrates it. Your user needs `CREATEDB`, which Homebrew's default user has.
+- **No silent skips:** if the server is unreachable, the PostgreSQL tests fail rather than skip. The in-memory store runs the same contract tests without a database.
 
 ## Common commands
 
@@ -45,5 +59,6 @@ else:
 | `src/homedesign/model/jcs.py`, `canonical.py` | RFC 8785 and snapshot fingerprints |
 | `src/homedesign/model/strict_json.py`, `paths.py` | Strict parser and D036 path rendering |
 | `src/homedesign/model/commands/` | Typed commands: envelopes, `propose`/`propose_create`, D041 minting, diff and classification, packaged template |
+| `src/homedesign/project/` | `ProjectService` (create, preview, commit, reads), in-memory and PostgreSQL stores, preview tokens, migrations |
 | `src/homedesign/timber/` | Rule registry, `vs01-post-beam-1` (`generate`, `conformance`), `GeneratedMember` |
 | `tests/` | Fixture, mutation table, generator, JCS and inventory vectors, property tests, catalog-doc sync |

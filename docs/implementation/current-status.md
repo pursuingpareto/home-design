@@ -1,6 +1,6 @@
 # Current project status
 
-**As of 2026-11-18:** Specification work through D047. First application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
+**As of 2026-11-18:** Specification work through D047. Application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
 
 ## Complete
 
@@ -26,8 +26,8 @@
 ## Incomplete
 
 - Hosting, identity provider, and production operations.
-- `MODEL-003` implemented: typed commands, deterministic ID minting (D041), candidate snapshots with diff, classification, no-op handling, undo, and template creation; command JSON Schema exported; 232 tests passing.
+- `MODEL-003` implemented: typed commands, deterministic ID minting (D041), candidate snapshots with diff, classification, no-op handling, undo, and template creation; command JSON Schema exported.
 - `TIMBER-001` implemented: `vs01-post-beam-1` generator, rule registry, and stage 5 conformance (D046); inventory matches an independent ECMAScript implementation byte for byte.
-- `MODEL-004` task file drafted (persistence, concurrency, idempotency, preview tokens); all proposals approved (preview tokens are D047); ready for implementation.
+- `MODEL-004` implemented: `ProjectService` over in-memory and PostgreSQL stores, with immutable revisions, optimistic concurrency, idempotent retries, an audit log, and signed preview tokens (D047); 293 tests passing.
 - Task files beyond `MODEL-004`.
 - Engineering, assemblies, AI, collaboration, and documentation slices.

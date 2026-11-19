@@ -1,6 +1,6 @@
 # MODEL-004 — Revision persistence, concurrency, idempotency, and previews
 
-**Status:** Ready for implementation — all §10 proposals approved (2026-11-18)  
+**Status:** Implemented (2026-11-19). See §12 for implementation notes.  
 **Owner module:** `project` (interfaces.md §1: identity, head, revision persistence)  
 **Slice:** VS-01  
 **Depends on:** `MODEL-001`, `TIMBER-001`, `MODEL-003` (all done)  
@@ -205,3 +205,48 @@ Approved items update interfaces.md §3–5, §7, and §9, and dependencies.md �
 - All §8 tests pass against both stores. The migration applies cleanly to an empty database.
 - interfaces.md and dependencies.md are updated for approved items. The task index and status docs are updated, and backend/README.md documents the database setup.
 - Changed files, tests, limitations, and next steps are summarized (AGENTS.md).
+
+## 12. Implementation notes (2026-11-19)
+
+**Delivered:**
+- `backend/src/homedesign/project/`:
+  - `service.py`: `ProjectService`, `CommitResult`, `PreviewResult`;
+  - `store.py`: the store interface, row types, and `MemoryStore`;
+  - `postgres.py`: `PostgresStore`;
+  - `tokens.py` (D047), `errors.py`, `timefmt.py`;
+  - `migrate.py` and `migrations/0001_initial.sql`.
+- New dependency: `psycopg[binary]` 3.3, locked in `backend/uv.lock`.
+- MODEL-003's `command_hash` is now public, because commit checks idempotency before running `propose`.
+
+**Tests:** 293 pytest tests pass, 61 of them new, covering all 15 §8 criteria; most run against both stores:
+- creation and replay (including another actor reusing a `command_id`);
+- previews writing nothing;
+- token-matched commits;
+- the full token matrix: required, expired, tampered, other actor, other command, other base, other key, routine without a token, and routine with a bad token;
+- stale previews and retries;
+- reused `command_id`s, no-ops, and audited rejections that do not reserve the ID;
+- malformed commands and unknown projects;
+- round trips and JSONB edge values (`-0`, `1e-7`, `3.6575999999999995`);
+- deterministic replay of a five-revision history (including undo) into a fresh store;
+- undo, refusal of corrupted snapshots, and history ordering;
+- PostgreSQL only: append-only triggers (`UPDATE`, `DELETE`, `TRUNCATE`), two-thread commit races, and racing identical creations.
+
+An ad hoc stress run (8 threads × 25 rounds on one base, then 8 copies of one command) produced exactly one winner per round, one 201 and seven 200 replays, and an unbroken 27-revision chain.
+
+**Choices made during implementation:**
+
+- **`operations.log_position`** (an identity column) gives the audit log an explicit append order. Several operations can share a `created_at`, and ordering by it (with the random operation ID as tie-break) returned rows out of order on PostgreSQL; the in-memory store had hidden this. The migration was unreleased, so `0001_initial.sql` was edited in place.
+- **Rejected creation attempts are audited too**, with `project_id` null. Rejected attempts get a random operation ID. Successful operations use their D041 ID, so a valid retry under the same `command_id` cannot collide with an earlier rejected row.
+- **Writing the audit row:** a rejection is written in the same transaction as the checks, and the error is raised only after that transaction commits.
+- **Replays come first:** a retry needs no preview token, because idempotency is checked before the preview (D047 order). A token that *is* supplied must be valid, even for routine commands and no-ops.
+- **Token format:** `base64url(canonical claims) "." base64url(HMAC-SHA-256)`. The key is a constructor argument; configuration is the API task's concern.
+- **Inputs:** `actor_id` must be a canonical UUID (the authenticated server identity) and is rejected with `ValueError` otherwise. Malformed project and revision IDs are `NotFound`.
+- **Race handling:** identical concurrent creations are resolved by the creation unique index. The loser retries and replays the winner's result.
+
+**Limitations:**
+
+- No HTTP layer, authentication, or key configuration (API task).
+- `artifact_statuses` are always `MISSING`, and there is no outbox yet (artifact tasks).
+- One connection per transaction with no pool, sufficient for VS-01.
+- `list_operations` returns every audit row with no paging.
+

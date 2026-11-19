@@ -385,7 +385,8 @@ def _finish(
     )
 
 
-def _command_hash(command: Any) -> str:
+def command_hash(command: Any) -> str:
+    """SHA-256 of a parsed envelope's canonical form, unset optional fields omitted (interfaces.md §3)."""
     return fingerprint(command.model_dump(mode="json", exclude_unset=True))
 
 
@@ -423,7 +424,7 @@ def propose(base: Snapshot, command: Any, *, actor_id: str, at: str, target: Sna
         draft=draft,
         applied=applied,
         command=parsed,
-        command_hash=_command_hash(parsed),
+        command_hash=command_hash(parsed),
         mint_fn=ctx.mint,
     )
 
@@ -477,6 +478,6 @@ def propose_create(command: Any, *, project_id: str, actor_id: str, at: str) -> 
         draft=draft,
         applied=_Applied(regenerate=True),
         command=parsed,
-        command_hash=_command_hash(parsed),
+        command_hash=command_hash(parsed),
         mint_fn=mint_fn,
     )

@@ -1,7 +1,7 @@
 # Next steps
 
-1. Implement [`MODEL-004`](tasks/MODEL-004.md) (ready): revision persistence (PostgreSQL JSONB snapshots plus the append-only operation log, D026), project head and optimistic concurrency, the idempotency store, preview tokens and expiry, and no-op logging (D045). It wraps `MODEL-003`'s `propose`.
-2. Then the artifact derivations (`GEOM-001` plan and mesh, `EST-001` schedule and estimate) and the API task.
+1. Draft the artifact tasks: `GEOM-001` (`plan2d`, `mesh3d`) and `EST-001` (`timber_schedule`, `preliminary_estimate`), including the transactional outbox and artifact statuses that MODEL-004 leaves as `MISSING`.
+2. Draft the API task: FastAPI routes over `ProjectService`, error mapping, authentication stub, and preview-key configuration.
 3. Open spec items to schedule: hosting and identity (open question 8), C5 (per-artifact fingerprint inputs), and C1 (the `mesh3d` roof-slope example).
 
 Unresolved questions that should not reopen D025–D047: exact CAD kernel, Vermont code editions, datasets, hosting, and drawing export formats.

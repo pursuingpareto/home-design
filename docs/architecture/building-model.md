@@ -134,7 +134,7 @@ Storage schema ([MODEL-004](../implementation/tasks/MODEL-004.md) §5, approved 
 
 - **`projects`** holds the head revision and its `head_sequence`. Only these head fields ever change.
 - **`revisions`** holds `project_id`, `parent_revision_id`, and a per-project `sequence` starting at 1 (unique, for readable positions and ordered history). It also holds `model_schema_version`, the snapshot as **JSONB**, and its canonical **fingerprint**, which is checked on every read.
-- **`operations`** is the append-only audit log, with one row per commit attempt.
+- **`operations`** is the append-only audit log, with one row per commit attempt, ordered by an identity column `log_position`.
 - **`schema_migrations`** records applied SQL migrations.
 - **Idempotency** is enforced by partial unique indexes: (`project_id`, `actor_id`, `command_id`) for committed or no-op rows, and (`actor_id`, `command_id`) for project creation.
 - **Immutability:** triggers reject `UPDATE` and `DELETE` on `revisions` and `operations`.
