@@ -11,6 +11,7 @@
 - Python tooling: uv, with a locked environment.
 - Schemas: Pydantic v2, authoritative per D028.
 - Database access: psycopg 3 (synchronous), with **plain numbered SQL migrations** applied by a small in-repo runner. There is no ORM: the schema relies on triggers, partial unique indexes, and row locks that are clearest in SQL ([MODEL-004](../implementation/tasks/MODEL-004.md) §10, item 3).
+- HTTP API: **FastAPI**, which generates OpenAPI from the Pydantic models (D028); **uvicorn** as the server; **httpx** as a development dependency for the test client. Services are synchronous, because psycopg is, and handlers run them in a thread pool ([API-001](../implementation/tasks/API-001.md) §11, item 1).
 
 **Core modules:**
 

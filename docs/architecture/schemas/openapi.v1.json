@@ -1,0 +1,3002 @@
+{
+  "components": {
+    "schemas": {
+      "AddSection": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/AddSectionArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "AddSection",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "AddSection",
+        "type": "object"
+      },
+      "AddSectionArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "actual_depth_m": {
+            "title": "Actual Depth M",
+            "type": "number"
+          },
+          "actual_width_m": {
+            "title": "Actual Width M",
+            "type": "number"
+          },
+          "nominal_label": {
+            "title": "Nominal Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nominal_label",
+          "actual_width_m",
+          "actual_depth_m"
+        ],
+        "title": "AddSectionArgs",
+        "type": "object"
+      },
+      "ArtifactEnvelope": {
+        "additionalProperties": false,
+        "description": "Common envelope for every artifact response (artifacts.md §2).",
+        "properties": {
+          "artifact_type": {
+            "enum": [
+              "plan2d",
+              "mesh3d",
+              "timber_schedule",
+              "preliminary_estimate"
+            ],
+            "title": "Artifact Type",
+            "type": "string"
+          },
+          "claims": {
+            "$ref": "#/components/schemas/Claims",
+            "default": {
+              "construction_approved": false,
+              "permit_ready": false,
+              "structurally_verified": false
+            }
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Message"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "generated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generated At"
+          },
+          "generator_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generator Id"
+          },
+          "generator_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generator Version"
+          },
+          "head": {
+            "title": "Head",
+            "type": "boolean"
+          },
+          "input_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Fingerprint"
+          },
+          "payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payload"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "source_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Source Revision Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "MISSING",
+              "QUEUED",
+              "COMPUTING",
+              "CURRENT",
+              "FAILED",
+              "STALE",
+              "UNAVAILABLE",
+              "SUPERSEDED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "suitability": {
+            "const": "preliminary",
+            "default": "preliminary",
+            "title": "Suitability",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "artifact_type",
+          "project_id",
+          "source_revision_id",
+          "head",
+          "generator_id",
+          "generator_version",
+          "input_fingerprint",
+          "generated_at",
+          "status",
+          "warnings",
+          "error"
+        ],
+        "title": "VS-01 artifact envelope (artifacts.md §2)",
+        "type": "object"
+      },
+      "Building": {
+        "additionalProperties": false,
+        "properties": {
+          "footprint_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Footprint Id",
+            "type": "string"
+          },
+          "frame_system_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Frame System Id",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "Building",
+            "title": "Kind",
+            "type": "string"
+          },
+          "level_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Level Ids",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "roof_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Roof Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "name",
+          "footprint_id",
+          "level_ids",
+          "roof_id",
+          "frame_system_id"
+        ],
+        "title": "Building",
+        "type": "object"
+      },
+      "Claims": {
+        "additionalProperties": false,
+        "properties": {
+          "construction_approved": {
+            "const": false,
+            "default": false,
+            "title": "Construction Approved",
+            "type": "boolean"
+          },
+          "permit_ready": {
+            "const": false,
+            "default": false,
+            "title": "Permit Ready",
+            "type": "boolean"
+          },
+          "structurally_verified": {
+            "const": false,
+            "default": false,
+            "title": "Structurally Verified",
+            "type": "boolean"
+          }
+        },
+        "title": "Claims",
+        "type": "object"
+      },
+      "Command": {
+        "description": "Any VS-01 command envelope, discriminated by `type` (interfaces.md §2).",
+        "discriminator": {
+          "mapping": {
+            "AddSection": "#/components/schemas/AddSection",
+            "CreateReferenceProject": "#/components/schemas/CreateReferenceProject",
+            "SetFootprintDimensions": "#/components/schemas/SetFootprintDimensions",
+            "SetGableRoofParameters": "#/components/schemas/SetGableRoofParameters",
+            "SetMemberSection": "#/components/schemas/SetMemberSection",
+            "SetStoryHeights": "#/components/schemas/SetStoryHeights",
+            "SetTimberGrid": "#/components/schemas/SetTimberGrid",
+            "UndoToRevision": "#/components/schemas/UndoToRevision"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateReferenceProject"
+          },
+          {
+            "$ref": "#/components/schemas/SetFootprintDimensions"
+          },
+          {
+            "$ref": "#/components/schemas/SetStoryHeights"
+          },
+          {
+            "$ref": "#/components/schemas/SetGableRoofParameters"
+          },
+          {
+            "$ref": "#/components/schemas/SetTimberGrid"
+          },
+          {
+            "$ref": "#/components/schemas/SetMemberSection"
+          },
+          {
+            "$ref": "#/components/schemas/AddSection"
+          },
+          {
+            "$ref": "#/components/schemas/UndoToRevision"
+          }
+        ],
+        "title": "Command"
+      },
+      "CommitRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "command": {
+            "discriminator": {
+              "mapping": {
+                "AddSection": "#/components/schemas/AddSection",
+                "CreateReferenceProject": "#/components/schemas/CreateReferenceProject",
+                "SetFootprintDimensions": "#/components/schemas/SetFootprintDimensions",
+                "SetGableRoofParameters": "#/components/schemas/SetGableRoofParameters",
+                "SetMemberSection": "#/components/schemas/SetMemberSection",
+                "SetStoryHeights": "#/components/schemas/SetStoryHeights",
+                "SetTimberGrid": "#/components/schemas/SetTimberGrid",
+                "UndoToRevision": "#/components/schemas/UndoToRevision"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CreateReferenceProject"
+              },
+              {
+                "$ref": "#/components/schemas/SetFootprintDimensions"
+              },
+              {
+                "$ref": "#/components/schemas/SetStoryHeights"
+              },
+              {
+                "$ref": "#/components/schemas/SetGableRoofParameters"
+              },
+              {
+                "$ref": "#/components/schemas/SetTimberGrid"
+              },
+              {
+                "$ref": "#/components/schemas/SetMemberSection"
+              },
+              {
+                "$ref": "#/components/schemas/AddSection"
+              },
+              {
+                "$ref": "#/components/schemas/UndoToRevision"
+              }
+            ],
+            "title": "Command"
+          },
+          "preview_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Required for consequential commands that are not no-ops (D047).",
+            "title": "Preview Token"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "CommitRequest",
+        "type": "object"
+      },
+      "CommitResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_statuses": {
+            "additionalProperties": {
+              "enum": [
+                "CURRENT",
+                "STALE",
+                "MISSING",
+                "UNAVAILABLE",
+                "FAILED"
+              ],
+              "type": "string"
+            },
+            "title": "Artifact Statuses",
+            "type": "object"
+          },
+          "is_noop": {
+            "title": "Is Noop",
+            "type": "boolean"
+          },
+          "operation_id": {
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "parent_revision_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Revision Id"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          },
+          "replayed": {
+            "anyOf": [
+              {
+                "const": true,
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Present (true) only for an idempotent retry.",
+            "title": "Replayed"
+          },
+          "revision_id": {
+            "title": "Revision Id",
+            "type": "string"
+          },
+          "sequence": {
+            "title": "Sequence",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "project_id",
+          "revision_id",
+          "parent_revision_id",
+          "operation_id",
+          "sequence",
+          "is_noop",
+          "artifact_statuses"
+        ],
+        "title": "CommitResponse",
+        "type": "object"
+      },
+      "CreateProjectRequest": {
+        "$ref": "#/components/schemas/CreateReferenceProject",
+        "description": "The creation envelope (interfaces.md §2): `CreateReferenceProject` without project or base revision.",
+        "title": "CreateProjectRequest"
+      },
+      "CreateReferenceProject": {
+        "additionalProperties": false,
+        "description": "Creation envelope: no project or base revision exists yet (interfaces.md §2).",
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/NoArgs"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "CreateReferenceProject",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "type",
+          "args"
+        ],
+        "title": "CreateReferenceProject",
+        "type": "object"
+      },
+      "ErrorBody": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/ErrorDetail"
+            },
+            "title": "Details",
+            "type": "array"
+          },
+          "message": {
+            "description": "Human-readable; not part of the contract.",
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "details",
+          "request_id"
+        ],
+        "title": "ErrorBody",
+        "type": "object"
+      },
+      "ErrorDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "description": "Detail code from building-model.md §6.1.",
+            "title": "Code",
+            "type": "string"
+          },
+          "path": {
+            "description": "D036 path from the root of the validated document.",
+            "title": "Path",
+            "type": "string"
+          },
+          "related_paths": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "D037; omitted when empty.",
+            "title": "Related Paths"
+          },
+          "value": {
+            "title": "Value"
+          }
+        },
+        "required": [
+          "path",
+          "code"
+        ],
+        "title": "ErrorDetail",
+        "type": "object"
+      },
+      "ErrorEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ErrorEnvelope",
+        "type": "object"
+      },
+      "FieldChange": {
+        "additionalProperties": false,
+        "properties": {
+          "after": {
+            "title": "After"
+          },
+          "before": {
+            "title": "Before"
+          },
+          "entity_id": {
+            "title": "Entity Id",
+            "type": "string"
+          },
+          "entity_kind": {
+            "title": "Entity Kind",
+            "type": "string"
+          },
+          "field": {
+            "title": "Field",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity_kind",
+          "entity_id",
+          "field",
+          "before",
+          "after"
+        ],
+        "title": "FieldChange",
+        "type": "object"
+      },
+      "Footprint": {
+        "additionalProperties": false,
+        "properties": {
+          "depth_m": {
+            "title": "Depth M",
+            "type": "number"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "Footprint",
+            "title": "Kind",
+            "type": "string"
+          },
+          "origin_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Origin M",
+            "type": "array"
+          },
+          "rotation_rad": {
+            "title": "Rotation Rad",
+            "type": "number"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "width_m": {
+            "title": "Width M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "origin_m",
+          "width_m",
+          "depth_m",
+          "rotation_rad"
+        ],
+        "title": "Footprint",
+        "type": "object"
+      },
+      "FootprintArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "depth_m": {
+            "title": "Depth M",
+            "type": "number"
+          },
+          "width_m": {
+            "title": "Width M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "width_m",
+          "depth_m"
+        ],
+        "title": "FootprintArgs",
+        "type": "object"
+      },
+      "FrameSystem": {
+        "additionalProperties": false,
+        "properties": {
+          "generation_mode": {
+            "title": "Generation Mode",
+            "type": "string"
+          },
+          "grid_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Grid Id",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "FrameSystem",
+            "title": "Kind",
+            "type": "string"
+          },
+          "member_defaults": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RoleDefault"
+            },
+            "propertyNames": {
+              "enum": [
+                "POST",
+                "BEAM",
+                "FLOOR_JOIST",
+                "RAFTER"
+              ]
+            },
+            "title": "Member Defaults",
+            "type": "object"
+          },
+          "member_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Member Ids",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "grid_id",
+          "member_ids",
+          "generation_mode",
+          "member_defaults"
+        ],
+        "title": "FrameSystem",
+        "type": "object"
+      },
+      "GableRoof": {
+        "additionalProperties": false,
+        "properties": {
+          "eave_overhang_m": {
+            "title": "Eave Overhang M",
+            "type": "number"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "GableRoof",
+            "title": "Kind",
+            "type": "string"
+          },
+          "pitch_rad": {
+            "title": "Pitch Rad",
+            "type": "number"
+          },
+          "ridge_axis": {
+            "enum": [
+              "X",
+              "Y"
+            ],
+            "title": "Ridge Axis",
+            "type": "string"
+          },
+          "ridge_offset_m": {
+            "title": "Ridge Offset M",
+            "type": "number"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "ridge_axis",
+          "pitch_rad",
+          "eave_overhang_m",
+          "ridge_offset_m"
+        ],
+        "title": "GableRoof",
+        "type": "object"
+      },
+      "GableRoofArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "eave_overhang_m": {
+            "title": "Eave Overhang M",
+            "type": "number"
+          },
+          "pitch_rad": {
+            "title": "Pitch Rad",
+            "type": "number"
+          }
+        },
+        "required": [
+          "pitch_rad",
+          "eave_overhang_m"
+        ],
+        "title": "GableRoofArgs",
+        "type": "object"
+      },
+      "GridLineArg": {
+        "additionalProperties": false,
+        "description": "Either ``{\"id\", \"fraction\"}`` (keep an existing line) or ``{\"fraction\"}`` (new line).",
+        "properties": {
+          "fraction": {
+            "title": "Fraction",
+            "type": "number"
+          },
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Id"
+          }
+        },
+        "required": [
+          "fraction"
+        ],
+        "title": "GridLineArg",
+        "type": "object"
+      },
+      "Level": {
+        "additionalProperties": false,
+        "properties": {
+          "elevation_m": {
+            "title": "Elevation M",
+            "type": "number"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "index": {
+            "ge": -9007199254740991,
+            "le": 9007199254740991,
+            "title": "Index",
+            "type": "integer"
+          },
+          "kind": {
+            "const": "Level",
+            "title": "Kind",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "story_height_m": {
+            "title": "Story Height M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "index",
+          "elevation_m",
+          "story_height_m"
+        ],
+        "title": "Level",
+        "type": "object"
+      },
+      "Manifest": {
+        "additionalProperties": false,
+        "properties": {
+          "artifacts": {
+            "items": {
+              "$ref": "#/components/schemas/ManifestEntry"
+            },
+            "title": "Artifacts",
+            "type": "array"
+          },
+          "head": {
+            "title": "Head",
+            "type": "boolean"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Revision Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id",
+          "revision_id",
+          "head",
+          "artifacts"
+        ],
+        "title": "Manifest",
+        "type": "object"
+      },
+      "ManifestEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_type": {
+            "title": "Artifact Type",
+            "type": "string"
+          },
+          "generator_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generator Version"
+          },
+          "input_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Fingerprint"
+          },
+          "source_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Source Revision Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "MISSING",
+              "QUEUED",
+              "COMPUTING",
+              "CURRENT",
+              "FAILED",
+              "STALE",
+              "UNAVAILABLE",
+              "SUPERSEDED"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact_type",
+          "status",
+          "source_revision_id",
+          "generator_version",
+          "input_fingerprint"
+        ],
+        "title": "ManifestEntry",
+        "type": "object"
+      },
+      "Material": {
+        "additionalProperties": false,
+        "properties": {
+          "density_kg_m3": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Density Kg M3"
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grade"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "Material",
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "provenance": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provenance"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "species": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Species"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "name",
+          "species",
+          "grade",
+          "density_kg_m3",
+          "provenance"
+        ],
+        "title": "Material",
+        "type": "object"
+      },
+      "MemberChanges": {
+        "additionalProperties": false,
+        "properties": {
+          "added": {
+            "items": {
+              "$ref": "#/components/schemas/MemberRef"
+            },
+            "title": "Added",
+            "type": "array"
+          },
+          "removed": {
+            "items": {
+              "$ref": "#/components/schemas/MemberRef"
+            },
+            "title": "Removed",
+            "type": "array"
+          },
+          "updated": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Updated",
+            "type": "array"
+          }
+        },
+        "required": [
+          "added",
+          "removed",
+          "updated"
+        ],
+        "title": "MemberChanges",
+        "type": "object"
+      },
+      "MemberRef": {
+        "additionalProperties": false,
+        "properties": {
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "generation_key"
+        ],
+        "title": "MemberRef",
+        "type": "object"
+      },
+      "MemberSectionArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "enum": [
+              "POST",
+              "BEAM",
+              "FLOOR_JOIST",
+              "RAFTER"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Section Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "section_id"
+        ],
+        "title": "MemberSectionArgs",
+        "type": "object"
+      },
+      "Message": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "Message",
+        "type": "object"
+      },
+      "NoArgs": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "NoArgs",
+        "type": "object"
+      },
+      "PreviewResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "base_revision_id": {
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/FieldChange"
+            },
+            "title": "Changes",
+            "type": "array"
+          },
+          "classification": {
+            "title": "Classification",
+            "type": "string"
+          },
+          "classification_version": {
+            "title": "Classification Version",
+            "type": "string"
+          },
+          "command_hash": {
+            "title": "Command Hash",
+            "type": "string"
+          },
+          "confirmation_required": {
+            "title": "Confirmation Required",
+            "type": "boolean"
+          },
+          "expires_at": {
+            "title": "Expires At",
+            "type": "string"
+          },
+          "impacted_artifacts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Impacted Artifacts",
+            "type": "array"
+          },
+          "is_noop": {
+            "title": "Is Noop",
+            "type": "boolean"
+          },
+          "members": {
+            "$ref": "#/components/schemas/MemberChanges"
+          },
+          "preview_token": {
+            "title": "Preview Token",
+            "type": "string"
+          },
+          "revision_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revision Id"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/PreviewWarning"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "preview_token",
+          "expires_at",
+          "base_revision_id",
+          "revision_id",
+          "command_hash",
+          "classification",
+          "classification_version",
+          "confirmation_required",
+          "is_noop",
+          "changes",
+          "members",
+          "impacted_artifacts",
+          "warnings"
+        ],
+        "title": "PreviewResponse",
+        "type": "object"
+      },
+      "PreviewWarning": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "PreviewWarning",
+        "type": "object"
+      },
+      "PriceBook": {
+        "additionalProperties": false,
+        "description": "A project's price book as submitted (book-level metadata, artifacts.md §8.2).",
+        "properties": {
+          "as_of": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "title": "As Of",
+            "type": "string"
+          },
+          "currency": {
+            "const": "USD",
+            "title": "Currency",
+            "type": "string"
+          },
+          "geography": {
+            "title": "Geography",
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/PriceRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "currency",
+          "as_of",
+          "source",
+          "geography",
+          "rows"
+        ],
+        "title": "Price book (artifacts.md §8.2)",
+        "type": "object"
+      },
+      "PriceBookResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "price_book": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StoredPriceBook"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "price_book"
+        ],
+        "title": "PriceBookResponse",
+        "type": "object"
+      },
+      "PriceBookSet": {
+        "additionalProperties": false,
+        "properties": {
+          "price_book_id": {
+            "title": "Price Book Id",
+            "type": "string"
+          },
+          "set_at": {
+            "title": "Set At",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "price_book_id",
+          "version",
+          "set_at"
+        ],
+        "title": "PriceBookSet",
+        "type": "object"
+      },
+      "PriceRow": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "unit": {
+            "const": "m",
+            "title": "Unit",
+            "type": "string"
+          },
+          "unit_price_minor": {
+            "ge": -9007199254740991,
+            "le": 9007199254740991,
+            "title": "Unit Price Minor",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "unit",
+          "unit_price_minor"
+        ],
+        "title": "PriceRow",
+        "type": "object"
+      },
+      "ProjectResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "head_revision_id": {
+            "title": "Head Revision Id",
+            "type": "string"
+          },
+          "head_sequence": {
+            "title": "Head Sequence",
+            "type": "integer"
+          },
+          "permissions": {
+            "items": {
+              "enum": [
+                "read",
+                "write"
+              ],
+              "type": "string"
+            },
+            "title": "Permissions",
+            "type": "array"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id",
+          "head_revision_id",
+          "head_sequence",
+          "created_at",
+          "permissions"
+        ],
+        "title": "ProjectResponse",
+        "type": "object"
+      },
+      "RevisionList": {
+        "additionalProperties": false,
+        "properties": {
+          "revisions": {
+            "items": {
+              "$ref": "#/components/schemas/RevisionSummary"
+            },
+            "title": "Revisions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "revisions"
+        ],
+        "title": "RevisionList",
+        "type": "object"
+      },
+      "RevisionSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "command_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Command Type"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "operation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operation Id"
+          },
+          "parent_revision_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Revision Id"
+          },
+          "revision_id": {
+            "title": "Revision Id",
+            "type": "string"
+          },
+          "sequence": {
+            "title": "Sequence",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "revision_id",
+          "parent_revision_id",
+          "sequence",
+          "created_at",
+          "operation_id",
+          "command_type"
+        ],
+        "title": "RevisionSummary",
+        "type": "object"
+      },
+      "RoleDefault": {
+        "additionalProperties": false,
+        "description": "Section and material assigned to every generated member of one role (D039).",
+        "properties": {
+          "material_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Material Id",
+            "type": "string"
+          },
+          "section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Section Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "section_id",
+          "material_id"
+        ],
+        "title": "RoleDefault",
+        "type": "object"
+      },
+      "Section": {
+        "additionalProperties": false,
+        "properties": {
+          "actual_depth_m": {
+            "title": "Actual Depth M",
+            "type": "number"
+          },
+          "actual_width_m": {
+            "title": "Actual Width M",
+            "type": "number"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "Section",
+            "title": "Kind",
+            "type": "string"
+          },
+          "nominal_label": {
+            "title": "Nominal Label",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "shape": {
+            "const": "rectangular",
+            "title": "Shape",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "shape",
+          "actual_width_m",
+          "actual_depth_m",
+          "nominal_label"
+        ],
+        "title": "Section",
+        "type": "object"
+      },
+      "SetFootprintDimensions": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/FootprintArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "SetFootprintDimensions",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "SetFootprintDimensions",
+        "type": "object"
+      },
+      "SetGableRoofParameters": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/GableRoofArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "SetGableRoofParameters",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "SetGableRoofParameters",
+        "type": "object"
+      },
+      "SetMemberSection": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/MemberSectionArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "SetMemberSection",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "SetMemberSection",
+        "type": "object"
+      },
+      "SetStoryHeights": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/StoryHeightsArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "SetStoryHeights",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "SetStoryHeights",
+        "type": "object"
+      },
+      "SetTimberGrid": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/TimberGridArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "SetTimberGrid",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "SetTimberGrid",
+        "type": "object"
+      },
+      "Snapshot": {
+        "additionalProperties": false,
+        "description": "A VS-01 semantic snapshot (building-model.md §3).",
+        "properties": {
+          "building": {
+            "$ref": "#/components/schemas/Building"
+          },
+          "created_at": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$",
+            "title": "Created At",
+            "type": "string"
+          },
+          "entities": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "Building": "#/components/schemas/Building",
+                  "Footprint": "#/components/schemas/Footprint",
+                  "FrameSystem": "#/components/schemas/FrameSystem",
+                  "GableRoof": "#/components/schemas/GableRoof",
+                  "Level": "#/components/schemas/Level",
+                  "Material": "#/components/schemas/Material",
+                  "Section": "#/components/schemas/Section",
+                  "TimberGrid": "#/components/schemas/TimberGrid",
+                  "TimberMember": "#/components/schemas/TimberMember"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Building"
+                },
+                {
+                  "$ref": "#/components/schemas/Footprint"
+                },
+                {
+                  "$ref": "#/components/schemas/Level"
+                },
+                {
+                  "$ref": "#/components/schemas/GableRoof"
+                },
+                {
+                  "$ref": "#/components/schemas/TimberGrid"
+                },
+                {
+                  "$ref": "#/components/schemas/FrameSystem"
+                },
+                {
+                  "$ref": "#/components/schemas/TimberMember"
+                },
+                {
+                  "$ref": "#/components/schemas/Section"
+                },
+                {
+                  "$ref": "#/components/schemas/Material"
+                }
+              ]
+            },
+            "title": "Entities",
+            "type": "array"
+          },
+          "model_schema_version": {
+            "const": 1,
+            "title": "Model Schema Version",
+            "type": "integer"
+          },
+          "parent_revision_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Revision Id"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Revision Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model_schema_version",
+          "project_id",
+          "revision_id",
+          "parent_revision_id",
+          "created_at",
+          "building",
+          "entities"
+        ],
+        "title": "VS-01 semantic building snapshot (model schema version 1)",
+        "type": "object"
+      },
+      "StoredPriceBook": {
+        "additionalProperties": false,
+        "properties": {
+          "book": {
+            "$ref": "#/components/schemas/PriceBook"
+          },
+          "price_book_id": {
+            "title": "Price Book Id",
+            "type": "string"
+          },
+          "set_at": {
+            "title": "Set At",
+            "type": "string"
+          },
+          "set_by": {
+            "title": "Set By",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "price_book_id",
+          "version",
+          "book",
+          "set_by",
+          "set_at"
+        ],
+        "title": "StoredPriceBook",
+        "type": "object"
+      },
+      "StoryHeightsArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "story_heights_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Story Heights M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "story_heights_m"
+        ],
+        "title": "StoryHeightsArgs",
+        "type": "object"
+      },
+      "TimberGrid": {
+        "additionalProperties": false,
+        "properties": {
+          "generation_rule_version": {
+            "title": "Generation Rule Version",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "TimberGrid",
+            "title": "Kind",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "x_lines": {
+            "items": {
+              "$ref": "#/components/schemas/XGridLine"
+            },
+            "title": "X Lines",
+            "type": "array"
+          },
+          "y_lines": {
+            "items": {
+              "$ref": "#/components/schemas/YGridLine"
+            },
+            "title": "Y Lines",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "x_lines",
+          "y_lines",
+          "generation_rule_version"
+        ],
+        "title": "TimberGrid",
+        "type": "object"
+      },
+      "TimberGridArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "x_lines": {
+            "items": {
+              "$ref": "#/components/schemas/GridLineArg"
+            },
+            "title": "X Lines",
+            "type": "array"
+          },
+          "y_lines": {
+            "items": {
+              "$ref": "#/components/schemas/GridLineArg"
+            },
+            "title": "Y Lines",
+            "type": "array"
+          }
+        },
+        "required": [
+          "x_lines",
+          "y_lines"
+        ],
+        "title": "TimberGridArgs",
+        "type": "object"
+      },
+      "TimberMember": {
+        "additionalProperties": false,
+        "properties": {
+          "end_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "End M",
+            "type": "array"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "TimberMember",
+            "title": "Kind",
+            "type": "string"
+          },
+          "material_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Material Id",
+            "type": "string"
+          },
+          "member_role": {
+            "enum": [
+              "POST",
+              "BEAM",
+              "FLOOR_JOIST",
+              "RAFTER"
+            ],
+            "title": "Member Role",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Section Id",
+            "type": "string"
+          },
+          "start_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Start M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "schema_version",
+          "kind",
+          "member_role",
+          "start_m",
+          "end_m",
+          "section_id",
+          "material_id",
+          "generation_key"
+        ],
+        "title": "TimberMember",
+        "type": "object"
+      },
+      "UndoArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "target_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Target Revision Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target_revision_id"
+        ],
+        "title": "UndoArgs",
+        "type": "object"
+      },
+      "UndoToRevision": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/UndoArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "UndoToRevision",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "UndoToRevision",
+        "type": "object"
+      },
+      "XGridLine": {
+        "additionalProperties": false,
+        "description": "A grid line across X with a stable identity (D042).",
+        "properties": {
+          "fraction": {
+            "title": "Fraction",
+            "type": "number"
+          },
+          "id": {
+            "pattern": "^x(0|[1-9][0-9]{0,8})$",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "fraction"
+        ],
+        "title": "XGridLine",
+        "type": "object"
+      },
+      "YGridLine": {
+        "additionalProperties": false,
+        "description": "A grid line across Y with a stable identity (D042).",
+        "properties": {
+          "fraction": {
+            "title": "Fraction",
+            "type": "number"
+          },
+          "id": {
+            "pattern": "^y(0|[1-9][0-9]{0,8})$",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "fraction"
+        ],
+        "title": "YGridLine",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "description": "Development bearer tokens in VS-01 (D050).",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "summary": "VS-01 HTTP API (API-001). Generated from the Pydantic models; do not edit the exported document by hand.",
+    "title": "Home Design Platform API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/projects": {
+      "post": {
+        "operationId": "createProject",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          },
+          "description": "The creation envelope.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResponse"
+                }
+              }
+            },
+            "description": "Idempotent retry (`replayed: true`)."
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResponse"
+                }
+              }
+            },
+            "description": "Created."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "REVISION_CONFLICT, IDEMPOTENCY_CONFLICT, PREVIEW_INVALID, or PREVIEW_EXPIRED."
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "The body is not application/json."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "VALIDATION_FAILED or UNSUPPORTED_CONFIGURATION, with details."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "Create a reference project (interfaces.md §2, §4)"
+      }
+    },
+    "/api/v1/projects/{project_id}": {
+      "get": {
+        "operationId": "getProject",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            },
+            "description": "The project."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "Project metadata, head, and the caller's permissions"
+      }
+    },
+    "/api/v1/projects/{project_id}/artifacts": {
+      "get": {
+        "operationId": "getArtifactManifest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "revision_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Revision Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Manifest"
+                }
+              }
+            },
+            "description": "The manifest."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "Artifact status manifest (artifacts.md §3); the head when revision_id is omitted"
+      }
+    },
+    "/api/v1/projects/{project_id}/artifacts/{artifact_type}": {
+      "get": {
+        "operationId": "getArtifact",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "artifact_type",
+            "required": true,
+            "schema": {
+              "title": "Artifact Type",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "revision_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Revision Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactEnvelope"
+                }
+              }
+            },
+            "description": "CURRENT, UNAVAILABLE (partial payload when provided), or FAILED (with error)."
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactEnvelope"
+                }
+              }
+            },
+            "description": "MISSING: no registered derivation; no payload."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "One derived artifact (artifacts.md §2); derived on read when missing or stale"
+      }
+    },
+    "/api/v1/projects/{project_id}/commands/commit": {
+      "post": {
+        "operationId": "commitCommand",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommitRequest"
+              }
+            }
+          },
+          "description": "The command and, when required, its preview token.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResponse"
+                }
+              }
+            },
+            "description": "A no-op (D045) or an idempotent retry (`replayed: true`)."
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResponse"
+                }
+              }
+            },
+            "description": "A new revision."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "REVISION_CONFLICT, IDEMPOTENCY_CONFLICT, PREVIEW_INVALID, or PREVIEW_EXPIRED."
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "The body is not application/json."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "VALIDATION_FAILED or UNSUPPORTED_CONFIGURATION, with details."
+          },
+          "428": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "PREVIEW_REQUIRED: a consequential command needs a preview token."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "Commit a command (interfaces.md §4)"
+      }
+    },
+    "/api/v1/projects/{project_id}/commands/preview": {
+      "post": {
+        "operationId": "previewCommand",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Command"
+              }
+            }
+          },
+          "description": "A command envelope.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewResponse"
+                }
+              }
+            },
+            "description": "The proposed change and a preview token."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "REVISION_CONFLICT, IDEMPOTENCY_CONFLICT, PREVIEW_INVALID, or PREVIEW_EXPIRED."
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "The body is not application/json."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "VALIDATION_FAILED or UNSUPPORTED_CONFIGURATION, with details."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "Preview a command without writing anything (interfaces.md §3)"
+      }
+    },
+    "/api/v1/projects/{project_id}/price-book": {
+      "get": {
+        "operationId": "getPriceBook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceBookResponse"
+                }
+              }
+            },
+            "description": "The current version."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "The current price book, or null"
+      },
+      "put": {
+        "operationId": "setPriceBook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PriceBook"
+              }
+            }
+          },
+          "description": "The price book.",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceBookSet"
+                }
+              }
+            },
+            "description": "The new version."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "The body is not application/json."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "VALIDATION_FAILED or UNSUPPORTED_CONFIGURATION, with details."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "Set a new price-book version (artifacts.md §8.2)"
+      }
+    },
+    "/api/v1/projects/{project_id}/revisions": {
+      "get": {
+        "operationId": "listRevisions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevisionList"
+                }
+              }
+            },
+            "description": "The revisions."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "Revision history, ordered by sequence"
+      }
+    },
+    "/api/v1/projects/{project_id}/revisions/{revision_id}": {
+      "get": {
+        "operationId": "getRevision",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "revision_id",
+            "required": true,
+            "schema": {
+              "title": "Revision Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Snapshot"
+                }
+              }
+            },
+            "description": "The snapshot."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing or unknown bearer token (UNAUTHORIZED)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Project, revision, or artifact type not found, or not visible to the caller (D050)."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Any other error, including 500 INTERNAL."
+          }
+        },
+        "summary": "An immutable snapshot, as its RFC 8785 canonical bytes (D029, D030)"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}

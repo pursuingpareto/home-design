@@ -1,10 +1,10 @@
 # Current project status
 
-**As of 2026-11-18:** Specification work through D049. Application code: `MODEL-001` (snapshot schema, validation, canonical serialization) in `backend/`, with shared vectors in `tests/vectors/`. No API, persistence, or frontend yet.
+**As of 2026-11-19:** Specification work through D050. Application code in `backend/`: the model, commands, timber generator, persistence, artifacts, geometry, estimating, and the VS-01 HTTP API (`MODEL-001` through `API-001`), with shared vectors in `tests/vectors/`. No frontend yet.
 
 ## Complete
 
-- Product decisions D001–D049.
+- Product decisions D001–D050.
 - Architecture v0.2 drafts (entity schemas remain engineering detail, not construction rules).
 - VS-01 scope and acceptance criteria.
 - Reference House 001 VS-01 golden snapshot and `vs01-post-beam-1` generation rules (D025).
@@ -32,5 +32,6 @@
 - `ART-001` implemented: derivation registry, envelope and manifest, `artifacts` storage, derive-after-commit with lazy recompute, real `artifact_statuses`.
 - `GEOM-001` implemented: `plan2d` and `mesh3d` derived for every revision (D048 roof planes), matching an independent ECMAScript implementation.
 - `EST-001` implemented: `timber_schedule`, gated `preliminary_estimate` (never a fabricated total), and versioned per-project price books; all four VS-01 artifacts are derived for every revision; 383 tests passing.
-- Task files for the API and UI.
+- `API-001` implemented: the VS-01 HTTP API at `/api/v1` (FastAPI), with strict bodies, the error envelope, request IDs, development bearer tokens and owner-only access (D050), and a committed OpenAPI document; 436 tests passing. The three contract points found during implementation (405, 415, unknown routes) are approved (API-001 §13).
+- Task file for the UI (`UI-001`).
 - Engineering, assemblies, AI, collaboration, and documentation slices.

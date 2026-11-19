@@ -25,6 +25,7 @@ Suggested first tasks: `MODEL-001` canonical units/coordinates; `MODEL-002` proj
 | [ART-001](ART-001.md) | Artifact infrastructure: derivation, storage, status, manifest | Done (2026-11-19) |
 | [GEOM-001](GEOM-001.md) | `plan2d` and `mesh3d` derivations (closes C1) | Done (2026-11-19) |
 | [EST-001](EST-001.md) | `timber_schedule`, `preliminary_estimate`, and price books (closes C6, M9) | Done (2026-11-19) |
+| [API-001](API-001.md) | HTTP API for VS-01 (routes, errors, development authentication, owner-only access) | Done (2026-11-19) |
 
 The remaining candidate IDs still need task files. P1 gaps that block `TIMBER-001` and `MODEL-003` are listed in MODEL-001 §12.
 

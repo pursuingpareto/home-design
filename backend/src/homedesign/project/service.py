@@ -284,6 +284,15 @@ class ProjectService:
         return {"price_book_id": row["price_book_id"], "version": row["version"], "book": row["book"],
                 "set_by": row["set_by"], "set_at": format_timestamp(row["set_at"])}
 
+    # --- authorization (D050) --------------------------------------------------
+
+    def require_owner(self, project_id: str, actor_id: str) -> None:
+        """VS-01: only the creator may access a project. Others get NotFound, like a missing project."""
+        with self.store.transaction() as tx:
+            project = _project(tx, project_id, lock=False)
+        if project.created_by != actor_id:
+            raise NotFound("Project not found.")
+
     # --- reads ---------------------------------------------------------------
 
     def get_project(self, project_id: str) -> dict[str, Any]:

@@ -142,18 +142,34 @@ Responses:
 
 A no-op commit creates no revision: it returns HTTP 200 with `revision_id` equal to the current head, `is_noop: true`, and unchanged artifact statuses. The operation log still records the attempt ([D045](../product/decisions/D045-no-op-commits.md)).
 
-## 5. Read endpoints
+## 5. Routes
 
-| Method/path | Purpose |
-|---|---|
-| `POST /api/v1/projects` | Create reference project (creation envelope, §2) |
-| `GET /api/v1/projects/{id}` | Metadata, permissions, head revision |
-| `GET /api/v1/projects/{id}/revisions/{rev}` | Immutable semantic snapshot |
-| `GET /api/v1/projects/{id}/artifacts?revision_id=...` | Artifact status manifest |
-| `GET /api/v1/projects/{id}/artifacts/{type}?revision_id=...` | Derived 2D, 3D, schedule, or estimate |
-| `GET /api/v1/projects/{id}/revisions` | Ordered revision history |
+All routes are under `/api/v1` and require authentication ([API-001](../implementation/tasks/API-001.md) §4, approved as §11 item 2). A path that matches no route returns 404 `NOT_FOUND` before authentication; this reveals only the route table, which the OpenAPI document already publishes, never whether a project exists (API-001 §13, item 3):
 
-Artifact envelopes, payloads, and HTTP status mapping are specified in [artifacts.md](artifacts.md) (D027). `{type}` is one of `plan2d`, `mesh3d`, `timber_schedule`, `preliminary_estimate`. Return 202 while computing; do not serve stale data as current. Browser 2D/3D views must consume derived data tagged to the same revision.
+| Method and path | Purpose | Success |
+|---|---|---|
+| `POST /api/v1/projects` | Create reference project (creation envelope, §2) | 201; 200 for an idempotent retry (`"replayed": true`) |
+| `GET /api/v1/projects/{id}` | Metadata, head revision, and the caller's `permissions` (`["read", "write"]` for the owner in VS-01) | 200 |
+| `POST /api/v1/projects/{id}/commands/preview` | Preview a command (§3) | 200 |
+| `POST /api/v1/projects/{id}/commands/commit` | Commit `{command, preview_token?}` (§4) | 201 new revision; 200 no-op or retry |
+| `GET /api/v1/projects/{id}/revisions` | Ordered revision history | 200 `{revisions: [...]}` |
+| `GET /api/v1/projects/{id}/revisions/{rev}` | Immutable semantic snapshot | 200 |
+| `GET /api/v1/projects/{id}/artifacts?revision_id=...` | Artifact status manifest (head when omitted) | 200 |
+| `GET /api/v1/projects/{id}/artifacts/{type}?revision_id=...` | Derived 2D, 3D, schedule, or estimate | see below |
+| `PUT /api/v1/projects/{id}/price-book` | Set a new price-book version ([artifacts.md §8.2](artifacts.md#82-price-book)) | 201 `{price_book_id, version, set_at}` |
+| `GET /api/v1/projects/{id}/price-book` | Current price book | 200 `{price_book: {...} \| null}` |
+
+The OpenAPI document is served at `/openapi.json`, outside `/api/v1`, and committed as [`schemas/openapi.v1.json`](schemas/openapi.v1.json). `GET …/revisions/{rev}` returns the snapshot's canonical bytes (D029, D030).
+
+Artifact envelopes and payloads are specified in [artifacts.md](artifacts.md) (D027). `{type}` is one of `plan2d`, `mesh3d`, `timber_schedule`, `preliminary_estimate`.
+
+**Artifact statuses:**
+- `CURRENT`, `UNAVAILABLE`, and `FAILED` return 200 with the envelope. `FAILED` carries `error`.
+- `MISSING` returns 202 without payload. In VS-01 this happens only for a type with no registered derivation, because reading an artifact derives it when missing or stale.
+- An unknown type or revision returns 404.
+- VS-01 never returns 503, because it has no external dependency that can be unavailable.
+
+Stale data is never served as current. Browser 2D/3D views must consume derived data tagged to the same revision.
 
 ## 6. Typed module-level interfaces (Python-like pseudocode)
 
@@ -203,7 +219,13 @@ Interfaces are illustrative. Schema definition is confirmed by [D028](../product
 }
 ```
 
-Stable codes: `VALIDATION_FAILED` (422), `UNSUPPORTED_CONFIGURATION` (422), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `REVISION_CONFLICT` (409), `IDEMPOTENCY_CONFLICT` (409), `PREVIEW_EXPIRED` (409), `PREVIEW_INVALID` (409), `PREVIEW_REQUIRED` (428) ([D047](../product/decisions/D047-stateless-preview-tokens.md)), `DERIVATION_FAILED` (500/503 as appropriate). No internal stack traces in API responses.
+Stable codes: `VALIDATION_FAILED` (422), `UNSUPPORTED_CONFIGURATION` (422), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `METHOD_NOT_ALLOWED` (405, a known path with an unsupported method; the response carries `Allow`; API-001 §13, item 1), `REVISION_CONFLICT` (409), `IDEMPOTENCY_CONFLICT` (409), `PREVIEW_EXPIRED` (409), `PREVIEW_INVALID` (409), `PREVIEW_REQUIRED` (428) ([D047](../product/decisions/D047-stateless-preview-tokens.md)), `DERIVATION_FAILED` (500/503 as appropriate), `INTERNAL` (500, any unexpected server error). No internal stack traces in API responses.
+
+**HTTP request handling** ([API-001](../implementation/tasks/API-001.md) §5, approved as §11 item 3):
+
+- **Strict bodies:** JSON request bodies are parsed with the same strict parser as snapshots (MODEL-001 §5.1), not a framework default. Duplicate keys, `NaN`/`Infinity`, and oversized or overly deep bodies return 422 `VALIDATION_FAILED`, with `MALFORMED_JSON`, `DUPLICATE_KEY`, `NON_FINITE_NUMBER`, or `PAYLOAD_LIMIT_EXCEEDED`. A body that is not `application/json` returns 415 with top-level `VALIDATION_FAILED` and one detail `{path: "", code: "MALFORMED_JSON"}` (API-001 §13, item 2).
+- **Request IDs:** every response carries `X-Request-ID`. It is generated by the server and never taken from the client, and error bodies repeat it as `request_id`.
+- **Unexpected errors:** an unexpected error, including a stored revision whose fingerprint no longer matches, returns 500 `INTERNAL` without internals. It is logged with its request ID and no project content.
 
 Detail `code` values for model validation are cataloged in [building-model.md §6.1](building-model.md#61-detail-codes); each belongs to one validation stage, which determines whether the top-level code is `VALIDATION_FAILED` or `UNSUPPORTED_CONFIGURATION` ([D035](../product/decisions/D035-validation-stages-detail-codes.md)).
 
@@ -228,8 +250,10 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 8. Th
 
 ## 8. Concurrency, security, and compatibility
 
-- Every read/write is project-scoped and authorization-checked on server.
-- Use optimistic concurrency on project head (D026) and a transactional outbox for derivation jobs.
+- Every read/write is project-scoped and authorization-checked on server. In VS-01 ([D050](../product/decisions/D050-vs01-authentication-authorization.md)):
+  - **Authentication:** a pluggable authenticator; the development authenticator maps configured bearer tokens to actor UUIDs, and a missing or unknown token is 401 `UNAUTHORIZED`.
+  - **Authorization:** only a project's creator may read or write it. Any other actor receives 404 `NOT_FOUND`, the same as a nonexistent project.
+- Use optimistic concurrency on project head (D026). In VS-01, artifacts are derived synchronously after commit and recomputed on read, so there is no outbox or job queue ([dependencies.md §6](dependencies.md#6-incremental-recomputation), ART-001).
 - Never accept arbitrary executable expressions, geometry scripts, or SQL from AI/client as commands.
 - API version prefix `/api/v1`; model schema versions independent of API version.
 - Schema changes require backward-compatible readers or explicit migrations, contract tests, and fixture upgrades.
@@ -237,7 +261,7 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 8. Th
 
 ## 9. Contract test matrix
 
-1. OpenAPI validates example requests/responses; generated TS client compiles.
+1. OpenAPI validates example requests/responses; generated TS client compiles. The OpenAPI document is generated from the Pydantic models and committed as [`schemas/openapi.v1.json`](schemas/openapi.v1.json), with a drift check (API-001). Generating and compiling the TypeScript client is part of `UI-001`.
 2. Valid preview has no database side effects.
 3. Confirmed commit changes project head exactly once.
 4. Two concurrent commits against one base revision yield exactly one winner; loser receives 409.

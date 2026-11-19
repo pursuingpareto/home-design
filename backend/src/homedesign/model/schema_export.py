@@ -1,7 +1,7 @@
-"""Export the snapshot JSON Schema committed under docs/ (D028).
+"""Export the JSON Schemas and the OpenAPI document committed under docs/ (D028).
 
 Usage (from backend/):
-    uv run python -m homedesign.model.schema_export          # write snapshot, command, and artifact schemas
+    uv run python -m homedesign.model.schema_export          # write snapshot, command, artifact schemas, and openapi.v1.json
     uv run python -m homedesign.model.schema_export --check  # exit 1 if it is stale
 """
 
@@ -19,6 +19,7 @@ SCHEMA_DIR = REPO_ROOT / "docs" / "architecture" / "schemas"
 SCHEMA_PATH = SCHEMA_DIR / "snapshot.v1.schema.json"
 COMMANDS_SCHEMA_PATH = SCHEMA_DIR / "commands.v1.schema.json"
 ARTIFACTS_SCHEMA_PATH = SCHEMA_DIR / "artifacts.v1.schema.json"
+OPENAPI_PATH = SCHEMA_DIR / "openapi.v1.json"
 JSON_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
 
 
@@ -84,9 +85,21 @@ def render_artifacts_schema() -> str:
     return _render(artifacts_json_schema())
 
 
+def openapi_document() -> dict[str, Any]:
+    """The API-001 OpenAPI document. Built from an app with throwaway settings; nothing is served."""
+    from homedesign.api.app import create_app
+    from homedesign.api.settings import Settings
+
+    return create_app(Settings(preview_key=bytes(32), store="memory")).openapi()
+
+
+def render_openapi() -> str:
+    return _render(openapi_document())
+
+
 def main(argv: list[str] | None = None) -> int:
     args = sys.argv[1:] if argv is None else argv
-    outputs = {SCHEMA_PATH: render_schema(), COMMANDS_SCHEMA_PATH: render_commands_schema(), ARTIFACTS_SCHEMA_PATH: render_artifacts_schema()}
+    outputs = {SCHEMA_PATH: render_schema(), COMMANDS_SCHEMA_PATH: render_commands_schema(), ARTIFACTS_SCHEMA_PATH: render_artifacts_schema(), OPENAPI_PATH: render_openapi()}
     if "--check" in args:
         stale = [p for p, text in outputs.items() if (p.read_text(encoding="utf-8") if p.exists() else "") != text]
         for path in stale:

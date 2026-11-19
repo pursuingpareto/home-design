@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D049. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D050. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -49,7 +49,8 @@
 - D047: [Stateless signed preview tokens](D047-stateless-preview-tokens.md) — HMAC-SHA-256 over project, actor, base, command hash, 15-minute expiry; nothing stored; new codes `PREVIEW_REQUIRED` (428) and `PREVIEW_INVALID` (409).
 - D048: [Gable roof planes pass through the wall line at the eave plate](D048-roof-plane-through-wall-line.md) — overhang edge at `z_eave − overhang · tan(pitch)` (5.334 m for Reference House 001); ridge unchanged at 8.5344 m; closes C1.
 - D049: [Section labels are unique within a project](D049-unique-section-labels.md) — `DUPLICATE_SECTION_LABEL` (stage 2); labels key aggregates and price books (narrow exception to D026); amends D043's `AddSection`.
+- D050: [VS-01 authentication and authorization](D050-vs01-authentication-authorization.md) — pluggable authenticator with development bearer tokens (401 otherwise); owner-only projects, 404 for other actors; production identity stays open.
 
-**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D049. Do not reopen D001–D049 to accommodate implementation shortcuts.
+**Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 
 See [requirements](../requirements.md) for functional implications and [architecture](../../architecture/overview.md) for provisional implementation choices.
