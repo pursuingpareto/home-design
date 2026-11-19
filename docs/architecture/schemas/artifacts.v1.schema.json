@@ -178,6 +178,148 @@
       "title": "Claims",
       "type": "object"
     },
+    "Dimension": {
+      "additionalProperties": false,
+      "properties": {
+        "end_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "End M",
+          "type": "array"
+        },
+        "id": {
+          "enum": [
+            "footprint-width",
+            "footprint-depth"
+          ],
+          "title": "Id",
+          "type": "string"
+        },
+        "start_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Start M",
+          "type": "array"
+        },
+        "value_m": {
+          "title": "Value M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "start_m",
+        "end_m",
+        "value_m"
+      ],
+      "title": "Dimension",
+      "type": "object"
+    },
+    "Envelope3d": {
+      "additionalProperties": false,
+      "properties": {
+        "footprint_ring_m": {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "title": "Footprint Ring M",
+          "type": "array"
+        },
+        "level_z_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Level Z M",
+          "type": "array"
+        },
+        "roof": {
+          "$ref": "#/$defs/GableRoofGeometry"
+        },
+        "z_eave_m": {
+          "title": "Z Eave M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "footprint_ring_m",
+        "level_z_m",
+        "z_eave_m",
+        "roof"
+      ],
+      "title": "Envelope3d",
+      "type": "object"
+    },
+    "GableRoofGeometry": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "gable",
+          "default": "gable",
+          "title": "Kind",
+          "type": "string"
+        },
+        "pitch_rad": {
+          "title": "Pitch Rad",
+          "type": "number"
+        },
+        "ridge_axis": {
+          "const": "X",
+          "title": "Ridge Axis",
+          "type": "string"
+        },
+        "ridge_end_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Ridge End M",
+          "type": "array"
+        },
+        "ridge_start_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Ridge Start M",
+          "type": "array"
+        },
+        "surfaces": {
+          "items": {
+            "$ref": "#/$defs/RoofSurface"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Surfaces",
+          "type": "array"
+        }
+      },
+      "required": [
+        "ridge_axis",
+        "pitch_rad",
+        "ridge_start_m",
+        "ridge_end_m",
+        "surfaces"
+      ],
+      "title": "GableRoofGeometry",
+      "type": "object"
+    },
     "Manifest": {
       "additionalProperties": false,
       "properties": {
@@ -271,6 +413,100 @@
       "title": "ManifestEntry",
       "type": "object"
     },
+    "Mesh3dPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "envelope": {
+          "$ref": "#/$defs/Envelope3d"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/MeshMember"
+          },
+          "title": "Members",
+          "type": "array"
+        },
+        "units": {
+          "const": "m",
+          "default": "m",
+          "title": "Units",
+          "type": "string"
+        }
+      },
+      "required": [
+        "members",
+        "envelope"
+      ],
+      "title": "mesh3d payload (artifacts.md §6)",
+      "type": "object"
+    },
+    "MeshMember": {
+      "additionalProperties": false,
+      "properties": {
+        "axis_end_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Axis End M",
+          "type": "array"
+        },
+        "axis_start_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Axis Start M",
+          "type": "array"
+        },
+        "generation_key": {
+          "title": "Generation Key",
+          "type": "string"
+        },
+        "member_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Member Id",
+          "type": "string"
+        },
+        "primitive": {
+          "const": "oriented_box",
+          "default": "oriented_box",
+          "title": "Primitive",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "POST",
+            "BEAM",
+            "FLOOR_JOIST",
+            "RAFTER"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "section_depth_m": {
+          "title": "Section Depth M",
+          "type": "number"
+        },
+        "section_width_m": {
+          "title": "Section Width M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "member_id",
+        "generation_key",
+        "role",
+        "axis_start_m",
+        "axis_end_m",
+        "section_width_m",
+        "section_depth_m"
+      ],
+      "title": "MeshMember",
+      "type": "object"
+    },
     "Message": {
       "additionalProperties": false,
       "properties": {
@@ -289,9 +525,326 @@
       ],
       "title": "Message",
       "type": "object"
+    },
+    "Plan2dPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "items": {
+            "$ref": "#/$defs/Dimension"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Dimensions",
+          "type": "array"
+        },
+        "footprint": {
+          "$ref": "#/$defs/PlanFootprint"
+        },
+        "planes": {
+          "items": {
+            "$ref": "#/$defs/PlanPlane"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Planes",
+          "type": "array"
+        },
+        "roof_plan": {
+          "$ref": "#/$defs/RoofPlan"
+        },
+        "units": {
+          "const": "m",
+          "default": "m",
+          "title": "Units",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planes",
+        "footprint",
+        "roof_plan",
+        "dimensions"
+      ],
+      "title": "plan2d payload (artifacts.md §5)",
+      "type": "object"
+    },
+    "PlanBeam": {
+      "additionalProperties": false,
+      "properties": {
+        "end_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "End Xy M",
+          "type": "array"
+        },
+        "generation_key": {
+          "title": "Generation Key",
+          "type": "string"
+        },
+        "member_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Member Id",
+          "type": "string"
+        },
+        "section_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Section Id",
+          "type": "string"
+        },
+        "start_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Start Xy M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "member_id",
+        "generation_key",
+        "start_xy_m",
+        "end_xy_m",
+        "section_id"
+      ],
+      "title": "PlanBeam",
+      "type": "object"
+    },
+    "PlanFootprint": {
+      "additionalProperties": false,
+      "properties": {
+        "depth_m": {
+          "title": "Depth M",
+          "type": "number"
+        },
+        "origin_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Origin M",
+          "type": "array"
+        },
+        "ring_m": {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "title": "Ring M",
+          "type": "array"
+        },
+        "rotation_rad": {
+          "title": "Rotation Rad",
+          "type": "number"
+        },
+        "width_m": {
+          "title": "Width M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "origin_m",
+        "width_m",
+        "depth_m",
+        "rotation_rad",
+        "ring_m"
+      ],
+      "title": "PlanFootprint",
+      "type": "object"
+    },
+    "PlanLine": {
+      "additionalProperties": false,
+      "properties": {
+        "end_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "End Xy M",
+          "type": "array"
+        },
+        "start_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Start Xy M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "start_xy_m",
+        "end_xy_m"
+      ],
+      "title": "PlanLine",
+      "type": "object"
+    },
+    "PlanPlane": {
+      "additionalProperties": false,
+      "properties": {
+        "beams": {
+          "items": {
+            "$ref": "#/$defs/PlanBeam"
+          },
+          "title": "Beams",
+          "type": "array"
+        },
+        "level_id": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Level Id"
+        },
+        "plane_id": {
+          "enum": [
+            "level-0",
+            "level-1",
+            "eave"
+          ],
+          "title": "Plane Id",
+          "type": "string"
+        },
+        "posts": {
+          "items": {
+            "$ref": "#/$defs/PlanPost"
+          },
+          "title": "Posts",
+          "type": "array"
+        },
+        "z_m": {
+          "title": "Z M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "plane_id",
+        "level_id",
+        "z_m",
+        "posts",
+        "beams"
+      ],
+      "title": "PlanPlane",
+      "type": "object"
+    },
+    "PlanPost": {
+      "additionalProperties": false,
+      "properties": {
+        "generation_key": {
+          "title": "Generation Key",
+          "type": "string"
+        },
+        "member_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Member Id",
+          "type": "string"
+        },
+        "section_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Section Id",
+          "type": "string"
+        },
+        "xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Xy M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "member_id",
+        "generation_key",
+        "xy_m",
+        "section_id"
+      ],
+      "title": "PlanPost",
+      "type": "object"
+    },
+    "RoofPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "eave_ring_m": {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "title": "Eave Ring M",
+          "type": "array"
+        },
+        "ridge_m": {
+          "$ref": "#/$defs/PlanLine"
+        }
+      },
+      "required": [
+        "ridge_m",
+        "eave_ring_m"
+      ],
+      "title": "RoofPlan",
+      "type": "object"
+    },
+    "RoofSurface": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "enum": [
+            "south",
+            "north"
+          ],
+          "title": "Id",
+          "type": "string"
+        },
+        "ring_m": {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "type": "array"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "title": "Ring M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "ring_m"
+      ],
+      "title": "RoofSurface",
+      "type": "object"
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Definitions for artifacts.md §2-3, generated from backend/src/homedesign/dependencies/envelope.py; do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope and a manifest against #/$defs/Manifest.",
+  "description": "Definitions for artifacts.md §2-3, generated from backend/src/homedesign/dependencies/envelope.py; do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope, a manifest against #/$defs/Manifest, and payloads against #/$defs/Plan2dPayload and #/$defs/Mesh3dPayload.",
   "title": "VS-01 artifact envelope and manifest (ART-001)"
 }

@@ -91,6 +91,91 @@ function generateInventory(snapshot) {
 }
 const inventoryCanonical = canonicalize(generateInventory(fixture));
 
+// Independent ECMAScript implementation of the GEOM-001 views (artifacts.md §5-6, D048,
+// geometry.md "Numeric evaluation"). Only tan(pitch)-derived values may differ from other
+// implementations, within 1e-12 m.
+function geometryModel(snapshot) {
+  const byId = new Map(snapshot.entities.map((e) => [e.id, e]));
+  const b = snapshot.building;
+  const fp = byId.get(b.footprint_id);
+  const [l0, l1] = b.level_ids.map((id) => byId.get(id));
+  const roof = byId.get(b.roof_id);
+  const members = snapshot.entities
+    .filter((e) => e.kind === "TimberMember")
+    .sort((a, b2) => (a.generation_key < b2.generation_key ? -1 : a.generation_key > b2.generation_key ? 1 : 0));
+  const [x0, y0] = fp.origin_m;
+  const x1 = x0 + fp.width_m, y1 = y0 + fp.depth_m;
+  const zEave = l1.elevation_m + l1.story_height_m;
+  return {
+    byId, fp, l0, l1, roof, members, x0, y0, x1, y1, zEave,
+    yRidge: y0 + fp.depth_m / 2,
+    ySouth: y0 - roof.eave_overhang_m,
+    yNorth: y0 + fp.depth_m + roof.eave_overhang_m,
+    ring: [[x0, y0], [x1, y0], [x1, y1], [x0, y1]],
+  };
+}
+
+function plan2d(snapshot) {
+  const m = geometryModel(snapshot);
+  const planes = {
+    "level-0": { plane_id: "level-0", level_id: m.l0.id, z_m: m.l0.elevation_m, posts: [], beams: [] },
+    "level-1": { plane_id: "level-1", level_id: m.l1.id, z_m: m.l1.elevation_m, posts: [], beams: [] },
+    eave: { plane_id: "eave", level_id: null, z_m: m.zEave, posts: [], beams: [] },
+  };
+  for (const mem of m.members) {
+    const k = mem.generation_key;
+    const [plane, group] = k.includes("/level-0/post") ? ["level-0", "posts"]
+      : k.includes("/level-1/post") ? ["level-1", "posts"]
+      : k.includes("/plane-L1/") ? ["level-1", "beams"]
+      : ["eave", "beams"];
+    planes[plane][group].push(group === "posts"
+      ? { member_id: mem.id, generation_key: k, xy_m: mem.start_m.slice(0, 2), section_id: mem.section_id }
+      : { member_id: mem.id, generation_key: k, start_xy_m: mem.start_m.slice(0, 2), end_xy_m: mem.end_m.slice(0, 2), section_id: mem.section_id });
+  }
+  return {
+    units: "m",
+    planes: [planes["level-0"], planes["level-1"], planes.eave],
+    footprint: { origin_m: [m.x0, m.y0], width_m: m.fp.width_m, depth_m: m.fp.depth_m, rotation_rad: m.fp.rotation_rad, ring_m: m.ring },
+    roof_plan: {
+      ridge_m: { start_xy_m: [m.x0, m.yRidge], end_xy_m: [m.x1, m.yRidge] },
+      eave_ring_m: [[m.x0, m.ySouth], [m.x1, m.ySouth], [m.x1, m.yNorth], [m.x0, m.yNorth]],
+    },
+    dimensions: [
+      { id: "footprint-width", start_m: [m.x0, m.y0], end_m: [m.x1, m.y0], value_m: m.fp.width_m },
+      { id: "footprint-depth", start_m: [m.x0, m.y0], end_m: [m.x0, m.y1], value_m: m.fp.depth_m },
+    ],
+  };
+}
+
+function mesh3d(snapshot) {
+  const m = geometryModel(snapshot);
+  const t = Math.tan(m.roof.pitch_rad);
+  const zRidge = m.zEave + (m.fp.depth_m / 2) * t;
+  const zEdge = m.zEave - m.roof.eave_overhang_m * t;
+  return {
+    units: "m",
+    members: m.members.map((mem) => {
+      const s = m.byId.get(mem.section_id);
+      return { member_id: mem.id, generation_key: mem.generation_key, role: mem.member_role, primitive: "oriented_box",
+        axis_start_m: mem.start_m, axis_end_m: mem.end_m, section_width_m: s.actual_width_m, section_depth_m: s.actual_depth_m };
+    }),
+    envelope: {
+      footprint_ring_m: m.ring,
+      level_z_m: [m.l0.elevation_m, m.l1.elevation_m],
+      z_eave_m: m.zEave,
+      roof: {
+        kind: "gable", ridge_axis: m.roof.ridge_axis, pitch_rad: m.roof.pitch_rad,
+        ridge_start_m: [m.x0, m.yRidge, zRidge], ridge_end_m: [m.x1, m.yRidge, zRidge],
+        surfaces: [
+          { id: "south", ring_m: [[m.x0, m.ySouth, zEdge], [m.x1, m.ySouth, zEdge], [m.x1, m.yRidge, zRidge], [m.x0, m.yRidge, zRidge]] },
+          { id: "north", ring_m: [[m.x0, m.yNorth, zEdge], [m.x0, m.yRidge, zRidge], [m.x1, m.yRidge, zRidge], [m.x1, m.yNorth, zEdge]] },
+        ],
+      },
+    },
+  };
+}
+const plan2dCanonical = canonicalize(plan2d(fixture));
+
 // Independent UUIDv5 (RFC 9562) over the canonical name array, for D041 ID minting.
 function uuidv5(namespace, name) {
   const ns = Buffer.from(namespace.replace(/-/g, ""), "hex");
@@ -122,6 +207,12 @@ const output = {
   ids: {
     namespace: D041_NAMESPACE,
     cases: mintCases.map((parts) => ({ parts, name: canonicalize(parts), id: uuidv5(D041_NAMESPACE, canonicalize(parts)) })),
+  },
+  geometry: {
+    source: fixturePath,
+    plan2d: { canonical_bytes: Buffer.byteLength(plan2dCanonical, "utf8"), fingerprint: sha256(plan2dCanonical) },
+    // Full payload: values derived from tan(pitch) are compared within 1e-12 m, the rest exactly.
+    mesh3d: { tan: Math.tan(fixture.entities.find((e) => e.kind === "GableRoof").pitch_rad), payload: mesh3d(fixture) },
   },
   inventories: [
     {

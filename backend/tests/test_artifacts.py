@@ -8,7 +8,7 @@ import jsonschema
 import pytest
 
 from conftest import REPO_ROOT
-from homedesign.dependencies import ARTIFACT_TYPES, ArtifactService, Derivation, Outcome, registry_of
+from homedesign.dependencies import ARTIFACT_TYPES, ArtifactService, Derivation, Outcome, Registry, registry_of
 from homedesign.model.canonical import canonical_snapshot_value, fingerprint
 from homedesign.project import NotFound, ProjectService
 from test_project import ACTOR, KEY, T0, at, cid, create, head, roof_cmd
@@ -204,7 +204,7 @@ def test_rederivation_stores_one_row(store):
 
 
 def test_unregistered_types_are_missing(store):
-    svc = ProjectService(store, token_key=KEY)  # production default registry: nothing registered yet
+    svc = ProjectService(store, token_key=KEY, registry=Registry())  # nothing registered
     created = create(svc)
     assert set(created.body()["artifact_statuses"].values()) == {"MISSING"}
     envelope = svc.artifacts.get_artifact(created.project_id, "plan2d", now=T0)

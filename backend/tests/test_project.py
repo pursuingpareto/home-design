@@ -131,7 +131,8 @@ def test_commit_with_token_matches_preview(store):
     assert result.revision_id == p.change.revision_id and result.operation_id == p.change.operation_id
     stored = svc.get_revision(pid, result.revision_id)
     assert {m.id for m in stored.entities if m.kind == "TimberMember"} == {m.id for m in p.change.candidate.entities if m.kind == "TimberMember"}
-    assert result.body()["artifact_statuses"] == {t: "MISSING" for t in ("mesh3d", "plan2d", "preliminary_estimate", "timber_schedule")}
+    assert result.body()["artifact_statuses"] == svc.artifacts.statuses(pid, result.revision_id)
+    assert set(result.body()["artifact_statuses"]) == {"plan2d", "mesh3d", "timber_schedule", "preliminary_estimate"}
 
 
 # 4. preview token rules ----------------------------------------------------------------

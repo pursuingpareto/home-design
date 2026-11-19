@@ -48,17 +48,20 @@ def commands_json_schema() -> dict[str, Any]:
 
 
 def artifacts_json_schema() -> dict[str, Any]:
-    """Envelope and manifest (ART-001); payload models are added by GEOM-001 and EST-001."""
+    """Envelope and manifest (ART-001) and payload models (GEOM-001; EST-001 adds the rest)."""
     from pydantic.json_schema import models_json_schema
 
     from homedesign.dependencies.envelope import ArtifactEnvelope, Manifest
+    from homedesign.geometry.payloads import Mesh3dPayload, Plan2dPayload
 
-    _, schema = models_json_schema([(ArtifactEnvelope, "validation"), (Manifest, "validation")])
+    _, schema = models_json_schema(
+        [(ArtifactEnvelope, "validation"), (Manifest, "validation"), (Plan2dPayload, "validation"), (Mesh3dPayload, "validation")]
+    )
     schema["$schema"] = JSON_SCHEMA_DIALECT
     schema["title"] = "VS-01 artifact envelope and manifest (ART-001)"
     schema["description"] = (
         "Definitions for artifacts.md §2-3, generated from backend/src/homedesign/dependencies/envelope.py; "
-        "do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope and a manifest against #/$defs/Manifest."
+        "do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope, a manifest against #/$defs/Manifest, and payloads against #/$defs/Plan2dPayload and #/$defs/Mesh3dPayload."
     )
     return schema
 

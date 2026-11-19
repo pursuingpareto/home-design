@@ -1,6 +1,6 @@
 # GEOM-001 — `plan2d` and `mesh3d` derivations
 
-**Status:** Ready for implementation after `ART-001` — all §7 proposals approved (2026-11-19)  
+**Status:** Implemented (2026-11-19). See §8 for implementation notes.  
 **Owner module:** `geometry`  
 **Slice:** VS-01  
 **Depends on:** `ART-001` (derivation registry, envelope, storage)  
@@ -85,3 +85,38 @@ y_north  = origin_y + depth_m + eave_overhang_m
 2. ~~**Numeric evaluation** (§4): exact formulas, with a 1e-12 m tolerance only where `tan` enters.~~ **Approved**; recorded in geometry.md.
 3. ~~**Members come from the stored snapshot**, not from regeneration (§3).~~ **Approved**; recorded in geometry.md.
 4. ~~**Ordering and plane rules** as stated in §3, including no rake overhang and exactly two dimensions.~~ **Approved**; artifacts.md §5 updated.
+
+## 8. Implementation notes (2026-11-19)
+
+**Delivered:**
+- `backend/src/homedesign/geometry/`:
+  - `payloads.py`: the Pydantic `Plan2dPayload` and `Mesh3dPayload`, exported to `artifacts.v1.schema.json`;
+  - `views.py`: `build_plan2d` and `build_mesh3d`;
+  - `__init__.py`: the `PLAN2D` and `MESH3D` derivations.
+- `default_registry()` now registers both, so every project's `plan2d` and `mesh3d` are `CURRENT` after create and commit.
+- An independent ECMAScript implementation of both views in `tests/vectors/jcs/generate.mjs`, with a new `geometry` section in `vectors.json` (the `plan2d` fingerprint, and the full `mesh3d` payload).
+
+**Tests:** 334 pytest tests pass, 11 of them new, covering all §5 criteria:
+- Reference House 001 plane counts (12/0, 12/17, 0/17), rings, ridge, eave ring, and dimensions copied from the footprint;
+- 58 boxes whose IDs match the snapshot and the plan, with section sizes from `Section` and axes from the stored snapshot;
+- the D048 slope check (9/12 on both surfaces; ridge 8.5344 m, edge 5.334 m);
+- the service path, with geometry `CURRENT` on create and following a width change;
+- a section change resizing only posts;
+- the `plan2d` canonical bytes and fingerprint equal to the ECMAScript output;
+- the `mesh3d` payload equal to the ECMAScript output, bit for bit except `tan`-derived heights;
+- a property test over accepted footprint, story-height, and grid candidates;
+- an unknown member key as a derivation error.
+
+Two existing tests were updated, because the production registry is no longer empty.
+
+**Findings and choices:**
+
+- **`tan` differs across engines:** for the confirmed pitch, Python's `math.tan` returns `0.7499999999999999` and ECMAScript's `Math.tan` returns `0.75`, one ulp (unit in the last place) apart. The derived heights still agree (8.5344 m and 5.334 m). This is the case the 1e-12 m tolerance in geometry.md was written for, and a test asserts it.
+- **Payload validation:** payloads are built as plain values, then validated through the Pydantic models before storage, so a shape error fails the derivation instead of reaching a client.
+- **Plane assignment:** a member key matching no plane raises, so the derivation is stored `FAILED` (ART-001) instead of silently dropping the member.
+
+**Limitations:**
+
+- No client rendering yet (`UI-001`).
+- Box orientation for beams is a rule in artifacts.md §6, not an explicit rotation in the payload. Clients derive it.
+

@@ -84,5 +84,7 @@ def registry_of(derivations: Iterable[Derivation]) -> Registry:
 
 
 def default_registry() -> Registry:
-    """Production registry. GEOM-001 and EST-001 add their derivations here."""
-    return Registry()
+    """Production registry: GEOM-001 geometry views (EST-001 adds the schedule and estimate)."""
+    from homedesign.geometry import MESH3D, PLAN2D  # lazy: geometry imports this module
+
+    return registry_of([PLAN2D, MESH3D])
