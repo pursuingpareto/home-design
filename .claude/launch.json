@@ -2,20 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "api-memory",
-      "runtimeExecutable": "env",
+      "name": "app",
+      "runtimeExecutable": "scripts/dev.sh",
       "runtimeArgs": [
-        "HOMEDESIGN_STORE=memory",
-        "HOMEDESIGN_PREVIEW_KEY=0000000000000000000000000000000000000000000000000000000000000000",
-        "HOMEDESIGN_DEV_TOKENS=dev-token=00000000-0000-4000-8000-000000000001",
-        "uv", "run", "--project", "backend", "uvicorn", "homedesign.api.app:create_app", "--factory", "--host", "127.0.0.1", "--port", "8000"
+        "--memory"
       ],
-      "port": 8000
-    },
-    {
-      "name": "ui",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "frontend", "run", "dev", "--", "--host", "127.0.0.1"],
       "port": 5173
     }
   ]

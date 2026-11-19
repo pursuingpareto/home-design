@@ -34,6 +34,8 @@ uv run python -m homedesign.project.migrate postgresql:///homedesign   # apply p
 
 ## Running the API
 
+To run the API and the web app together, use `scripts/dev.sh` from the repository root (see the root README). To run the API alone:
+
 ```bash
 uv run python -m homedesign.project.migrate postgresql:///homedesign   # once, and after each new migration
 HOMEDESIGN_PREVIEW_KEY=$(openssl rand -hex 32) \

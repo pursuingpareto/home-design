@@ -13,6 +13,17 @@ A tool-independent, version-controlled specification for a web-first, parametric
 5. [Roadmap](docs/implementation/roadmap.md), [VS-01 scope and acceptance criteria](docs/implementation/acceptance-tests/vs-01.md), and [task index](docs/implementation/tasks/README.md)
 6. [Decision register](docs/product/decisions/README.md) and [open decisions](docs/product/open-questions.md)
 
+## Run the app locally
+
+Requirements: [uv](https://docs.astral.sh/uv/), Node 22 or later, and PostgreSQL (optional; see `--memory`).
+
+```bash
+scripts/dev.sh            # API + web app; projects saved in the local PostgreSQL database "homedesign"
+scripts/dev.sh --memory   # no database needed; projects are lost when you stop
+```
+
+Open http://localhost:5173 and sign in with `dev-token`. Press Ctrl+C to stop both servers. The script installs dependencies when needed, creates and migrates the database, and keeps a local preview key in `.dev/` (git-ignored). `scripts/dev.sh --help` lists the options.
+
 ## Status and conventions
 
 - **Confirmed:** Product direction agreed with the product owner; see the decision register.

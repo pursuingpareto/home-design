@@ -14,7 +14,13 @@ npx playwright install chromium   # once, for the end-to-end tests
 
 ## Running locally
 
-Start the API (see [backend/README.md](../backend/README.md)), then the dev server:
+The simplest way, from the repository root, starts the API and this dev server together:
+
+```bash
+scripts/dev.sh            # or: scripts/dev.sh --memory   (no database)
+```
+
+To run the pieces separately, start the API (see [backend/README.md](../backend/README.md)), then the dev server:
 
 ```bash
 npm run dev
@@ -24,7 +30,7 @@ Open http://localhost:5173 and sign in with a token from `HOMEDESIGN_DEV_TOKENS`
 
 - **Proxy:** Vite proxies `/api` to `http://127.0.0.1:8000`, so the browser makes same-origin requests and needs no CORS. Set `HOMEDESIGN_API_URL` to point elsewhere.
 - **Sign-in:** the token is kept in `sessionStorage` and is cleared when the tab closes. It is sent only as `Authorization: Bearer` (D050).
-- **Repository launch configuration:** [`.claude/launch.json`](../.claude/launch.json) starts an in-memory API with the token `dev-token` and an all-zero preview key. It is for local use only.
+- **Repository launch configuration:** [`.claude/launch.json`](../.claude/launch.json) runs `scripts/dev.sh --memory` (token `dev-token`). It is for local use only.
 
 ## Commands
 
