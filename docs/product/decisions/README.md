@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D056. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D061. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -60,6 +60,7 @@
 - D058: [Member reference axes lie on datums](D058-datum-reference-axes.md) — every `vs02-frame-1` axis lies on a grid station, plane, or roof plane; joists frame into beams; rafters bear on the plate line without tails; sections never move axes; resolves D053's bearing question.
 - D059: [VS-02 junction rules and `SetConnectionType`](D059-vs02-junction-rules-connection-type-command.md) — one connection per entering member end (312 for Reference House 001 v2); fixed receiving members where several meet; no record for junctions without a class (post splices, sill joints); `SetConnectionType` is consequential; resolves D054's open points.
 - D060: [VS-02 artifact payloads](D060-vs02-artifact-payloads.md) — a fourth `roof` plan plane for rafters, purlins, and their connections; plumb purlins in 3D; ART-002 ships the interim browser changes, including per-piece prices; amends D027 (implemented, ART-002).
+- D061: [VS-02 selector contents](D061-vs02-selector-contents.md) — selections hold exactly what each builder reads, after its projections (AC2-04 governs over D056 item 4's lists); builders take their selection as their only model input; DEP-001 carries the if-and-only-if impact property; refines D056.
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 

@@ -2,11 +2,11 @@
 
 The single status document for the project ([AGENTS.md](../../AGENTS.md), "Documentation maintenance"). Update it whenever a task's status changes. Decisions are in the [decision register](../product/decisions/README.md); each task file holds its own implementation notes.
 
-**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), its connections (312, D059) with `SetConnectionType`, and the version 2 payloads that present them (ART-002, D060) are done. Dependency selectors, browser support, and traceability remain.
+**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), its connections (312, D059) with `SetConnectionType`, and the version 2 payloads that present them (ART-002, D060) are done. Dependency selectors (DEP-001, specified and approved), browser support, and traceability remain.
 
 ## Next steps
 
-1. Draft `DEP-001` (dependency selectors and exact `impacted_artifacts`, [D056](../product/decisions/D056-dependency-selectors.md)) in a fresh session. [ART-002](tasks/ART-002.md) §10 lists what each derivation reads, and its two consequences (a pitch-only roof edit leaves `plan2d` unchanged; the plan's selector hashes plan projections, not 3D axes).
+1. Implement [DEP-001](tasks/DEP-001.md) in a fresh session. Its §13 proposals are approved; items 8–10 are [D061](../product/decisions/D061-vs02-selector-contents.md). Its §8 table lists the measured impact per command, and is the first test to write.
 2. Then `UI-003` and `TEST-002`, in the order of [vs-02.md](acceptance-tests/vs-02.md) §12.2.
 3. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
@@ -45,7 +45,7 @@ The [task index](tasks/README.md) describes what a task file contains.
 | [TIMBER-002](tasks/TIMBER-002.md) | VS-02: `vs02-frame-1` (sills, joists, principal rafters, purlins, knee braces), Reference House 001 v2 fixture, ECMAScript oracle | Done (2026-11-19), with MODEL-005 |
 | [CONN-001](tasks/CONN-001.md) | VS-02: connection generation per junction class (312 connections for Reference House 001 v2), preview connection diff, `SetConnectionType` | Done (2026-11-20; [D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md)) |
 | [ART-002](tasks/ART-002.md) | VS-02: version 2 plan, mesh, schedule, and estimate payloads; "each" price-book rows | Done (2026-11-20; [D060](../product/decisions/D060-vs02-artifact-payloads.md)) |
-| DEP-001 | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Not drafted — **next** |
+| [DEP-001](tasks/DEP-001.md) | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Approved, not started (2026-11-20; [D061](../product/decisions/D061-vs02-selector-contents.md)) — **next** |
 | UI-003 | VS-02: browser support for the complete frame and connections | Not drafted |
 | TEST-002 | VS-02: traceability, golden scenario, and the impact property for AC2-01 to AC2-09 | Not drafted |
 

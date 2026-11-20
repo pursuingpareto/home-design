@@ -8,6 +8,8 @@
 - [interfaces.md §3](../../architecture/interfaces.md#3-preview-contract) (`impacted_artifacts`);
 - [dependencies.md §2 and §6](../../architecture/dependencies.md) (the graph and the cache).
 
+**Refined by:** [D061](D061-vs02-selector-contents.md) ([DEP-001](../../implementation/tasks/DEP-001.md), approved 2026-11-20). Item 4's lists are the coarse view: selections hold exactly what each builder reads, after its own projections. So there is no grid in any selection, the plan reads plan `x, y` only, the mesh reads section dimensions, the schedule reads lengths, and the estimate reads the schedule's aggregate lists. AC2-04 governs.
+
 ## Decision
 
 1. **Selectors.** Every derivation declares a pure **selector** that extracts, from the canonical snapshot, exactly the records and fields it reads, in canonical form. The input fingerprint hashes:
