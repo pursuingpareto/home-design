@@ -83,6 +83,7 @@ Approved as [MODEL-005](../implementation/tasks/MODEL-005.md) §12 items 1–2 a
   - Junction classes: `post-beam`, `post-sill`, `brace`, `joist-beam`, `rafter-peak`, `rafter-foot`, `purlin-rafter`.
   - Types: `PEGGED_MORTISE_TENON`, `BRIDLE`, `HOUSED_DOVETAIL`, `STEEL_KNIFE_PLATE`, `JOIST_HANGER`; allowed pairs per the D054 catalog.
   - Connections are generated, like members. Their IDs are minted from `"generation/" + generation_key` (D041), so generation keys are unique across members and connections together.
+  - *VS-02 amendment ([CONN-001](../implementation/tasks/CONN-001.md) §11 items 2–3, approved; not yet implemented):* the generation key is `connection/{junction_class}/{receiving member key}/{entering member key}`, so it never collides with member keys (which start with `frame/`) and survives exactly when both members survive and still meet. Connections regenerate whenever members do: a surviving key keeps its ID and its `member_ids`, a new key gets a minted ID, and a removed key is retired and never reused.
   - No capacity, fastener, or machining fields (D054).
 - **Schema file:** the snapshot schema is exported as `schemas/snapshot.v2.schema.json`. The command, artifact, and OpenAPI files keep their `v1` names, which follow the API version (interfaces.md §8).
 

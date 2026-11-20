@@ -56,7 +56,7 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7, as
 | `UndoToRevision` | consequential | Can change anything ([D044](../product/decisions/D044-undo-to-revision.md)) |
 | `CreateReferenceProject` | consequential | Creates the whole model |
 
-`CONN-001` adds `SetConnectionType`.
+*VS-02 amendment ([D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md), approved; not yet implemented):* `SetConnectionType` is **consequential**, because it changes every connection of a junction class and has per-piece budget implications. [CONN-001](../implementation/tasks/CONN-001.md) adds the row to this table, within version `vs02-change-classes-1` as D057 anticipated, when it implements the command.
 
 - **Routine** commands may be committed without a preview, and the commit still validates fully. **Consequential** commands require a preview and a confirmation bound to it (§5).
 - A no-op never requires confirmation ([D045](../product/decisions/D045-no-op-commits.md)).

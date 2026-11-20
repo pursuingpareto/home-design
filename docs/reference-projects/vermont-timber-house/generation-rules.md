@@ -75,7 +75,35 @@ Preserve `TimberMember.id` when the `generation_key` still exists after regenera
 
 ## Connections
 
-The rule declares all seven D054 junction classes, so projects carry their connection types from the start. It generates no `Connection` records until [CONN-001](../../implementation/tasks/README.md).
+The rule declares all seven D054 junction classes, so projects carry their connection types from the start.
+
+**Approved, not yet implemented:** the rules below are approved ([D059](../../product/decisions/D059-vs02-junction-rules-connection-type-command.md); [CONN-001](../../implementation/tasks/CONN-001.md) §4–6). Until CONN-001 is implemented, the rule generates no `Connection` records.
+
+### One connection per entering member end
+
+A connection is generated for each member end that lands on another member's axis and that a D054 class covers. That member **enters**, and the member it lands on **receives**. Where several could receive, the table names one. "The post below" a plane at station `(x, y)` is `frame/{x}/{y}/level-0/post` for `plane-L1` and `frame/{x}/{y}/level-1/post` for `plane-eave`.
+
+| Class | Entering member and end | Receiving member |
+|---|---|---|
+| `post-beam` | A beam, at each end (start at `xa`/`ya`, end at `xb`/`yb`) | The post below the beam's plane at that station |
+| `post-sill` | A Level 0 post, at its foot | The Y-direction sill in the post's bent: `frame/axis-y/{x}/{y}-{y_next}/plane-L0/sill`, or, on the last Y line, the bay that ends there |
+| `brace` | A knee brace, at its lower end | The post below the brace's plane, at the brace's end line |
+| `brace` | A knee brace, at its upper end | Its beam: the brace key with `/brace/{end line}` replaced by `/beam` |
+| `joist-beam` | A floor joist, at each end | `frame/axis-x/{ya}/{xa}-{xb}/plane-L1/beam` at the start, and `frame/axis-x/{yb}/{xa}-{xb}/plane-L1/beam` at the end |
+| `rafter-peak` | The north principal rafter, at its top | The south principal rafter on the same X line |
+| `rafter-foot` | A principal rafter, at its foot | The tie beam: `frame/axis-y/{x}/{ya}-{yb}/plane-eave/beam` for the first Y bay (south) or the last (north) |
+| `purlin-rafter` | A purlin, at each end | `frame/roof/{xa}/{slope}/principal-rafter` at the start, and `frame/roof/{xb}/{slope}/principal-rafter` at the end |
+
+- **Location:** `location_m` is the entering member's generated endpoint, copied bit for bit, so no new formula is needed. By D058 it lies on the receiving member's axis. Only the `z` of `rafter-peak` and `purlin-rafter` locations depends on `tan(pitch_rad)`.
+- **Type and members:** `connection_type` is `connection_defaults[junction_class]`, and `member_ids` is `[receiving ID, entering ID]`.
+- **Absent members:** braces off, zero purlins, or a bay without joists generate no connections of those classes.
+- **Not generated:** joints that no class covers get no record and are not counted. These are the Level 1 post-to-post splices, the sill-to-sill joints at grid stations, and a rafter foot's contacts with the plate and post.
+
+### Keys, IDs, and counts
+
+- **Key:** `connection/{junction_class}/{receiving member key}/{entering member key}`, sorted in code-unit order in `connection_ids`. Member keys never contain `/frame/`, so a key splits back into its two member keys.
+- **IDs:** minted from `"generation/" + key` and regenerated with the members. A surviving key keeps its ID and `member_ids`; a removed key is retired.
+- **Counts:** with `B` as above, `4·B` post-beam, `nx·ny` post-sill, 2 per brace, 2 per joist, `nx` rafter-peak, `2·nx` rafter-foot, and 2 per purlin. Reference House 001 v2: 68 + 12 + 136 + 60 + 4 + 8 + 24 = **312**.
 
 ## Fixture and cross-language check
 
@@ -84,4 +112,4 @@ The rule declares all seven D054 junction classes, so projects carry their conne
 
 ## Out of scope for this rule version
 
-Connections (`CONN-001`), girts and studs (VS-02b), ridge beams, collar ties, rafter tails, dormers, hips, valleys, ceiling joists, floor openings, machining, walls, and any structural adequacy check.
+Connection records until `CONN-001` is implemented, splice and sill-joint connections (D059), girts and studs (VS-02b), ridge beams, collar ties, rafter tails, dormers, hips, valleys, ceiling joists, floor openings, machining, walls, and any structural adequacy check.

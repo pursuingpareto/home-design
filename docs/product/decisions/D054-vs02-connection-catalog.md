@@ -54,6 +54,6 @@ Every output carries the preliminary label (AC-08). Catalog descriptions state t
 
 ## What this does not decide
 
-- **Exact junction rules,** such as which member is receiving, and so the connection counts for Reference House 001 v2. These are specified with the rule and reconciled in tests.
-- **The type-switching command's name and classification,** which come with the VS-02 command set.
+- **Exact junction rules,** such as which member is receiving, and so the connection counts for Reference House 001 v2. *Decided in [D059](D059-vs02-junction-rules-connection-type-command.md):* one connection per entering member end, 312 for the reference house.
+- **The type-switching command's name and classification.** *Decided in [D059](D059-vs02-junction-rules-connection-type-command.md):* `SetConnectionType`, consequential.
 - **Any engineering analysis of connections** (VS-04).
