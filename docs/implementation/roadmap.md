@@ -2,19 +2,20 @@
 
 The single status document for the project ([AGENTS.md](../../AGENTS.md), "Documentation maintenance"). Update it whenever a task's status changes. Decisions are in the [decision register](../product/decisions/README.md); each task file holds its own implementation notes.
 
-**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), its connections (312, D059) with `SetConnectionType`, the version 2 payloads that present them (ART-002, D060), dependency selectors with exact `impacted_artifacts` and reuse across revisions (DEP-001, D061), and browser support for all of it (UI-003, D062) are done. Traceability (TEST-002) remains.
+**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), its connections (312, D059) with `SetConnectionType`, the version 2 payloads that present them (ART-002, D060), dependency selectors with exact `impacted_artifacts` and reuse across revisions (DEP-001, D061), and browser support for all of it (UI-003, D062) are done. Traceability (TEST-002) is drafted and awaiting approval.
 
 ## Next steps
 
-1. Draft `TEST-002` in a fresh session ([vs-02.md](acceptance-tests/vs-02.md) §12.2). It traces the if-and-only-if impact property that DEP-001 delivered (D061), and AC2-08 through UI-003's browser tests (`frontend/tests/ui003.test.tsx` and `frontend/e2e/connections.spec.ts`; [UI-003](tasks/UI-003.md) §17 maps them to §13).
-2. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
+1. Review [TEST-002](tasks/TEST-002.md)'s §12 proposals: the five routine items together, then the four judgment items one at a time (the matrix form and its drift check, payload size budgets, time budgets, and UI-003's four flagged choices). The approved judgment items are recorded as D063.
+2. Implement `TEST-002` in a fresh session once approved. VS-02 is then complete.
+3. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
 
 **Status:** provisional sequencing; the vertical-slice strategy is confirmed.
 
 - **VS-01:** Reference building, parametric frame, 2D/3D, persistence, preliminary schedule. *Complete (2026-11-19): all acceptance criteria traced and passing ([TEST-001](tasks/TEST-001.md)).*
-- **VS-02:** Complete timber frame, connections, and dependency selectors ([D051](../product/decisions/D051-vs02-slice-boundary.md)). *In progress: [scope and acceptance criteria](acceptance-tests/vs-02.md); MODEL-005, TIMBER-002, CONN-001, ART-002, DEP-001, and UI-003 done; TEST-002 remains.*
+- **VS-02:** Complete timber frame, connections, and dependency selectors ([D051](../product/decisions/D051-vs02-slice-boundary.md)). *In progress: [scope and acceptance criteria](acceptance-tests/vs-02.md); MODEL-005, TIMBER-002, CONN-001, ART-002, DEP-001, and UI-003 done; TEST-002 drafted, awaiting approval.*
 - **VS-02b:** Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame.
 - **VS-03:** Natural-language AI proposals and human approval workflow.
 - **VS-04:** Bounded engineering checks, cost and environmental estimates, alternatives.
@@ -46,11 +47,11 @@ The [task index](tasks/README.md) describes what a task file contains.
 | [ART-002](tasks/ART-002.md) | VS-02: version 2 plan, mesh, schedule, and estimate payloads; "each" price-book rows | Done (2026-11-20; [D060](../product/decisions/D060-vs02-artifact-payloads.md)) |
 | [DEP-001](tasks/DEP-001.md) | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Done (2026-11-20; [D061](../product/decisions/D061-vs02-selector-contents.md)) |
 | [UI-003](tasks/UI-003.md) | VS-02: browser support for the complete frame and connections (roles and markers in 2D and 3D, the Frame tab, connection types, schedule tables, the confirmation dialog) | Done (2026-11-20; [D062](../product/decisions/D062-vs02-browser-connections.md)) |
-| TEST-002 | VS-02: traceability and the golden scenario's new commands for AC2-01 to AC2-09 (the if-and-only-if impact property shipped with DEP-001, D061) | Not drafted — **next** |
+| [TEST-002](tasks/TEST-002.md) | VS-02: traceability and the golden scenario's new commands for AC2-01 to AC2-09 (the if-and-only-if impact property shipped with DEP-001, D061), the sequences' reach, and budgets | Drafted, awaiting approval — **next** |
 
 ## Current limitations (until the remaining VS-02 tasks)
 
-- AC2-01 to AC2-09 are not yet traced in the traceability matrix, and no payload size, render time, or preview time budget is set (`TEST-002`).
+- AC2-01 to AC2-09 are not yet traced in a traceability matrix, the golden scenario has no `SetFrameParameters` or `SetConnectionType` step, the `ci` sequences reach no narrow impact for those two commands or for `SetMemberSection`, and no payload size, render time, or preview time budget is set (`TEST-002`).
 
 ## Open items
 
