@@ -155,7 +155,9 @@ def test_mesh_matches_independent_ecmascript_implementation():
 # 7. robustness ----------------------------------------------------------------------------------------
 
 
-@settings(max_examples=60, suppress_health_check=[HealthCheck.too_slow])
+# No deadline: each example runs three full proposes, which regenerate every member and connection
+# (CONN-001), as in the other propose-driven property tests.
+@settings(max_examples=60, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 @given(
     st.floats(3.0, 26.0), st.floats(3.0, 26.0),
     st.lists(st.floats(0.05, 0.95), max_size=3),
