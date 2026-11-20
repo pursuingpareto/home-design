@@ -43,5 +43,5 @@ Connection markers in 2D and 3D, a connection table, role styling, the Frame tab
 ## What this does not decide
 
 - Selectors and exact `impacted_artifacts` (`DEP-001`). ART-002 §10 lists what each derivation reads, as input for that task.
-- How the browser draws coincident connection markers (`UI-003`).
+- How the browser draws coincident connection markers (`UI-003`). *Resolved by [D062](D062-vs02-browser-connections.md): one glyph per shared point.*
 - Any engineering meaning of connections (VS-04). Everything stays preliminary (AC-08).

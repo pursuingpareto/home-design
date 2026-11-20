@@ -61,6 +61,7 @@
 - D059: [VS-02 junction rules and `SetConnectionType`](D059-vs02-junction-rules-connection-type-command.md) — one connection per entering member end (312 for Reference House 001 v2); fixed receiving members where several meet; no record for junctions without a class (post splices, sill joints); `SetConnectionType` is consequential; resolves D054's open points.
 - D060: [VS-02 artifact payloads](D060-vs02-artifact-payloads.md) — a fourth `roof` plan plane for rafters, purlins, and their connections; plumb purlins in 3D; ART-002 ships the interim browser changes, including per-piece prices; amends D027 (implemented, ART-002).
 - D061: [VS-02 selector contents](D061-vs02-selector-contents.md) — selections hold exactly what each builder reads, after its projections (AC2-04 governs over D056 item 4's lists); builders take their selection as their only model input; DEP-001 carries the if-and-only-if impact property; refines D056 (implemented, DEP-001).
+- D062: [VS-02 browser connections](D062-vs02-browser-connections.md) — one marker glyph per shared point; 3D markers drawn over members, with one Connections switch; connection types in a new Connections tab; the editor's catalog generated from the backend; resolves D060's coincident-marker point (UI-003).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 
