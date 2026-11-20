@@ -1,6 +1,6 @@
 # TEST-002 — VS-02 traceability, the golden scenario's new commands, and budgets
 
-**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12; items 6–8 are approved and recorded as [D063](../../product/decisions/D063-vs02-traceability-and-budgets.md).  
+**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12; items 6–8 are approved and recorded as [D063](../../product/decisions/D063-vs02-traceability-and-budgets.md), and item 9 is settled (all four choices confirmed). The routine items 1–5 await approval.  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes.  
 **Slice:** VS-02  
 **Depends on:** `MODEL-005`, `TIMBER-002`, `CONN-001`, `ART-002`, `DEP-001`, and `UI-003` (all done; `main` at `e632578`). Merges on its own, with CI passing ([vs-02.md](../acceptance-tests/vs-02.md) §12.2).  
@@ -276,7 +276,7 @@ UI-003 §13 test 10 (VS-01 still holds) traces AC2-05 through the VS-01 matrix, 
 - **`describe` titles** (UI-003's §13 numbers): a cell of three references instead of a dozen, but a group still passes when its cases are deleted, and the rows would follow UI-003's numbering rather than AC2-08's bullets;
 - **a `file › describe › it` form** that the checker resolves structurally: precise and readable, but a parser for nested blocks is more than the tightened title check needs.
 
-## 10. UI-003's four flagged choices (item 9, judgment)
+## 10. UI-003's four flagged choices (item 9, judgment; settled 2026-11-20)
 
 UI-003 §17 kept four implementation choices and flagged them for the product owner. None changes a matrix row: AC2-08 does not mention them, and each is tested as implemented. They are listed here so that VS-02 is not declared complete with open flags. Each is a separate question, in this order, and the recommendation for each is to **confirm it as implemented**:
 
@@ -321,7 +321,7 @@ Any change that is not a confirmation is a small UI change of its own, outside t
 6. **Matrix form and drift check** (§5.1–5.2): a separate `vs-02-traceability.md`; one row per criterion bullet (17 AC rows) plus the 7 VS-02 contract checks; enforced against vs-02.md's IDs **and wording**, so a reworded criterion fails until its row is reviewed. *Alternatives:* one row per criterion; VS-02 sections in the VS-01 file; IDs only. **Approved as proposed (2026-11-20):** one row per bullet, checked against IDs and wording.
 7. **Payload size budgets** (§8.1): each payload at most 256 KiB for the reference house and 2 MB for the largest supported case, in canonical bytes, gated in CI. *Alternatives:* no size budget; tighter ceilings. **Approved as proposed (2026-11-20).**
 8. **Time budgets** (§8.2): ceilings at about 5–10× today (preview 1 s for the reference house and 5 s for the largest case; commit 5 s for the largest case; in the browser, 10 s to first render and 3 s to the preview dialog), median of 5, gated in CI, with a stop-and-report rule above half a ceiling. *Alternatives:* report only, with no ceiling; user-facing targets in a production build. **Approved as proposed (2026-11-20).**
-9. **UI-003's four flagged choices** (§10), each confirmed as implemented, or changed in a UI change of its own: (a) untouched Connections rows disabled; (b) per-key dialog rows; (c) "Steel knife plate"; (d) the brace-fit pointer naming Footprint too.
+9. **UI-003's four flagged choices** (§10), each confirmed as implemented, or changed in a UI change of its own: (a) untouched Connections rows disabled; (b) per-key dialog rows; (c) "Steel knife plate"; (d) the brace-fit pointer naming Footprint too. **Settled (2026-11-20): all four confirmed as implemented.** Recorded in UI-003 §17. No UI change follows.
 
 Items 6–8 are approved and recorded as **[D063](../../product/decisions/D063-vs02-traceability-and-budgets.md)**.
 
