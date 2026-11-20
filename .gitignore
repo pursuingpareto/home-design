@@ -10,3 +10,6 @@ __pycache__/
 
 # Local development (scripts/dev.sh)
 .dev/
+
+# Personal Claude Code settings (permissions); not shared
+.claude/settings.local.json

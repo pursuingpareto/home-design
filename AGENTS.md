@@ -39,13 +39,23 @@ Do not invent requirements when documentation is ambiguous. Identify unresolved 
 - Do not introduce major dependencies or architectural changes without explaining the tradeoffs.
 - Keep changes focused and reviewable.
 
+## Collaboration workflow (agreed with the product owner, 2026-11-19)
+
+- **Proposals:** task files present numbered proposals. Mark each one **Routine** (it follows from approved decisions and documents) or **Your judgment** (product behavior, a new requirement, or a real tradeoff). Routine items may be approved together; judgment items are discussed one at a time.
+- **Standing approvals:**
+  - Test-only changes need no approval.
+  - Once the work is done and `scripts/check.sh` passes, commit and fast-forward `main` without asking. The fast-forward goes through CI (next item).
+- **CI before `main` moves:** commit on a branch, push it, and open a pull request. When its CI passes, fast-forward `main` to the branch (`git merge --ff-only`) and push `main`, so `main` gets the exact commits CI checked. Never force-push, and never enable auto-merge.
+- **One session per task:** start each task (drafting or implementing) in a fresh session. The task file, the decisions, and `docs/implementation/roadmap.md` are the handoff, so a task file must stand on its own.
+- **Local processes:** stop servers this repository's tools started (for example a leftover `scripts/dev.sh` server) without asking.
+
 ## Documentation maintenance
 
 When implementation changes an architectural contract, update the relevant documentation.
 
 When a new product or architecture decision is approved, record it in `docs/product/decisions/`.
 
-Keep `docs/implementation/roadmap.md` and task status files consistent with actual progress.
+`docs/implementation/roadmap.md` is the single status document: the next steps, the slices, and every task's status. Update it whenever a task's status changes, and keep task files' own status lines consistent with it. Do not add other status files.
 
 Never silently redefine an established requirement to accommodate an implementation shortcut.
 

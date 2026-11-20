@@ -229,7 +229,7 @@ Each case applies one mutation to the fixture and asserts the exact top-level co
 - All tests in §7 pass in CI (or locally, if CI does not exist yet, with the command documented in `backend/README.md`).
 - The JSON Schema export is committed, and the drift test passes.
 - The JCS vectors are committed under `tests/vectors/jcs/`.
-- building-model.md §6 and interfaces.md §7 are updated for every approved §9 item. The task index and current-status.md are updated.
+- building-model.md §6 and interfaces.md §7 are updated for every approved §9 item. The task index and the status document are updated.
 - No file outside `backend/`, `tests/vectors/`, `docs/` changes.
 - Changed files, tests run, limitations, and next steps are summarized (AGENTS.md).
 
