@@ -1,60 +1,72 @@
 /**
  * Price-book form (UI-001 §5.1; artifacts.md §8.2). Not a model command: no revision, no preview.
  *
- * - Rows come from the estimate's line items, plus stored rows that match none (kept, marked unused).
- * - Prices are typed per foot (imperial) or per meter (metric) and parsed exactly to cents; the book
- *   stores whole cents per meter, so per-foot prices are converted and rounded half-even, and the
- *   stored value is shown before saving. An untouched row keeps its stored value exactly.
+ * - Rows come from the estimate's line items, plus stored rows that match none (kept, marked unused,
+ *   with their stored unit).
+ * - Timber prices are typed per foot (imperial) or per meter (metric) and parsed exactly to cents; the
+ *   book stores whole cents per meter, so per-foot prices are converted and rounded half-even, and the
+ *   stored value is shown before saving. Connection prices are per piece ("each", ART-002 §7.3, §9):
+ *   whole cents, never converted. An untouched row keeps its stored value exactly.
  */
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 import { ApiError, type Api } from "../api/client";
-import type { EstimatePayload, PriceBook, StoredPriceBook } from "../api/types";
+import type { EstimatePayload, PriceBook, PriceRow, StoredPriceBook } from "../api/types";
 import { ErrorNotice } from "../app/ErrorNotice";
 import type { UnitSystem } from "../units/length";
 import { approxPerFoot, centsPerMeter, formatCents, parseMoney, priceInputText } from "../units/money";
 import { describeDetail, placeDetails } from "./commands";
+import { lineLabel, type ConnectionCatalog } from "./lineItems";
+
+type Unit = PriceRow["unit"];
 
 interface Row {
   key: string;
   label: string;
+  unit: Unit;
   unused: boolean;
-  stored: number | null; // cents per meter in the current book
+  stored: number | null; // whole cents per meter ("m") or per piece ("each") in the current book
   text: string;
   dirty: boolean;
 }
 
-export type RowResult = { kind: "blank" } | { kind: "price"; centsPerMeter: number } | { kind: "invalid"; error: string };
+export type RowResult = { kind: "blank" } | { kind: "price"; unitPriceMinor: number } | { kind: "invalid"; error: string };
 
-export function rowResult(row: Pick<Row, "stored" | "text" | "dirty">, units: UnitSystem): RowResult {
-  if (!row.dirty) return row.stored === null ? { kind: "blank" } : { kind: "price", centsPerMeter: row.stored };
+export function rowResult(row: Pick<Row, "unit" | "stored" | "text" | "dirty">, units: UnitSystem): RowResult {
+  if (!row.dirty) return row.stored === null ? { kind: "blank" } : { kind: "price", unitPriceMinor: row.stored };
   if (row.text.trim() === "") return { kind: "blank" };
   const parsed = parseMoney(row.text);
   if (!parsed.ok) return { kind: "invalid", error: parsed.error };
-  return { kind: "price", centsPerMeter: Number(centsPerMeter(parsed.cents, units)) };
+  return { kind: "price", unitPriceMinor: Number(row.unit === "each" ? parsed.cents : centsPerMeter(parsed.cents, units)) };
+}
+
+/** Text for a row's input: per foot or meter for "m" rows, per piece for "each" rows. */
+export function rowText(stored: number | null, unit: Unit, units: UnitSystem): string {
+  if (stored === null) return "";
+  return unit === "each" ? (stored / 100).toFixed(2) : priceInputText(stored, units);
 }
 
 /** The book to PUT, or null when a row is invalid. Blank rows are left out (partial coverage). */
-export function buildBook(meta: { source: string; geography: string; as_of: string }, rows: Pick<Row, "key" | "stored" | "text" | "dirty">[], units: UnitSystem): { book: PriceBook; keys: string[] } | null {
+export function buildBook(meta: { source: string; geography: string; as_of: string }, rows: Pick<Row, "key" | "unit" | "stored" | "text" | "dirty">[], units: UnitSystem): { book: PriceBook; keys: string[] } | null {
   const out: PriceBook["rows"] = [];
   for (const row of rows) {
     const result = rowResult(row, units);
     if (result.kind === "invalid") return null;
-    if (result.kind === "price") out.push({ key: row.key, unit: "m", unit_price_minor: result.centsPerMeter });
+    if (result.kind === "price") out.push({ key: row.key, unit: row.unit, unit_price_minor: result.unitPriceMinor });
   }
   return { book: { currency: "USD", as_of: meta.as_of, source: meta.source.trim(), geography: meta.geography.trim(), rows: out }, keys: out.map((r) => r.key) };
 }
 
-export function initialRows(estimate: EstimatePayload, stored: StoredPriceBook | null, units: UnitSystem): Row[] {
+export function initialRows(estimate: EstimatePayload, stored: StoredPriceBook | null, units: UnitSystem, catalog: ConnectionCatalog | null = null): Row[] {
   const prices = new Map((stored?.book.rows ?? []).map((r) => [r.key, r.unit_price_minor]));
   const rows: Row[] = estimate.line_items.map((li) => {
     const price = prices.get(li.key) ?? null;
-    return { key: li.key, label: `${li.role} ${li.nominal_section}`, unused: false, stored: price, text: price === null ? "" : priceInputText(price, units), dirty: false };
+    return { key: li.key, label: lineLabel(li, catalog), unit: li.quantity_unit, unused: false, stored: price, text: rowText(price, li.quantity_unit, units), dirty: false };
   });
   for (const row of stored?.book.rows ?? []) {
     if (!rows.some((r) => r.key === row.key)) {
-      rows.push({ key: row.key, label: row.key, unused: true, stored: row.unit_price_minor, text: priceInputText(row.unit_price_minor, units), dirty: false });
+      rows.push({ key: row.key, label: row.key, unit: row.unit, unused: true, stored: row.unit_price_minor, text: rowText(row.unit_price_minor, row.unit, units), dirty: false });
     }
   }
   return rows;
@@ -64,6 +76,7 @@ export function PriceBookForm({
   api,
   projectId,
   estimate,
+  catalog,
   units,
   onSaved,
   onClose,
@@ -71,6 +84,7 @@ export function PriceBookForm({
   api: Api;
   projectId: string;
   estimate: EstimatePayload;
+  catalog: ConnectionCatalog | null;
   units: UnitSystem;
   onSaved: () => void;
   onClose: () => void;
@@ -86,19 +100,24 @@ export function PriceBookForm({
   useEffect(() => {
     api.getPriceBook(projectId).then((book) => {
       setStored(book);
-      setRows(initialRows(estimate, book, units));
+      setRows(initialRows(estimate, book, units, catalog));
       if (book) setMeta({ source: book.book.source, geography: book.book.geography, as_of: book.book.as_of });
     }, setError);
   }, [api, projectId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Untouched rows follow the display units; typed text is kept as typed.
   useEffect(() => {
-    setRows((rs) => rs.map((r) => (r.dirty ? r : { ...r, text: r.stored === null ? "" : priceInputText(r.stored, units) })));
+    setRows((rs) => rs.map((r) => (r.dirty ? r : { ...r, text: rowText(r.stored, r.unit, units) })));
   }, [units]);
 
-  const unitLabel = units === "imperial" ? "per linear foot" : "per meter";
+  const lengthLabel = units === "imperial" ? "per linear foot" : "per meter";
+  const unitLabel = (unit: Unit) => (unit === "each" ? "each" : lengthLabel);
   const details = error instanceof ApiError ? error.details : [];
-  const rowFields = useMemo(() => Object.fromEntries(submittedKeys.map((key, k) => [key, `rows[${k}].unit_price_minor`])), [submittedKeys]);
+  // A row's errors are those at its price or its unit (PRICE_UNIT_MISMATCH, ART-002 §7.3).
+  const rowFields = useMemo(
+    () => Object.fromEntries(submittedKeys.flatMap((key, k) => [[key, `rows[${k}].unit_price_minor`], [`${key}\u0000unit`, `rows[${k}].unit`]])),
+    [submittedKeys],
+  );
   const { byField: rowErrors, other } = placeDetails(details, { ...rowFields, source: "source", geography: "geography", as_of: "as_of" } as Record<string, string>);
 
   async function save(event: FormEvent) {
@@ -114,7 +133,7 @@ export function PriceBookForm({
       const result = await api.setPriceBook(projectId, built.book);
       const latest = await api.getPriceBook(projectId);
       setStored(latest);
-      setRows(initialRows(estimate, latest, units));
+      setRows(initialRows(estimate, latest, units, catalog));
       setNotice(
         result.version === loadedVersion + 1
           ? `Saved as version ${result.version}.`
@@ -133,7 +152,8 @@ export function PriceBookForm({
     <form className="price-book" onSubmit={save} aria-labelledby="price-book-heading" data-testid="price-book-form">
       <h3 id="price-book-heading">Unit prices</h3>
       <p className="hint">
-        Currency: USD. Prices are entered {unitLabel} and stored in whole cents per meter. Leave a price blank to leave that item unpriced.
+        Currency: USD. Timber prices are entered {lengthLabel} and stored in whole cents per meter; connection prices are entered and stored per piece. Leave a price
+        blank to leave that item unpriced.
         {stored && ` Current book: version ${stored.version}.`}
       </p>
       {(["source", "geography"] as const).map((field) => (
@@ -155,7 +175,7 @@ export function PriceBookForm({
         <thead>
           <tr>
             <th scope="col">Item</th>
-            <th scope="col">Price ({unitLabel})</th>
+            <th scope="col">Price</th>
             <th scope="col">Stored</th>
           </tr>
         </thead>
@@ -177,18 +197,21 @@ export function PriceBookForm({
                     aria-invalid={result.kind === "invalid"}
                     onChange={(e) => setRows((rs) => rs.map((r, i) => (i === index ? { ...r, text: e.target.value, dirty: true } : r)))}
                   />
+                  <span className="unit"> {unitLabel(row.unit)}</span>
                   {result.kind === "invalid" && <p className="field-error">{result.error}</p>}
-                  {(rowErrors[row.key] ?? []).map((d, i) => (
+                  {[...(rowErrors[row.key] ?? []), ...(rowErrors[`${row.key}\u0000unit`] ?? [])].map((d, i) => (
                     <p className="field-error" key={i}>
                       {describeDetail(d)}
                     </p>
                   ))}
                 </td>
                 <td data-testid={`stored-${row.key}`}>
-                  {result.kind === "price" ? (
+                  {result.kind === "price" && row.unit === "each" ? (
+                    `${formatCents(result.unitPriceMinor)} each`
+                  ) : result.kind === "price" ? (
                     <>
-                      {formatCents(result.centsPerMeter)}/m
-                      {units === "imperial" && <span className="approx"> {approxPerFoot(result.centsPerMeter)}</span>}
+                      {formatCents(result.unitPriceMinor)}/m
+                      {units === "imperial" && <span className="approx"> {approxPerFoot(result.unitPriceMinor)}</span>}
                     </>
                   ) : (
                     "Not priced"

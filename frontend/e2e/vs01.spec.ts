@@ -43,6 +43,15 @@ async function setWidth(page: Page, text: string) {
   await page.getByRole("button", { name: "Preview" }).click();
 }
 
+test("the plan's roof tab shows the rafters and purlins (ART-002 §9)", async ({ page }) => {
+  await signIn(page);
+  await createProject(page);
+  await page.getByRole("group", { name: "Plan plane" }).getByRole("button", { name: "Roof" }).click();
+  const plan = page.locator(".plan2d svg");
+  await expect(plan.locator('line[data-array="rafters"]')).toHaveCount(8);
+  await expect(plan.locator('line[data-array="purlins"]')).toHaveCount(12);
+});
+
 test("AC-01: Reference House 001 shows the same dimensions in 2D and 3D", async ({ page }) => {
   await signIn(page);
   await createProject(page);
@@ -168,11 +177,21 @@ test("price book: complete then partial coverage", async ({ page }) => {
   await form.getByLabel("PURLIN 6x8").fill("7.16");
   await form.getByLabel("KNEE_BRACE 4x6").fill("2.74");
   await expect(form.getByTestId("stored-timber.BEAM.8x12")).toContainText("$47.24/m"); // 1440 c/ft × 1250/381 = 4724.41
+  // Connection lines are priced per piece, with no unit conversion (ART-002 §9, AC2-08).
+  await form.getByLabel("Pegged mortise and tenon").fill("45.00");
+  await form.getByLabel("Bridle joint").fill("65.00");
+  await form.getByLabel("Housed dovetail").fill("38.00");
+  await expect(form.getByTestId("stored-connection.PEGGED_MORTISE_TENON")).toHaveText("$45.00 each");
   await form.getByRole("button", { name: "Save prices" }).click();
   await expect(form).toContainText("Saved as version 1.");
   await expect(page.getByTestId("status-preliminary_estimate")).toHaveText("Estimate: CURRENT");
   await expect(page.getByTestId("estimate-coverage")).toContainText("complete");
   await expect(page.getByTestId("estimate-total")).toContainText("Total: $");
+  const pegged = page.getByTestId("estimate").locator('tr[data-key="connection.PEGGED_MORTISE_TENON"]');
+  await expect(pegged).toContainText("248 each");
+  await expect(pegged).toContainText("$45.00 each");
+  await expect(pegged).toContainText("$11,160.00"); // 4500 c × 248
+  await expect(form.getByLabel("Pegged mortise and tenon")).toHaveValue("45.00"); // reloaded from the stored book
 
   await form.getByLabel("POST 8x8").fill("");
   await form.getByRole("button", { name: "Save prices" }).click();

@@ -426,6 +426,7 @@ def test_price_book_put_get_and_estimate(api):
     [
         (lambda b: b["rows"][0].__setitem__("unit_price_minor", -1), "rows[0].unit_price_minor", codes.OUT_OF_RANGE),
         (lambda b: b.__setitem__("discount", 5), "discount", codes.UNKNOWN_FIELD),
+        (lambda b: b["rows"][0].__setitem__("unit", "each"), "rows[0].unit", codes.PRICE_UNIT_MISMATCH),  # ART-002 §7.3
     ],
 )
 def test_invalid_price_book_is_422(api, mutate, path, code):

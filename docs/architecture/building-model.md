@@ -144,6 +144,7 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `DUPLICATE_LINE_ID` | 2 | A grid line ID repeats within an axis; `path` is each later occurrence's `id`, `related_paths` the first occurrence's (D042, D037) |
 | `DUPLICATE_SECTION_LABEL` | 2 | Two sections share a `nominal_label`; `path` is each later section's label (by `id` order), `related_paths` the first's (D049, D037) |
 | `DUPLICATE_PRICE_KEY` | 2 | A price-book row key repeats; `path` is the later row's `key`, `related_paths` the first's (price-book validation, EST-001) |
+| `PRICE_UNIT_MISMATCH` | 2 | A price-book row's `unit` does not match its key family: `timber.` keys need `m`, `connection.` keys need `each`; `path` is the row's `unit`, `related_paths` its `key`, `value` the unit (price-book validation, [ART-002](../implementation/tasks/ART-002.md) §7.3) |
 | `MISSING_ROLE_DEFAULT` | 2 | `FrameSystem.member_defaults` lacks an entry for a role the generation rule generates (D039) |
 | `SELF_CONNECTION` | 2 | *Version 2.* A `Connection` lists the same member twice; `path` is `member_ids[1]`, `related_paths` `member_ids[0]` |
 | `CONNECTION_SET_MISMATCH` | 2 | *Version 2.* `FrameSystem.connection_ids` differs from the set of `Connection` records |

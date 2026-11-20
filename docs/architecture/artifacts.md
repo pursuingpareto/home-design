@@ -1,7 +1,7 @@
-# VS-01 derived artifacts — DTO specification
+# Derived artifacts — DTO specification (VS-01, version 2 payloads for VS-02)
 
-**Version:** 0.2 draft (2026-11-16)  
-**Status:** Confirmed for VS-01 ([D027](../product/decisions/D027-vs01-artifact-dtos.md)). Payloads are display and reporting views, not the authoritative building model and not construction documents.  
+**Version:** 0.3 draft (2026-11-20)  
+**Status:** Confirmed for VS-01 ([D027](../product/decisions/D027-vs01-artifact-dtos.md)); version 2 payloads (generator version `"2"`) for the complete VS-02 frame and its connections, from [ART-002](../implementation/tasks/ART-002.md) and [D060](../product/decisions/D060-vs02-artifact-payloads.md). Payloads are display and reporting views, not the authoritative building model and not construction documents.  
 **Related:** [building model](building-model.md), [dependencies](dependencies.md), [interfaces](interfaces.md), [geometry](geometry.md), [D025](../product/decisions/D025-reference-house-001-vs01-fixture.md), [D026](../product/decisions/D026-canonical-units-identity-persistence.md).
 
 ## 1. Artifact types
@@ -29,7 +29,7 @@ Every artifact response, including 202 bodies, uses this envelope. `payload` is 
   "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66",
   "head": true,
   "generator_id": "schedule-vs01",
-  "generator_version": "1",
+  "generator_version": "2",
   "input_fingerprint": "sha256:…",
   "generated_at": "2026-11-16T00:00:00Z",
   "status": "CURRENT",
@@ -105,10 +105,10 @@ Payload geometry uses D026: meters, +X east, +Y north, +Z up, radians. Display c
   "revision_id": "01b311c6-7a51-528d-befe-b2e592819b66",
   "head": true,
   "artifacts": [
-    {"artifact_type": "plan2d", "status": "CURRENT", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "1", "input_fingerprint": "sha256:…"},
-    {"artifact_type": "mesh3d", "status": "COMPUTING", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "1", "input_fingerprint": null},
-    {"artifact_type": "timber_schedule", "status": "CURRENT", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "1", "input_fingerprint": "sha256:…"},
-    {"artifact_type": "preliminary_estimate", "status": "UNAVAILABLE", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "1", "input_fingerprint": "sha256:…"}
+    {"artifact_type": "plan2d", "status": "CURRENT", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "2", "input_fingerprint": "sha256:…"},
+    {"artifact_type": "mesh3d", "status": "COMPUTING", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "2", "input_fingerprint": null},
+    {"artifact_type": "timber_schedule", "status": "CURRENT", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "2", "input_fingerprint": "sha256:…"},
+    {"artifact_type": "preliminary_estimate", "status": "UNAVAILABLE", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "2", "input_fingerprint": "sha256:…"}
   ]
 }
 ```
@@ -123,9 +123,9 @@ Historical `GET` with an explicit `revision_id` returns the artifact **for that 
 
 ## 5. `plan2d` payload
 
-`generator_id`: `plan2d-vs01`. `generator_version`: `1`.
+`generator_id`: `plan2d-vs01`. `generator_version`: `2` ([ART-002](../implementation/tasks/ART-002.md) §4; [D060](../product/decisions/D060-vs02-artifact-payloads.md)).
 
-**VS-02 interim note ([MODEL-005](../implementation/tasks/MODEL-005.md) §9, approved as §12 item 6):** from the MODEL-005 + TIMBER-002 merge until `ART-002`, `plan2d` lists **posts and beams only**. Sills, floor joists, principal rafters, purlins, and knee braces appear in `mesh3d` and `timber_schedule`, but not yet in the plan. The integration invariants compare the plan inventory with posts and beams only, citing this note. `ART-002` adds the other roles and removes this note. Payload `role` fields in `mesh3d` and `timber_schedule` take the seven version 2 roles ([building-model.md §3.3](building-model.md#33-version-2-records)); the examples in §5–§8 still show the VS-01 house until `ART-002` regenerates them.
+Four planes, each with one array per member role and a `connections` array. Every plane has every array; arrays with no members are empty. Abridged to one entry per array for Reference House 001 v2:
 
 ```json
 {
@@ -135,37 +135,45 @@ Historical `GET` with an explicit `revision_id` returns the artifact **for that 
       "plane_id": "level-0",
       "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
       "z_m": 0.0,
-      "posts": [
+      "posts": [{ "member_id": "…", "generation_key": "frame/x0/y0/level-0/post", "xy_m": [0.0, 0.0] }],
+      "beams": [],
+      "sills": [{ "member_id": "…", "generation_key": "frame/axis-x/y0/x0-x1/plane-L0/sill", "start_xy_m": [0.0, 0.0], "end_xy_m": [3.6575999999999995, 0.0] }],
+      "joists": [], "braces": [], "rafters": [], "purlins": [],
+      "connections": [
         {
-          "member_id": "…",
-          "generation_key": "frame/x0/y0/level-0/post",
-          "xy_m": [0.0, 0.0],
-          "section_id": "…"
+          "connection_id": "…",
+          "generation_key": "connection/post-sill/frame/axis-y/x0/y0-y1/plane-L0/sill/frame/x0/y0/level-0/post",
+          "junction_class": "post-sill",
+          "connection_type": "PEGGED_MORTISE_TENON",
+          "xy_m": [0.0, 0.0]
         }
-      ],
-      "beams": []
+      ]
     },
     {
       "plane_id": "level-1",
       "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
       "z_m": 3.048,
-      "posts": [],
-      "beams": [
-        {
-          "member_id": "…",
-          "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/beam",
-          "start_xy_m": [0.0, 0.0],
-          "end_xy_m": [3.6576, 0.0],
-          "section_id": "…"
-        }
-      ]
+      "posts": [{ "member_id": "…", "generation_key": "frame/x0/y0/level-1/post", "xy_m": [0.0, 0.0] }],
+      "beams": [{ "member_id": "…", "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/beam", "start_xy_m": [0.0, 0.0], "end_xy_m": [3.6575999999999995, 0.0] }],
+      "sills": [],
+      "joists": [{ "member_id": "…", "generation_key": "frame/axis-y/x0-x1/j1/y0-y1/plane-L1/joist", "start_xy_m": [0.6096, 0.0], "end_xy_m": [0.6096, 3.6576] }],
+      "braces": [{ "member_id": "…", "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/brace/x0", "start_xy_m": [0.0, 0.0], "end_xy_m": [0.9144, 0.0] }],
+      "rafters": [], "purlins": [],
+      "connections": ["… 162 markers: post-beam, brace, joist-beam"]
     },
     {
-      "plane_id": "eave",
+      "plane_id": "eave", "level_id": null, "z_m": 5.7912,
+      "posts": [], "beams": ["… 17"], "sills": [], "joists": [], "braces": ["… 34"], "rafters": [], "purlins": [],
+      "connections": ["… 102 markers: post-beam, brace"]
+    },
+    {
+      "plane_id": "roof",
       "level_id": null,
       "z_m": 5.7912,
-      "posts": [],
-      "beams": []
+      "posts": [], "beams": [], "sills": [], "joists": [], "braces": [],
+      "rafters": [{ "member_id": "…", "generation_key": "frame/roof/x0/north/principal-rafter", "start_xy_m": [0.0, 7.3152], "end_xy_m": [0.0, 3.6576] }],
+      "purlins": [{ "member_id": "…", "generation_key": "frame/roof/x0-x1/north/p1/purlin", "start_xy_m": [0.0, 6.096], "end_xy_m": [3.6575999999999995, 6.096] }],
+      "connections": ["… 36 markers: rafter-peak, rafter-foot, purlin-rafter"]
     }
   ],
   "footprint": {
@@ -177,49 +185,52 @@ Historical `GET` with an explicit `revision_id` returns the artifact **for that 
   },
   "roof_plan": {
     "ridge_m": { "start_xy_m": [0.0, 3.6576], "end_xy_m": [10.9728, 3.6576] },
-    "eave_ring_m": [
-      [0.0, -0.6096],
-      [10.9728, -0.6096],
-      [10.9728, 7.9248],
-      [0.0, 7.9248]
-    ]
+    "eave_ring_m": [[0.0, -0.6096], [10.9728, -0.6096], [10.9728, 7.9248], [0.0, 7.9248]]
   },
   "dimensions": [
-    {
-      "id": "footprint-width",
-      "start_m": [0.0, 0.0],
-      "end_m": [10.9728, 0.0],
-      "value_m": 10.9728
-    },
-    {
-      "id": "footprint-depth",
-      "start_m": [0.0, 0.0],
-      "end_m": [0.0, 7.3152],
-      "value_m": 7.3152
-    }
+    { "id": "footprint-width", "start_m": [0.0, 0.0], "end_m": [10.9728, 0.0], "value_m": 10.9728 },
+    { "id": "footprint-depth", "start_m": [0.0, 0.0], "end_m": [0.0, 7.3152], "value_m": 7.3152 }
   ]
 }
 ```
 
-Plane rules (posts and beams of `vs02-frame-1`, unchanged from `vs01-post-beam-1`):
+(Strings such as `"… 17"` stand for omitted entries; a payload never contains them.)
 
-- `level-0`: posts with `generation_key` containing `/level-0/post`; no beams.
-- `level-1`: posts with `/level-1/post`; beams with `/plane-L1/`.
-- `eave`: no posts; beams with `/plane-eave/`.
+**Planes and members** (ART-002 §4.1). The role picks the array and a key segment picks the plane:
 
-`footprint.ring_m` is the wall rectangle, counterclockwise from origin, **not** including eave overhang. `roof_plan.eave_ring_m` includes the 2'-0" north/south overhang (D025). Member `xy` values are reference-axis projections.
+| Plane | `level_id` | `z_m` | Arrays (key segment) | Reference House 001 v2 |
+|---|---|---|---|---|
+| `level-0` | Level 0 | Level 0 elevation | `posts` (`/level-0/post`), `sills` (`/plane-L0/sill`) | 12 posts, 17 sills |
+| `level-1` | Level 1 | Level 1 elevation | `posts` (`/level-1/post`), `beams` (`/plane-L1/beam`), `joists` (`/plane-L1/joist`), `braces` (`/plane-L1/brace/`) | 12, 17, 30, 34 |
+| `eave` | `null` | `z_eave` | `beams` (`/plane-eave/beam`), `braces` (`/plane-eave/brace/`) | 17, 34 |
+| `roof` | `null` | `z_eave` | `rafters` (`PRINCIPAL_RAFTER`, `/principal-rafter`), `purlins` (`PURLIN`, `/purlin`) | 8, 12 |
 
-Further rules ([GEOM-001](../implementation/tasks/GEOM-001.md) §3, approved as §7 item 4):
+- **One entry per member:** 193 for Reference House 001 v2, the same IDs as the snapshot, `mesh3d`, and `timber_schedule`. A member whose role and key match no row fails the derivation (`FAILED`, `DERIVATION_FAILED`). The role is matched first, because a joist's or brace's key also contains its beam plane's segment.
+- **Shapes:** posts are `{member_id, generation_key, xy_m}`; every other array holds `{member_id, generation_key, start_xy_m, end_xy_m}`.
+- **No `section_id`:** the plan reads member axes and roles, not sections, so a section change leaves `plan2d` byte-identical ([D056](../product/decisions/D056-dependency-selectors.md); ART-002 §4.3). Clients join on `member_id` with the schedule or mesh for sections.
+- **The roof plane** ([D060](../product/decisions/D060-vs02-artifact-payloads.md)) is the roof framing view. Its `z_m` is `z_eave`, the plate line where the roof framing bears ([D058](../product/decisions/D058-datum-reference-axes.md)). Rafters and purlins rise from it; their entries are plan projections. A rafter projects from the wall line to the ridge line.
 
-- **Ordering:** within each plane, `posts` and `beams` are each sorted by `generation_key`.
-- **Positions:** a post's `xy_m` is its `start_m` x and y. A beam's `start_xy_m` and `end_xy_m` are the plan projections of its `start_m` and `end_m`.
-- **Roof plan:** the ridge runs along X at `y = origin_y + depth_m / 2`, from `origin_x` to `origin_x + width_m`. The eave ring extends `eave_overhang_m` to the north and south only. There is **no rake (gable-end) overhang** in VS-01.
+**Connection markers** (ART-002 §4.2): `connections` holds one marker per `Connection`, `{connection_id, generation_key, junction_class, connection_type, xy_m}`.
 
-`dimensions` contains **exactly** `footprint-width` and `footprint-depth`, with `value_m` copied from the footprint, never measured from rendered geometry (AC-01). Bay and grid dimension lines are not part of VS-01.
+- **Plane:** the plane of the **entering** member (`member_ids[1]`, [D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md)). So `post-sill` is on `level-0`; `post-beam`, `brace`, and `joist-beam` on their member's plane; `rafter-foot`, `rafter-peak`, and `purlin-rafter` on `roof`.
+- **Position:** `xy_m` is the plan projection of the record's `location_m`.
+- **Reference House 001 v2:** 12 on `level-0`, 162 on `level-1` (34 post-beam, 68 brace, 60 joist-beam), 102 on `eave` (34 post-beam, 68 brace), and 36 on `roof` (4 peak, 8 foot, 24 purlin-rafter): 312 in all.
+- **Coincident markers** are all kept (up to eight share an interior Level 1 station). How to draw them is the client's concern (`UI-003`).
+- **No `member_ids`:** the schedule lists them (§7), and clients join on `connection_id`.
+
+`footprint.ring_m` is the wall rectangle, counterclockwise from origin, **not** including eave overhang. `roof_plan.eave_ring_m` includes the 2'-0" north/south overhang (D025).
+
+Further rules ([GEOM-001](../implementation/tasks/GEOM-001.md) §3, approved as §7 item 4; ART-002 §4):
+
+- **Ordering:** planes in the order `level-0`, `level-1`, `eave`, `roof`. Within each plane, every member array and `connections` is sorted by `generation_key` (UTF-16 code units).
+- **Positions:** a post's `xy_m` is its `start_m` x and y. Every other entry's `start_xy_m` and `end_xy_m` are the plan projections of its `start_m` and `end_m`. No plan position depends on the roof pitch.
+- **Roof plan:** the ridge runs along X at `y = origin_y + depth_m / 2`, from `origin_x` to `origin_x + width_m`. The eave ring extends `eave_overhang_m` to the north and south only. There is **no rake (gable-end) overhang**.
+
+`dimensions` contains **exactly** `footprint-width` and `footprint-depth`, with `value_m` copied from the footprint, never measured from rendered geometry (AC-01). Bay and grid dimension lines are not part of the payload.
 
 ## 6. `mesh3d` payload
 
-`generator_id`: `mesh3d-vs01`. `generator_version`: `1`.
+`generator_id`: `mesh3d-vs01`. `generator_version`: `2` ([ART-002](../implementation/tasks/ART-002.md) §5).
 
 This is a **display primitive** list. The client (or a later adapter) tessellates. It is not OpenCascade, glTF, or a Three.js scene graph.
 
@@ -236,6 +247,15 @@ This is a **display primitive** list. The client (or a later adapter) tessellate
       "axis_end_m": [0.0, 0.0, 3.048],
       "section_width_m": 0.2032,
       "section_depth_m": 0.2032
+    }
+  ],
+  "connections": [
+    {
+      "connection_id": "…",
+      "generation_key": "connection/rafter-peak/frame/roof/x0/south/principal-rafter/frame/roof/x0/north/principal-rafter",
+      "junction_class": "rafter-peak",
+      "connection_type": "BRIDLE",
+      "location_m": [0.0, 3.6576, 8.5344]
     }
   ],
   "envelope": {
@@ -273,33 +293,41 @@ This is a **display primitive** list. The client (or a later adapter) tessellate
 }
 ```
 
-Box orientation:
+Box orientation (one rule for every role; ART-002 §5.1):
 
-- Member axis is `axis_start_m` → `axis_end_m` (same as semantic `start_m` / `end_m`).
-- Beams: `section_depth_m` is **vertical** (world +Z); `section_width_m` is horizontal and perpendicular to the plan projection of the axis.
-- Posts: square section; `section_width_m` along +X, `section_depth_m` along +Y.
+- The member axis is `axis_start_m` → `axis_end_m` (the semantic `start_m` / `end_m`).
+- **Vertical axis (posts):** `section_width_m` along +X, `section_depth_m` along +Y.
+- **Any other axis:** `section_width_m` is horizontal and perpendicular to the axis's plan projection. `section_depth_m` is along `axis × width`, perpendicular to both, taken with a non-negative Z component.
+
+What the rule gives each role:
+
+| Role | Width | Depth |
+|---|---|---|
+| `BEAM`, `SILL`, `FLOOR_JOIST` | Horizontal, across the member | Vertical ([D053](../product/decisions/D053-reference-house-001-v2-design-intent.md): joists "depth vertical") |
+| `PRINCIPAL_RAFTER` | Along X (across the bent) | Perpendicular to the roof plane (D053) |
+| `KNEE_BRACE` | Perpendicular to its beam's vertical plane | In that plane, perpendicular to the brace ([D058](../product/decisions/D058-datum-reference-axes.md)) |
+| `PURLIN` | Horizontal, along Y | Vertical: purlins are plumb ([D060](../product/decisions/D060-vs02-artifact-payloads.md)) |
+
+The boxes carry `section_width_m` and `section_depth_m` only; the orientation is the rule, not a payload field. The client's `memberMatrix` (`frontend/src/views/meshScene.ts`) implements it.
 
 `members` order: `generation_key` ascending. Count and IDs must match the semantic inventory. Envelope numbers for Reference House 001 must match D025 (ridge `z = 8.5344 m`).
+
+**Connection markers** (ART-002 §5.2): `connections`, beside `members`, has one `{connection_id, generation_key, junction_class, connection_type, location_m}` per `Connection`, sorted by `generation_key`. `location_m` is the record's, copied exactly. There is no size, primitive, or shape: the payload says where a connection is and what type it has, and the client chooses a marker ([D054](../product/decisions/D054-vs02-connection-catalog.md)). Count and IDs equal the snapshot's connections (312 for Reference House 001 v2).
 
 Roof surfaces ([D048](../product/decisions/D048-roof-plane-through-wall-line.md)): each plane passes through the wall line at `z_eave_m` at `pitch_rad`, so the overhang edge is at `z_eave − eave_overhang_m · tan(pitch_rad)` (5.334 m for Reference House 001) and the ridge at `z_eave + (depth_m / 2) · tan(pitch_rad)` (8.5344 m). `z_eave_m` stays the eave plate height.
 
 ## 7. `timber_schedule` payload
 
-`generator_id`: `schedule-vs01`. `generator_version`: `1`.
+`generator_id`: `schedule-vs01`. `generator_version`: `2` ([ART-002](../implementation/tasks/ART-002.md) §6).
 
 ```json
 {
   "units": { "length": "m", "count": "1" },
   "length_basis": "reference_axis",
   "assumptions": [
-    {
-      "code": "REFERENCE_AXIS_LENGTH",
-      "message": "Lengths are reference-axis distances, not fabrication cut lengths."
-    },
-    {
-      "code": "NO_CONNECTIONS",
-      "message": "Joinery and machining are not included."
-    }
+    { "code": "REFERENCE_AXIS_LENGTH", "message": "Lengths are reference-axis distances, not fabrication cut lengths." },
+    { "code": "CONNECTIONS_REPRESENTATIONAL", "message": "Connections are listed by type and count only. Types are representational: no capacity, sizes, fasteners, or machining." },
+    { "code": "UNCLASSED_JOINTS_NOT_COUNTED", "message": "Joints without a junction class, such as post splices and sill joints at grid stations, are not counted." }
   ],
   "members": [
     {
@@ -316,13 +344,31 @@ Roof surfaces ([D048](../product/decisions/D048-roof-plane-through-wall-line.md)
     }
   ],
   "aggregates": [
-    { "role": "BEAM", "nominal_section": "8x12", "count": 34, "total_length_m": 124.3584 },
-    { "role": "POST", "nominal_section": "8x8", "count": 24, "total_length_m": 69.4944 }
-  ]
+    { "role": "BEAM", "nominal_section": "8x12", "count": 34, "total_length_m": 124.3584 }
+  ],
+  "connections": [
+    {
+      "connection_id": "…",
+      "generation_key": "connection/brace/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-x/y0/x0-x1/plane-L1/brace/x0",
+      "junction_class": "brace",
+      "connection_type": "PEGGED_MORTISE_TENON",
+      "member_ids": ["<receiving>", "<entering>"],
+      "quantity": 1
+    }
+  ],
+  "connection_aggregates": [
+    { "junction_class": "brace", "connection_type": "PEGGED_MORTISE_TENON", "count": 136 }
+  ],
+  "connection_catalog": {
+    "catalog_version": "vs02-connections-1",
+    "types": [
+      { "connection_type": "BRIDLE", "family": "traditional", "description": "Bridle joint. Representational only: no capacity, sizes, or fasteners." }
+    ]
+  }
 }
 ```
 
-Invariants:
+Invariants for members:
 
 - `members` sorted by `generation_key`. One row per semantic `TimberMember`. `quantity` is 1.
 - `length_m` is the Euclidean length of `start_m`–`end_m`, computed as `sqrt(dx*dx + dy*dy + dz*dz)` with `d = end_m − start_m`, evaluated exactly as written in IEEE-754 doubles. Library `hypot`/`dist` functions are not used, because they can differ in the last bit across languages ([EST-001](../implementation/tasks/EST-001.md) §3, approved as §7 item 1). Compared with 1e-6 m.
@@ -331,16 +377,49 @@ Invariants:
 - `aggregates` sorted by `role`, then `nominal_section`.
 - Same snapshot + same `generator_version` yields the same IDs, keys, roles, sections, and lengths (numeric tolerance 1e-6 m).
 
-Reference House 001 expected aggregates (D025):
+Connections (ART-002 §6.1–6.3; [D054](../product/decisions/D054-vs02-connection-catalog.md), [D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md)):
+
+- **`connections`:** one row per `Connection`, sorted by `generation_key`. `member_ids` is the record's `[receiving, entering]` pair. There is **no location**: positions belong to the views, so a change that only moves the frame leaves the connection rows unchanged. `quantity` is 1.
+- **`connection_aggregates`:** one row per (`junction_class`, `connection_type`) pair with at least one connection, with its `count`, sorted by class, then type. Zero rows are omitted. A class has one type at a time, so a class's count is its row, and a type's count is the sum of its rows. The counts sum to the number of connection rows and of `Connection` records, and each class's count equals CONN-001 §6's formula.
+- **`connection_catalog`:** the catalog version and, for exactly the types in `connection_aggregates`, sorted by type, each type's `family` (`traditional` or `engineered`) and `description`. Every description says the type is representational only.
+
+| Type | Family | Description |
+|---|---|---|
+| `PEGGED_MORTISE_TENON` | `traditional` | Pegged mortise and tenon. Representational only: no capacity, sizes, or fasteners. |
+| `BRIDLE` | `traditional` | Bridle joint. Representational only: no capacity, sizes, or fasteners. |
+| `HOUSED_DOVETAIL` | `traditional` | Housed dovetail. Representational only: no capacity, sizes, or fasteners. |
+| `STEEL_KNIFE_PLATE` | `engineered` | Concealed steel knife plate with dowels. Representational only: no capacity, sizes, or fasteners. |
+| `JOIST_HANGER` | `engineered` | Joist hanger. Representational only: no capacity, sizes, or fasteners. |
+
+- **`assumptions`:** exactly the three lines above, in that order. `UNCLASSED_JOINTS_NOT_COUNTED` is the line D059 requires: post splices and sill joints are not counted.
+
+Reference House 001 v2 expected aggregates ([D053](../product/decisions/D053-reference-house-001-v2-design-intent.md); compared within 1e-6 m × n):
 
 | Role | Section | Count | Total (m) |
 |---|---|---|---|
-| BEAM | 8×12 | 34 | 124.3584 (34 × 3.6576) |
-| POST | 8×8 | 24 | 69.4944 (12 × 3.048 on level 0 + 12 × 2.7432 on level 1; informational breakdown, not separate rows) |
+| `BEAM` | 8×12 | 34 | 124.3584 (34 × 3.6576) |
+| `FLOOR_JOIST` | 4×8 | 30 | 109.728 (30 × 3.6576) |
+| `KNEE_BRACE` | 4×6 | 68 | 87.934668 (68 × 0.9144 √2) |
+| `POST` | 8×8 | 24 | 69.4944 (12 × 3.048 on Level 0 + 12 × 2.7432 on Level 1; informational breakdown, not separate rows) |
+| `PRINCIPAL_RAFTER` | 8×10 | 8 | 36.576 (8 × 4.572) |
+| `PURLIN` | 6×8 | 12 | 43.8912 (12 × 3.6576) |
+| `SILL` | 8×8 | 17 | 62.1792 (17 × 3.6576) |
+
+And connection aggregates, with the default types:
+
+| `junction_class` | `connection_type` | `count` |
+|---|---|---|
+| `brace` | `PEGGED_MORTISE_TENON` | 136 |
+| `joist-beam` | `HOUSED_DOVETAIL` | 60 |
+| `post-beam` | `PEGGED_MORTISE_TENON` | 68 |
+| `post-sill` | `PEGGED_MORTISE_TENON` | 12 |
+| `purlin-rafter` | `PEGGED_MORTISE_TENON` | 24 |
+| `rafter-foot` | `PEGGED_MORTISE_TENON` | 8 |
+| `rafter-peak` | `BRIDLE` | 4 |
 
 ## 8. `preliminary_estimate` payload
 
-`generator_id`: `estimate-vs01`. `generator_version`: `1`.
+`generator_id`: `estimate-vs01`. `generator_version`: `2` ([ART-002](../implementation/tasks/ART-002.md) §7).
 
 VS-01 does **not** introduce a `CostDataset` entity. Optional dated unit prices live in **project estimate configuration**, outside the semantic snapshot. Default for new reference projects: **no price book**.
 
@@ -358,9 +437,16 @@ Money: integer minor units + ISO 4217 code (D026). VS-01 uses `USD` when a book 
 
 **Rounding** ([EST-001](../implementation/tasks/EST-001.md) §4, approved as §7 item 5):
 
-- **Line amounts:** `amount_minor` is `unit_price_minor × quantity_value`, multiplied **exactly**, using the double's exact binary value in decimal arithmetic. It is then rounded once to an integer with **round-half-even**.
+- **Line amounts:** `amount_minor` is `unit_price_minor × quantity_value`, multiplied **exactly**, using the double's exact binary value in decimal arithmetic. It is then rounded once to an integer with **round-half-even**. For a connection line the quantity is an integer count, so the product is exact and no rounding applies.
 - **Totals:** `priced_amount_minor` and `grand_total_minor` are sums of the rounded line amounts, so totals always equal the visible lines.
 - **Reproducible:** the rule gives the same result in any language with exact decimal or big-integer arithmetic (for example Python `Decimal`, ECMAScript `BigInt`). It never uses binary floating-point rounding.
+
+Line items are discriminated by `kind` ([D060](../product/decisions/D060-vs02-artifact-payloads.md); ART-002 §7.1):
+
+- **`timber`:** one line per schedule aggregate, `key` `timber.<ROLE>.<nominal_section>`, with `role` and `nominal_section`, and the aggregate's `total_length_m` as `quantity_value` in `m`.
+- **`connection`:** one line per connection type with a non-zero count ([D054](../product/decisions/D054-vs02-connection-catalog.md): "one line per type"), `key` `connection.<TYPE>`, with `connection_type`. `quantity_value` is the integer sum of that type's `connection_aggregates` counts, and `quantity_unit` is `each`. There is no `role` or `nominal_section`.
+
+Abridged for Reference House 001 v2 with no book (ten lines: three connection lines, then the seven timber lines of §7):
 
 ```json
 {
@@ -369,20 +455,21 @@ Money: integer minor units + ISO 4217 code (D026). VS-01 uses `USD` when a book 
   "price_book": null,
   "line_items": [
     {
-      "key": "timber.POST.8x8",
-      "role": "POST",
-      "nominal_section": "8x8",
-      "quantity_value": 69.4944,
-      "quantity_unit": "m",
+      "kind": "connection",
+      "key": "connection.BRIDLE",
+      "connection_type": "BRIDLE",
+      "quantity_value": 4,
+      "quantity_unit": "each",
       "unit_price_minor": null,
       "amount_minor": null,
       "priced": false
     },
     {
+      "kind": "timber",
       "key": "timber.BEAM.8x12",
       "role": "BEAM",
       "nominal_section": "8x12",
-      "quantity_value": 124.3584,
+      "quantity_value": 124.35840000000005,
       "quantity_unit": "m",
       "unit_price_minor": null,
       "amount_minor": null,
@@ -391,24 +478,30 @@ Money: integer minor units + ISO 4217 code (D026). VS-01 uses `USD` when a book 
   ],
   "totals": {
     "priced_amount_minor": null,
-    "unpriced_line_count": 2,
+    "unpriced_line_count": 10,
     "grand_total_minor": null
-  }
+  },
+  "assumptions": ["… the schedule's three lines, copied"]
 }
 ```
 
-Line items are aggregated by `role` + `nominal_section`, sorted by `key`. Quantities come from the timber schedule for the **same** `source_revision_id`. If the schedule is not `CURRENT`, the estimate is `STALE` or `QUEUED`, not a fabricated quantity.
+- **Ordering:** line items are sorted by `key` in code-unit order, so connection lines precede timber lines.
+- **Coverage:** the §8.1 rule applies to every emitted line. A book that prices only timber is `partial` once connection lines exist, with `grand_total_minor: null` and `COST_INPUTS_MISSING`. Unpriced lines are never 0 (AC2-06).
+- **Same revision:** quantities come from the timber schedule for the **same** `source_revision_id`. If the schedule is not `CURRENT`, the estimate is `STALE` or `QUEUED`, not a fabricated quantity.
+- **`assumptions`:** a copy of the schedule's list (§7), so the reader of a per-piece total sees that joints without a junction class are not counted (D059).
+- **Large amounts:** an amount outside ±(2⁵³ − 1) fails the payload's validation, and the estimate is `FAILED` with `DERIVATION_FAILED`.
 
 ### 8.2 Price book
 
 Approved from [EST-001](../implementation/tasks/EST-001.md) §5, §7 item 4:
 
-- **Book-level metadata:** a project's price book carries `currency`, `as_of` (ISO date), `source`, and `geography` once for the whole book. Rows are `{key, unit: "m", unit_price_minor}`, with `key` as `timber.<ROLE>.<nominal_label>` (unique labels, D049), keys unique, and `unit_price_minor` a non-negative integer within ±(2⁵³ − 1). In VS-01, `currency` must be `USD`.
+- **Book-level metadata:** a project's price book carries `currency`, `as_of` (ISO date), `source`, and `geography` once for the whole book. Rows are `{key, unit, unit_price_minor}`, with `key` as `timber.<ROLE>.<nominal_label>` (unique labels, D049) or `connection.<TYPE>`, keys unique, and `unit_price_minor` a non-negative integer within ±(2⁵³ − 1). In VS-01, `currency` must be `USD`.
+- **Units** ([ART-002](../implementation/tasks/ART-002.md) §7.3): `unit` is `m` or `each`. A `timber.` key needs `m` (price per meter) and a `connection.` key needs `each` (price per piece). A mismatch is rejected with `PRICE_UNIT_MISMATCH` at `rows[k].unit`, with `related_paths` `["rows[k].key"]` and the unit as `value`, because it would otherwise misprice a line or silently drop a price. Keys of other families take either unit, and are unused.
 - **In the payload:** the book-level fields, `price_book_id`, and `price_book_version` are copied onto the estimate payload's `price_book`, and the estimate fingerprint includes `price_book_id`, `price_book_version`, `as_of`, and `currency` (§2.3).
 - **Versions:** books are versioned per project and append-only. Setting a book creates version n+1 and keeps a stable `price_book_id`. Clearing a book is not supported in VS-01.
 - **Outside the model:** setting a book is not a model command and creates no revision. It makes only the head's `preliminary_estimate` `STALE`, which is then recomputed on read; the other artifacts are unaffected.
-- **Unused rows:** rows whose key matches no line item are ignored and listed in a `PRICE_ROWS_UNUSED` warning, not rejected.
-- **Validation:** invalid books are rejected with D035 codes and paths relative to the book: shape and type errors first, then `DUPLICATE_PRICE_KEY` for repeated row keys, then `OUT_OF_RANGE` for negative prices ([EST-001](../implementation/tasks/EST-001.md) §8).
+- **Unused rows:** rows whose key matches no line item are ignored and listed in a `PRICE_ROWS_UNUSED` warning, not rejected. That includes a `connection.` row for a type with no connections, so switching a class's type (`SetConnectionType`) can turn a priced line into an unused row and a new unpriced line.
+- **Validation:** invalid books are rejected with D035 codes and paths relative to the book: shape and type errors first, then `DUPLICATE_PRICE_KEY` for repeated row keys and `PRICE_UNIT_MISMATCH` (both stage 2, reported together), then `OUT_OF_RANGE` for negative prices ([EST-001](../implementation/tasks/EST-001.md) §8).
 
 If coverage is `none` or `partial`, include warning code `COST_INPUTS_MISSING`.
 
@@ -426,14 +519,22 @@ Do not return another revision’s payload with `status: CURRENT` for a newer he
 
 ## 10. Acceptance tests (additions to VS-01)
 
+These hold against Reference House 001 v2 (AC2-05), with its counts:
+
 1. Reference House 001 manifest lists exactly `plan2d`, `mesh3d`, `timber_schedule`, `preliminary_estimate`.
 2. Plan width/depth `value_m` and mesh envelope footprint match the semantic footprint within 1e-6 m.
-3. Plan member IDs, mesh `members`, and schedule `members` are the same 58 IDs as the snapshot inventory.
+3. Plan member IDs, mesh `members`, and schedule `members` are the same 193 IDs as the snapshot inventory.
 4. Schedule aggregates match §7; estimate with default (no book) is `UNAVAILABLE`, `grand_total_minor` null, not `0`.
 5. After `SetFootprintDimensions`, artifacts for the old head are not served as `CURRENT` for the new head; new plan/mesh/schedule fingerprints differ.
 6. 2D and 3D clients refuse to composite views with mismatched `source_revision_id`.
 7. Every `CURRENT` envelope has `suitability: "preliminary"` and `claims.structurally_verified === false`.
-8. Estimate `line_items` quantities match schedule aggregates for the same revision.
+8. Estimate `line_items` quantities match schedule aggregates for the same revision: timber lines the role and section totals, connection lines the per-type sums of `connection_aggregates`.
+
+Version 2 reconciliation ([ART-002](../implementation/tasks/ART-002.md) §13; checked after every step of the integration suite). These are VS-02 checks, traced by `TEST-002`, not rows of the VS-01 matrix:
+
+- Plan markers, mesh markers, and schedule connection rows are exactly the snapshot's 312 connections, with their IDs, keys, classes, and types. Mesh `location_m` is bit-identical to the record's, plan `xy_m` is its projection, and each plan marker is on its entering member's plane.
+- `connection_aggregates` counts sum to the number of connection rows and of `Connection` records, and each class's count equals CONN-001 §6's formula.
+- The estimate's `assumptions` equal its schedule's, and no payload carries a capacity, size, or fastener field.
 
 ## 11. Out of scope
 

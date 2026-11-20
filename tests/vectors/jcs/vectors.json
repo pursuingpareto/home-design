@@ -195,8 +195,8 @@
   "geometry": {
     "source": "docs/reference-projects/vermont-timber-house/fixture.snapshot.json",
     "plan2d": {
-      "canonical_bytes": 12648,
-      "fingerprint": "sha256:0c9ce819456aeff9ee61d0718750aa95c65a87a87025babd1568d6329b4e238e"
+      "canonical_bytes": 115823,
+      "fingerprint": "sha256:cb224704e297f5e1e7b5e897510b8075b8a36eeaf1d16bd28f026fcd7e0178b3"
     },
     "mesh3d": {
       "tan": 0.75,
@@ -3678,6 +3678,3440 @@
             "section_depth_m": 0.2032
           }
         ],
+        "connections": [
+          {
+            "connection_id": "39ad3528-4ff7-55f6-8ee8-5e87b856e224",
+            "generation_key": "connection/brace/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-x/y0/x0-x1/plane-L1/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0.9144,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "d4bb0485-19f2-5d28-947a-984d7fa83b0d",
+            "generation_key": "connection/brace/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-x/y0/x0-x1/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              2.7431999999999994,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "402de636-31e2-5c9d-ae74-ff8fd2ae712a",
+            "generation_key": "connection/brace/frame/axis-x/y0/x0-x1/plane-eave/beam/frame/axis-x/y0/x0-x1/plane-eave/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0.9144,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "96dc28ed-1dc6-5e96-b4d9-0e44cef77cc4",
+            "generation_key": "connection/brace/frame/axis-x/y0/x0-x1/plane-eave/beam/frame/axis-x/y0/x0-x1/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              2.7431999999999994,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "6885510c-90cc-5796-9388-e87b23557283",
+            "generation_key": "connection/brace/frame/axis-x/y0/x1-x2/plane-L1/beam/frame/axis-x/y0/x1-x2/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              4.571999999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "9864ebbb-622a-573f-8a31-a64047d49b97",
+            "generation_key": "connection/brace/frame/axis-x/y0/x1-x2/plane-L1/beam/frame/axis-x/y0/x1-x2/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              6.400799999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "247de7d9-0b29-5e2e-b812-4970b20aa370",
+            "generation_key": "connection/brace/frame/axis-x/y0/x1-x2/plane-eave/beam/frame/axis-x/y0/x1-x2/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              4.571999999999999,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "df860cb6-bbf9-5683-9ea8-6cbca369a324",
+            "generation_key": "connection/brace/frame/axis-x/y0/x1-x2/plane-eave/beam/frame/axis-x/y0/x1-x2/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              6.400799999999999,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "6fdcc05d-3233-5154-b3d0-ca5da26b1a7b",
+            "generation_key": "connection/brace/frame/axis-x/y0/x2-x3/plane-L1/beam/frame/axis-x/y0/x2-x3/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              8.2296,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "9e59b0f8-9227-5561-bd15-3cb46d55d3f6",
+            "generation_key": "connection/brace/frame/axis-x/y0/x2-x3/plane-L1/beam/frame/axis-x/y0/x2-x3/plane-L1/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.058399999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "8f4e0b89-c258-58b9-b021-d200f93a6dc3",
+            "generation_key": "connection/brace/frame/axis-x/y0/x2-x3/plane-eave/beam/frame/axis-x/y0/x2-x3/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              8.2296,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "a7657cf5-f8cc-5d2e-808e-c6f4f96e3de7",
+            "generation_key": "connection/brace/frame/axis-x/y0/x2-x3/plane-eave/beam/frame/axis-x/y0/x2-x3/plane-eave/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.058399999999999,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "4d87c299-c94b-50dd-857d-cda0e617850a",
+            "generation_key": "connection/brace/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-x/y1/x0-x1/plane-L1/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0.9144,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "76799e90-20b3-5443-9660-b4b73a2fdaf8",
+            "generation_key": "connection/brace/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-x/y1/x0-x1/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              2.7431999999999994,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "0837aa02-db3b-5f01-908c-05d33471bf2c",
+            "generation_key": "connection/brace/frame/axis-x/y1/x0-x1/plane-eave/beam/frame/axis-x/y1/x0-x1/plane-eave/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0.9144,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "3b800d6c-39fe-5e94-911a-6d1091afcd26",
+            "generation_key": "connection/brace/frame/axis-x/y1/x0-x1/plane-eave/beam/frame/axis-x/y1/x0-x1/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              2.7431999999999994,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "eeba9423-8ed8-538c-9406-5f3adb930acc",
+            "generation_key": "connection/brace/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-x/y1/x1-x2/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              4.571999999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "213e7e95-6c42-5216-96b0-358cb2020872",
+            "generation_key": "connection/brace/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-x/y1/x1-x2/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              6.400799999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "66bfa701-1eba-5fa8-a469-6d39d8ac43c5",
+            "generation_key": "connection/brace/frame/axis-x/y1/x1-x2/plane-eave/beam/frame/axis-x/y1/x1-x2/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              4.571999999999999,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "98923a41-21b3-57fe-a96a-cb753a41a864",
+            "generation_key": "connection/brace/frame/axis-x/y1/x1-x2/plane-eave/beam/frame/axis-x/y1/x1-x2/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              6.400799999999999,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "2c9afe02-b2c0-58a7-9c8e-91dcc9527714",
+            "generation_key": "connection/brace/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-x/y1/x2-x3/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              8.2296,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "7f75e664-1300-53c5-a79d-c033ff750b2f",
+            "generation_key": "connection/brace/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-x/y1/x2-x3/plane-L1/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.058399999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "5893325f-3591-58ad-948c-6cebe0e21af7",
+            "generation_key": "connection/brace/frame/axis-x/y1/x2-x3/plane-eave/beam/frame/axis-x/y1/x2-x3/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              8.2296,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "2e539962-161d-5232-9086-5d5c4117c5fd",
+            "generation_key": "connection/brace/frame/axis-x/y1/x2-x3/plane-eave/beam/frame/axis-x/y1/x2-x3/plane-eave/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.058399999999999,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "953bf02d-5284-51bd-9ec9-a94b14f3b1f2",
+            "generation_key": "connection/brace/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-x/y2/x0-x1/plane-L1/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0.9144,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "d051de31-a9ad-5ea3-883f-43a97cb27cc3",
+            "generation_key": "connection/brace/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-x/y2/x0-x1/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              2.7431999999999994,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "f574348b-e0da-5378-8419-53d9eddb02c0",
+            "generation_key": "connection/brace/frame/axis-x/y2/x0-x1/plane-eave/beam/frame/axis-x/y2/x0-x1/plane-eave/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0.9144,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "cdba28bc-7bfd-578e-9ba0-2ceedfee188a",
+            "generation_key": "connection/brace/frame/axis-x/y2/x0-x1/plane-eave/beam/frame/axis-x/y2/x0-x1/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              2.7431999999999994,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "63e382df-e1ed-56ab-a8fc-ee9370f8d0f9",
+            "generation_key": "connection/brace/frame/axis-x/y2/x1-x2/plane-L1/beam/frame/axis-x/y2/x1-x2/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              4.571999999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "4695dee9-fc02-58b6-85cb-60dc8fdfb197",
+            "generation_key": "connection/brace/frame/axis-x/y2/x1-x2/plane-L1/beam/frame/axis-x/y2/x1-x2/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              6.400799999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "48243a9e-be4c-5b99-be30-c3b6d9b64b56",
+            "generation_key": "connection/brace/frame/axis-x/y2/x1-x2/plane-eave/beam/frame/axis-x/y2/x1-x2/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              4.571999999999999,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "b1a8a129-dd81-50cd-a273-31789b1e8ab9",
+            "generation_key": "connection/brace/frame/axis-x/y2/x1-x2/plane-eave/beam/frame/axis-x/y2/x1-x2/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              6.400799999999999,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "fe13d4a6-6be5-51c2-af7d-734a2a2f90f4",
+            "generation_key": "connection/brace/frame/axis-x/y2/x2-x3/plane-L1/beam/frame/axis-x/y2/x2-x3/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              8.2296,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "d8f8c9dd-2687-52dc-aa7b-dd0a22285ec6",
+            "generation_key": "connection/brace/frame/axis-x/y2/x2-x3/plane-L1/beam/frame/axis-x/y2/x2-x3/plane-L1/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.058399999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "e1f12793-8a27-57a2-803c-9db39de3b001",
+            "generation_key": "connection/brace/frame/axis-x/y2/x2-x3/plane-eave/beam/frame/axis-x/y2/x2-x3/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              8.2296,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "300b119a-ef3c-5d9f-9a01-cc79a63be141",
+            "generation_key": "connection/brace/frame/axis-x/y2/x2-x3/plane-eave/beam/frame/axis-x/y2/x2-x3/plane-eave/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.058399999999999,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "54b64ff0-5127-5046-a981-68caa658d464",
+            "generation_key": "connection/brace/frame/axis-y/x0/y0-y1/plane-L1/beam/frame/axis-y/x0/y0-y1/plane-L1/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0.9144,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "2b53c8ab-f409-5e67-9583-46f1632f2f5b",
+            "generation_key": "connection/brace/frame/axis-y/x0/y0-y1/plane-L1/beam/frame/axis-y/x0/y0-y1/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              2.7432,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "6d9a2845-7896-50b7-be64-cdfaa9768a38",
+            "generation_key": "connection/brace/frame/axis-y/x0/y0-y1/plane-eave/beam/frame/axis-y/x0/y0-y1/plane-eave/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0.9144,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "42d495b7-c069-5687-9ef8-94b7d8452bf8",
+            "generation_key": "connection/brace/frame/axis-y/x0/y0-y1/plane-eave/beam/frame/axis-y/x0/y0-y1/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              2.7432,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "372d347d-98e3-5ea7-9c23-12b6a0b47d60",
+            "generation_key": "connection/brace/frame/axis-y/x0/y1-y2/plane-L1/beam/frame/axis-y/x0/y1-y2/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              4.572,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "b216567a-9b23-5d91-80d5-461cc5170241",
+            "generation_key": "connection/brace/frame/axis-y/x0/y1-y2/plane-L1/beam/frame/axis-y/x0/y1-y2/plane-L1/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              6.4008,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "395aa59e-c709-5343-82ba-c8de36c5ba5b",
+            "generation_key": "connection/brace/frame/axis-y/x0/y1-y2/plane-eave/beam/frame/axis-y/x0/y1-y2/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              4.572,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "febcdd2f-94a2-513a-afa4-aa938945d1c0",
+            "generation_key": "connection/brace/frame/axis-y/x0/y1-y2/plane-eave/beam/frame/axis-y/x0/y1-y2/plane-eave/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              6.4008,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "7d6e3162-f05b-5808-8408-8aa819e6b456",
+            "generation_key": "connection/brace/frame/axis-y/x1/y0-y1/plane-L1/beam/frame/axis-y/x1/y0-y1/plane-L1/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0.9144,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "83edbf1f-3798-5acc-bc2e-c24566f50164",
+            "generation_key": "connection/brace/frame/axis-y/x1/y0-y1/plane-L1/beam/frame/axis-y/x1/y0-y1/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              2.7432,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "5c2a370c-be6b-5860-bd96-b4343d8b0787",
+            "generation_key": "connection/brace/frame/axis-y/x1/y0-y1/plane-eave/beam/frame/axis-y/x1/y0-y1/plane-eave/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0.9144,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "f9efcba5-21bc-5c84-af9a-665b516ce23d",
+            "generation_key": "connection/brace/frame/axis-y/x1/y0-y1/plane-eave/beam/frame/axis-y/x1/y0-y1/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              2.7432,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "45391740-8c40-5412-bd67-78af267bd91b",
+            "generation_key": "connection/brace/frame/axis-y/x1/y1-y2/plane-L1/beam/frame/axis-y/x1/y1-y2/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              4.572,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "99aafd92-187f-5f50-9713-c71bc72f1af9",
+            "generation_key": "connection/brace/frame/axis-y/x1/y1-y2/plane-L1/beam/frame/axis-y/x1/y1-y2/plane-L1/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              6.4008,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "1eb141d3-4f5d-57e3-8d53-33e6ee27eaf2",
+            "generation_key": "connection/brace/frame/axis-y/x1/y1-y2/plane-eave/beam/frame/axis-y/x1/y1-y2/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              4.572,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "45c97f3a-4f15-5840-8c02-bfb7c16ae6da",
+            "generation_key": "connection/brace/frame/axis-y/x1/y1-y2/plane-eave/beam/frame/axis-y/x1/y1-y2/plane-eave/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              6.4008,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "951ed2bf-73f0-5f45-9f3b-9eefa2463d75",
+            "generation_key": "connection/brace/frame/axis-y/x2/y0-y1/plane-L1/beam/frame/axis-y/x2/y0-y1/plane-L1/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0.9144,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "5768bed5-0d16-54cd-bddf-9a872a49b818",
+            "generation_key": "connection/brace/frame/axis-y/x2/y0-y1/plane-L1/beam/frame/axis-y/x2/y0-y1/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              2.7432,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "0ef98f4f-24d6-5b43-acdb-8a292645304f",
+            "generation_key": "connection/brace/frame/axis-y/x2/y0-y1/plane-eave/beam/frame/axis-y/x2/y0-y1/plane-eave/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0.9144,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "e2669f37-59bf-54fc-9ea0-baa9eb147a61",
+            "generation_key": "connection/brace/frame/axis-y/x2/y0-y1/plane-eave/beam/frame/axis-y/x2/y0-y1/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              2.7432,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "ddbdc093-b72d-58dc-af95-faf03fe2d815",
+            "generation_key": "connection/brace/frame/axis-y/x2/y1-y2/plane-L1/beam/frame/axis-y/x2/y1-y2/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              4.572,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "495c0290-5a7d-5c70-9754-d1de3f95d92a",
+            "generation_key": "connection/brace/frame/axis-y/x2/y1-y2/plane-L1/beam/frame/axis-y/x2/y1-y2/plane-L1/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              6.4008,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "8af412c5-7aa6-5936-a3fd-0dd9d73a548a",
+            "generation_key": "connection/brace/frame/axis-y/x2/y1-y2/plane-eave/beam/frame/axis-y/x2/y1-y2/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              4.572,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "079de902-6212-539b-8a81-b5f71774053a",
+            "generation_key": "connection/brace/frame/axis-y/x2/y1-y2/plane-eave/beam/frame/axis-y/x2/y1-y2/plane-eave/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              6.4008,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "85376ebe-a74b-5aeb-8aa7-45b69b914b08",
+            "generation_key": "connection/brace/frame/axis-y/x3/y0-y1/plane-L1/beam/frame/axis-y/x3/y0-y1/plane-L1/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0.9144,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "9fbe3642-6b78-5f6d-954c-a54ee17435ad",
+            "generation_key": "connection/brace/frame/axis-y/x3/y0-y1/plane-L1/beam/frame/axis-y/x3/y0-y1/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              2.7432,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "7a333df5-4163-5934-8027-365043c2a526",
+            "generation_key": "connection/brace/frame/axis-y/x3/y0-y1/plane-eave/beam/frame/axis-y/x3/y0-y1/plane-eave/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0.9144,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "475ede19-7b49-5dc4-8f63-b9e7a83b913d",
+            "generation_key": "connection/brace/frame/axis-y/x3/y0-y1/plane-eave/beam/frame/axis-y/x3/y0-y1/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              2.7432,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "65e39fc9-3629-5394-9c97-2015e57a3cbf",
+            "generation_key": "connection/brace/frame/axis-y/x3/y1-y2/plane-L1/beam/frame/axis-y/x3/y1-y2/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              4.572,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "29d5c462-3844-5e25-8213-423767aeb3b1",
+            "generation_key": "connection/brace/frame/axis-y/x3/y1-y2/plane-L1/beam/frame/axis-y/x3/y1-y2/plane-L1/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              6.4008,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "4826e957-ef52-5922-8692-f9521349cafe",
+            "generation_key": "connection/brace/frame/axis-y/x3/y1-y2/plane-eave/beam/frame/axis-y/x3/y1-y2/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              4.572,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "75f69369-849c-5306-9c78-434d66793ead",
+            "generation_key": "connection/brace/frame/axis-y/x3/y1-y2/plane-eave/beam/frame/axis-y/x3/y1-y2/plane-eave/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              6.4008,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "c7c1759b-4f34-5955-acc4-5a4e3cf89918",
+            "generation_key": "connection/brace/frame/x0/y0/level-0/post/frame/axis-x/y0/x0-x1/plane-L1/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "06556c9e-3c5f-5f3d-97c5-b9cb40405216",
+            "generation_key": "connection/brace/frame/x0/y0/level-0/post/frame/axis-y/x0/y0-y1/plane-L1/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "9ec4e71e-7568-5a1a-a8e1-76004d694d28",
+            "generation_key": "connection/brace/frame/x0/y0/level-1/post/frame/axis-x/y0/x0-x1/plane-eave/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "5b79ddd8-8e38-589b-a27d-b983d69ccbc8",
+            "generation_key": "connection/brace/frame/x0/y0/level-1/post/frame/axis-y/x0/y0-y1/plane-eave/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "1fd9d04f-b796-5a8c-8d05-437c3dbf7a4a",
+            "generation_key": "connection/brace/frame/x0/y1/level-0/post/frame/axis-x/y1/x0-x1/plane-L1/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "ab3ec934-4fcb-58a2-b6ef-ad5fd83ba0c2",
+            "generation_key": "connection/brace/frame/x0/y1/level-0/post/frame/axis-y/x0/y0-y1/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "4ba08c7f-6b2e-5663-8126-e7a3a42d7961",
+            "generation_key": "connection/brace/frame/x0/y1/level-0/post/frame/axis-y/x0/y1-y2/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "be5a718a-9cca-5211-856e-f45602ae3c35",
+            "generation_key": "connection/brace/frame/x0/y1/level-1/post/frame/axis-x/y1/x0-x1/plane-eave/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "4cb7d87a-6155-54d5-98c4-7233ce949766",
+            "generation_key": "connection/brace/frame/x0/y1/level-1/post/frame/axis-y/x0/y0-y1/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "50d5db23-0908-5d67-a971-c3f460c79f62",
+            "generation_key": "connection/brace/frame/x0/y1/level-1/post/frame/axis-y/x0/y1-y2/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "579f0f89-6dd8-50dc-969c-830d4e549f47",
+            "generation_key": "connection/brace/frame/x0/y2/level-0/post/frame/axis-x/y2/x0-x1/plane-L1/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "c457b536-67d8-5a9c-94d6-7dce19b33135",
+            "generation_key": "connection/brace/frame/x0/y2/level-0/post/frame/axis-y/x0/y1-y2/plane-L1/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "78e54310-865a-57cc-8ff2-4ce41a1453bd",
+            "generation_key": "connection/brace/frame/x0/y2/level-1/post/frame/axis-x/y2/x0-x1/plane-eave/brace/x0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "ad4b700b-5249-5962-a053-25ba43927c33",
+            "generation_key": "connection/brace/frame/x0/y2/level-1/post/frame/axis-y/x0/y1-y2/plane-eave/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "016862eb-2adc-5d5a-a738-7059d0f30317",
+            "generation_key": "connection/brace/frame/x1/y0/level-0/post/frame/axis-x/y0/x0-x1/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "54f4b504-cb55-59f3-a0ca-a80a16764ab9",
+            "generation_key": "connection/brace/frame/x1/y0/level-0/post/frame/axis-x/y0/x1-x2/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "574d5918-8dfc-516d-920b-e6464b5d614c",
+            "generation_key": "connection/brace/frame/x1/y0/level-0/post/frame/axis-y/x1/y0-y1/plane-L1/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "661ba67b-a4ea-5c7c-b664-352a46d9a4b6",
+            "generation_key": "connection/brace/frame/x1/y0/level-1/post/frame/axis-x/y0/x0-x1/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "8cc4a1df-f617-5cbe-92e8-23aa77632fe4",
+            "generation_key": "connection/brace/frame/x1/y0/level-1/post/frame/axis-x/y0/x1-x2/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "554839d9-77ed-5b64-9f7e-1f343b97b6ac",
+            "generation_key": "connection/brace/frame/x1/y0/level-1/post/frame/axis-y/x1/y0-y1/plane-eave/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "3535379d-2eec-5f31-bea2-e5c55139c998",
+            "generation_key": "connection/brace/frame/x1/y1/level-0/post/frame/axis-x/y1/x0-x1/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "dc963913-cf06-5028-8e28-f9455e4442f6",
+            "generation_key": "connection/brace/frame/x1/y1/level-0/post/frame/axis-x/y1/x1-x2/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "afdeb4b4-6d4b-5d86-8411-0d929dc5766e",
+            "generation_key": "connection/brace/frame/x1/y1/level-0/post/frame/axis-y/x1/y0-y1/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "e0e268cb-9f08-5514-900b-08c6f60572ff",
+            "generation_key": "connection/brace/frame/x1/y1/level-0/post/frame/axis-y/x1/y1-y2/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "2bfdcda6-5f44-55e6-9b2f-9178ad019708",
+            "generation_key": "connection/brace/frame/x1/y1/level-1/post/frame/axis-x/y1/x0-x1/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "b33489aa-27e4-5c0c-867c-699b1a707a41",
+            "generation_key": "connection/brace/frame/x1/y1/level-1/post/frame/axis-x/y1/x1-x2/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "0fbc3ee9-249e-5661-b193-7fe9026b802f",
+            "generation_key": "connection/brace/frame/x1/y1/level-1/post/frame/axis-y/x1/y0-y1/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "9c6a948c-46a8-565e-83ee-20f949a43e66",
+            "generation_key": "connection/brace/frame/x1/y1/level-1/post/frame/axis-y/x1/y1-y2/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "0d1d8e05-55cc-5923-8966-9a9fac27d712",
+            "generation_key": "connection/brace/frame/x1/y2/level-0/post/frame/axis-x/y2/x0-x1/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "4cb2170c-7e81-51f4-8dd9-0691b52a53bb",
+            "generation_key": "connection/brace/frame/x1/y2/level-0/post/frame/axis-x/y2/x1-x2/plane-L1/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "6965f983-7650-5f4a-96e7-081dc6da307b",
+            "generation_key": "connection/brace/frame/x1/y2/level-0/post/frame/axis-y/x1/y1-y2/plane-L1/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "a3197ba3-5ee4-5938-b977-5a4319dfc3bb",
+            "generation_key": "connection/brace/frame/x1/y2/level-1/post/frame/axis-x/y2/x0-x1/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "ac693026-66b8-581d-a21c-6e18fb06b2c7",
+            "generation_key": "connection/brace/frame/x1/y2/level-1/post/frame/axis-x/y2/x1-x2/plane-eave/brace/x1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "33c582a1-867f-5768-90a7-5a39fa6b4924",
+            "generation_key": "connection/brace/frame/x1/y2/level-1/post/frame/axis-y/x1/y1-y2/plane-eave/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "deac82fe-b3af-5e5f-9b6a-913602248a0e",
+            "generation_key": "connection/brace/frame/x2/y0/level-0/post/frame/axis-x/y0/x1-x2/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "55004c70-3b3f-5f0c-98c0-7921b559e4ef",
+            "generation_key": "connection/brace/frame/x2/y0/level-0/post/frame/axis-x/y0/x2-x3/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "b856509b-d530-5bac-9d0c-e46e58e8a6e5",
+            "generation_key": "connection/brace/frame/x2/y0/level-0/post/frame/axis-y/x2/y0-y1/plane-L1/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "64479915-458c-568c-85e0-234f6692d1cc",
+            "generation_key": "connection/brace/frame/x2/y0/level-1/post/frame/axis-x/y0/x1-x2/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "15c49255-e8e0-5dc0-a68b-735b5b3d13f3",
+            "generation_key": "connection/brace/frame/x2/y0/level-1/post/frame/axis-x/y0/x2-x3/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "79794e0f-f1c7-564e-a810-3d6593ef613b",
+            "generation_key": "connection/brace/frame/x2/y0/level-1/post/frame/axis-y/x2/y0-y1/plane-eave/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "7f8230e4-d27f-57f4-a640-6e7df11bb218",
+            "generation_key": "connection/brace/frame/x2/y1/level-0/post/frame/axis-x/y1/x1-x2/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "c837077b-3bd5-51cf-95a3-b6e870f7d57e",
+            "generation_key": "connection/brace/frame/x2/y1/level-0/post/frame/axis-x/y1/x2-x3/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "33aa7fb8-6158-568d-a601-370b728d5d07",
+            "generation_key": "connection/brace/frame/x2/y1/level-0/post/frame/axis-y/x2/y0-y1/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "ead3efa3-add8-5d6f-af7b-88b750f65006",
+            "generation_key": "connection/brace/frame/x2/y1/level-0/post/frame/axis-y/x2/y1-y2/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "0061270f-5103-5819-b22b-ad2493c2c24b",
+            "generation_key": "connection/brace/frame/x2/y1/level-1/post/frame/axis-x/y1/x1-x2/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "f8c1940a-3fe6-56fd-8b71-63f72c13d491",
+            "generation_key": "connection/brace/frame/x2/y1/level-1/post/frame/axis-x/y1/x2-x3/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "e720ecb8-f789-54bd-935e-6d26d02eab7e",
+            "generation_key": "connection/brace/frame/x2/y1/level-1/post/frame/axis-y/x2/y0-y1/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "c144e50b-1f7a-583c-9320-5042f23cd8a4",
+            "generation_key": "connection/brace/frame/x2/y1/level-1/post/frame/axis-y/x2/y1-y2/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "2f7ed798-1cca-5110-bf39-7b5ebfdb62ac",
+            "generation_key": "connection/brace/frame/x2/y2/level-0/post/frame/axis-x/y2/x1-x2/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "bbb5c770-5536-58d5-943c-681a0dc22e7d",
+            "generation_key": "connection/brace/frame/x2/y2/level-0/post/frame/axis-x/y2/x2-x3/plane-L1/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "b231234e-ebdb-5475-8413-c78fa6fe38ce",
+            "generation_key": "connection/brace/frame/x2/y2/level-0/post/frame/axis-y/x2/y1-y2/plane-L1/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "0b430844-4451-52e1-b2cc-998dfbdec7be",
+            "generation_key": "connection/brace/frame/x2/y2/level-1/post/frame/axis-x/y2/x1-x2/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "aedf047e-b4d9-506c-a8d8-79d600bc02b0",
+            "generation_key": "connection/brace/frame/x2/y2/level-1/post/frame/axis-x/y2/x2-x3/plane-eave/brace/x2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "7dd8ab1b-7219-565b-9090-22999b03c5b8",
+            "generation_key": "connection/brace/frame/x2/y2/level-1/post/frame/axis-y/x2/y1-y2/plane-eave/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "460e78e3-8ce6-55ae-9bad-549bf0199c85",
+            "generation_key": "connection/brace/frame/x3/y0/level-0/post/frame/axis-x/y0/x2-x3/plane-L1/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "a1dc989f-5796-5cdc-abc4-6df9ee611aec",
+            "generation_key": "connection/brace/frame/x3/y0/level-0/post/frame/axis-y/x3/y0-y1/plane-L1/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "5dc65f05-4224-5287-96bd-b627cbeeb4e3",
+            "generation_key": "connection/brace/frame/x3/y0/level-1/post/frame/axis-x/y0/x2-x3/plane-eave/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "1f8a3960-25e0-50b1-bea9-96005b2f2722",
+            "generation_key": "connection/brace/frame/x3/y0/level-1/post/frame/axis-y/x3/y0-y1/plane-eave/brace/y0",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "12b295f3-dbe7-5c39-bcd0-87a170454635",
+            "generation_key": "connection/brace/frame/x3/y1/level-0/post/frame/axis-x/y1/x2-x3/plane-L1/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "181df750-367c-5a72-8204-fb140df7e614",
+            "generation_key": "connection/brace/frame/x3/y1/level-0/post/frame/axis-y/x3/y0-y1/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "46d55051-890c-532e-9baf-7fb378186395",
+            "generation_key": "connection/brace/frame/x3/y1/level-0/post/frame/axis-y/x3/y1-y2/plane-L1/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "bdf6cc37-cdfe-58ed-8540-976ce3e5cd37",
+            "generation_key": "connection/brace/frame/x3/y1/level-1/post/frame/axis-x/y1/x2-x3/plane-eave/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "41b64c30-e7ae-511b-9a68-7da7da7bba60",
+            "generation_key": "connection/brace/frame/x3/y1/level-1/post/frame/axis-y/x3/y0-y1/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "288b2420-9e46-5d0e-b021-bbfa8dc02da3",
+            "generation_key": "connection/brace/frame/x3/y1/level-1/post/frame/axis-y/x3/y1-y2/plane-eave/brace/y1",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "27694aaf-f518-5882-8ef7-7d03011a5ee2",
+            "generation_key": "connection/brace/frame/x3/y2/level-0/post/frame/axis-x/y2/x2-x3/plane-L1/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "c5406a15-878b-5bb8-87be-21a14d957406",
+            "generation_key": "connection/brace/frame/x3/y2/level-0/post/frame/axis-y/x3/y1-y2/plane-L1/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              2.1336
+            ]
+          },
+          {
+            "connection_id": "e04f34e7-3ece-5a1f-8742-446bd09aa9a2",
+            "generation_key": "connection/brace/frame/x3/y2/level-1/post/frame/axis-x/y2/x2-x3/plane-eave/brace/x3",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "eca6e006-857a-5e01-8ac2-0f461fb922e1",
+            "generation_key": "connection/brace/frame/x3/y2/level-1/post/frame/axis-y/x3/y1-y2/plane-eave/brace/y2",
+            "junction_class": "brace",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              4.8768
+            ]
+          },
+          {
+            "connection_id": "f71844d4-5663-539a-b9ed-8688ec91cc7f",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j1/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              0.6096,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "26dedd56-a9c9-5c7f-bbd0-07b4b7913499",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j2/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              1.2192,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "bea4eb92-20af-5b38-a515-e355098efde0",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j3/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              1.8288000000000002,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "320889f9-31a7-509d-a1f5-7b1f4cd5445b",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j4/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              2.4384,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "35eb322b-6449-52b4-b9f7-4d2f49fa2dc4",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j5/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              3.048,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "8c2d0ee3-e177-5a50-9a67-ac30ee3c5b66",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j1/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              4.2672,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "8ceea81c-f3e4-5c29-98c4-63a649a79cb3",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j2/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              4.876799999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "dbc97f06-387a-5982-8d8f-9ab039b16ab5",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j3/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              5.4864,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "d8e6e4e2-68fb-5880-b4df-d55fed15cc31",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j4/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              6.096,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "c8a5c27c-8a0d-5532-983b-a50a5aadfe3f",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j5/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              6.7056,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "c4650def-a8ed-5ab4-9706-1173946229b8",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j1/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              7.924799999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "4e365b25-f5fc-567c-92d8-17d65d0532ab",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j2/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              8.5344,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "a90e27d0-c789-5bff-9d69-e06cd21d9f54",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j3/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              9.143999999999998,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "d0617e1f-c915-5877-bbc8-91158ee5191e",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j4/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              9.753599999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "f419971e-5367-5db3-928e-bfb759db25ad",
+            "generation_key": "connection/joist-beam/frame/axis-x/y0/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j5/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              10.363199999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "3c06f0a5-9c99-526c-ab81-33df860289c4",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j1/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              0.6096,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "965f739b-d423-5675-b88e-d936f31a0024",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j1/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              0.6096,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "fee69959-d8d6-51d7-9a91-42156f3c81f5",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j2/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              1.2192,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "f75a5d91-e6fc-5f0c-a8b6-26e632ace9bf",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j2/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              1.2192,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "281e2cbd-3374-5eda-a43c-a4f762b1c752",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j3/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              1.8288000000000002,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "923d1022-7431-5bfb-9dd5-8e0a33520121",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j3/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              1.8288000000000002,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "611fa41b-a4fd-55af-a236-9d9bee312e9d",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j4/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              2.4384,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "1a55ece9-6dca-5f83-85a3-2306cdb0b375",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j4/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              2.4384,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "3bc29495-ff6e-5588-bcb9-73a759286132",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j5/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              3.048,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "c7f4e3b7-3c52-5bb8-b7fd-5344fcfecc5b",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j5/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              3.048,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "0b3262a3-cd51-5d49-8f6a-a5efcfbe80c8",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j1/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              4.2672,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "ce996c26-74d0-586b-9c94-a4366efb8120",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j1/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              4.2672,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "25281966-f066-5b84-bc59-063ca11c298b",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j2/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              4.876799999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "673028fa-653c-508f-888e-0d8fe5e47012",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j2/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              4.876799999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "e0ef67ca-dbcc-5406-90e3-319ff7e327d4",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j3/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              5.4864,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "79a26c92-25d0-5c52-bfff-9fb10e53e470",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j3/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              5.4864,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "bbff2ee1-2cc3-5f7c-b6b6-12bf0cc7d839",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j4/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              6.096,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "0e260458-cbe9-57d7-875b-e5a5e3b4a48e",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j4/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              6.096,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "87473b1d-a968-5aae-a966-05c46a4e1861",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j5/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              6.7056,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "0e456e82-00c4-5aff-aeb9-09c1308a242c",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j5/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              6.7056,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "916f256a-3d51-556b-9d5a-db2911b94a6c",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j1/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              7.924799999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "e95bab13-c2a9-53c8-a950-1789aaa26ed1",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j1/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              7.924799999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "1146268d-0808-5c1c-a845-07fd36961ee8",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j2/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              8.5344,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "3be0e85b-17c8-54c7-89b8-542ffc7a7af0",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j2/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              8.5344,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "3ca79ad5-10c7-5a8f-aa6f-fa740fbcd50b",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j3/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              9.143999999999998,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "ee2e51f2-5041-5378-b413-975e6e667074",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j3/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              9.143999999999998,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "e4315529-7bfa-5659-a06b-0cea19abfbf8",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j4/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              9.753599999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "cdcc65ce-579d-528c-af59-88991ee98f6d",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j4/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              9.753599999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "295b317a-b694-51f0-ad24-04341bf24c39",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j5/y0-y1/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              10.363199999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "aa191b87-0c7b-54cd-9718-eee868611393",
+            "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j5/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              10.363199999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "b2b87510-9559-57b5-81c9-7306ab83e491",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j1/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              0.6096,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "2574888b-8491-59e4-b677-2ec47f705b85",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j2/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              1.2192,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "02c9439b-62f7-55a8-8b39-5e68f8b29f9c",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j3/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              1.8288000000000002,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "755e3fb5-08e9-54fb-b9a7-1c45076d84b4",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j4/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              2.4384,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "065aed9d-fd1b-53f0-8c64-e8ba0f496db6",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j5/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              3.048,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "cd70e29d-1229-5c43-a190-09e6d780b810",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j1/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              4.2672,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "f1c3a52d-e423-5b6e-9665-5fada070e506",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j2/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              4.876799999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "71f42624-f9e5-518e-a303-5e44a0299fcf",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j3/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              5.4864,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "582c26e8-8d66-5bdf-92d4-f53b0d25144a",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j4/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              6.096,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "2296cbf4-918d-5942-b088-0412efd6ee06",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j5/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              6.7056,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "b83da52a-a335-5669-a7e9-b865208965eb",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j1/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              7.924799999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "e9333d69-8fd2-53d4-8a83-a513296f9ed8",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j2/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              8.5344,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "ab12c3df-417a-59fd-8aef-e395d40e79a6",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j3/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              9.143999999999998,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "c316ab6d-84f3-5740-83a5-5d21b74ad501",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j4/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              9.753599999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "694e8be1-f2f4-5745-9fcb-765e1a6645ce",
+            "generation_key": "connection/joist-beam/frame/axis-x/y2/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j5/y1-y2/plane-L1/joist",
+            "junction_class": "joist-beam",
+            "connection_type": "HOUSED_DOVETAIL",
+            "location_m": [
+              10.363199999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "e41c3d1c-dc37-5d16-9da6-df6ff2bf1d73",
+            "generation_key": "connection/post-beam/frame/x0/y0/level-0/post/frame/axis-x/y0/x0-x1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "f47fb40b-290a-5a6a-8e1c-e403955dae9e",
+            "generation_key": "connection/post-beam/frame/x0/y0/level-0/post/frame/axis-y/x0/y0-y1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "efba5c53-084a-5c40-82c6-fd26917d72b0",
+            "generation_key": "connection/post-beam/frame/x0/y0/level-1/post/frame/axis-x/y0/x0-x1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "c8670be6-f5ef-5473-8f22-97a1251b4d4b",
+            "generation_key": "connection/post-beam/frame/x0/y0/level-1/post/frame/axis-y/x0/y0-y1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "e929c4e3-aa40-5d8a-bc1e-8cf0dcb14461",
+            "generation_key": "connection/post-beam/frame/x0/y1/level-0/post/frame/axis-x/y1/x0-x1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "2deee202-2341-5a96-b506-a9599e65369a",
+            "generation_key": "connection/post-beam/frame/x0/y1/level-0/post/frame/axis-y/x0/y0-y1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "e6d4a33a-65ab-5081-8cdb-cf6eb77f4ef0",
+            "generation_key": "connection/post-beam/frame/x0/y1/level-0/post/frame/axis-y/x0/y1-y2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "f440926c-a192-591e-9b3b-3ff64f8018bc",
+            "generation_key": "connection/post-beam/frame/x0/y1/level-1/post/frame/axis-x/y1/x0-x1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "9615cc16-5373-5673-9bd1-a0b2ae024b62",
+            "generation_key": "connection/post-beam/frame/x0/y1/level-1/post/frame/axis-y/x0/y0-y1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "9387da14-9250-5fe6-b57b-1620dbf33ad6",
+            "generation_key": "connection/post-beam/frame/x0/y1/level-1/post/frame/axis-y/x0/y1-y2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "c21a2df6-ac95-520b-9fbb-2f17200108f6",
+            "generation_key": "connection/post-beam/frame/x0/y2/level-0/post/frame/axis-x/y2/x0-x1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "62706148-0941-534a-b351-f465aaf5ae6b",
+            "generation_key": "connection/post-beam/frame/x0/y2/level-0/post/frame/axis-y/x0/y1-y2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "ff78db16-b095-5741-833f-ec8c999edc13",
+            "generation_key": "connection/post-beam/frame/x0/y2/level-1/post/frame/axis-x/y2/x0-x1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "90c65703-0423-5066-aa06-7dd3be3f28de",
+            "generation_key": "connection/post-beam/frame/x0/y2/level-1/post/frame/axis-y/x0/y1-y2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "40fa6b53-1f6a-547f-a524-ecae39273017",
+            "generation_key": "connection/post-beam/frame/x1/y0/level-0/post/frame/axis-x/y0/x0-x1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "8e271425-90b7-58ab-816a-c2c74e4e8121",
+            "generation_key": "connection/post-beam/frame/x1/y0/level-0/post/frame/axis-x/y0/x1-x2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "5b8e4d93-c3c6-5cbe-8150-0f401235cf7f",
+            "generation_key": "connection/post-beam/frame/x1/y0/level-0/post/frame/axis-y/x1/y0-y1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "49c1dcb4-ac89-55aa-afa5-f4c3164ede91",
+            "generation_key": "connection/post-beam/frame/x1/y0/level-1/post/frame/axis-x/y0/x0-x1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "3efee76f-789a-56e6-8731-4acad9cb60d3",
+            "generation_key": "connection/post-beam/frame/x1/y0/level-1/post/frame/axis-x/y0/x1-x2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "3731dd0b-3a1b-5dbc-bc32-e5760c896f96",
+            "generation_key": "connection/post-beam/frame/x1/y0/level-1/post/frame/axis-y/x1/y0-y1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "57350ac4-075c-5890-b083-64a450b0d39f",
+            "generation_key": "connection/post-beam/frame/x1/y1/level-0/post/frame/axis-x/y1/x0-x1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "f3b30b68-a66d-5882-b403-d60c39102aec",
+            "generation_key": "connection/post-beam/frame/x1/y1/level-0/post/frame/axis-x/y1/x1-x2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "9e4692df-6e48-54e2-a32d-23e47bfd4ff5",
+            "generation_key": "connection/post-beam/frame/x1/y1/level-0/post/frame/axis-y/x1/y0-y1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "1675d29e-7124-5e4d-8d20-da3e50c6f0b4",
+            "generation_key": "connection/post-beam/frame/x1/y1/level-0/post/frame/axis-y/x1/y1-y2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "d995c4a8-e97e-527b-9e3d-39b1504b835c",
+            "generation_key": "connection/post-beam/frame/x1/y1/level-1/post/frame/axis-x/y1/x0-x1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "642220d0-8546-5950-a25c-1630732f0d59",
+            "generation_key": "connection/post-beam/frame/x1/y1/level-1/post/frame/axis-x/y1/x1-x2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "b3759724-84f7-5d31-bc07-4c530cb9601d",
+            "generation_key": "connection/post-beam/frame/x1/y1/level-1/post/frame/axis-y/x1/y0-y1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "c9328e5b-e9f1-5a9a-a99f-8ac018572ecd",
+            "generation_key": "connection/post-beam/frame/x1/y1/level-1/post/frame/axis-y/x1/y1-y2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "b920e038-6534-5a80-a064-8537d66eb8ad",
+            "generation_key": "connection/post-beam/frame/x1/y2/level-0/post/frame/axis-x/y2/x0-x1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "090d2e89-0cd3-5963-8e54-f731cb2c449d",
+            "generation_key": "connection/post-beam/frame/x1/y2/level-0/post/frame/axis-x/y2/x1-x2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "10d7051e-8c41-5e5a-885b-50fe88259271",
+            "generation_key": "connection/post-beam/frame/x1/y2/level-0/post/frame/axis-y/x1/y1-y2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "214fa086-b3aa-5589-8a89-78993e07aa50",
+            "generation_key": "connection/post-beam/frame/x1/y2/level-1/post/frame/axis-x/y2/x0-x1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "b1e917d2-df64-5e4b-856d-95a256fd851b",
+            "generation_key": "connection/post-beam/frame/x1/y2/level-1/post/frame/axis-x/y2/x1-x2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "91bba581-8179-509f-927a-fb60a77dac67",
+            "generation_key": "connection/post-beam/frame/x1/y2/level-1/post/frame/axis-y/x1/y1-y2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "bb33b709-caf0-5bea-a7b2-8dc8712d5ebc",
+            "generation_key": "connection/post-beam/frame/x2/y0/level-0/post/frame/axis-x/y0/x1-x2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "0b5359be-8c14-5a43-9ded-dd3cd9cd6578",
+            "generation_key": "connection/post-beam/frame/x2/y0/level-0/post/frame/axis-x/y0/x2-x3/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "35355d93-b285-5acc-b582-a3cc2d18eb56",
+            "generation_key": "connection/post-beam/frame/x2/y0/level-0/post/frame/axis-y/x2/y0-y1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "b4ffc439-225e-5aea-84d3-474cee7a4b47",
+            "generation_key": "connection/post-beam/frame/x2/y0/level-1/post/frame/axis-x/y0/x1-x2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "153608be-c941-5a9f-a2ad-db9c3afe67b7",
+            "generation_key": "connection/post-beam/frame/x2/y0/level-1/post/frame/axis-x/y0/x2-x3/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "10817ffc-0049-5cb8-8499-f210a3d41a8b",
+            "generation_key": "connection/post-beam/frame/x2/y0/level-1/post/frame/axis-y/x2/y0-y1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "e28b9b14-5719-5254-8462-d70447be2502",
+            "generation_key": "connection/post-beam/frame/x2/y1/level-0/post/frame/axis-x/y1/x1-x2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "c3de50a6-7e1e-5334-aaf5-faabc519bde4",
+            "generation_key": "connection/post-beam/frame/x2/y1/level-0/post/frame/axis-x/y1/x2-x3/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "14f0485d-541a-58ca-9e99-6e226902ad71",
+            "generation_key": "connection/post-beam/frame/x2/y1/level-0/post/frame/axis-y/x2/y0-y1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "7f3df795-02b6-57c3-a71c-65a2361eec31",
+            "generation_key": "connection/post-beam/frame/x2/y1/level-0/post/frame/axis-y/x2/y1-y2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "fe40124d-4683-59ec-b185-9bfa9b9c4555",
+            "generation_key": "connection/post-beam/frame/x2/y1/level-1/post/frame/axis-x/y1/x1-x2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "382b7734-654b-5a8a-b020-fcba73719b38",
+            "generation_key": "connection/post-beam/frame/x2/y1/level-1/post/frame/axis-x/y1/x2-x3/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "d29f70c5-3f01-56a0-8111-c78a8d701300",
+            "generation_key": "connection/post-beam/frame/x2/y1/level-1/post/frame/axis-y/x2/y0-y1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "fd908460-9ca2-5a71-a180-f9aef2236b10",
+            "generation_key": "connection/post-beam/frame/x2/y1/level-1/post/frame/axis-y/x2/y1-y2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "f378afd4-3170-53a4-a765-a9e94dbb29c6",
+            "generation_key": "connection/post-beam/frame/x2/y2/level-0/post/frame/axis-x/y2/x1-x2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "600b345b-ac3c-5f4f-9a9c-c6f7b3e8c8a5",
+            "generation_key": "connection/post-beam/frame/x2/y2/level-0/post/frame/axis-x/y2/x2-x3/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "c75350b0-eb53-517d-a2dc-fcac9beac937",
+            "generation_key": "connection/post-beam/frame/x2/y2/level-0/post/frame/axis-y/x2/y1-y2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "839d0a4e-3e3d-5c94-bda9-709998fae4a9",
+            "generation_key": "connection/post-beam/frame/x2/y2/level-1/post/frame/axis-x/y2/x1-x2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "4850467b-fa5d-5d5a-8ead-0b86647f3d18",
+            "generation_key": "connection/post-beam/frame/x2/y2/level-1/post/frame/axis-x/y2/x2-x3/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "6f0a36b7-0c5f-5339-a45f-1cbeb4aeba34",
+            "generation_key": "connection/post-beam/frame/x2/y2/level-1/post/frame/axis-y/x2/y1-y2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "afab1266-f513-562a-9685-576b175711bc",
+            "generation_key": "connection/post-beam/frame/x3/y0/level-0/post/frame/axis-x/y0/x2-x3/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "5c69a020-78c3-5bcc-8d32-13ed1507222e",
+            "generation_key": "connection/post-beam/frame/x3/y0/level-0/post/frame/axis-y/x3/y0-y1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "24f2917c-fe9b-53a7-ad27-3717e7e31053",
+            "generation_key": "connection/post-beam/frame/x3/y0/level-1/post/frame/axis-x/y0/x2-x3/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "dca1a7b7-0db7-545e-87d3-c355a03aaa0f",
+            "generation_key": "connection/post-beam/frame/x3/y0/level-1/post/frame/axis-y/x3/y0-y1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "e317fc5e-3b38-58f2-a603-2fd68142e1fc",
+            "generation_key": "connection/post-beam/frame/x3/y1/level-0/post/frame/axis-x/y1/x2-x3/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "547575d5-c5bf-5eab-aeb1-b0f65ab8297c",
+            "generation_key": "connection/post-beam/frame/x3/y1/level-0/post/frame/axis-y/x3/y0-y1/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "1a33eab1-32da-5f31-b58e-d32c106ff98b",
+            "generation_key": "connection/post-beam/frame/x3/y1/level-0/post/frame/axis-y/x3/y1-y2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "effbcaf1-5da5-5711-a229-631417f8210e",
+            "generation_key": "connection/post-beam/frame/x3/y1/level-1/post/frame/axis-x/y1/x2-x3/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "582b04b6-661c-5326-8213-edd9c4a712c0",
+            "generation_key": "connection/post-beam/frame/x3/y1/level-1/post/frame/axis-y/x3/y0-y1/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "02f35255-457d-5b70-b42d-04541414595b",
+            "generation_key": "connection/post-beam/frame/x3/y1/level-1/post/frame/axis-y/x3/y1-y2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "b3289dd9-95a7-5899-adea-3064a2fb247f",
+            "generation_key": "connection/post-beam/frame/x3/y2/level-0/post/frame/axis-x/y2/x2-x3/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "72f938c7-bdad-5813-9316-f2eb9e8cb515",
+            "generation_key": "connection/post-beam/frame/x3/y2/level-0/post/frame/axis-y/x3/y1-y2/plane-L1/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              3.048
+            ]
+          },
+          {
+            "connection_id": "e249350a-d66a-5b1a-93d2-fd6f96039051",
+            "generation_key": "connection/post-beam/frame/x3/y2/level-1/post/frame/axis-x/y2/x2-x3/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "80c14085-a1a1-5897-b9ef-ceeab10af447",
+            "generation_key": "connection/post-beam/frame/x3/y2/level-1/post/frame/axis-y/x3/y1-y2/plane-eave/beam",
+            "junction_class": "post-beam",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "9953d08a-89fb-59f3-8789-d7b147cbd518",
+            "generation_key": "connection/post-sill/frame/axis-y/x0/y0-y1/plane-L0/sill/frame/x0/y0/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "connection_id": "6e44580c-6936-5907-9fea-88425bbd0bbb",
+            "generation_key": "connection/post-sill/frame/axis-y/x0/y1-y2/plane-L0/sill/frame/x0/y1/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              3.6576,
+              0
+            ]
+          },
+          {
+            "connection_id": "26fc4c4f-447a-50db-9194-e0c507932345",
+            "generation_key": "connection/post-sill/frame/axis-y/x0/y1-y2/plane-L0/sill/frame/x0/y2/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              0
+            ]
+          },
+          {
+            "connection_id": "3cb50025-28f8-5359-828b-d08d59d52d36",
+            "generation_key": "connection/post-sill/frame/axis-y/x1/y0-y1/plane-L0/sill/frame/x1/y0/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              0
+            ]
+          },
+          {
+            "connection_id": "e818ff7e-2bfc-5947-b62f-3c642f7f2a2a",
+            "generation_key": "connection/post-sill/frame/axis-y/x1/y1-y2/plane-L0/sill/frame/x1/y1/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              0
+            ]
+          },
+          {
+            "connection_id": "50b82020-3585-5a44-859b-e426be38a70b",
+            "generation_key": "connection/post-sill/frame/axis-y/x1/y1-y2/plane-L0/sill/frame/x1/y2/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              0
+            ]
+          },
+          {
+            "connection_id": "2947927c-ea5d-58d5-8512-fc36e5f3c305",
+            "generation_key": "connection/post-sill/frame/axis-y/x2/y0-y1/plane-L0/sill/frame/x2/y0/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              0
+            ]
+          },
+          {
+            "connection_id": "62a7f6fe-54d8-527b-b5db-25e103fd6b22",
+            "generation_key": "connection/post-sill/frame/axis-y/x2/y1-y2/plane-L0/sill/frame/x2/y1/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              0
+            ]
+          },
+          {
+            "connection_id": "76777c53-5ad7-55c2-84cb-2d453e39b7b8",
+            "generation_key": "connection/post-sill/frame/axis-y/x2/y1-y2/plane-L0/sill/frame/x2/y2/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              0
+            ]
+          },
+          {
+            "connection_id": "e5d4bd08-cb7f-5ad9-810d-0a78c1c57207",
+            "generation_key": "connection/post-sill/frame/axis-y/x3/y0-y1/plane-L0/sill/frame/x3/y0/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              0
+            ]
+          },
+          {
+            "connection_id": "f598971c-7c82-55e8-99ed-8b28db974289",
+            "generation_key": "connection/post-sill/frame/axis-y/x3/y1-y2/plane-L0/sill/frame/x3/y1/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              3.6576,
+              0
+            ]
+          },
+          {
+            "connection_id": "4a71eb9b-3834-5378-a9fe-a38476869e95",
+            "generation_key": "connection/post-sill/frame/axis-y/x3/y1-y2/plane-L0/sill/frame/x3/y2/level-0/post",
+            "junction_class": "post-sill",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              0
+            ]
+          },
+          {
+            "connection_id": "9f29943a-3214-5376-b5f8-b6955c3f2f90",
+            "generation_key": "connection/purlin-rafter/frame/roof/x0/north/principal-rafter/frame/roof/x0-x1/north/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              6.096,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "739aa25f-22ce-5475-8225-ab5044d5dd74",
+            "generation_key": "connection/purlin-rafter/frame/roof/x0/north/principal-rafter/frame/roof/x0-x1/north/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              4.8768,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "963d9ec2-83ff-5de0-aa91-217889c73537",
+            "generation_key": "connection/purlin-rafter/frame/roof/x0/south/principal-rafter/frame/roof/x0-x1/south/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              1.2191999999999998,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "57da46c0-1429-5daf-9c48-fe8c2f4bc153",
+            "generation_key": "connection/purlin-rafter/frame/roof/x0/south/principal-rafter/frame/roof/x0-x1/south/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              2.4383999999999997,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "6bdb0f9d-781c-595e-9568-7e2ed2b86b25",
+            "generation_key": "connection/purlin-rafter/frame/roof/x1/north/principal-rafter/frame/roof/x0-x1/north/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              6.096,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "d4c4c12f-fb2d-52dc-a2a1-310202a25e5f",
+            "generation_key": "connection/purlin-rafter/frame/roof/x1/north/principal-rafter/frame/roof/x0-x1/north/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              4.8768,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "6da9f0eb-ad92-5bc3-bc44-d107693179cc",
+            "generation_key": "connection/purlin-rafter/frame/roof/x1/north/principal-rafter/frame/roof/x1-x2/north/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              6.096,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "a03f82c0-e138-5341-9950-4d52fdd1813d",
+            "generation_key": "connection/purlin-rafter/frame/roof/x1/north/principal-rafter/frame/roof/x1-x2/north/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              4.8768,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "4051286e-ba5f-5b32-8e7b-73be843704e0",
+            "generation_key": "connection/purlin-rafter/frame/roof/x1/south/principal-rafter/frame/roof/x0-x1/south/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              1.2191999999999998,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "99dda339-92e1-5a87-a804-5d8bc202d1e1",
+            "generation_key": "connection/purlin-rafter/frame/roof/x1/south/principal-rafter/frame/roof/x0-x1/south/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              2.4383999999999997,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "20d39c80-e644-53cc-9ec1-1b49ee6e27bd",
+            "generation_key": "connection/purlin-rafter/frame/roof/x1/south/principal-rafter/frame/roof/x1-x2/south/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              1.2191999999999998,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "0fab11e4-806a-5cbe-87bb-d683b4875e5d",
+            "generation_key": "connection/purlin-rafter/frame/roof/x1/south/principal-rafter/frame/roof/x1-x2/south/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              2.4383999999999997,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "3662512f-367d-5355-b21a-2261dc9c82c4",
+            "generation_key": "connection/purlin-rafter/frame/roof/x2/north/principal-rafter/frame/roof/x1-x2/north/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              6.096,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "fbceebc6-16a9-59cc-9c1e-58aeb06b61bd",
+            "generation_key": "connection/purlin-rafter/frame/roof/x2/north/principal-rafter/frame/roof/x1-x2/north/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              4.8768,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "f2bd1fc7-1fad-5f31-b61d-f00cf914d4b6",
+            "generation_key": "connection/purlin-rafter/frame/roof/x2/north/principal-rafter/frame/roof/x2-x3/north/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              6.096,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "c40b2625-9c30-5695-af78-71f9b1d6677c",
+            "generation_key": "connection/purlin-rafter/frame/roof/x2/north/principal-rafter/frame/roof/x2-x3/north/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              4.8768,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "b6e76ffb-5ab4-5135-ac72-f783df75fb2c",
+            "generation_key": "connection/purlin-rafter/frame/roof/x2/south/principal-rafter/frame/roof/x1-x2/south/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              1.2191999999999998,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "894e1435-4043-55b5-91cd-bf78a1ce9e1f",
+            "generation_key": "connection/purlin-rafter/frame/roof/x2/south/principal-rafter/frame/roof/x1-x2/south/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              2.4383999999999997,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "a37adaf4-e468-5f29-a14f-631b8d229122",
+            "generation_key": "connection/purlin-rafter/frame/roof/x2/south/principal-rafter/frame/roof/x2-x3/south/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              1.2191999999999998,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "2aafbd41-788c-5c95-88ac-df9bf208eeae",
+            "generation_key": "connection/purlin-rafter/frame/roof/x2/south/principal-rafter/frame/roof/x2-x3/south/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              2.4383999999999997,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "90c2fcf1-ebb5-5906-823d-a2d73b0f5335",
+            "generation_key": "connection/purlin-rafter/frame/roof/x3/north/principal-rafter/frame/roof/x2-x3/north/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              6.096,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "78b5ff04-ea75-5c0e-af13-3f2682479a34",
+            "generation_key": "connection/purlin-rafter/frame/roof/x3/north/principal-rafter/frame/roof/x2-x3/north/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              4.8768,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "3def8bc5-0942-5de2-a33e-3fecc7e34564",
+            "generation_key": "connection/purlin-rafter/frame/roof/x3/south/principal-rafter/frame/roof/x2-x3/south/p1/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              1.2191999999999998,
+              6.7056
+            ]
+          },
+          {
+            "connection_id": "46df186f-ffe0-54ef-9b4b-e2c56d46bbd2",
+            "generation_key": "connection/purlin-rafter/frame/roof/x3/south/principal-rafter/frame/roof/x2-x3/south/p2/purlin",
+            "junction_class": "purlin-rafter",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              2.4383999999999997,
+              7.619999999999999
+            ]
+          },
+          {
+            "connection_id": "119b6830-6b2a-5f5d-b04b-770b9662193d",
+            "generation_key": "connection/rafter-foot/frame/axis-y/x0/y0-y1/plane-eave/beam/frame/roof/x0/south/principal-rafter",
+            "junction_class": "rafter-foot",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "cdccda4f-43c7-5570-9900-82a0bf98eb02",
+            "generation_key": "connection/rafter-foot/frame/axis-y/x0/y1-y2/plane-eave/beam/frame/roof/x0/north/principal-rafter",
+            "junction_class": "rafter-foot",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              0,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "6d3da0a8-9dd8-50a3-b2bb-9dad26a7f647",
+            "generation_key": "connection/rafter-foot/frame/axis-y/x1/y0-y1/plane-eave/beam/frame/roof/x1/south/principal-rafter",
+            "junction_class": "rafter-foot",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "c0ceef67-6a85-5b07-ad2a-bdb56b1805fb",
+            "generation_key": "connection/rafter-foot/frame/axis-y/x1/y1-y2/plane-eave/beam/frame/roof/x1/north/principal-rafter",
+            "junction_class": "rafter-foot",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              3.6575999999999995,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "51a4aa83-ecfd-5236-91e9-66647e89c145",
+            "generation_key": "connection/rafter-foot/frame/axis-y/x2/y0-y1/plane-eave/beam/frame/roof/x2/south/principal-rafter",
+            "junction_class": "rafter-foot",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "0b384069-9a26-5df3-a662-7d3309d31ba6",
+            "generation_key": "connection/rafter-foot/frame/axis-y/x2/y1-y2/plane-eave/beam/frame/roof/x2/north/principal-rafter",
+            "junction_class": "rafter-foot",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              7.315199999999999,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "75c4d4ef-0239-5f20-b2bb-81007225c51d",
+            "generation_key": "connection/rafter-foot/frame/axis-y/x3/y0-y1/plane-eave/beam/frame/roof/x3/south/principal-rafter",
+            "junction_class": "rafter-foot",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              0,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "d6635fd6-a48b-566f-a404-40013af11684",
+            "generation_key": "connection/rafter-foot/frame/axis-y/x3/y1-y2/plane-eave/beam/frame/roof/x3/north/principal-rafter",
+            "junction_class": "rafter-foot",
+            "connection_type": "PEGGED_MORTISE_TENON",
+            "location_m": [
+              10.9728,
+              7.3152,
+              5.7912
+            ]
+          },
+          {
+            "connection_id": "fe245292-6e42-58d2-a7a0-6a30b2f75213",
+            "generation_key": "connection/rafter-peak/frame/roof/x0/south/principal-rafter/frame/roof/x0/north/principal-rafter",
+            "junction_class": "rafter-peak",
+            "connection_type": "BRIDLE",
+            "location_m": [
+              0,
+              3.6576,
+              8.5344
+            ]
+          },
+          {
+            "connection_id": "01f907ab-4dd9-501f-9c1f-d086c92bd006",
+            "generation_key": "connection/rafter-peak/frame/roof/x1/south/principal-rafter/frame/roof/x1/north/principal-rafter",
+            "junction_class": "rafter-peak",
+            "connection_type": "BRIDLE",
+            "location_m": [
+              3.6575999999999995,
+              3.6576,
+              8.5344
+            ]
+          },
+          {
+            "connection_id": "65d42e5d-b389-5986-9eae-b6643712af23",
+            "generation_key": "connection/rafter-peak/frame/roof/x2/south/principal-rafter/frame/roof/x2/north/principal-rafter",
+            "junction_class": "rafter-peak",
+            "connection_type": "BRIDLE",
+            "location_m": [
+              7.315199999999999,
+              3.6576,
+              8.5344
+            ]
+          },
+          {
+            "connection_id": "dfb9fe5c-7bd8-5fef-9045-523b85515025",
+            "generation_key": "connection/rafter-peak/frame/roof/x3/south/principal-rafter/frame/roof/x3/north/principal-rafter",
+            "junction_class": "rafter-peak",
+            "connection_type": "BRIDLE",
+            "location_m": [
+              10.9728,
+              3.6576,
+              8.5344
+            ]
+          }
+        ],
         "envelope": {
           "footprint_ring_m": [
             [
@@ -3773,8 +7207,8 @@
       }
     },
     "timber_schedule": {
-      "canonical_bytes": 66146,
-      "fingerprint": "sha256:49c283a8ad8c4cd7047045042ef7e42c9cc0765c1f438b80c4daf32479038d3c",
+      "canonical_bytes": 173680,
+      "fingerprint": "sha256:a61174538e66064208f056833b28e75c9b556d92c545cdc15e579e50d5825953",
       "aggregates": [
         {
           "role": "BEAM",
@@ -3817,6 +7251,43 @@
           "nominal_section": "8x8",
           "count": 17,
           "total_length_m": 62.179200000000016
+        }
+      ],
+      "connection_aggregates": [
+        {
+          "junction_class": "brace",
+          "connection_type": "PEGGED_MORTISE_TENON",
+          "count": 136
+        },
+        {
+          "junction_class": "joist-beam",
+          "connection_type": "HOUSED_DOVETAIL",
+          "count": 60
+        },
+        {
+          "junction_class": "post-beam",
+          "connection_type": "PEGGED_MORTISE_TENON",
+          "count": 68
+        },
+        {
+          "junction_class": "post-sill",
+          "connection_type": "PEGGED_MORTISE_TENON",
+          "count": 12
+        },
+        {
+          "junction_class": "purlin-rafter",
+          "connection_type": "PEGGED_MORTISE_TENON",
+          "count": 24
+        },
+        {
+          "junction_class": "rafter-foot",
+          "connection_type": "PEGGED_MORTISE_TENON",
+          "count": 8
+        },
+        {
+          "junction_class": "rafter-peak",
+          "connection_type": "BRIDLE",
+          "count": 4
         }
       ]
     }

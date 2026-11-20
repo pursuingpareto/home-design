@@ -6,6 +6,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from homedesign.model.connections import ConnectionType, JunctionClass
 from homedesign.model.schema import MemberRole, Uuid
 
 XY = Annotated[list[float], Field(min_length=2, max_length=2)]
@@ -19,27 +20,46 @@ class _Strict(BaseModel):
 # --- plan2d ------------------------------------------------------------------
 
 
+# No section_id in the plan (ART-002 §4.3): D056's "changing a role's section leaves plan2d unaffected".
+
+
 class PlanPost(_Strict):
     member_id: Uuid
     generation_key: str
     xy_m: XY
-    section_id: Uuid
 
 
-class PlanBeam(_Strict):
+class PlanLinearMember(_Strict):
+    """Every role but posts: the plan projection of the member's axis (ART-002 §4.1)."""
+
     member_id: Uuid
     generation_key: str
     start_xy_m: XY
     end_xy_m: XY
-    section_id: Uuid
+
+
+class PlanConnection(_Strict):
+    """A connection marker on the entering member's plane (ART-002 §4.2). Members are listed by the schedule."""
+
+    connection_id: Uuid
+    generation_key: str
+    junction_class: JunctionClass
+    connection_type: ConnectionType
+    xy_m: XY
 
 
 class PlanPlane(_Strict):
-    plane_id: Literal["level-0", "level-1", "eave"]
+    plane_id: Literal["level-0", "level-1", "eave", "roof"]
     level_id: Uuid | None
     z_m: float
     posts: list[PlanPost]
-    beams: list[PlanBeam]
+    beams: list[PlanLinearMember]
+    sills: list[PlanLinearMember]
+    joists: list[PlanLinearMember]
+    braces: list[PlanLinearMember]
+    rafters: list[PlanLinearMember]
+    purlins: list[PlanLinearMember]
+    connections: list[PlanConnection]
 
 
 class PlanFootprint(_Strict):
@@ -71,7 +91,7 @@ class Plan2dPayload(_Strict):
     model_config = ConfigDict(title="plan2d payload (artifacts.md §5)")
 
     units: Literal["m"] = "m"
-    planes: Annotated[list[PlanPlane], Field(min_length=3, max_length=3)]
+    planes: Annotated[list[PlanPlane], Field(min_length=4, max_length=4)]
     footprint: PlanFootprint
     roof_plan: RoofPlan
     dimensions: Annotated[list[Dimension], Field(min_length=2, max_length=2)]
@@ -89,6 +109,16 @@ class MeshMember(_Strict):
     axis_end_m: XYZ
     section_width_m: float
     section_depth_m: float
+
+
+class MeshConnection(_Strict):
+    """A connection marker: where it is and what type it has, with no size or shape (ART-002 §5.2)."""
+
+    connection_id: Uuid
+    generation_key: str
+    junction_class: JunctionClass
+    connection_type: ConnectionType
+    location_m: XYZ
 
 
 class RoofSurface(_Strict):
@@ -117,4 +147,5 @@ class Mesh3dPayload(_Strict):
 
     units: Literal["m"] = "m"
     members: list[MeshMember]
+    connections: list[MeshConnection]
     envelope: Envelope3d

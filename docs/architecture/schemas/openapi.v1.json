@@ -292,6 +292,41 @@
         "title": "Building",
         "type": "object"
       },
+      "CatalogType": {
+        "additionalProperties": false,
+        "properties": {
+          "connection_type": {
+            "enum": [
+              "PEGGED_MORTISE_TENON",
+              "BRIDLE",
+              "HOUSED_DOVETAIL",
+              "STEEL_KNIFE_PLATE",
+              "JOIST_HANGER"
+            ],
+            "title": "Connection Type",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "family": {
+            "enum": [
+              "traditional",
+              "engineered"
+            ],
+            "title": "Family",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_type",
+          "family",
+          "description"
+        ],
+        "title": "CatalogType",
+        "type": "object"
+      },
       "Claims": {
         "additionalProperties": false,
         "properties": {
@@ -595,6 +630,70 @@
         "title": "Connection",
         "type": "object"
       },
+      "ConnectionAggregate": {
+        "additionalProperties": false,
+        "properties": {
+          "connection_type": {
+            "enum": [
+              "PEGGED_MORTISE_TENON",
+              "BRIDLE",
+              "HOUSED_DOVETAIL",
+              "STEEL_KNIFE_PLATE",
+              "JOIST_HANGER"
+            ],
+            "title": "Connection Type",
+            "type": "string"
+          },
+          "count": {
+            "minimum": 1,
+            "title": "Count",
+            "type": "integer"
+          },
+          "junction_class": {
+            "enum": [
+              "post-beam",
+              "post-sill",
+              "brace",
+              "joist-beam",
+              "rafter-peak",
+              "rafter-foot",
+              "purlin-rafter"
+            ],
+            "title": "Junction Class",
+            "type": "string"
+          }
+        },
+        "required": [
+          "junction_class",
+          "connection_type",
+          "count"
+        ],
+        "title": "ConnectionAggregate",
+        "type": "object"
+      },
+      "ConnectionCatalog": {
+        "additionalProperties": false,
+        "properties": {
+          "catalog_version": {
+            "const": "vs02-connections-1",
+            "title": "Catalog Version",
+            "type": "string"
+          },
+          "types": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogType"
+            },
+            "title": "Types",
+            "type": "array"
+          }
+        },
+        "required": [
+          "catalog_version",
+          "types"
+        ],
+        "title": "ConnectionCatalog",
+        "type": "object"
+      },
       "ConnectionChanges": {
         "additionalProperties": false,
         "description": "Generated connections the commit adds, removes, or changes (CONN-001 §7.2), shaped like `members`.",
@@ -627,6 +726,84 @@
           "updated"
         ],
         "title": "ConnectionChanges",
+        "type": "object"
+      },
+      "ConnectionLine": {
+        "additionalProperties": false,
+        "properties": {
+          "amount_minor": {
+            "anyOf": [
+              {
+                "ge": -9007199254740991,
+                "le": 9007199254740991,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount Minor"
+          },
+          "connection_type": {
+            "enum": [
+              "PEGGED_MORTISE_TENON",
+              "BRIDLE",
+              "HOUSED_DOVETAIL",
+              "STEEL_KNIFE_PLATE",
+              "JOIST_HANGER"
+            ],
+            "title": "Connection Type",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "kind": {
+            "const": "connection",
+            "title": "Kind",
+            "type": "string"
+          },
+          "priced": {
+            "title": "Priced",
+            "type": "boolean"
+          },
+          "quantity_unit": {
+            "const": "each",
+            "title": "Quantity Unit",
+            "type": "string"
+          },
+          "quantity_value": {
+            "ge": 1,
+            "le": 9007199254740991,
+            "title": "Quantity Value",
+            "type": "integer"
+          },
+          "unit_price_minor": {
+            "anyOf": [
+              {
+                "ge": -9007199254740991,
+                "le": 9007199254740991,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price Minor"
+          }
+        },
+        "required": [
+          "kind",
+          "key",
+          "connection_type",
+          "quantity_value",
+          "quantity_unit",
+          "unit_price_minor",
+          "amount_minor",
+          "priced"
+        ],
+        "title": "ConnectionLine",
         "type": "object"
       },
       "ConnectionRef": {
@@ -1357,74 +1534,6 @@
         "title": "Level",
         "type": "object"
       },
-      "LineItem": {
-        "additionalProperties": false,
-        "properties": {
-          "amount_minor": {
-            "anyOf": [
-              {
-                "ge": -9007199254740991,
-                "le": 9007199254740991,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Amount Minor"
-          },
-          "key": {
-            "title": "Key",
-            "type": "string"
-          },
-          "nominal_section": {
-            "title": "Nominal Section",
-            "type": "string"
-          },
-          "priced": {
-            "title": "Priced",
-            "type": "boolean"
-          },
-          "quantity_unit": {
-            "const": "m",
-            "default": "m",
-            "title": "Quantity Unit",
-            "type": "string"
-          },
-          "quantity_value": {
-            "title": "Quantity Value",
-            "type": "number"
-          },
-          "role": {
-            "title": "Role",
-            "type": "string"
-          },
-          "unit_price_minor": {
-            "anyOf": [
-              {
-                "ge": -9007199254740991,
-                "le": 9007199254740991,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Unit Price Minor"
-          }
-        },
-        "required": [
-          "key",
-          "role",
-          "nominal_section",
-          "quantity_value",
-          "unit_price_minor",
-          "amount_minor",
-          "priced"
-        ],
-        "title": "LineItem",
-        "type": "object"
-      },
       "Manifest": {
         "additionalProperties": false,
         "properties": {
@@ -1682,6 +1791,13 @@
       "Mesh3dPayload": {
         "additionalProperties": false,
         "properties": {
+          "connections": {
+            "items": {
+              "$ref": "#/components/schemas/MeshConnection"
+            },
+            "title": "Connections",
+            "type": "array"
+          },
           "envelope": {
             "$ref": "#/components/schemas/Envelope3d"
           },
@@ -1701,9 +1817,67 @@
         },
         "required": [
           "members",
+          "connections",
           "envelope"
         ],
         "title": "mesh3d payload (artifacts.md §6)",
+        "type": "object"
+      },
+      "MeshConnection": {
+        "additionalProperties": false,
+        "description": "A connection marker: where it is and what type it has, with no size or shape (ART-002 §5.2).",
+        "properties": {
+          "connection_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "connection_type": {
+            "enum": [
+              "PEGGED_MORTISE_TENON",
+              "BRIDLE",
+              "HOUSED_DOVETAIL",
+              "STEEL_KNIFE_PLATE",
+              "JOIST_HANGER"
+            ],
+            "title": "Connection Type",
+            "type": "string"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "junction_class": {
+            "enum": [
+              "post-beam",
+              "post-sill",
+              "brace",
+              "joist-beam",
+              "rafter-peak",
+              "rafter-foot",
+              "purlin-rafter"
+            ],
+            "title": "Junction Class",
+            "type": "string"
+          },
+          "location_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Location M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "connection_id",
+          "generation_key",
+          "junction_class",
+          "connection_type",
+          "location_m"
+        ],
+        "title": "MeshConnection",
         "type": "object"
       },
       "MeshMember": {
@@ -1820,8 +1994,8 @@
             "items": {
               "$ref": "#/components/schemas/PlanPlane"
             },
-            "maxItems": 3,
-            "minItems": 3,
+            "maxItems": 4,
+            "minItems": 4,
             "title": "Planes",
             "type": "array"
           },
@@ -1844,50 +2018,61 @@
         "title": "plan2d payload (artifacts.md §5)",
         "type": "object"
       },
-      "PlanBeam": {
+      "PlanConnection": {
         "additionalProperties": false,
+        "description": "A connection marker on the entering member's plane (ART-002 §4.2). Members are listed by the schedule.",
         "properties": {
-          "end_xy_m": {
-            "items": {
-              "type": "number"
-            },
-            "maxItems": 2,
-            "minItems": 2,
-            "title": "End Xy M",
-            "type": "array"
+          "connection_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "connection_type": {
+            "enum": [
+              "PEGGED_MORTISE_TENON",
+              "BRIDLE",
+              "HOUSED_DOVETAIL",
+              "STEEL_KNIFE_PLATE",
+              "JOIST_HANGER"
+            ],
+            "title": "Connection Type",
+            "type": "string"
           },
           "generation_key": {
             "title": "Generation Key",
             "type": "string"
           },
-          "member_id": {
-            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Member Id",
+          "junction_class": {
+            "enum": [
+              "post-beam",
+              "post-sill",
+              "brace",
+              "joist-beam",
+              "rafter-peak",
+              "rafter-foot",
+              "purlin-rafter"
+            ],
+            "title": "Junction Class",
             "type": "string"
           },
-          "section_id": {
-            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Section Id",
-            "type": "string"
-          },
-          "start_xy_m": {
+          "xy_m": {
             "items": {
               "type": "number"
             },
             "maxItems": 2,
             "minItems": 2,
-            "title": "Start Xy M",
+            "title": "Xy M",
             "type": "array"
           }
         },
         "required": [
-          "member_id",
+          "connection_id",
           "generation_key",
-          "start_xy_m",
-          "end_xy_m",
-          "section_id"
+          "junction_class",
+          "connection_type",
+          "xy_m"
         ],
-        "title": "PlanBeam",
+        "title": "PlanConnection",
         "type": "object"
       },
       "PlanFootprint": {
@@ -1968,14 +2153,76 @@
         "title": "PlanLine",
         "type": "object"
       },
+      "PlanLinearMember": {
+        "additionalProperties": false,
+        "description": "Every role but posts: the plan projection of the member's axis (ART-002 §4.1).",
+        "properties": {
+          "end_xy_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "End Xy M",
+            "type": "array"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "member_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Member Id",
+            "type": "string"
+          },
+          "start_xy_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Start Xy M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "member_id",
+          "generation_key",
+          "start_xy_m",
+          "end_xy_m"
+        ],
+        "title": "PlanLinearMember",
+        "type": "object"
+      },
       "PlanPlane": {
         "additionalProperties": false,
         "properties": {
           "beams": {
             "items": {
-              "$ref": "#/components/schemas/PlanBeam"
+              "$ref": "#/components/schemas/PlanLinearMember"
             },
             "title": "Beams",
+            "type": "array"
+          },
+          "braces": {
+            "items": {
+              "$ref": "#/components/schemas/PlanLinearMember"
+            },
+            "title": "Braces",
+            "type": "array"
+          },
+          "connections": {
+            "items": {
+              "$ref": "#/components/schemas/PlanConnection"
+            },
+            "title": "Connections",
+            "type": "array"
+          },
+          "joists": {
+            "items": {
+              "$ref": "#/components/schemas/PlanLinearMember"
+            },
+            "title": "Joists",
             "type": "array"
           },
           "level_id": {
@@ -1994,7 +2241,8 @@
             "enum": [
               "level-0",
               "level-1",
-              "eave"
+              "eave",
+              "roof"
             ],
             "title": "Plane Id",
             "type": "string"
@@ -2004,6 +2252,27 @@
               "$ref": "#/components/schemas/PlanPost"
             },
             "title": "Posts",
+            "type": "array"
+          },
+          "purlins": {
+            "items": {
+              "$ref": "#/components/schemas/PlanLinearMember"
+            },
+            "title": "Purlins",
+            "type": "array"
+          },
+          "rafters": {
+            "items": {
+              "$ref": "#/components/schemas/PlanLinearMember"
+            },
+            "title": "Rafters",
+            "type": "array"
+          },
+          "sills": {
+            "items": {
+              "$ref": "#/components/schemas/PlanLinearMember"
+            },
+            "title": "Sills",
             "type": "array"
           },
           "z_m": {
@@ -2016,7 +2285,13 @@
           "level_id",
           "z_m",
           "posts",
-          "beams"
+          "beams",
+          "sills",
+          "joists",
+          "braces",
+          "rafters",
+          "purlins",
+          "connections"
         ],
         "title": "PlanPlane",
         "type": "object"
@@ -2033,11 +2308,6 @@
             "title": "Member Id",
             "type": "string"
           },
-          "section_id": {
-            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Section Id",
-            "type": "string"
-          },
           "xy_m": {
             "items": {
               "type": "number"
@@ -2051,8 +2321,7 @@
         "required": [
           "member_id",
           "generation_key",
-          "xy_m",
-          "section_id"
+          "xy_m"
         ],
         "title": "PlanPost",
         "type": "object"
@@ -2060,6 +2329,13 @@
       "PreliminaryEstimatePayload": {
         "additionalProperties": false,
         "properties": {
+          "assumptions": {
+            "items": {
+              "$ref": "#/components/schemas/Assumption"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
           "coverage": {
             "enum": [
               "none",
@@ -2083,7 +2359,21 @@
           },
           "line_items": {
             "items": {
-              "$ref": "#/components/schemas/LineItem"
+              "discriminator": {
+                "mapping": {
+                  "connection": "#/components/schemas/ConnectionLine",
+                  "timber": "#/components/schemas/TimberLine"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/TimberLine"
+                },
+                {
+                  "$ref": "#/components/schemas/ConnectionLine"
+                }
+              ]
             },
             "title": "Line Items",
             "type": "array"
@@ -2107,7 +2397,8 @@
           "currency",
           "price_book",
           "line_items",
-          "totals"
+          "totals",
+          "assumptions"
         ],
         "title": "preliminary_estimate payload (artifacts.md §8)",
         "type": "object"
@@ -2357,7 +2648,10 @@
             "type": "string"
           },
           "unit": {
-            "const": "m",
+            "enum": [
+              "m",
+              "each"
+            ],
             "title": "Unit",
             "type": "string"
           },
@@ -2660,6 +2954,69 @@
           "total_length_m"
         ],
         "title": "ScheduleAggregate",
+        "type": "object"
+      },
+      "ScheduleConnectionRow": {
+        "additionalProperties": false,
+        "properties": {
+          "connection_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "connection_type": {
+            "enum": [
+              "PEGGED_MORTISE_TENON",
+              "BRIDLE",
+              "HOUSED_DOVETAIL",
+              "STEEL_KNIFE_PLATE",
+              "JOIST_HANGER"
+            ],
+            "title": "Connection Type",
+            "type": "string"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "junction_class": {
+            "enum": [
+              "post-beam",
+              "post-sill",
+              "brace",
+              "joist-beam",
+              "rafter-peak",
+              "rafter-foot",
+              "purlin-rafter"
+            ],
+            "title": "Junction Class",
+            "type": "string"
+          },
+          "member_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Member Ids",
+            "type": "array"
+          },
+          "quantity": {
+            "const": 1,
+            "default": 1,
+            "title": "Quantity",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "connection_id",
+          "generation_key",
+          "junction_class",
+          "connection_type",
+          "member_ids"
+        ],
+        "title": "ScheduleConnectionRow",
         "type": "object"
       },
       "ScheduleRow": {
@@ -3304,6 +3661,89 @@
         "title": "TimberGridArgs",
         "type": "object"
       },
+      "TimberLine": {
+        "additionalProperties": false,
+        "properties": {
+          "amount_minor": {
+            "anyOf": [
+              {
+                "ge": -9007199254740991,
+                "le": 9007199254740991,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount Minor"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "kind": {
+            "const": "timber",
+            "title": "Kind",
+            "type": "string"
+          },
+          "nominal_section": {
+            "title": "Nominal Section",
+            "type": "string"
+          },
+          "priced": {
+            "title": "Priced",
+            "type": "boolean"
+          },
+          "quantity_unit": {
+            "const": "m",
+            "title": "Quantity Unit",
+            "type": "string"
+          },
+          "quantity_value": {
+            "title": "Quantity Value",
+            "type": "number"
+          },
+          "role": {
+            "enum": [
+              "POST",
+              "BEAM",
+              "SILL",
+              "FLOOR_JOIST",
+              "PRINCIPAL_RAFTER",
+              "PURLIN",
+              "KNEE_BRACE"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "unit_price_minor": {
+            "anyOf": [
+              {
+                "ge": -9007199254740991,
+                "le": 9007199254740991,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price Minor"
+          }
+        },
+        "required": [
+          "kind",
+          "key",
+          "role",
+          "nominal_section",
+          "quantity_value",
+          "quantity_unit",
+          "unit_price_minor",
+          "amount_minor",
+          "priced"
+        ],
+        "title": "TimberLine",
+        "type": "object"
+      },
       "TimberMember": {
         "additionalProperties": false,
         "properties": {
@@ -3399,6 +3839,23 @@
             "title": "Assumptions",
             "type": "array"
           },
+          "connection_aggregates": {
+            "items": {
+              "$ref": "#/components/schemas/ConnectionAggregate"
+            },
+            "title": "Connection Aggregates",
+            "type": "array"
+          },
+          "connection_catalog": {
+            "$ref": "#/components/schemas/ConnectionCatalog"
+          },
+          "connections": {
+            "items": {
+              "$ref": "#/components/schemas/ScheduleConnectionRow"
+            },
+            "title": "Connections",
+            "type": "array"
+          },
           "length_basis": {
             "const": "reference_axis",
             "default": "reference_axis",
@@ -3423,7 +3880,10 @@
         "required": [
           "assumptions",
           "members",
-          "aggregates"
+          "aggregates",
+          "connections",
+          "connection_aggregates",
+          "connection_catalog"
         ],
         "title": "timber_schedule payload (artifacts.md §7)",
         "type": "object"

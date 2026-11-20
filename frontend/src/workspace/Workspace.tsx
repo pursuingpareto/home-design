@@ -35,6 +35,8 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
     [signOut],
   );
   const { data, reload, reloadEstimate } = useRevisionData(api, projectId, revisionId, onError);
+  // Connection descriptions come from the same revision's schedule (ART-002 §6.3, §9).
+  const catalog = data.schedule?.status === "CURRENT" ? (data.schedule.payload?.connection_catalog ?? null) : null;
 
   const flow = useCommandFlow({
     api,
@@ -118,6 +120,7 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
           )}
           <EstimatePanel
             estimate={data.estimate}
+            catalog={catalog}
             units={units}
             onEditPrices={data.isHead && data.estimate?.payload && !priceItems ? () => setPriceItems(data.estimate?.payload ?? null) : null}
           />
@@ -126,6 +129,7 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
               api={api}
               projectId={projectId}
               estimate={priceItems}
+              catalog={catalog}
               units={units}
               onSaved={() => void reloadEstimate()}
               onClose={() => setPriceItems(null)}

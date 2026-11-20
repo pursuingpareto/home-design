@@ -39,5 +39,24 @@ ALTERNATIVES: dict[str, str] = {
 ALLOWED: dict[str, frozenset[str]] = {c: frozenset({DEFAULTS[c], ALTERNATIVES[c]}) for c in JUNCTION_CLASSES}
 
 
+# ART-002 §6.3: a family (vs-02.md §9.2) and a description per type, carried by the schedule for the
+# types it lists. Every description says the type is representational only (D054, AC2-07).
+_REPRESENTATIONAL = "Representational only: no capacity, sizes, or fasteners."
+FAMILIES: dict[str, str] = {
+    "PEGGED_MORTISE_TENON": "traditional",
+    "BRIDLE": "traditional",
+    "HOUSED_DOVETAIL": "traditional",
+    "STEEL_KNIFE_PLATE": "engineered",
+    "JOIST_HANGER": "engineered",
+}
+DESCRIPTIONS: dict[str, str] = {
+    "PEGGED_MORTISE_TENON": f"Pegged mortise and tenon. {_REPRESENTATIONAL}",
+    "BRIDLE": f"Bridle joint. {_REPRESENTATIONAL}",
+    "HOUSED_DOVETAIL": f"Housed dovetail. {_REPRESENTATIONAL}",
+    "STEEL_KNIFE_PLATE": f"Concealed steel knife plate with dowels. {_REPRESENTATIONAL}",
+    "JOIST_HANGER": f"Joist hanger. {_REPRESENTATIONAL}",
+}
+
+
 def allowed(junction_class: str, connection_type: str) -> bool:
     return connection_type in ALLOWED.get(junction_class, frozenset())

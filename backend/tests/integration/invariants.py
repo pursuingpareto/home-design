@@ -19,6 +19,7 @@ from homedesign.model.schema import Snapshot
 
 EPS = 1e-6
 ARTIFACTS = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")
+PLAN_ARRAYS = ("posts", "beams", "sills", "joists", "braces", "rafters", "purlins")
 
 
 @dataclass
@@ -81,14 +82,12 @@ def check_revision(api, pid: str, rev: str) -> RevisionView:
     mesh = view.envelopes["mesh3d"]["payload"]
     schedule = view.envelopes["timber_schedule"]["payload"]
 
-    # One inventory: mesh and schedule list exactly the snapshot's members (AC-03, artifacts §10.3).
-    # The plan lists the posts and beams only, until ART-002 (MODEL-005 §9, artifacts.md §5 interim note).
-    plan_ids = [m["member_id"] for p in plan["planes"] for m in (*p["posts"], *p["beams"])]
+    # One inventory: plan, mesh, and schedule list exactly the snapshot's members (AC-03, AC2-02, artifacts §10.3).
+    plan_ids = [m["member_id"] for p in plan["planes"] for array in PLAN_ARRAYS for m in p[array]]
     mesh_ids = [m["member_id"] for m in mesh["members"]]
     schedule_ids = [m["member_id"] for m in schedule["members"]]
-    plan_members = [i for i, m in members.items() if m["member_role"] in ("POST", "BEAM")]
-    for name, ids, expected in (("plan", plan_ids, plan_members), ("mesh", mesh_ids, members), ("schedule", schedule_ids, members)):
-        assert sorted(ids) == sorted(expected), f"{name} member IDs differ from the snapshot inventory"
+    for name, ids in (("plan", plan_ids), ("mesh", mesh_ids), ("schedule", schedule_ids)):
+        assert sorted(ids) == sorted(members), f"{name} member IDs differ from the snapshot inventory"
     assert len(set(schedule_ids)) == len(schedule_ids)
 
     # Dimensions agree with the semantic records (AC-01, artifacts §10.2).
@@ -124,14 +123,24 @@ def check_revision(api, pid: str, rev: str) -> RevisionView:
     # Connections reconcile with the frame (CONN-001 §6) and lie on both members' axes (§4.2, D058).
     check_connections(view)
 
-    # The estimate follows the schedule and never invents a total (artifacts §8.1, §10.4, §10.8).
+    # Plan, mesh, and schedule carry exactly the snapshot's connections, and the counts reconcile (ART-002 §11).
+    check_artifact_connections(view, plan, mesh, schedule)
+
+    # The estimate follows the schedule and never invents a total (artifacts §8.1, §10.4, §10.8; ART-002 §7).
     estimate_env = view.envelopes["preliminary_estimate"]
     estimate = estimate_env["payload"]
     by_key = {f"timber.{role}.{label}": a for (role, label), a in aggregates.items()}
-    assert sorted(li["key"] for li in estimate["line_items"]) == sorted(by_key)
+    per_type: Counter = Counter()
+    for a in schedule["connection_aggregates"]:
+        per_type[a["connection_type"]] += a["count"]
+    expected_lines = {**{k: a["total_length_m"] for k, a in by_key.items()}, **{f"connection.{t}": n for t, n in per_type.items()}}
+    assert {li["key"]: li["quantity_value"] for li in estimate["line_items"]} == expected_lines
+    keys = [li["key"] for li in estimate["line_items"]]
+    assert keys == sorted(keys, key=lambda k: k.encode("utf-16-be")) and len(set(keys)) == len(keys)
     for li in estimate["line_items"]:
-        assert li["quantity_value"] == by_key[li["key"]]["total_length_m"]
+        assert li["quantity_unit"] == ("each" if li["kind"] == "connection" else "m")
         assert (li["amount_minor"] is None) == (li["unit_price_minor"] is None) == (not li["priced"])
+    assert estimate["assumptions"] == schedule["assumptions"]
     priced = [li for li in estimate["line_items"] if li["priced"]]
     coverage = "none" if not priced else "complete" if len(priced) == len(estimate["line_items"]) else "partial"
     assert estimate["coverage"] == coverage
@@ -190,6 +199,30 @@ def check_connections(view: RevisionView) -> None:
         assert _on_axis(c["location_m"], receiving["start_m"], receiving["end_m"]), c["generation_key"]
         assert c["connection_type"] == defaults[c["junction_class"]]
         assert c["generation_key"] == f"connection/{c['junction_class']}/{receiving['generation_key']}/{entering['generation_key']}"
+
+
+def check_artifact_connections(view: RevisionView, plan, mesh, schedule) -> None:
+    records = view.connections()
+    members = view.members()
+    plan_markers = {c["connection_id"]: (p["plane_id"], c) for p in plan["planes"] for c in p["connections"]}
+    plane_of = {m["member_id"]: p["plane_id"] for p in plan["planes"] for array in PLAN_ARRAYS for m in p[array]}
+    mesh_markers = {c["connection_id"]: c for c in mesh["connections"]}
+    rows = {c["connection_id"]: c for c in schedule["connections"]}
+    for name, ids in (("plan", plan_markers), ("mesh", mesh_markers), ("schedule", rows)):
+        assert set(ids) == set(records), f"{name} connections differ from the snapshot's"
+    assert len(plan_markers) == sum(len(p["connections"]) for p in plan["planes"]) and len(rows) == len(schedule["connections"])
+    for cid, record in records.items():
+        fields = (record["generation_key"], record["junction_class"], record["connection_type"])
+        plane, marker = plan_markers[cid]
+        for item in (marker, mesh_markers[cid], rows[cid]):
+            assert (item["generation_key"], item["junction_class"], item["connection_type"]) == fields, record["generation_key"]
+        assert plane == plane_of[record["member_ids"][1]] and marker["xy_m"] == record["location_m"][:2]
+        assert mesh_markers[cid]["location_m"] == record["location_m"]
+        assert rows[cid]["member_ids"] == record["member_ids"] and all(m in members for m in record["member_ids"])
+    counts = Counter((r["junction_class"], r["connection_type"]) for r in schedule["connections"])
+    assert {(a["junction_class"], a["connection_type"]): a["count"] for a in schedule["connection_aggregates"]} == counts
+    assert sum(a["count"] for a in schedule["connection_aggregates"]) == len(records)
+    assert [t["connection_type"] for t in schedule["connection_catalog"]["types"]] == sorted({t for _, t in counts})
 
 
 def check_transition(before: RevisionView, after: RevisionView, *, preserve_ids: bool = True) -> None:

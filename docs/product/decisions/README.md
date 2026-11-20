@@ -59,7 +59,7 @@
 - D057: [VS-02 frame parameter command and roof classification](D057-vs02-frame-command-roof-classification.md) — `SetFrameParameters` (five settings, consequential); `SetMemberSection` takes the seven version 2 roles; table `vs02-change-classes-1` makes roof edits consequential; amends D043.
 - D058: [Member reference axes lie on datums](D058-datum-reference-axes.md) — every `vs02-frame-1` axis lies on a grid station, plane, or roof plane; joists frame into beams; rafters bear on the plate line without tails; sections never move axes; resolves D053's bearing question.
 - D059: [VS-02 junction rules and `SetConnectionType`](D059-vs02-junction-rules-connection-type-command.md) — one connection per entering member end (312 for Reference House 001 v2); fixed receiving members where several meet; no record for junctions without a class (post splices, sill joints); `SetConnectionType` is consequential; resolves D054's open points.
-- D060: [VS-02 artifact payloads](D060-vs02-artifact-payloads.md) — a fourth `roof` plan plane for rafters, purlins, and their connections; plumb purlins in 3D; ART-002 ships the interim browser changes, including per-piece prices; amends D027 when implemented.
+- D060: [VS-02 artifact payloads](D060-vs02-artifact-payloads.md) — a fourth `roof` plan plane for rafters, purlins, and their connections; plumb purlins in 3D; ART-002 ships the interim browser changes, including per-piece prices; amends D027 (implemented, ART-002).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 

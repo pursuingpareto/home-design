@@ -273,6 +273,21 @@ export interface components {
              */
             schema_version: 1;
         };
+        /** CatalogType */
+        CatalogType: {
+            /**
+             * Connection Type
+             * @enum {string}
+             */
+            connection_type: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
+            /** Description */
+            description: string;
+            /**
+             * Family
+             * @enum {string}
+             */
+            family: "traditional" | "engineered";
+        };
         /** Claims */
         Claims: {
             /**
@@ -368,6 +383,31 @@ export interface components {
              */
             schema_version: 1;
         };
+        /** ConnectionAggregate */
+        ConnectionAggregate: {
+            /**
+             * Connection Type
+             * @enum {string}
+             */
+            connection_type: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
+            /** Count */
+            count: number;
+            /**
+             * Junction Class
+             * @enum {string}
+             */
+            junction_class: "post-beam" | "post-sill" | "brace" | "joist-beam" | "rafter-peak" | "rafter-foot" | "purlin-rafter";
+        };
+        /** ConnectionCatalog */
+        ConnectionCatalog: {
+            /**
+             * Catalog Version
+             * @constant
+             */
+            catalog_version: "vs02-connections-1";
+            /** Types */
+            types: components["schemas"]["CatalogType"][];
+        };
         /**
          * ConnectionChanges
          * @description Generated connections the commit adds, removes, or changes (CONN-001 §7.2), shaped like `members`.
@@ -379,6 +419,34 @@ export interface components {
             removed: components["schemas"]["ConnectionRef"][];
             /** Updated */
             updated: string[];
+        };
+        /** ConnectionLine */
+        ConnectionLine: {
+            /** Amount Minor */
+            amount_minor: number | null;
+            /**
+             * Connection Type
+             * @enum {string}
+             */
+            connection_type: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
+            /** Key */
+            key: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "connection";
+            /** Priced */
+            priced: boolean;
+            /**
+             * Quantity Unit
+             * @constant
+             */
+            quantity_unit: "each";
+            /** Quantity Value */
+            quantity_value: number;
+            /** Unit Price Minor */
+            unit_price_minor: number | null;
         };
         /** ConnectionRef */
         ConnectionRef: {
@@ -677,29 +745,6 @@ export interface components {
             /** Story Height M */
             story_height_m: number;
         };
-        /** LineItem */
-        LineItem: {
-            /** Amount Minor */
-            amount_minor: number | null;
-            /** Key */
-            key: string;
-            /** Nominal Section */
-            nominal_section: string;
-            /** Priced */
-            priced: boolean;
-            /**
-             * Quantity Unit
-             * @default m
-             * @constant
-             */
-            quantity_unit: "m";
-            /** Quantity Value */
-            quantity_value: number;
-            /** Role */
-            role: string;
-            /** Unit Price Minor */
-            unit_price_minor: number | null;
-        };
         /** Manifest */
         Manifest: {
             /** Artifacts */
@@ -780,6 +825,8 @@ export interface components {
         };
         /** mesh3d payload (artifacts.md §6) */
         Mesh3dPayload: {
+            /** Connections */
+            connections: components["schemas"]["MeshConnection"][];
             envelope: components["schemas"]["Envelope3d"];
             /** Members */
             members: components["schemas"]["MeshMember"][];
@@ -789,6 +836,28 @@ export interface components {
              * @constant
              */
             units: "m";
+        };
+        /**
+         * MeshConnection
+         * @description A connection marker: where it is and what type it has, with no size or shape (ART-002 §5.2).
+         */
+        MeshConnection: {
+            /** Connection Id */
+            connection_id: string;
+            /**
+             * Connection Type
+             * @enum {string}
+             */
+            connection_type: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
+            /** Generation Key */
+            generation_key: string;
+            /**
+             * Junction Class
+             * @enum {string}
+             */
+            junction_class: "post-beam" | "post-sill" | "brace" | "joist-beam" | "rafter-peak" | "rafter-foot" | "purlin-rafter";
+            /** Location M */
+            location_m: number[];
         };
         /** MeshMember */
         MeshMember: {
@@ -840,18 +909,27 @@ export interface components {
              */
             units: "m";
         };
-        /** PlanBeam */
-        PlanBeam: {
-            /** End Xy M */
-            end_xy_m: number[];
+        /**
+         * PlanConnection
+         * @description A connection marker on the entering member's plane (ART-002 §4.2). Members are listed by the schedule.
+         */
+        PlanConnection: {
+            /** Connection Id */
+            connection_id: string;
+            /**
+             * Connection Type
+             * @enum {string}
+             */
+            connection_type: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
             /** Generation Key */
             generation_key: string;
-            /** Member Id */
-            member_id: string;
-            /** Section Id */
-            section_id: string;
-            /** Start Xy M */
-            start_xy_m: number[];
+            /**
+             * Junction Class
+             * @enum {string}
+             */
+            junction_class: "post-beam" | "post-sill" | "brace" | "joist-beam" | "rafter-peak" | "rafter-foot" | "purlin-rafter";
+            /** Xy M */
+            xy_m: number[];
         };
         /** PlanFootprint */
         PlanFootprint: {
@@ -873,19 +951,45 @@ export interface components {
             /** Start Xy M */
             start_xy_m: number[];
         };
+        /**
+         * PlanLinearMember
+         * @description Every role but posts: the plan projection of the member's axis (ART-002 §4.1).
+         */
+        PlanLinearMember: {
+            /** End Xy M */
+            end_xy_m: number[];
+            /** Generation Key */
+            generation_key: string;
+            /** Member Id */
+            member_id: string;
+            /** Start Xy M */
+            start_xy_m: number[];
+        };
         /** PlanPlane */
         PlanPlane: {
             /** Beams */
-            beams: components["schemas"]["PlanBeam"][];
+            beams: components["schemas"]["PlanLinearMember"][];
+            /** Braces */
+            braces: components["schemas"]["PlanLinearMember"][];
+            /** Connections */
+            connections: components["schemas"]["PlanConnection"][];
+            /** Joists */
+            joists: components["schemas"]["PlanLinearMember"][];
             /** Level Id */
             level_id: string | null;
             /**
              * Plane Id
              * @enum {string}
              */
-            plane_id: "level-0" | "level-1" | "eave";
+            plane_id: "level-0" | "level-1" | "eave" | "roof";
             /** Posts */
             posts: components["schemas"]["PlanPost"][];
+            /** Purlins */
+            purlins: components["schemas"]["PlanLinearMember"][];
+            /** Rafters */
+            rafters: components["schemas"]["PlanLinearMember"][];
+            /** Sills */
+            sills: components["schemas"]["PlanLinearMember"][];
             /** Z M */
             z_m: number;
         };
@@ -895,13 +999,13 @@ export interface components {
             generation_key: string;
             /** Member Id */
             member_id: string;
-            /** Section Id */
-            section_id: string;
             /** Xy M */
             xy_m: number[];
         };
         /** preliminary_estimate payload (artifacts.md §8) */
         PreliminaryEstimatePayload: {
+            /** Assumptions */
+            assumptions: components["schemas"]["Assumption"][];
             /**
              * Coverage
              * @enum {string}
@@ -910,7 +1014,7 @@ export interface components {
             /** Currency */
             currency: "USD" | null;
             /** Line Items */
-            line_items: components["schemas"]["LineItem"][];
+            line_items: (components["schemas"]["TimberLine"] | components["schemas"]["ConnectionLine"])[];
             price_book: components["schemas"]["PriceBookInfo"] | null;
             totals: components["schemas"]["Totals"];
         };
@@ -1006,9 +1110,9 @@ export interface components {
             key: string;
             /**
              * Unit
-             * @constant
+             * @enum {string}
              */
-            unit: "m";
+            unit: "m" | "each";
             /** Unit Price Minor */
             unit_price_minor: number;
         };
@@ -1103,6 +1207,31 @@ export interface components {
             role: "POST" | "BEAM" | "SILL" | "FLOOR_JOIST" | "PRINCIPAL_RAFTER" | "PURLIN" | "KNEE_BRACE";
             /** Total Length M */
             total_length_m: number;
+        };
+        /** ScheduleConnectionRow */
+        ScheduleConnectionRow: {
+            /** Connection Id */
+            connection_id: string;
+            /**
+             * Connection Type
+             * @enum {string}
+             */
+            connection_type: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
+            /** Generation Key */
+            generation_key: string;
+            /**
+             * Junction Class
+             * @enum {string}
+             */
+            junction_class: "post-beam" | "post-sill" | "brace" | "joist-beam" | "rafter-peak" | "rafter-foot" | "purlin-rafter";
+            /** Member Ids */
+            member_ids: string[];
+            /**
+             * Quantity
+             * @default 1
+             * @constant
+             */
+            quantity: 1;
         };
         /** ScheduleRow */
         ScheduleRow: {
@@ -1347,6 +1476,36 @@ export interface components {
             /** Y Lines */
             y_lines: components["schemas"]["GridLineArg"][];
         };
+        /** TimberLine */
+        TimberLine: {
+            /** Amount Minor */
+            amount_minor: number | null;
+            /** Key */
+            key: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "timber";
+            /** Nominal Section */
+            nominal_section: string;
+            /** Priced */
+            priced: boolean;
+            /**
+             * Quantity Unit
+             * @constant
+             */
+            quantity_unit: "m";
+            /** Quantity Value */
+            quantity_value: number;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "POST" | "BEAM" | "SILL" | "FLOOR_JOIST" | "PRINCIPAL_RAFTER" | "PURLIN" | "KNEE_BRACE";
+            /** Unit Price Minor */
+            unit_price_minor: number | null;
+        };
         /** TimberMember */
         TimberMember: {
             /** End M */
@@ -1383,6 +1542,11 @@ export interface components {
             aggregates: components["schemas"]["ScheduleAggregate"][];
             /** Assumptions */
             assumptions: components["schemas"]["Assumption"][];
+            /** Connection Aggregates */
+            connection_aggregates: components["schemas"]["ConnectionAggregate"][];
+            connection_catalog: components["schemas"]["ConnectionCatalog"];
+            /** Connections */
+            connections: components["schemas"]["ScheduleConnectionRow"][];
             /**
              * Length Basis
              * @default reference_axis

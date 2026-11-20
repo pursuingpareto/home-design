@@ -26,9 +26,12 @@ export const COLORS = {
 const v = (p: readonly number[]) => new THREE.Vector3(p[0] ?? 0, p[1] ?? 0, p[2] ?? 0);
 
 /**
- * World transform of a member's box, whose local axes are (axis, width, depth):
- * - posts (vertical axis): width along +X, depth along +Y;
- * - other members: depth is world +Z; width is horizontal and perpendicular to the axis's plan projection.
+ * World transform of a member's box, whose local axes are (axis, width, depth), by the one rule of
+ * artifacts.md §6 (ART-002 §5.1):
+ * - vertical axis (posts): width along +X, depth along +Y;
+ * - any other axis: width is horizontal and perpendicular to the axis's plan projection; depth is
+ *   along axis × width, taken with a non-negative Z. Beams, sills, joists, and purlins get a vertical
+ *   depth; rafters a depth perpendicular to the roof plane; braces a depth in their beam's plane.
  */
 export function memberMatrix(member: MeshMember): { matrix: THREE.Matrix4; size: THREE.Vector3 } {
   const start = v(member.axis_start_m);

@@ -33,3 +33,4 @@ export const mesh = fixture.envelopes.mesh3d;
 export const schedule = fixture.envelopes.timber_schedule;
 export const estimateNone = fixture.envelopes.preliminary_estimate;
 export const estimateComplete = fixture.estimate_complete;
+export const catalog = schedule.payload!.connection_catalog;

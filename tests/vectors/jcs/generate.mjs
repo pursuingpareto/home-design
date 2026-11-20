@@ -192,23 +192,24 @@ function generateConnections(snapshot) {
 }
 const connectionsCanonical = canonicalize(generateConnections(fixture));
 
-// Independent ECMAScript implementation of the GEOM-001 views (artifacts.md §5-6, D048,
-// geometry.md "Numeric evaluation"). Only tan(pitch)-derived values may differ from other
+// Independent ECMAScript implementation of the GEOM-001 and ART-002 views (artifacts.md §5-6, D048,
+// D060, geometry.md "Numeric evaluation"). Only tan(pitch)-derived values may differ from other
 // implementations, within 1e-12 m.
+const byKey = (a, b) => (a.generation_key < b.generation_key ? -1 : a.generation_key > b.generation_key ? 1 : 0);
+
 function geometryModel(snapshot) {
   const byId = new Map(snapshot.entities.map((e) => [e.id, e]));
   const b = snapshot.building;
   const fp = byId.get(b.footprint_id);
   const [l0, l1] = b.level_ids.map((id) => byId.get(id));
   const roof = byId.get(b.roof_id);
-  const members = snapshot.entities
-    .filter((e) => e.kind === "TimberMember")
-    .sort((a, b2) => (a.generation_key < b2.generation_key ? -1 : a.generation_key > b2.generation_key ? 1 : 0));
+  const members = snapshot.entities.filter((e) => e.kind === "TimberMember").sort(byKey);
+  const connections = snapshot.entities.filter((e) => e.kind === "Connection").sort(byKey);
   const [x0, y0] = fp.origin_m;
   const x1 = x0 + fp.width_m, y1 = y0 + fp.depth_m;
   const zEave = l1.elevation_m + l1.story_height_m;
   return {
-    byId, fp, l0, l1, roof, members, x0, y0, x1, y1, zEave,
+    byId, fp, l0, l1, roof, members, connections, x0, y0, x1, y1, zEave,
     yRidge: y0 + fp.depth_m / 2,
     ySouth: y0 - roof.eave_overhang_m,
     yNorth: y0 + fp.depth_m + roof.eave_overhang_m,
@@ -216,27 +217,47 @@ function geometryModel(snapshot) {
   };
 }
 
+// ART-002 §4.1, written as key patterns per role (the Python builder uses key segments).
+const PLAN_SLOTS = {
+  POST: [[/\/level-0\/post$/, "level-0", "posts"], [/\/level-1\/post$/, "level-1", "posts"]],
+  SILL: [[/\/plane-L0\/sill$/, "level-0", "sills"]],
+  BEAM: [[/\/plane-L1\/beam$/, "level-1", "beams"], [/\/plane-eave\/beam$/, "eave", "beams"]],
+  FLOOR_JOIST: [[/\/plane-L1\/joist$/, "level-1", "joists"]],
+  KNEE_BRACE: [[/\/plane-L1\/brace\/[^/]+$/, "level-1", "braces"], [/\/plane-eave\/brace\/[^/]+$/, "eave", "braces"]],
+  PRINCIPAL_RAFTER: [[/^frame\/roof\/[^/]+\/(south|north)\/principal-rafter$/, "roof", "rafters"]],
+  PURLIN: [[/^frame\/roof\/[^/]+\/(south|north)\/p\d+\/purlin$/, "roof", "purlins"]],
+};
+const PLAN_ARRAYS = ["posts", "beams", "sills", "joists", "braces", "rafters", "purlins"];
+
 function plan2d(snapshot) {
   const m = geometryModel(snapshot);
+  const plane = (plane_id, level_id, z_m) => ({ plane_id, level_id, z_m, ...Object.fromEntries(PLAN_ARRAYS.map((a) => [a, []])), connections: [] });
   const planes = {
-    "level-0": { plane_id: "level-0", level_id: m.l0.id, z_m: m.l0.elevation_m, posts: [], beams: [] },
-    "level-1": { plane_id: "level-1", level_id: m.l1.id, z_m: m.l1.elevation_m, posts: [], beams: [] },
-    eave: { plane_id: "eave", level_id: null, z_m: m.zEave, posts: [], beams: [] },
+    "level-0": plane("level-0", m.l0.id, m.l0.elevation_m),
+    "level-1": plane("level-1", m.l1.id, m.l1.elevation_m),
+    eave: plane("eave", null, m.zEave),
+    roof: plane("roof", null, m.zEave),
   };
-  // MODEL-005 §9 (artifacts.md §5 interim note): posts and beams only until ART-002.
-  for (const mem of m.members.filter((x) => x.member_role === "POST" || x.member_role === "BEAM")) {
+  const planeOf = new Map();
+  for (const mem of m.members) {
     const k = mem.generation_key;
-    const [plane, group] = k.includes("/level-0/post") ? ["level-0", "posts"]
-      : k.includes("/level-1/post") ? ["level-1", "posts"]
-      : k.includes("/plane-L1/") ? ["level-1", "beams"]
-      : ["eave", "beams"];
-    planes[plane][group].push(group === "posts"
-      ? { member_id: mem.id, generation_key: k, xy_m: mem.start_m.slice(0, 2), section_id: mem.section_id }
-      : { member_id: mem.id, generation_key: k, start_xy_m: mem.start_m.slice(0, 2), end_xy_m: mem.end_m.slice(0, 2), section_id: mem.section_id });
+    const slot = (PLAN_SLOTS[mem.member_role] || []).find(([re]) => re.test(k));
+    if (!slot) throw new Error(`member ${k} matches no plan plane`);
+    const [, planeId, array] = slot;
+    planeOf.set(mem.id, planeId);
+    planes[planeId][array].push(array === "posts"
+      ? { member_id: mem.id, generation_key: k, xy_m: mem.start_m.slice(0, 2) }
+      : { member_id: mem.id, generation_key: k, start_xy_m: mem.start_m.slice(0, 2), end_xy_m: mem.end_m.slice(0, 2) });
+  }
+  for (const c of m.connections) {
+    planes[planeOf.get(c.member_ids[1])].connections.push({
+      connection_id: c.id, generation_key: c.generation_key, junction_class: c.junction_class,
+      connection_type: c.connection_type, xy_m: c.location_m.slice(0, 2),
+    });
   }
   return {
     units: "m",
-    planes: [planes["level-0"], planes["level-1"], planes.eave],
+    planes: [planes["level-0"], planes["level-1"], planes.eave, planes.roof],
     footprint: { origin_m: [m.x0, m.y0], width_m: m.fp.width_m, depth_m: m.fp.depth_m, rotation_rad: m.fp.rotation_rad, ring_m: m.ring },
     roof_plan: {
       ridge_m: { start_xy_m: [m.x0, m.yRidge], end_xy_m: [m.x1, m.yRidge] },
@@ -261,6 +282,10 @@ function mesh3d(snapshot) {
       return { member_id: mem.id, generation_key: mem.generation_key, role: mem.member_role, primitive: "oriented_box",
         axis_start_m: mem.start_m, axis_end_m: mem.end_m, section_width_m: s.actual_width_m, section_depth_m: s.actual_depth_m };
     }),
+    connections: m.connections.map((c) => ({
+      connection_id: c.id, generation_key: c.generation_key, junction_class: c.junction_class,
+      connection_type: c.connection_type, location_m: c.location_m,
+    })),
     envelope: {
       footprint_ring_m: m.ring,
       level_z_m: [m.l0.elevation_m, m.l1.elevation_m],
@@ -278,13 +303,20 @@ function mesh3d(snapshot) {
 }
 const plan2dCanonical = canonicalize(plan2d(fixture));
 
-// Independent ECMAScript implementation of timber_schedule (artifacts.md §7, EST-001 §3):
-// naive sqrt length, one aggregate per (role, nominal_section) summed in generation_key order.
+// Independent ECMAScript implementation of timber_schedule (artifacts.md §7, EST-001 §3, ART-002 §6):
+// naive sqrt length, one aggregate per (role, nominal_section) summed in generation_key order; one
+// row per connection without its location, one count per (junction_class, connection_type) in use,
+// and the catalog entries of the types in use.
+const CATALOG = {
+  PEGGED_MORTISE_TENON: ["traditional", "Pegged mortise and tenon."],
+  BRIDLE: ["traditional", "Bridle joint."],
+  HOUSED_DOVETAIL: ["traditional", "Housed dovetail."],
+  STEEL_KNIFE_PLATE: ["engineered", "Concealed steel knife plate with dowels."],
+  JOIST_HANGER: ["engineered", "Joist hanger."],
+};
 function timberSchedule(snapshot) {
   const byId = new Map(snapshot.entities.map((e) => [e.id, e]));
-  const members = snapshot.entities
-    .filter((e) => e.kind === "TimberMember")
-    .sort((a, b) => (a.generation_key < b.generation_key ? -1 : a.generation_key > b.generation_key ? 1 : 0));
+  const members = snapshot.entities.filter((e) => e.kind === "TimberMember").sort(byKey);
   const totals = new Map();
   const rows = members.map((m) => {
     const s = byId.get(m.section_id), mat = byId.get(m.material_id);
@@ -298,13 +330,31 @@ function timberSchedule(snapshot) {
   });
   const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
   const aggregates = [...totals.values()].sort((a, b) => cmp(a.role, b.role) || cmp(a.nominal_section, b.nominal_section));
+  const connections = snapshot.entities.filter((e) => e.kind === "Connection").sort(byKey);
+  const counts = new Map();
+  for (const c of connections) {
+    const k = c.junction_class + "\u0000" + c.connection_type;
+    const a = counts.get(k) || { junction_class: c.junction_class, connection_type: c.connection_type, count: 0 };
+    a.count += 1; counts.set(k, a);
+  }
+  const connection_aggregates = [...counts.values()].sort((a, b) => cmp(a.junction_class, b.junction_class) || cmp(a.connection_type, b.connection_type));
+  const usedTypes = [...new Set(connections.map((c) => c.connection_type))].sort();
   return {
     units: { length: "m", count: "1" }, length_basis: "reference_axis",
     assumptions: [
       { code: "REFERENCE_AXIS_LENGTH", message: "Lengths are reference-axis distances, not fabrication cut lengths." },
-      { code: "NO_CONNECTIONS", message: "Joinery and machining are not included." },
+      { code: "CONNECTIONS_REPRESENTATIONAL", message: "Connections are listed by type and count only. Types are representational: no capacity, sizes, fasteners, or machining." },
+      { code: "UNCLASSED_JOINTS_NOT_COUNTED", message: "Joints without a junction class, such as post splices and sill joints at grid stations, are not counted." },
     ],
     members: rows, aggregates,
+    connections: connections.map((c) => ({ connection_id: c.id, generation_key: c.generation_key, junction_class: c.junction_class,
+      connection_type: c.connection_type, member_ids: c.member_ids, quantity: 1 })),
+    connection_aggregates,
+    connection_catalog: {
+      catalog_version: "vs02-connections-1",
+      types: usedTypes.map((t) => ({ connection_type: t, family: CATALOG[t][0],
+        description: `${CATALOG[t][1]} Representational only: no capacity, sizes, or fasteners.` })),
+    },
   };
 }
 const scheduleCanonical = canonicalize(timberSchedule(fixture));
@@ -348,7 +398,12 @@ const output = {
     plan2d: { canonical_bytes: Buffer.byteLength(plan2dCanonical, "utf8"), fingerprint: sha256(plan2dCanonical) },
     // Full payload: values derived from tan(pitch) are compared within 1e-12 m, the rest exactly.
     mesh3d: { tan: Math.tan(fixture.entities.find((e) => e.kind === "GableRoof").pitch_rad), payload: mesh3d(fixture) },
-    timber_schedule: { canonical_bytes: Buffer.byteLength(scheduleCanonical, "utf8"), fingerprint: sha256(scheduleCanonical), aggregates: timberSchedule(fixture).aggregates },
+    timber_schedule: {
+      canonical_bytes: Buffer.byteLength(scheduleCanonical, "utf8"),
+      fingerprint: sha256(scheduleCanonical),
+      aggregates: timberSchedule(fixture).aggregates,
+      connection_aggregates: timberSchedule(fixture).connection_aggregates,
+    },
   },
   inventories: [
     {

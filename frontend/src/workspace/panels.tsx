@@ -7,6 +7,7 @@ import { approxPerFoot, formatCents } from "../units/money";
 import { Mesh3dView } from "../views/Mesh3dView";
 import { pairViews, type ViewState } from "../views/pairing";
 import { Plan2dView } from "../views/Plan2dView";
+import { lineLabel, type ConnectionCatalog } from "./lineItems";
 import { statusOf, type RevisionData } from "./useRevisionData";
 
 const TYPE_LABEL: Record<ArtifactType, string> = {
@@ -172,7 +173,18 @@ export function SchedulePanel({ schedule, units, selected, onSelect }: { schedul
   );
 }
 
-export function EstimatePanel({ estimate, units, onEditPrices }: { estimate: EstimateEnvelope | null; units: UnitSystem; onEditPrices: (() => void) | null }) {
+export function EstimatePanel({
+  estimate,
+  catalog,
+  units,
+  onEditPrices,
+}: {
+  estimate: EstimateEnvelope | null;
+  /** The same revision's schedule catalog, for connection descriptions (ART-002 §6.3, §9). */
+  catalog: ConnectionCatalog | null;
+  units: UnitSystem;
+  onEditPrices: (() => void) | null;
+}) {
   const payload = estimate?.payload ?? null;
   const missing = estimate?.warnings.filter((w) => w.code !== "PRELIMINARY_UNVERIFIED") ?? [];
   return (
@@ -208,14 +220,14 @@ export function EstimatePanel({ estimate, units, onEditPrices }: { estimate: Est
             </thead>
             <tbody>
               {payload.line_items.map((li) => (
-                <tr key={li.key}>
+                <tr key={li.key} data-key={li.key}>
+                  <td>{lineLabel(li, catalog)}</td>
+                  <td>{li.kind === "connection" ? `${li.quantity_value} each` : formatLength(li.quantity_value, units)}</td>
                   <td>
-                    {li.role} {li.nominal_section}
-                  </td>
-                  <td>{formatLength(li.quantity_value, units)}</td>
-                  <td>
-                    {li.unit_price_minor === null ? "Not priced" : `${formatCents(li.unit_price_minor)}/m`}
-                    {li.unit_price_minor !== null && units === "imperial" && <span className="approx"> {approxPerFoot(li.unit_price_minor)}</span>}
+                    {li.unit_price_minor === null
+                      ? "Not priced"
+                      : `${formatCents(li.unit_price_minor)}${li.kind === "connection" ? " each" : "/m"}`}
+                    {li.kind === "timber" && li.unit_price_minor !== null && units === "imperial" && <span className="approx"> {approxPerFoot(li.unit_price_minor)}</span>}
                   </td>
                   <td>{li.amount_minor === null ? "—" : formatCents(li.amount_minor)}</td>
                 </tr>

@@ -1,14 +1,20 @@
-"""`preliminary_estimate` payload, builder, and money rounding (artifacts.md §8; EST-001 §4)."""
+"""`preliminary_estimate` payload, builder, and money rounding (artifacts.md §8; EST-001 §4; ART-002 §7).
+
+Timber lines are priced per meter of reference-axis length; connection lines per piece, one line per
+connection type in use (D054). Both use one exact rounding rule, which is exact for integer counts.
+"""
 
 from __future__ import annotations
 
 from decimal import ROUND_HALF_EVEN, Decimal
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from homedesign.dependencies.registry import Derivation, DerivationContext, Outcome
-from homedesign.model.schema import SafeInt, Uuid
+from homedesign.model.connections import ConnectionType
+from homedesign.model.schema import MemberRole, SafeInt, Uuid
+from homedesign.timber.schedule import Assumption
 
 COST_INPUTS_MISSING = {"code": "COST_INPUTS_MISSING", "message": "Some or all unit prices are not configured; no complete total is reported."}
 
@@ -26,15 +32,30 @@ class PriceBookInfo(_Strict):
     geography: str
 
 
-class LineItem(_Strict):
+class TimberLine(_Strict):
+    kind: Literal["timber"]
     key: str
-    role: str
+    role: MemberRole
     nominal_section: str
     quantity_value: float
-    quantity_unit: Literal["m"] = "m"
+    quantity_unit: Literal["m"]
     unit_price_minor: SafeInt | None
     amount_minor: SafeInt | None
     priced: bool
+
+
+class ConnectionLine(_Strict):
+    kind: Literal["connection"]
+    key: str
+    connection_type: ConnectionType
+    quantity_value: Annotated[SafeInt, Field(ge=1)]
+    quantity_unit: Literal["each"]
+    unit_price_minor: SafeInt | None
+    amount_minor: SafeInt | None
+    priced: bool
+
+
+LineItem = Annotated[TimberLine | ConnectionLine, Field(discriminator="kind")]
 
 
 class Totals(_Strict):
@@ -51,10 +72,11 @@ class PreliminaryEstimatePayload(_Strict):
     price_book: PriceBookInfo | None
     line_items: list[LineItem]
     totals: Totals
+    assumptions: list[Assumption]  # the schedule's, copied (ART-002 §7.2)
 
 
-def amount_minor(unit_price_minor: int, quantity: float) -> int:
-    """Exact product of an integer price and a double's exact binary value, rounded half-even."""
+def amount_minor(unit_price_minor: int, quantity: float | int) -> int:
+    """Exact product of an integer price and a double's exact binary value (or an integer count), rounded half-even."""
     exact = Decimal(unit_price_minor) * Decimal(quantity)  # Decimal(float) is exact
     return int(exact.to_integral_value(rounding=ROUND_HALF_EVEN))
 
@@ -68,24 +90,43 @@ def build_estimate(schedule: dict[str, Any], price_book: dict[str, Any] | None) 
     prices = {}
     if price_book is not None:
         prices = {row["key"]: row["unit_price_minor"] for row in price_book["book"]["rows"]}
+
+    def pricing(key: str, quantity: float | int) -> dict[str, Any]:
+        unit_price = prices.get(key)
+        return {
+            "unit_price_minor": unit_price,
+            "amount_minor": None if unit_price is None else amount_minor(unit_price, quantity),
+            "priced": unit_price is not None,
+        }
+
     lines = []
     for aggregate in schedule["aggregates"]:
         key = f"timber.{aggregate['role']}.{aggregate['nominal_section']}"
-        unit_price = prices.get(key)
-        amount = None if unit_price is None else amount_minor(unit_price, aggregate["total_length_m"])
         lines.append({
+            "kind": "timber",
             "key": key,
             "role": aggregate["role"],
             "nominal_section": aggregate["nominal_section"],
             "quantity_value": aggregate["total_length_m"],
             "quantity_unit": "m",
-            "unit_price_minor": unit_price,
-            "amount_minor": amount,
-            "priced": unit_price is not None,
+            **pricing(key, aggregate["total_length_m"]),
+        })
+    per_type: dict[str, int] = {}
+    for aggregate in schedule["connection_aggregates"]:  # one line per type in use (D054)
+        per_type[aggregate["connection_type"]] = per_type.get(aggregate["connection_type"], 0) + aggregate["count"]
+    for connection_type, count in per_type.items():
+        key = f"connection.{connection_type}"
+        lines.append({
+            "kind": "connection",
+            "key": key,
+            "connection_type": connection_type,
+            "quantity_value": count,
+            "quantity_unit": "each",
+            **pricing(key, count),
         })
     lines.sort(key=lambda line: _utf16(line["key"]))
-    priced = [line["amount_minor"] for line in lines if line["priced"]]
-    unpriced = len(lines) - len(priced)
+    amounts = [line["amount_minor"] for line in lines if line["priced"]]
+    unpriced = len(lines) - len(amounts)
     if price_book is None:
         coverage = "none"
     elif unpriced == 0:
@@ -103,11 +144,12 @@ def build_estimate(schedule: dict[str, Any], price_book: dict[str, Any] | None) 
         "price_book": info,
         "line_items": lines,
         "totals": {
-            "priced_amount_minor": sum(priced) if priced else None,
+            "priced_amount_minor": sum(amounts) if amounts else None,
             "unpriced_line_count": unpriced,
             # Never 0 for missing inputs; only a complete book yields a grand total (artifacts.md §8.1).
-            "grand_total_minor": sum(priced) if coverage == "complete" else None,
+            "grand_total_minor": sum(amounts) if coverage == "complete" else None,
         },
+        "assumptions": [dict(a) for a in schedule["assumptions"]],
     }
     warnings: list[dict] = []
     if coverage in ("none", "partial"):
@@ -140,4 +182,4 @@ def _derive(context: DerivationContext) -> Outcome:
     return Outcome(status, payload, warnings)
 
 
-ESTIMATE = Derivation("preliminary_estimate", "estimate-vs01", "1", _derive, depends_on=("timber_schedule",), external_inputs=_external)
+ESTIMATE = Derivation("preliminary_estimate", "estimate-vs01", "2", _derive, depends_on=("timber_schedule",), external_inputs=_external)

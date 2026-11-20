@@ -430,6 +430,7 @@ def test_mutation(case: Case):
 # CONN-001 every connection conformance code is reached by a fixture mutation above.
 NON_SNAPSHOT_CODES = {
     codes.DUPLICATE_PRICE_KEY: "test_estimating.py::test_invalid_books_are_rejected",
+    codes.PRICE_UNIT_MISMATCH: "test_estimating.py::test_invalid_books_are_rejected",
 }
 
 

@@ -20,9 +20,10 @@ from test_project import ACTOR, ACTOR_B, KEY, T0, cid
 TOKENS = {"tok-a": ACTOR, "tok-b": ACTOR_B}
 OPENAPI = json.loads(OPENAPI_PATH.read_text(encoding="utf-8"))
 POST_KEY, BEAM_KEY = "timber.POST.8x8", "timber.BEAM.8x12"
-# Every timber line of Reference House 001 v2 (D053): a book with these rows is complete.
+# Every line of Reference House 001 v2, timber (D053) and connection (ART-002 §7): a book with these rows is complete.
 FULL_PRICES = {POST_KEY: 3150, BEAM_KEY: 4725, "timber.SILL.8x8": 3150, "timber.FLOOR_JOIST.4x8": 1200,
-               "timber.PRINCIPAL_RAFTER.8x10": 3900, "timber.PURLIN.6x8": 2350, "timber.KNEE_BRACE.4x6": 900}
+               "timber.PRINCIPAL_RAFTER.8x10": 3900, "timber.PURLIN.6x8": 2350, "timber.KNEE_BRACE.4x6": 900,
+               "connection.BRIDLE": 6500, "connection.HOUSED_DOVETAIL": 3800, "connection.PEGGED_MORTISE_TENON": 4500}
 UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 
 
@@ -134,5 +135,10 @@ def make_api(store, registry=None, *, tokens: dict[str, str] | None = None, proj
 def book(**prices):
     return {
         "currency": "USD", "as_of": "2026-11-01", "source": "Supplier quote #123", "geography": "Chittenden County, VT",
-        "rows": [{"key": key, "unit": "m", "unit_price_minor": price} for key, price in prices.items()],
+        "rows": [{"key": key, "unit": unit_for(key), "unit_price_minor": price} for key, price in prices.items()],
     }
+
+
+def unit_for(key: str) -> str:
+    """The unit a key's family requires (ART-002 §7.3)."""
+    return "each" if key.startswith("connection.") else "m"

@@ -1,9 +1,9 @@
 # D060 — VS-02 artifact payloads: roof plan plane, plumb purlins, interim browser scope
 
-**Status:** Confirmed (not yet implemented; [ART-002](../../implementation/tasks/ART-002.md))  
+**Status:** Confirmed (implemented in VS-02, [ART-002](../../implementation/tasks/ART-002.md))  
 **Date:** 2026-11-20  
 **Scope:** How the version 2 `plan2d`, `mesh3d`, and `preliminary_estimate` present the complete frame and its connections, where the documents left a choice, and which browser changes ship with the payloads. Approved from [ART-002](../../implementation/tasks/ART-002.md) §12, items 8–10. The routine items 1–7 of that list are specified in the task file and go into artifacts.md with the implementation.  
-**Amends, when ART-002 implements it:** [D027](D027-vs01-artifact-dtos.md) and [artifacts.md](../../architecture/artifacts.md) §5–8:
+**Amends:** [D027](D027-vs01-artifact-dtos.md) and [artifacts.md](../../architecture/artifacts.md) §5–8:
 - `plan2d` gains a fourth plane and an array per role, and posts and beams lose `section_id` (ART-002 §4.3, so that [D056](D056-dependency-selectors.md)'s "changing a role's section leaves `plan2d` unaffected" holds under AC2-04);
 - estimate line items gain a `kind` (`timber` or `connection`), with connection lines counted `each` ([D054](D054-vs02-connection-catalog.md)).
 

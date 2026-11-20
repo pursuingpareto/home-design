@@ -10,14 +10,54 @@ describe("mesh3d tessellation (artifacts.md §6)", () => {
   it("draws one box per member with the schedule's and plan's IDs (artifacts.md §10 test 3)", () => {
     const scene = buildMeshScene(payload);
     const scheduleIds = schedule.payload!.members.map((m) => m.member_id).sort();
-    const planIds = plan.payload!.planes.flatMap((p) => [...p.posts, ...p.beams].map((m) => m.member_id)).sort();
+    const planIds = plan
+      .payload!.planes.flatMap((p) => [...p.posts, ...p.beams, ...p.sills, ...p.joists, ...p.braces, ...p.rafters, ...p.purlins].map((m) => m.member_id))
+      .sort();
     expect([...scene.members.keys()].sort()).toEqual(scheduleIds);
-    // The plan lists posts and beams only until ART-002 (MODEL-005 §9, artifacts.md §5).
-    const postsAndBeams = schedule.payload!.members.filter((m) => m.role === "POST" || m.role === "BEAM").map((m) => m.member_id).sort();
-    expect(planIds).toEqual(postsAndBeams);
+    expect(planIds).toEqual(scheduleIds); // every role is in the plan (ART-002 §4.1)
     expect(scheduleIds).toHaveLength(193);
-    expect(postsAndBeams).toHaveLength(58);
+    expect(payload.connections).toHaveLength(312);
     scene.dispose();
+  });
+
+  it("gives every role the basis of the artifacts.md §6 rule (ART-002 §13 test 4)", () => {
+    const pitch = payload.envelope.roof.pitch_rad;
+    const basis = (member: (typeof payload.members)[number]) => {
+      const { matrix } = memberMatrix(member);
+      const along = new THREE.Vector3(), width = new THREE.Vector3(), depth = new THREE.Vector3();
+      matrix.extractBasis(along, width, depth);
+      return { along, width, depth };
+    };
+    const roles = ["POST", "BEAM", "SILL", "FLOOR_JOIST", "PRINCIPAL_RAFTER", "PURLIN", "KNEE_BRACE"] as const;
+    for (const role of roles) {
+      const member = payload.members.find((m) => m.role === role)!;
+      const { along, width, depth } = basis(member);
+      expect(Math.abs(width.dot(along))).toBeLessThan(1e-12);
+      expect(Math.abs(depth.dot(along))).toBeLessThan(1e-12);
+      expect(Math.abs(depth.dot(width))).toBeLessThan(1e-12);
+      if (role === "POST") {
+        expect(width.toArray()).toEqual([1, 0, 0]);
+        expect(depth.toArray()).toEqual([0, 1, 0]);
+      } else {
+        expect(width.z).toBe(0);
+        expect(depth.z).toBeGreaterThanOrEqual(0);
+      }
+      if (role === "BEAM" || role === "SILL" || role === "FLOOR_JOIST" || role === "PURLIN") {
+        expect(depth.distanceTo(new THREE.Vector3(0, 0, 1))).toBeLessThan(1e-12); // depth vertical; purlins plumb (D060)
+      }
+      if (role === "PRINCIPAL_RAFTER") {
+        const south = (member.axis_end_m[1] ?? 0) > (member.axis_start_m[1] ?? 0);
+        const normal = new THREE.Vector3(0, (south ? -1 : 1) * Math.sin(pitch), Math.cos(pitch));
+        expect(depth.distanceTo(normal)).toBeLessThan(1e-12); // perpendicular to the roof plane (D053)
+        expect(Math.abs(width.x)).toBeCloseTo(1, 12);
+      }
+      if (role === "KNEE_BRACE") {
+        const inX = member.axis_start_m[1] === member.axis_end_m[1];
+        const planeNormal = inX ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
+        expect(Math.abs(width.dot(planeNormal))).toBeCloseTo(1, 12); // width across the beam's plane (D058)
+        expect(Math.abs(depth.dot(planeNormal))).toBeLessThan(1e-12);
+      }
+    }
   });
 
   it("orients posts and beams per the payload rules", () => {

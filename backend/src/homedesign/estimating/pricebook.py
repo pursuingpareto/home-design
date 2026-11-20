@@ -2,7 +2,8 @@
 
 Errors use D035 codes with D036 paths relative to the book. As in snapshot validation, only
 the earliest failing stage's issues are reported: shape and type (stage 1), duplicate row
-keys (stage 2, DUPLICATE_PRICE_KEY), then negative prices (stage 3, OUT_OF_RANGE).
+keys and units that do not match their key family (stage 2, DUPLICATE_PRICE_KEY and
+PRICE_UNIT_MISMATCH, ART-002 §7.3), then negative prices (stage 3, OUT_OF_RANGE).
 """
 
 from __future__ import annotations
@@ -37,9 +38,13 @@ class _Strict(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid", allow_inf_nan=False, frozen=True)
 
 
+# ART-002 §7.3: the unit each key family requires. Keys of other families take either unit and are unused.
+UNIT_BY_FAMILY = {"timber.": "m", "connection.": "each"}
+
+
 class PriceRow(_Strict):
     key: str
-    unit: Literal["m"]
+    unit: Literal["m", "each"]
     unit_price_minor: SafeInt  # non-negative: checked as OUT_OF_RANGE below
 
 
@@ -78,6 +83,9 @@ def validate_price_book(value: Any) -> tuple[PriceBook | None, ValidationResult 
             out.add(f"rows[{k}].key", codes.DUPLICATE_PRICE_KEY, "Price book row keys must be unique.", row.key, [f"rows[{first[row.key]}].key"])
         else:
             first[row.key] = k
+        for prefix, unit in UNIT_BY_FAMILY.items():
+            if row.key.startswith(prefix) and row.unit != unit:
+                out.add(f"rows[{k}].unit", codes.PRICE_UNIT_MISMATCH, f"A row whose key starts with {prefix!r} must use unit {unit!r}.", row.unit, [f"rows[{k}].key"])
     if (result := out.result(Stage.REFERENTIAL)) is not None:
         return None, result
 

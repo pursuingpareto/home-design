@@ -114,6 +114,9 @@ test("sections: add, reject a duplicate, apply to beams, and see the price row b
   await prices.getByLabel("PRINCIPAL_RAFTER 8x10").fill("11.90");
   await prices.getByLabel("PURLIN 6x8").fill("7.16");
   await prices.getByLabel("KNEE_BRACE 4x6").fill("2.74");
+  await prices.getByLabel("Pegged mortise and tenon").fill("45.00"); // per piece (ART-002 §9)
+  await prices.getByLabel("Bridle joint").fill("65.00");
+  await prices.getByLabel("Housed dovetail").fill("38.00");
   await prices.getByRole("button", { name: "Save prices" }).click();
   await expect(page.getByTestId("estimate-coverage")).toContainText("complete");
   await prices.getByRole("button", { name: "Close" }).click();

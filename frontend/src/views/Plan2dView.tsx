@@ -1,6 +1,9 @@
 /**
  * 2D plan from a `plan2d` payload (artifacts.md §5; UI-001 §4, §6). Renders only what the payload
  * says. Dimension labels come from `value_m`, never from drawn lengths (FR-03, AC-01).
+ *
+ * Sills, joists, braces, rafters, and purlins are drawn as lines in one neutral style until UI-003
+ * styles roles and draws connection markers (ART-002 §9, D060).
  */
 
 import { useState } from "react";
@@ -9,8 +12,11 @@ import type { Plan2dPayload } from "../api/types";
 import { formatLength, type UnitSystem } from "../units/length";
 
 type PlaneId = Plan2dPayload["planes"][number]["plane_id"];
+type Plane = Plan2dPayload["planes"][number];
 
-const PLANE_LABEL: Record<PlaneId, string> = { "level-0": "Level 0", "level-1": "Level 1", eave: "Eave" };
+const PLANE_LABEL: Record<PlaneId, string> = { "level-0": "Level 0", "level-1": "Level 1", eave: "Eave", roof: "Roof" };
+// The linear roles other than beams, drawn first so that beams and posts stay on top.
+const NEUTRAL_ARRAYS = ["sills", "joists", "braces", "rafters", "purlins"] as const satisfies readonly (keyof Plane)[];
 const DIMENSION_OFFSET_M = 1.2; // placement of dimension strings outside the eave line (display only)
 const POST_MARK_M = 0.2032; // post marker size; a symbol, not a measured section
 
@@ -68,6 +74,24 @@ export function Plan2dView({ plan, units, selected, onSelect }: Plan2dViewProps)
           x2={plan.roof_plan.ridge_m.end_xy_m[0]}
           y2={-(plan.roof_plan.ridge_m.end_xy_m[1] ?? 0)}
         />
+        {plane &&
+          NEUTRAL_ARRAYS.flatMap((array) =>
+            plane[array].map((member) => (
+              <line
+                key={member.member_id}
+                data-member-id={member.member_id}
+                data-array={array}
+                className={member.member_id === selected ? "member selected" : "member"}
+                x1={member.start_xy_m[0]}
+                y1={-(member.start_xy_m[1] ?? 0)}
+                x2={member.end_xy_m[0]}
+                y2={-(member.end_xy_m[1] ?? 0)}
+                onClick={() => onSelect(member.member_id)}
+              >
+                <title>{member.generation_key}</title>
+              </line>
+            )),
+          )}
         {plane?.beams.map((beam) => (
           <line
             key={beam.member_id}

@@ -1,4 +1,4 @@
-"""`plan2d` and `mesh3d` builders (GEOM-001).
+"""`plan2d` and `mesh3d` builders (GEOM-001; ART-002 §4–5).
 
 Pure functions of the stored snapshot (geometry.md "Member source"). All values are IEEE-754
 doubles evaluated exactly as written; only values derived from tan(pitch) may differ across
@@ -30,6 +30,7 @@ class _Model:
         self.roof = by_id[building.roof_id]
         self.sections = {e.id: e for e in snapshot.entities if e.kind == "Section"}
         self.members = sorted((e for e in snapshot.entities if e.kind == "TimberMember"), key=lambda m: _utf16(m.generation_key))
+        self.connections = sorted((e for e in snapshot.entities if e.kind == "Connection"), key=lambda c: _utf16(c.generation_key))
         fp = self.footprint
         self.x0, self.y0 = fp.origin_m
         self.x1 = self.x0 + fp.width_m
@@ -44,43 +45,63 @@ class _Model:
         return [[self.x0, self.y0], [self.x1, self.y0], [self.x1, self.y1], [self.x0, self.y1]]
 
 
-PLAN_ROLES = frozenset({"POST", "BEAM"})
+PLANES = ("level-0", "level-1", "eave", "roof")
+ARRAYS = ("posts", "beams", "sills", "joists", "braces", "rafters", "purlins")
+
+# ART-002 §4.1: (role, key segment) -> (plane, array). The role is matched first, because a joist's
+# or brace's key also contains its beam plane's segment.
+PLAN_ASSIGNMENT: tuple[tuple[str, str, str, str], ...] = (
+    ("POST", "/level-0/post", "level-0", "posts"),
+    ("SILL", "/plane-L0/sill", "level-0", "sills"),
+    ("POST", "/level-1/post", "level-1", "posts"),
+    ("BEAM", "/plane-L1/beam", "level-1", "beams"),
+    ("FLOOR_JOIST", "/plane-L1/joist", "level-1", "joists"),
+    ("KNEE_BRACE", "/plane-L1/brace/", "level-1", "braces"),
+    ("BEAM", "/plane-eave/beam", "eave", "beams"),
+    ("KNEE_BRACE", "/plane-eave/brace/", "eave", "braces"),
+    ("PRINCIPAL_RAFTER", "/principal-rafter", "roof", "rafters"),
+    ("PURLIN", "/purlin", "roof", "purlins"),
+)
 
 
-def _plane_of(generation_key: str) -> tuple[str, str]:
-    """(plane_id, 'posts'|'beams') per artifacts.md §5 plane rules."""
-    if "/level-0/post" in generation_key:
-        return "level-0", "posts"
-    if "/level-1/post" in generation_key:
-        return "level-1", "posts"
-    if "/plane-L1/" in generation_key:
-        return "level-1", "beams"
-    if "/plane-eave/" in generation_key:
-        return "eave", "beams"
-    raise ValueError(f"member key {generation_key!r} matches no plan plane")
+def plan_slot(role: str, generation_key: str) -> tuple[str, str]:
+    """(plane_id, array) for a member; raises when no row matches, so the derivation fails."""
+    for want_role, segment, plane, array in PLAN_ASSIGNMENT:
+        if role == want_role and segment in generation_key:
+            return plane, array
+    raise ValueError(f"member {role} {generation_key!r} matches no plan plane")
 
 
 def build_plan2d(snapshot: Snapshot) -> dict[str, Any]:
     m = _Model(snapshot)
     fp = m.footprint
+    heights = {"level-0": (m.level0.id, m.level0.elevation_m), "level-1": (m.level1.id, m.level1.elevation_m),
+               "eave": (None, m.z_eave), "roof": (None, m.z_eave)}  # the roof framing bears on the plate line (D058, D060)
     planes = {
-        "level-0": {"plane_id": "level-0", "level_id": m.level0.id, "z_m": m.level0.elevation_m, "posts": [], "beams": []},
-        "level-1": {"plane_id": "level-1", "level_id": m.level1.id, "z_m": m.level1.elevation_m, "posts": [], "beams": []},
-        "eave": {"plane_id": "eave", "level_id": None, "z_m": m.z_eave, "posts": [], "beams": []},
+        plane: {"plane_id": plane, "level_id": level_id, "z_m": z, **{array: [] for array in ARRAYS}, "connections": []}
+        for plane, (level_id, z) in heights.items()
     }
-    # MODEL-005 §9 (artifacts.md §5 interim note): the plan lists posts and beams only until ART-002.
-    for member in (mem for mem in m.members if mem.member_role in PLAN_ROLES):  # already in generation_key order
-        plane, group = _plane_of(member.generation_key)
-        if group == "posts":
-            item = {"member_id": member.id, "generation_key": member.generation_key,
-                    "xy_m": member.start_m[:2], "section_id": member.section_id}
+    plane_of_member: dict[str, str] = {}
+    for member in m.members:  # already in generation_key order
+        plane, array = plan_slot(member.member_role, member.generation_key)
+        plane_of_member[member.id] = plane
+        item: dict[str, Any] = {"member_id": member.id, "generation_key": member.generation_key}
+        if array == "posts":
+            item["xy_m"] = member.start_m[:2]
         else:
-            item = {"member_id": member.id, "generation_key": member.generation_key,
-                    "start_xy_m": member.start_m[:2], "end_xy_m": member.end_m[:2], "section_id": member.section_id}
-        planes[plane][group].append(item)
+            item["start_xy_m"], item["end_xy_m"] = member.start_m[:2], member.end_m[:2]
+        planes[plane][array].append(item)
+    for connection in m.connections:  # already in generation_key order
+        planes[plane_of_member[connection.member_ids[1]]]["connections"].append({  # the entering member's plane
+            "connection_id": connection.id,
+            "generation_key": connection.generation_key,
+            "junction_class": connection.junction_class,
+            "connection_type": connection.connection_type,
+            "xy_m": connection.location_m[:2],
+        })
     payload = {
         "units": "m",
-        "planes": [planes["level-0"], planes["level-1"], planes["eave"]],
+        "planes": [planes[p] for p in PLANES],
         "footprint": {
             "origin_m": [m.x0, m.y0],
             "width_m": fp.width_m,
@@ -121,9 +142,20 @@ def build_mesh3d(snapshot: Snapshot) -> dict[str, Any]:
             "section_width_m": section.actual_width_m,
             "section_depth_m": section.actual_depth_m,
         })
+    connections = [
+        {
+            "connection_id": c.id,
+            "generation_key": c.generation_key,
+            "junction_class": c.junction_class,
+            "connection_type": c.connection_type,
+            "location_m": list(c.location_m),  # the record's, copied exactly
+        }
+        for c in m.connections
+    ]
     payload = {
         "units": "m",
         "members": members,
+        "connections": connections,
         "envelope": {
             "footprint_ring_m": m.ring(),
             "level_z_m": [m.level0.elevation_m, m.level1.elevation_m],

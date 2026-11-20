@@ -60,6 +60,7 @@ figcaption { color: var(--muted); font-size: 0.85rem; display: flex; gap: 12px; 
 .plan2d .ridge { stroke: #8c959f; stroke-width: 0.04; stroke-dasharray: 0.4 0.2; }
 .plan2d .beam { stroke: var(--wood); stroke-width: 0.2; cursor: pointer; }
 .plan2d .post { fill: var(--wood); cursor: pointer; }
+.plan2d .member { stroke: #c9a77c; stroke-width: 0.1; cursor: pointer; } /* the other roles, one neutral style until UI-003 (ART-002 §9) */
 .plan2d .selected { stroke: var(--accent); fill: var(--accent); }
 .plan2d .dimension line { stroke: var(--fg); stroke-width: 0.02; }
 .plan2d .dimension text { font-size: 0.45px; fill: var(--fg); }
