@@ -27,13 +27,13 @@ from homedesign.dependencies.registry import Derivation, Outcome
 from homedesign.model import canonical_snapshot, codes
 from homedesign.model.schema import Snapshot
 from homedesign.model.schema_export import OPENAPI_PATH, render_openapi
-from homedesign.model.vs01 import DEFAULT_MAX_BYTES
+from homedesign.model.limits import DEFAULT_MAX_BYTES
 from homedesign.project import MemoryStore
 from homedesign.project.postgres import PostgresStore
 from test_project import ACTOR, ACTOR_B, KEY, T0, cid
 
 
-from api_support import BEAM_KEY, OPENAPI, POST_KEY, TOKENS, UUID_RE, Api, Clock, book, conforms, make_api, schema_for  # noqa: E402,F401
+from api_support import FULL_PRICES, BEAM_KEY, OPENAPI, POST_KEY, TOKENS, UUID_RE, Api, Clock, book, conforms, make_api, schema_for  # noqa: E402,F401
 
 
 @pytest.fixture
@@ -94,7 +94,7 @@ def test_project_list_is_owner_only_and_newest_first(store):
     api.clock.now = T0 + timedelta(minutes=2)
     newest = api.create()
     api.create(token="tok-b")
-    api.commit(first, api.roof(first, 0.6))
+    api.commit(first, api.routine(first, 0.6))
     listed = api.get("/api/v1/projects").json()["projects"]
     assert [p["project_id"] for p in listed] == [newest, *tied, first]
     assert listed[-1]["head_sequence"] == 2 and listed[-1]["head_revision_id"] == api.head(first)
@@ -142,7 +142,7 @@ def test_2_preview_writes_nothing(api):
 
 def test_3_commit_moves_head_exactly_once(api):
     pid = api.create()
-    response = api.commit(pid, api.roof(pid, 0.6))
+    response = api.commit(pid, api.routine(pid, 0.6))
     assert response.status_code == 201 and response.json()["sequence"] == 2
     project = api.get(f"/api/v1/projects/{pid}").json()
     assert (project["head_sequence"], project["head_revision_id"]) == (2, response.json()["revision_id"])
@@ -153,7 +153,7 @@ def test_3_commit_moves_head_exactly_once(api):
 def test_4_concurrent_commits_have_one_winner(pg_url, round_):
     api = make_api(PostgresStore(pg_url))
     pid = api.create()
-    commands = [api.roof(pid, pitch) for pitch in (0.5, 0.6)]
+    commands = [api.routine(pid, pitch) for pitch in (0.5, 0.6)]
     barrier, outcomes = threading.Barrier(2), []
 
     def worker(command):
@@ -173,7 +173,7 @@ def test_4_concurrent_commits_have_one_winner(pg_url, round_):
 
 def test_5_retry_is_replayed(api):
     pid = api.create()
-    command = api.roof(pid, 0.6)
+    command = api.routine(pid, 0.6)
     first = api.commit(pid, command)
     retry = api.commit(pid, command)
     assert (first.status_code, retry.status_code) == (201, 200)
@@ -187,7 +187,7 @@ def test_5_retry_is_replayed(api):
 
 def _project_routes(api, pid):
     rev = api.head(pid)
-    command = api.roof(pid, 0.6)
+    command = api.routine(pid, 0.6)
     return [
         ("GET", f"/api/v1/projects/{pid}", None),
         ("POST", f"/api/v1/projects/{pid}/commands/preview", command),
@@ -225,7 +225,7 @@ def test_6_other_actors_get_404_and_anonymous_callers_401(api):
 
 def test_7_plan_mesh_schedule_share_source_revision(api):
     pid = api.create()
-    api.commit(pid, api.roof(pid, 0.6))
+    api.commit(pid, api.routine(pid, 0.6))
     head = api.head(pid)
     sources = {api.get(f"/api/v1/projects/{pid}/artifacts/{t}").json()["source_revision_id"] for t in ("plan2d", "mesh3d", "timber_schedule")}
     assert sources == {head}
@@ -274,13 +274,13 @@ def test_strict_bodies(api):
     for content_type in ("text/plain", "application/x-www-form-urlencoded", "application/jsonx"):
         error = _error(api.call("POST", url, raw=b"{}", content_type=content_type), 415, "VALIDATION_FAILED")
         assert error["details"] == [{"path": "", "code": codes.MALFORMED_JSON}]
-    assert api.call("POST", url, json_body=api.roof(pid), content_type="application/json; charset=utf-8").status_code == 200
+    assert api.call("POST", url, json_body=api.routine(pid), content_type="application/json; charset=utf-8").status_code == 200
 
 
 def test_commit_body_wrapper(api):
     pid = api.create()
     url = f"/api/v1/projects/{pid}/commands/commit"
-    command = api.roof(pid, 0.6)
+    command = api.routine(pid, 0.6)
     for body, path, code in [
         ([], "", codes.WRONG_TYPE),
         ({}, "command", codes.MISSING_FIELD),
@@ -308,13 +308,13 @@ def test_service_errors_map_to_statuses(api):
     api.clock.now = T0 + timedelta(minutes=16)
     _error(api.commit(pid, width, token), 409, "PREVIEW_EXPIRED")
     api.clock.now = T0
-    stale = api.roof(pid, 0.6)
-    assert api.commit(pid, api.roof(pid, 0.55)).status_code == 201
+    stale = api.routine(pid, 0.6)
+    assert api.commit(pid, api.routine(pid, 0.55)).status_code == 201
     _error(api.commit(pid, stale), 409, "REVISION_CONFLICT")
     _error(api.preview(pid, stale), 409, "REVISION_CONFLICT")
-    reused = api.roof(pid, 0.6)
+    reused = api.routine(pid, 0.6)
     assert api.commit(pid, reused).status_code == 201
-    _error(api.commit(pid, reused | {"args": {"pitch_rad": 0.7, "eave_overhang_m": 0.6096}}), 409, "IDEMPOTENCY_CONFLICT")
+    _error(api.commit(pid, reused | {"args": {**reused["args"], "nominal_label": "routine-0.7"}}), 409, "IDEMPOTENCY_CONFLICT")
     error = _error(api.preview(pid, api.width(pid, -1)), 422, "VALIDATION_FAILED")
     assert error["details"][0]["code"] == codes.OUT_OF_RANGE
     _error(api.get(f"/api/v1/projects/{pid}/revisions/{uuid.uuid4()}"), 404, "NOT_FOUND")
@@ -396,7 +396,7 @@ def test_empty_registry_is_missing_202(store):
 def test_old_revisions_are_served_with_head_false(api):
     pid = api.create()
     first = api.head(pid)
-    api.commit(pid, api.roof(pid, 0.6))
+    api.commit(pid, api.routine(pid, 0.6))
     manifest = api.get(f"/api/v1/projects/{pid}/artifacts?revision_id={first}").json()
     plan = api.get(f"/api/v1/projects/{pid}/artifacts/plan2d?revision_id={first}").json()
     assert (manifest["revision_id"], manifest["head"], plan["source_revision_id"], plan["head"]) == (first, False, first, False)
@@ -408,7 +408,7 @@ def test_old_revisions_are_served_with_head_false(api):
 def test_price_book_put_get_and_estimate(api):
     pid = api.create()
     assert api.get(f"/api/v1/projects/{pid}/price-book").json() == {"price_book": None}
-    response = api.put(f"/api/v1/projects/{pid}/price-book", book(**{POST_KEY: 3150, BEAM_KEY: 4725}))
+    response = api.put(f"/api/v1/projects/{pid}/price-book", book(**FULL_PRICES))
     assert response.status_code == 201 and response.json()["version"] == 1
     stored = api.get(f"/api/v1/projects/{pid}/price-book").json()["price_book"]
     assert (stored["version"], stored["set_by"], stored["book"]["source"]) == (1, ACTOR, "Supplier quote #123")
@@ -416,7 +416,7 @@ def test_price_book_put_get_and_estimate(api):
     assert manifest["preliminary_estimate"] == "STALE" and manifest["plan2d"] == "CURRENT"
     estimate = api.get(f"/api/v1/projects/{pid}/artifacts/preliminary_estimate").json()
     assert (estimate["status"], estimate["payload"]["coverage"]) == ("CURRENT", "complete")
-    again = api.put(f"/api/v1/projects/{pid}/price-book", book(**{POST_KEY: 3150, BEAM_KEY: 4725}))
+    again = api.put(f"/api/v1/projects/{pid}/price-book", book(**FULL_PRICES))
     assert (again.json()["version"], again.json()["price_book_id"]) == (2, response.json()["price_book_id"])
     assert api.get(f"/api/v1/projects/{pid}").json()["head_sequence"] == 1  # not a model command
 

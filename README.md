@@ -20,6 +20,7 @@ Requirements: [uv](https://docs.astral.sh/uv/), Node 22 or later, and PostgreSQL
 ```bash
 scripts/dev.sh            # API + web app; projects saved in the local PostgreSQL database "homedesign"
 scripts/dev.sh --memory   # no database needed; projects are lost when you stop
+scripts/dev.sh --reset    # recreate the local database first (after a model schema change, D055)
 ```
 
 Open http://localhost:5173 and sign in with `dev-token`. Press Ctrl+C to stop both servers. The script installs dependencies when needed, creates and migrates the database, and keeps a local preview key in `.dev/` (git-ignored). `scripts/dev.sh --help` lists the options.

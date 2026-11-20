@@ -18,16 +18,19 @@ from .. import codes
 from ..canonical import fingerprint
 from ..codes import Stage
 from ..jcs import canonical_json
+from ..limits import RECORD_SCHEMA_VERSIONS
 from ..paths import EntityStep, render
 from ..schema import Snapshot
 from ..validation import Issue, ValidationResult, _Collector, validate_value
 from .envelope import parse_command, reject
 from .mint import mint
 
-CLASSIFICATION_VERSION = "vs01-change-classes-1"  # dependencies.md §4.1
+CLASSIFICATION_VERSION = "vs02-change-classes-1"  # dependencies.md §4.1, D057
 CLASSIFICATION = {
-    "SetGableRoofParameters": "routine",
     "AddSection": "routine",
+    # D057: the pitch places principal rafters and purlins, so roof edits regenerate framing.
+    "SetGableRoofParameters": "consequential",
+    "SetFrameParameters": "consequential",
     "SetFootprintDimensions": "consequential",
     "SetStoryHeights": "consequential",
     "SetTimberGrid": "consequential",
@@ -168,7 +171,14 @@ def _apply_roof(draft: dict, ctx: _Context) -> _Applied:
     args = ctx.command.args
     roof = _entity(draft, draft["building"]["roof_id"])
     roof["pitch_rad"], roof["eave_overhang_m"] = args.pitch_rad, args.eave_overhang_m
-    return _Applied({spath(roof["id"], "pitch_rad"): "args.pitch_rad", spath(roof["id"], "eave_overhang_m"): "args.eave_overhang_m"})
+    return _Applied({spath(roof["id"], "pitch_rad"): "args.pitch_rad", spath(roof["id"], "eave_overhang_m"): "args.eave_overhang_m"}, regenerate=True)
+
+
+def _apply_frame_parameters(draft: dict, ctx: _Context) -> _Applied:
+    args = ctx.command.args
+    frame, _ = _frame_and_grid(draft)
+    frame["parameters"] = args.model_dump(mode="json")
+    return _Applied({spath(frame["id"], "parameters", name): f"args.{name}" for name in frame["parameters"]}, regenerate=True)
 
 
 def _apply_grid(draft: dict, ctx: _Context) -> _Applied:
@@ -231,7 +241,7 @@ def _apply_add_section(draft: dict, ctx: _Context) -> _Applied:
         {
             "id": section_id,
             "kind": "Section",
-            "schema_version": 1,
+            "schema_version": RECORD_SCHEMA_VERSIONS["Section"],
             "shape": "rectangular",
             "actual_width_m": args.actual_width_m,
             "actual_depth_m": args.actual_depth_m,
@@ -263,6 +273,7 @@ _APPLY: dict[str, Callable[[dict, _Context], _Applied]] = {
     "SetGableRoofParameters": _apply_roof,
     "SetTimberGrid": _apply_grid,
     "SetMemberSection": _apply_member_section,
+    "SetFrameParameters": _apply_frame_parameters,
     "AddSection": _apply_add_section,
     "UndoToRevision": _apply_undo,
 }
@@ -295,7 +306,7 @@ def _regenerate(draft: dict, base_members: dict[str, str], mint_entity: Callable
         {
             "id": base_members.get(m.generation_key) or mint_entity("generation/" + m.generation_key),
             "kind": "TimberMember",
-            "schema_version": 1,
+            "schema_version": RECORD_SCHEMA_VERSIONS["TimberMember"],
             **m.to_json(),
         }
         for m in generated
@@ -435,7 +446,7 @@ def _template_text() -> str:
 
 
 def template_value() -> dict:
-    """Reference House 001, the CreateReferenceProject template (packaged copy of the D025 fixture)."""
+    """Reference House 001 v2, the CreateReferenceProject template (packaged copy of the fixture; TIMBER-002 §7)."""
     return json.loads(_template_text())
 
 
@@ -451,7 +462,7 @@ def propose_create(command: Any, *, project_id: str, actor_id: str, at: str) -> 
         return mint(purpose, project_id, actor_id, parsed.command_id, key)
 
     template = template_value()
-    records = [template["building"], *(e for e in template["entities"] if e["kind"] != "TimberMember")]
+    records = [template["building"], *(e for e in template["entities"] if e["kind"] not in ("TimberMember", "Connection"))]
     id_map = {r["id"]: mint_fn("entity", "template/" + r["id"]) for r in records}
 
     def remap(value: Any) -> Any:
@@ -464,6 +475,7 @@ def propose_create(command: Any, *, project_id: str, actor_id: str, at: str) -> 
     building, *entities = (remap(copy.deepcopy(r)) for r in records)
     frame = next(e for e in entities if e["kind"] == "FrameSystem")
     frame["member_ids"] = []
+    frame["connection_ids"] = []
     draft = {
         "model_schema_version": template["model_schema_version"],
         "project_id": project_id,

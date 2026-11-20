@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D050. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D056. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -50,6 +50,14 @@
 - D048: [Gable roof planes pass through the wall line at the eave plate](D048-roof-plane-through-wall-line.md) — overhang edge at `z_eave − overhang · tan(pitch)` (5.334 m for Reference House 001); ridge unchanged at 8.5344 m; closes C1.
 - D049: [Section labels are unique within a project](D049-unique-section-labels.md) — `DUPLICATE_SECTION_LABEL` (stage 2); labels key aggregates and price books (narrow exception to D026); amends D043's `AddSection`.
 - D050: [VS-01 authentication and authorization](D050-vs01-authentication-authorization.md) — pluggable authenticator with development bearer tokens (401 otherwise); owner-only projects, 404 for other actors; production identity stays open.
+- D051: [VS-02 slice boundary](D051-vs02-slice-boundary.md) — complete frame, connections, and dependency selectors; assemblies move to VS-02b.
+- D052: [VS-02 frame members](D052-vs02-frame-members.md) — generated sills, floor joists, principal rafters with purlins, and knee braces; per-role sections; no common rafters, girts, or studs.
+- D053: [Reference House 001 v2 design intent](D053-reference-house-001-v2-design-intent.md) — illustrative sections, 24" joist spacing, 2 purlins per slope, 3' brace legs; 193 members; extends D025.
+- D054: [VS-02 connection catalog](D054-vs02-connection-catalog.md) — generated two-member connections, typed per junction class (five types: one traditional default and one engineered alternative per class), counted "each" in schedule and estimate, no capacity claims; resolves open question 4 for types only.
+- D055: [Pre-release schema policy: replace, don't migrate](D055-pre-release-schema-replacement.md) — until the first release, the newest schema and rule replace older ones (no readers, upgrades, or migrations; old snapshots get `UNSUPPORTED_SCHEMA_VERSION`); amends interfaces.md §8 while pre-release.
+- D056: [Dependency selectors](D056-dependency-selectors.md) — per-artifact selectors; fingerprints over selected inputs (no revision ID); `impacted_artifacts` = fingerprints that differ; unchanged payloads reused across revisions; implemented in VS-02.
+- D057: [VS-02 frame parameter command and roof classification](D057-vs02-frame-command-roof-classification.md) — `SetFrameParameters` (five settings, consequential); `SetMemberSection` takes the seven version 2 roles; table `vs02-change-classes-1` makes roof edits consequential; amends D043.
+- D058: [Member reference axes lie on datums](D058-datum-reference-axes.md) — every `vs02-frame-1` axis lies on a grid station, plane, or roof plane; joists frame into beams; rafters bear on the plate line without tails; sections never move axes; resolves D053's bearing question.
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 

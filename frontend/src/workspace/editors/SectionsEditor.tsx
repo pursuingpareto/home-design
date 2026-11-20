@@ -5,12 +5,13 @@
 
 import { useCallback, useState, type FormEvent } from "react";
 
+import type { Snapshot } from "../../api/types";
 import { formatLength, parseLength } from "../../units/length";
 import { describeDetail, placeDetails } from "../commands";
 import { entitiesOf, envelope, one } from "./model";
 import { detailsFor, isBusy, TextField, type EditorProps } from "./shared";
 
-type Role = "POST" | "BEAM" | "FLOOR_JOIST" | "RAFTER";
+type Role = Extract<Snapshot["entities"][number], { kind: "TimberMember" }>["member_role"];
 const ADD_PATHS = { label: "args.nominal_label", width: "args.actual_width_m", depth: "args.actual_depth_m" };
 
 export function SectionsEditor({ projectId, snapshot, units, flow, onApplied, onOpenPrices }: EditorProps & { onOpenPrices: (() => void) | null }) {

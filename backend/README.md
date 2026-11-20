@@ -1,13 +1,13 @@
 # Backend
 
 Python backend for the Home Design Platform. It contains:
-- the `model` module ([MODEL-001](../docs/implementation/tasks/MODEL-001.md), with typed commands from [MODEL-003](../docs/implementation/tasks/MODEL-003.md));
-- the `timber` module ([TIMBER-001](../docs/implementation/tasks/TIMBER-001.md));
+- the `model` module ([MODEL-001](../docs/implementation/tasks/MODEL-001.md), with typed commands from [MODEL-003](../docs/implementation/tasks/MODEL-003.md) and model schema version 2 from [MODEL-005](../docs/implementation/tasks/MODEL-005.md));
+- the `timber` module ([TIMBER-001](../docs/implementation/tasks/TIMBER-001.md), [TIMBER-002](../docs/implementation/tasks/TIMBER-002.md));
 - the `project` module ([MODEL-004](../docs/implementation/tasks/MODEL-004.md));
 - the artifact, geometry, and estimating modules ([ART-001](../docs/implementation/tasks/ART-001.md), [GEOM-001](../docs/implementation/tasks/GEOM-001.md), [EST-001](../docs/implementation/tasks/EST-001.md));
 - the HTTP API ([API-001](../docs/implementation/tasks/API-001.md)).
 
-Together they provide the authoritative Pydantic schema for VS-01 snapshots (D028), five-stage validation (D035, D046), the `vs01-post-beam-1` generator, RFC 8785 canonical serialization (D029, D030), typed commands, PostgreSQL revision persistence with concurrency, idempotency, and preview tokens, the four derived artifacts, and the `/api/v1` HTTP API. The browser client is in [`frontend/`](../frontend/README.md) ([UI-001](../docs/implementation/tasks/UI-001.md)).
+Together they provide the authoritative Pydantic schema for model schema version 2 snapshots (D028, D055), five-stage validation (D035, D046), the `vs02-frame-1` generator, RFC 8785 canonical serialization (D029, D030), typed commands, PostgreSQL revision persistence with concurrency, idempotency, and preview tokens, the four derived artifacts, and the `/api/v1` HTTP API. The browser client is in [`frontend/`](../frontend/README.md) ([UI-001](../docs/implementation/tasks/UI-001.md)).
 
 ## Setup
 
@@ -60,6 +60,7 @@ Call it with `Authorization: Bearer dev-token`. Interactive docs are at `/docs`,
 uv run pytest                                      # full test suite
 uv run python -m homedesign.model.schema_export    # regenerate the JSON Schemas and openapi.v1.json in docs/architecture/schemas/
 uv run python -m homedesign.model.schema_export --check   # fail if the committed schema is stale
+uv run python -m homedesign.timber.fixture        # regenerate the Reference House 001 v2 fixture and packaged template (--check to verify)
 uv run python -m homedesign.api.ui_fixtures        # regenerate the frontend's captured Reference House 001 fixtures
 uv run python tests/integration/golden.py          # regenerate the golden scenario record (review the diff; TEST-001 §6)
 HYPOTHESIS_PROFILE=thorough uv run pytest tests/integration/test_sequences.py   # 500 random command sequences instead of 40
@@ -87,7 +88,8 @@ else:
 | `src/homedesign/model/schema.py` | Pydantic models (stage 1 contract; JSON Schema is exported from here) |
 | `src/homedesign/model/validation.py` | Stages 1–5, issue paths, `related_paths` |
 | `src/homedesign/model/codes.py` | Detail-code catalog (must match building-model.md §6.1) |
-| `src/homedesign/model/vs01.py` | VS-01 bounds and tolerances (D031–D034) |
+| `src/homedesign/model/limits.py` | Schema versions, bounds, and tolerances (D031–D034, MODEL-005 §5) |
+| `src/homedesign/model/connections.py` | The D054 connection catalog: junction classes, types, allowed pairs |
 | `src/homedesign/model/jcs.py`, `canonical.py` | RFC 8785 and snapshot fingerprints |
 | `src/homedesign/model/strict_json.py`, `paths.py` | Strict parser and D036 path rendering |
 | `src/homedesign/model/commands/` | Typed commands: envelopes, `propose`/`propose_create`, D041 minting, diff and classification, packaged template |
@@ -96,6 +98,6 @@ else:
 | `src/homedesign/dependencies/` | Artifact registry, envelope and manifest, `ArtifactService` (derive after commit, lazy recompute, status) |
 | `src/homedesign/api/` | FastAPI app factory, routes, strict bodies, error envelope, request IDs, settings, development authentication (API-001) |
 | `src/homedesign/project/` | `ProjectService` (create, preview, commit, reads), in-memory and PostgreSQL stores, preview tokens, migrations |
-| `src/homedesign/timber/` | Rule registry, `vs01-post-beam-1` (`generate`, `conformance`), `GeneratedMember`, and the `timber_schedule` builder (EST-001) |
+| `src/homedesign/timber/` | Rule registry, `vs02-frame-1` (`generate`), shared member and connection conformance, the fixture builder (`fixture.py`), and the `timber_schedule` builder (EST-001) |
 | `tests/integration/` | Reference-house scenario, whole-house invariants, golden record, and property-based sequences (TEST-001) |
 | `tests/` | Fixture, mutation table, generator, JCS and inventory vectors, property tests, catalog-doc sync |

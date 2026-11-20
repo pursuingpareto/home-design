@@ -154,7 +154,7 @@ CandidateChange:
 `instantiate_template` copies the Reference House 001 non-member records with new IDs, using the creation key `"template/" + fixture record ID` (D041). It rewrites every reference to use the new IDs, sets the building name, and then generates all members through `TIMBER-001`, using creation keys `"generation/" + key`.
 
 - `parent_revision_id` is `null`.
-- The result must validate. It must also equal the fixture **semantically**: same values, same keys, same 58 members, with generated member coordinates within 1e-6 m (they are generator output; the fixture stores hand-entered decimals, see generation-rules.md "Numeric evaluation"), and with only IDs and revision metadata otherwise differing. A test checks this by mapping IDs through creation keys.
+- The result must validate. It must also equal the fixture **semantically**: same values, same keys, same 58 members, with generated member coordinates within 1e-6 m (they are generator output; the fixture stores hand-entered decimals, see generation-rules.md "Numeric evaluation"), and with only IDs and revision metadata otherwise differing. A test checks this by mapping IDs through creation keys. *VS-02: the v2 fixture stores exact generator output, so a created project now equals it exactly, apart from IDs and revision metadata ([TIMBER-002](TIMBER-002.md) §7).*
 
 ## 7. Errors
 
@@ -194,7 +194,7 @@ CandidateChange:
 4. ~~**Include `UndoToRevision`**, with exact restoration of IDs as a stated exception to D041 (§4.5).~~ **Approved: [D044](../../product/decisions/D044-undo-to-revision.md)**; interfaces.md §2, D041, and building-model.md §5 updated. Restored snapshots are validated against current rules.
 5. ~~**The result contract** (§5): the diff shape, all four artifacts always listed, and `is_noop`.~~ **Approved**; specified in [interfaces.md §3](../../architecture/interfaces.md#3-preview-contract), which adds `revision_id` to the preview and defines how added and removed non-member records appear in `changes`.
 6. ~~**No-op commands** create no revision when committed.~~ **Approved: [D045](../../product/decisions/D045-no-op-commits.md)**. The preview has `revision_id: null` and `confirmation_required: false`; the commit returns HTTP 200 with the current head; the attempt is logged.
-7. ~~**Classification:** roof parameters and `AddSection` are routine; all else is consequential.~~ **Approved**; specified as table `vs01-change-classes-1` in [dependencies.md §4.1](../../architecture/dependencies.md#41-vs-01-classification-table-vs01-change-classes-1).
+7. ~~**Classification:** roof parameters and `AddSection` are routine; all else is consequential.~~ **Approved**; specified as table `vs01-change-classes-1` in [dependencies.md §4.1](../../architecture/dependencies.md#41-classification-table-vs02-change-classes-1).
 8. ~~**Error reporting:** argument paths, the argument-to-field `related_paths`, and `REVISION_CONFLICT` for a mismatched base (§7).~~ **Approved**; specified in [interfaces.md §7.1](../../architecture/interfaces.md#71-command-errors).
 9. ~~**The creation envelope** for `CreateReferenceProject`, and template instantiation through creation keys (§6).~~ **Approved**; specified in [interfaces.md §2](../../architecture/interfaces.md#2-command-envelope).
 

@@ -95,21 +95,26 @@ def token(key, line_id):
 def test_width_change_preserves_member_ids():
     change = run("SetFootprintDimensions", {"width_m": 12.192, "depth_m": FP.depth_m}).change
     cand = change.candidate
-    assert {m.id for m in of_kind(cand, "TimberMember")} == {m.id for m in of_kind(BASE, "TimberMember")}
-    assert members_by_key(cand).keys() == members_by_key(BASE).keys()
-    # Members lying entirely on line x0 (x = 0) do not move: 6 posts + 4 Y-beams.
-    on_x0 = {m.id for m in of_kind(BASE, "TimberMember") if m.start_m[0] == 0 and m.end_m[0] == 0}
-    assert len(on_x0) == 10
-    assert set(change.members_updated) == {m.id for m in of_kind(BASE, "TimberMember")} - on_x0
-    assert len(change.members_updated) == 48
-    assert [(c["entity_kind"], c["field"]) for c in change.changes] == [("Footprint", "width_m")]
+    before, after = members_by_key(BASE), members_by_key(cand)
+    # Every base key survives with its ID (D042). The 40' width makes 13'-4" bays, so each bay
+    # gains a sixth joist at 12'-0" in both spans (TIMBER-002 §5.4).
+    assert before.keys() <= after.keys()
+    assert all(after[k].id == m.id for k, m in before.items())
+    added = sorted(m["generation_key"] for m in change.members_added)
+    assert added == sorted(f"frame/axis-y/{bay}/j6/{span}/plane-L1/joist" for bay in ("x0-x1", "x1-x2", "x2-x3") for span in ("y0-y1", "y1-y2"))
+    assert not change.members_removed
+    # Exactly the members whose axes move are updated; members tied to x = 0 alone do not move.
+    moved = {m.id for k, m in before.items() if (m.start_m, m.end_m) != (after[k].start_m, after[k].end_m)}
+    assert set(change.members_updated) == moved
+    assert len(change.members_updated) == 155
+    assert [(c["entity_kind"], c["field"]) for c in change.changes] == [("Footprint", "width_m"), ("FrameSystem", "member_ids")]
     assert change.classification == "consequential" and change.confirmation_required
 
 
 def test_width_change_on_fixture_base_preserves_ids():
     fixture = Snapshot.model_validate(FIXTURE)
     change = run("SetFootprintDimensions", {"width_m": 12.192, "depth_m": 7.3152}, base=fixture).change
-    assert {m.id for m in of_kind(change.candidate, "TimberMember")} == {e["id"] for e in FIXTURE["entities"] if e["kind"] == "TimberMember"}
+    assert {e["id"] for e in FIXTURE["entities"] if e["kind"] == "TimberMember"} <= {m.id for m in of_kind(change.candidate, "TimberMember")}
 
 
 # --- 2./3. grid edits ------------------------------------------------------------
@@ -120,9 +125,11 @@ def test_removing_interior_line_retires_exactly_its_members():
     change = run("SetTimberGrid", {"x_lines": x, "y_lines": lines("y_lines")}).change
     before = members_by_key(BASE)
     removed = {m["generation_key"] for m in change.members_removed}
-    assert removed == {k for k in before if token(k, "x2")} and len(removed) == 22
+    # The x2 posts, and every sill, beam, brace, joist, rafter, and purlin of the x1-x2 and x2-x3 bays.
+    assert removed == {k for k in before if token(k, "x2")} and len(removed) == 92
     added = {m["generation_key"]: m["id"] for m in change.members_added}
-    assert set(added) == {k for k in members_by_key(change.candidate) if "/x1-x3/" in k} and len(added) == 6
+    # The merged 24' bay: 3 sills, 6 beams, 12 braces, 22 joists (11 per span), 4 purlins.
+    assert set(added) == {k for k in members_by_key(change.candidate) if "x1-x3" in k} and len(added) == 47
     for key, member_id in added.items():
         assert member_id == mint("entity", P, ACTOR, CID, "generation/" + key)  # D041
     after = members_by_key(change.candidate)
@@ -136,8 +143,9 @@ def test_inserting_line_mints_next_line_id():
     change = run("SetTimberGrid", {"x_lines": x, "y_lines": lines("y_lines")}).change
     grid = one(change.candidate, "TimberGrid")
     assert [line.id for line in grid.x_lines] == ["x0", "x1", "x4", "x2", "x3"]
-    assert len(change.members_added) == 22 and len(change.members_removed) == 6
-    assert {m["generation_key"] for m in change.members_removed} == {k for k in members_by_key(BASE) if "/x1-x2/" in k}
+    # The split bay's 35 members are retired; the two new bays and the x4 posts and rafters are added.
+    assert len(change.members_added) == 80 and len(change.members_removed) == 35
+    assert {m["generation_key"] for m in change.members_removed} == {k for k in members_by_key(BASE) if "x1-x2" in k}
     before, after = members_by_key(BASE), members_by_key(change.candidate)
     for key in ("frame/x0/y0/level-0/post", "frame/x3/y2/level-1/post"):
         assert after[key].id == before[key].id
@@ -161,11 +169,54 @@ def test_story_heights():
     assert change.members_updated and not change.members_added
 
 
-def test_roof_is_routine_and_regenerates_nothing():
+def test_roof_is_consequential_and_moves_rafters_and_purlins():
+    """D057: the pitch places principal rafters and purlins, so roof edits are consequential."""
     change = run("SetGableRoofParameters", {"pitch_rad": 0.5, "eave_overhang_m": 0.3048}).change
-    assert change.classification == "routine" and not change.confirmation_required
+    assert change.classification == "consequential" and change.confirmation_required
     assert {c["field"] for c in change.changes} == {"pitch_rad", "eave_overhang_m"}
-    assert not (change.members_added or change.members_removed or change.members_updated)
+    assert not (change.members_added or change.members_removed)
+    roles = {m.id: m.member_role for m in of_kind(BASE, "TimberMember")}
+    assert {roles[i] for i in change.members_updated} == {"PRINCIPAL_RAFTER", "PURLIN"} and len(change.members_updated) == 20
+
+
+def test_overhang_alone_moves_no_member():
+    change = run("SetGableRoofParameters", {"pitch_rad": ROOF.pitch_rad, "eave_overhang_m": 0.3048}).change
+    assert not (change.members_added or change.members_removed or change.members_updated)  # D058: no rafter tails
+
+
+def test_frame_parameters():
+    """MODEL-005 §7.1, D057: one command, consequential, IDs kept on surviving ordinals."""
+    args = {"joist_spacing_m": 0.4064, "purlins_per_slope": 3, "knee_brace_leg_m": 0.9144, "knee_braces_level_1": True, "knee_braces_eave": False}
+    change = run("SetFrameParameters", args).change
+    assert change.classification == "consequential"
+    assert [(c["entity_kind"], c["field"]) for c in change.changes] == [("FrameSystem", "member_ids"), ("FrameSystem", "parameters")]
+    removed = {m["generation_key"] for m in change.members_removed}
+    added = {m["generation_key"] for m in change.members_added}
+    assert {k for k in removed if "/brace/" in k} == {k for k in members_by_key(BASE) if "plane-eave/brace" in k}
+    assert all("/p3/" in k or "/j" in k for k in added)  # 16" spacing: j6–j8; a third purlin
+    before, after = members_by_key(BASE), members_by_key(change.candidate)
+    assert all(after[k].id == before[k].id for k in before.keys() & after.keys())
+
+
+def test_frame_parameters_no_op_and_errors():
+    current = FRAME.parameters.model_dump(mode="json")
+    assert run("SetFrameParameters", current).change.is_noop
+    rejected = run("SetFrameParameters", {**current, "knee_brace_leg_m": 2.0}).rejection
+    assert rejected.code == UC
+    issue = rejected.issues[0]
+    assert issue.path == epath(FRAME, "parameters", "knee_brace_leg_m") and "args.knee_brace_leg_m" in issue.related_paths
+    unknown = run("SetFrameParameters", {**current, "girts": True}).rejection
+    assert (unknown.code, unknown.issues[0].code, unknown.issues[0].path) == (VF, codes.UNKNOWN_FIELD, "args.girts")
+
+
+def test_brace_fit_links_grid_arguments():
+    """MODEL-005 §5.2: a grid edit that leaves a 5' bay cannot hold two 3' braces."""
+    x = lines("x_lines")
+    x.insert(2, {"fraction": x[1]["fraction"] + 5 * 0.3048 / FP.width_m})
+    rejected = run("SetTimberGrid", {"x_lines": x, "y_lines": lines("y_lines")}).rejection
+    assert rejected.code == UC
+    issue = next(i for i in rejected.issues if i.path == epath(FRAME, "parameters", "knee_brace_leg_m"))
+    assert "args.x_lines" in issue.related_paths
 
 
 def test_add_section_with_existing_label_is_rejected():
@@ -214,7 +265,7 @@ REJECTIONS = [
     ("duplicate-line", "SetTimberGrid", _dup_lines(), {}, VF, codes.DUPLICATE_LINE_ID, "args.x_lines[2].id", ["args.x_lines[1].id"]),
     ("null-line-id", "SetTimberGrid", {"x_lines": [{"id": None, "fraction": 0.0}], "y_lines": []}, {}, VF, codes.WRONG_TYPE, "args.x_lines[0]", None),
     ("fractions-unordered", "SetTimberGrid", _unordered(), {}, VF, codes.NOT_STRICTLY_ASCENDING, epath(GRID, "x_lines", 2, "fraction"), ["args.x_lines[2].fraction"]),
-    ("role-not-generated", "SetMemberSection", {"role": "FLOOR_JOIST", "section_id": SECTIONS["8x8"].id}, {}, UC, codes.UNSUPPORTED_VALUE, "args.role", None),
+    ("role-retired", "SetMemberSection", {"role": "RAFTER", "section_id": SECTIONS["8x8"].id}, {}, VF, codes.INVALID_ENUM, "args.role", None),
     ("role-unknown", "SetMemberSection", {"role": "COLUMN", "section_id": SECTIONS["8x8"].id}, {}, VF, codes.INVALID_ENUM, "args.role", None),
     ("section-missing", "SetMemberSection", {"role": "POST", "section_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"}, {}, VF, codes.DANGLING_REFERENCE, "args.section_id", None),
     ("section-wrong-kind", "SetMemberSection", {"role": "POST", "section_id": MATERIAL.id}, {}, VF, codes.WRONG_REFERENCE_KIND, "args.section_id", None),
@@ -322,11 +373,12 @@ def test_template_package_copy_matches_fixture():
     assert _template_text() == (REPO_ROOT / "docs/reference-projects/vermont-timber-house/fixture.snapshot.json").read_text(encoding="utf-8")
 
 
-def test_created_project_equals_fixture_semantically():
+def test_created_project_equals_fixture_exactly():
+    """TIMBER-002 §7: the fixture stores generator output, so only IDs and revision metadata differ."""
     result = create()
     change, cand = result.change, result.change.candidate
     assert cand.parent_revision_id is None and cand.project_id == P
-    assert len(change.members_added) == 58 and change.classification == "consequential"
+    assert len(change.members_added) == 193 and change.classification == "consequential"
     id_map = {}
     fixture_records = [FIXTURE["building"], *(e for e in FIXTURE["entities"] if e["kind"] != "TimberMember")]
     for record in fixture_records:
@@ -350,7 +402,7 @@ def test_created_project_equals_fixture_semantically():
         f = fixture_members[key]
         assert member.id == mint("entity", P, ACTOR, CREATE_ID, "generation/" + key)
         assert (member.member_role, member.section_id, member.material_id) == (f["member_role"], id_map[f["section_id"]], id_map[f["material_id"]])
-        assert all(abs(a - b) <= 1e-6 for a, b in zip([*member.start_m, *member.end_m], f["start_m"] + f["end_m"]))
+        assert (member.start_m, member.end_m) == (f["start_m"], f["end_m"])  # bit-identical
     assert set(fixture_members) == set(members_by_key(cand))
 
 
@@ -376,11 +428,11 @@ def test_noop_on_generated_base():
     assert preview["changes"] == [] and preview["members"] == {"added": [], "removed": [], "updated": []}
 
 
-def test_fixture_base_is_not_bit_identical_to_generator_output():
-    # generation-rules.md "Numeric evaluation": regenerating the hand-entered fixture rewrites 38 members' last bits.
+def test_fixture_base_is_exact_generator_output():
+    # TIMBER-002 §7: regenerating the fixture with its own parameters changes nothing.
     fixture = Snapshot.model_validate(FIXTURE)
     change = run("SetFootprintDimensions", {"width_m": 10.9728, "depth_m": 7.3152}, base=fixture).change
-    assert not change.is_noop and len(change.members_updated) == 38 and change.changes == ()
+    assert change.is_noop and not change.members_updated and change.changes == ()
 
 
 # --- preview contract and classification -----------------------------------------------
@@ -470,3 +522,21 @@ def test_command_schema_validates_examples():
         validator.validate(example)
     for bad in (cmd("SetFootprintDimensions", {"width_m": 12}), cmd("SetWallHeight", {}), {"type": "CreateReferenceProject", "args": {}}):
         assert not validator.is_valid(bad)
+
+
+@settings(max_examples=60, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+@given(
+    spacing=st.floats(-1, 2, allow_nan=False),
+    purlins=st.one_of(st.integers(-2, 6), st.floats(-1, 5, allow_nan=False)),
+    leg=st.floats(-1, 2, allow_nan=False),
+    level_1=st.booleans(),
+    eave=st.booleans(),
+)
+def test_frame_parameters_never_raise(spacing, purlins, leg, level_1, eave):
+    """MODEL-005 §10 test 11: random SetFrameParameters never raise; accepted candidates re-validate."""
+    args = {"joist_spacing_m": spacing, "purlins_per_slope": purlins, "knee_brace_leg_m": leg, "knee_braces_level_1": level_1, "knee_braces_eave": eave}
+    result = run("SetFrameParameters", args)
+    if result.accepted:
+        assert validate_value(result.change.candidate.model_dump(mode="json")).valid
+    else:
+        assert result.rejection.code in (VF, UC)

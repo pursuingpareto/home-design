@@ -20,6 +20,9 @@ from test_project import ACTOR, ACTOR_B, KEY, T0, cid
 TOKENS = {"tok-a": ACTOR, "tok-b": ACTOR_B}
 OPENAPI = json.loads(OPENAPI_PATH.read_text(encoding="utf-8"))
 POST_KEY, BEAM_KEY = "timber.POST.8x8", "timber.BEAM.8x12"
+# Every timber line of Reference House 001 v2 (D053): a book with these rows is complete.
+FULL_PRICES = {POST_KEY: 3150, BEAM_KEY: 4725, "timber.SILL.8x8": 3150, "timber.FLOOR_JOIST.4x8": 1200,
+               "timber.PRINCIPAL_RAFTER.8x10": 3900, "timber.PURLIN.6x8": 2350, "timber.KNEE_BRACE.4x6": 900}
 UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 
 
@@ -102,7 +105,12 @@ class Api:
         footprint = next(e for e in self.snapshot(pid)["entities"] if e["kind"] == "Footprint")
         return self.command(pid, "SetFootprintDimensions", {"width_m": width, "depth_m": footprint["depth_m"]}, **kw)
 
+    def routine(self, pid, n=0.5, **kw) -> dict:
+        """A routine command (dependencies.md §4.1): AddSection, the only routine command since D057."""
+        return self.command(pid, "AddSection", {"nominal_label": f"routine-{n}", "actual_width_m": 0.1, "actual_depth_m": 0.2}, **kw)
+
     def roof(self, pid, pitch=0.5, **kw) -> dict:
+        """Consequential since D057: commit it with ``preview_commit``."""
         return self.command(pid, "SetGableRoofParameters", {"pitch_rad": pitch, "eave_overhang_m": 0.6096}, **kw)
 
     def preview(self, pid, command, **kw):

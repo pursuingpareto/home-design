@@ -1,11 +1,11 @@
 # Reference House 001 — Vermont timber-frame house
 
-**Fixture status:** VS-01 geometry and framing inventory confirmed ([D025](../../product/decisions/D025-reference-house-001-vs01-fixture.md)). Not an engineered or code-compliant building.
+**Fixture status:** version 2: VS-01 geometry ([D025](../../product/decisions/D025-reference-house-001-vs01-fixture.md)) with the VS-02 frame ([D053](../../product/decisions/D053-reference-house-001-v2-design-intent.md)). Not an engineered or code-compliant building.
 
 - Location: Vermont, USA; jurisdiction details and site loads to be configured, not assumed.
 - Two stories; **1,728 sf** (864 sf per story).
 - Three bedrooms, two bathrooms (narrative program only; rooms and walls are not VS-01 entities).
-- Traditional heavy timber post-and-beam structure; VS-01 generates posts and beams only.
+- Traditional heavy timber frame: posts, beams, sills, floor joists, principal rafters with purlins, and knee braces (VS-02).
 - Simple gable roof; conventional residential foundation (foundation not modeled in VS-01).
 - Configurable straw bale or conventional stud-wall infill (later slices).
 - Traditional joinery and modern connector options (later slices).
@@ -33,9 +33,25 @@ Z = 0 is the **first-floor reference**, not grade. Ridge height for derived roof
 
 ## Inventory
 
-The fixture's IDs are fixed, arbitrary values; projects created from the template get their own IDs ([D041](../../product/decisions/D041-deterministic-id-minting.md)). Rule [`vs01-post-beam-1`](generation-rules.md) produces **58** members: 24 posts and 34 beams. Lengths on the schedule are reference-axis lengths, not fabrication cut lengths.
+The fixture's IDs are fixed values; projects created from the template get their own IDs ([D041](../../product/decisions/D041-deterministic-id-minting.md)). Rule [`vs02-frame-1`](generation-rules.md) produces **193** members, stored as exact generator output:
+
+| Role | Section | Count |
+|---|---|---|
+| Posts | 8×8 | 24 |
+| Beams | 8×12 | 34 |
+| Sills | 8×8 | 17 |
+| Floor joists (24" on center) | 4×8 | 30 |
+| Principal rafters | 8×10 | 8 |
+| Purlins (2 per slope) | 6×8 | 12 |
+| Knee braces (3'-0" legs, both planes) | 4×6 | 68 |
+
+Lengths on the schedule are reference-axis lengths ([D058](../../product/decisions/D058-datum-reference-axes.md)), not fabrication cut lengths. The fixture and the packaged template are built by `uv run python -m homedesign.timber.fixture` and drift-checked in CI ([TIMBER-002](../../implementation/tasks/TIMBER-002.md) §7). Connections are not yet generated (`CONN-001`).
 
 Complete snapshot: [`fixture.snapshot.json`](fixture.snapshot.json). Derived `plan2d` / `mesh3d` / `timber_schedule` / `preliminary_estimate` shapes are [artifacts.md](../../architecture/artifacts.md) (D027). Default estimate for this fixture is `UNAVAILABLE` (no price book).
+
+## VS-02 design intent (in the fixture)
+
+VS-02 adds sills, floor joists, principal rafters, purlins, and knee braces ([D052](../../product/decisions/D052-vs02-frame-members.md)), with the values in [D053](../../product/decisions/D053-reference-house-001-v2-design-intent.md). Under [D055](../../product/decisions/D055-pre-release-schema-replacement.md), the v2 fixture replaced the VS-01 fixture; older snapshots are not supported. It adds four sections (4×8, 8×10, 6×8, 4×6), the frame parameters, and the D054 connection types per junction class.
 
 ## Still open for this house (not VS-01)
 

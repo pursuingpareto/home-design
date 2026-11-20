@@ -36,6 +36,15 @@ def book(**prices):
 
 
 POST, BEAM = "timber.POST.8x8", "timber.BEAM.8x12"
+# Every timber line of Reference House 001 v2 (D053): a book with these rows is complete.
+FULL = {POST: 3150, BEAM: 4725, "timber.SILL.8x8": 3150, "timber.FLOOR_JOIST.4x8": 1200,
+        "timber.PRINCIPAL_RAFTER.8x10": 3900, "timber.PURLIN.6x8": 2350, "timber.KNEE_BRACE.4x6": 900}
+# D053 reference inventory: (role, section) -> (count, total reference-axis length in feet).
+REFERENCE_AGGREGATES = {
+    ("BEAM", "8x12"): (34, 34 * 12), ("FLOOR_JOIST", "4x8"): (30, 30 * 12), ("KNEE_BRACE", "4x6"): (68, 68 * 3 * 2**0.5),
+    ("POST", "8x8"): (24, 12 * 10 + 12 * 9), ("PRINCIPAL_RAFTER", "8x10"): (8, 8 * 15), ("PURLIN", "6x8"): (12, 12 * 12),
+    ("SILL", "8x8"): (17, 17 * 12),
+}
 
 
 def svc_project(store):
@@ -53,14 +62,15 @@ def estimate(svc, pid, now=T0):
 def test_reference_house_schedule():
     schedule = build_schedule(FIXTURE_SNAPSHOT)
     members = {e.id for e in FIXTURE_SNAPSHOT.entities if e.kind == "TimberMember"}
-    assert len(schedule["members"]) == 58 and {r["member_id"] for r in schedule["members"]} == members
+    assert len(schedule["members"]) == 193 and {r["member_id"] for r in schedule["members"]} == members
     keys = [r["generation_key"] for r in schedule["members"]]
     assert keys == sorted(keys) and all(r["quantity"] == 1 for r in schedule["members"])
-    (beam, post) = schedule["aggregates"]
-    assert (beam["role"], beam["nominal_section"], beam["count"]) == ("BEAM", "8x12", 34)
-    assert (post["role"], post["nominal_section"], post["count"]) == ("POST", "8x8", 24)
-    assert abs(beam["total_length_m"] - 124.3584) <= 1e-6 * 34 and abs(post["total_length_m"] - 69.4944) <= 1e-6 * 24
-    assert sum(a["count"] for a in schedule["aggregates"]) == 58  # reconciles with the inventory (AC-04)
+    aggregates = {(a["role"], a["nominal_section"]): a for a in schedule["aggregates"]}
+    assert list(aggregates) == sorted(REFERENCE_AGGREGATES)
+    for key, (count, feet) in REFERENCE_AGGREGATES.items():
+        assert aggregates[key]["count"] == count
+        assert abs(aggregates[key]["total_length_m"] - feet * 0.3048) <= 1e-6 * count, key
+    assert sum(a["count"] for a in schedule["aggregates"]) == 193  # reconciles with the inventory (AC-04, AC2-06)
     for aggregate in schedule["aggregates"]:
         rows = [r for r in schedule["members"] if (r["role"], r["nominal_section"]) == (aggregate["role"], aggregate["nominal_section"])]
         total = 0.0
@@ -90,7 +100,7 @@ def test_no_book_is_unavailable_never_zero(store):
     env = estimate(svc, pid)
     payload = env["payload"]
     assert env["status"] == "UNAVAILABLE" and payload["coverage"] == "none" and payload["currency"] is None
-    assert payload["price_book"] is None and payload["totals"] == {"priced_amount_minor": None, "unpriced_line_count": 2, "grand_total_minor": None}
+    assert payload["price_book"] is None and payload["totals"] == {"priced_amount_minor": None, "unpriced_line_count": 7, "grand_total_minor": None}
     assert "COST_INPUTS_MISSING" in [w["code"] for w in env["warnings"]]
     schedule = svc.artifacts.get_artifact(pid, "timber_schedule", now=T0)["payload"]
     assert [(li["key"], li["quantity_value"]) for li in payload["line_items"]] == [
@@ -104,14 +114,14 @@ def test_partial_book(store):
     env = estimate(svc, pid, at(1))
     payload = env["payload"]
     assert (env["status"], payload["coverage"], payload["currency"]) == ("CURRENT", "partial", "USD")
-    assert payload["totals"]["grand_total_minor"] is None and payload["totals"]["unpriced_line_count"] == 1
+    assert payload["totals"]["grand_total_minor"] is None and payload["totals"]["unpriced_line_count"] == 6
     assert payload["totals"]["priced_amount_minor"] == next(li["amount_minor"] for li in payload["line_items"] if li["key"] == POST)
     assert "COST_INPUTS_MISSING" in [w["code"] for w in env["warnings"]]
 
 
 def test_complete_book(store):
     svc, pid = svc_project(store)
-    svc.set_price_book(pid, book(**{POST: 3150, BEAM: 4725}), actor_id=ACTOR, now=at(1))
+    svc.set_price_book(pid, book(**FULL), actor_id=ACTOR, now=at(1))
     env = estimate(svc, pid, at(1))
     payload = env["payload"]
     assert (env["status"], payload["coverage"]) == ("CURRENT", "complete")
@@ -125,7 +135,7 @@ def test_complete_book(store):
 
 def test_unused_rows_are_ignored_with_a_warning(store):
     svc, pid = svc_project(store)
-    svc.set_price_book(pid, book(**{POST: 3150, BEAM: 4725, "timber.RAFTER.2x10": 900}), actor_id=ACTOR, now=at(1))
+    svc.set_price_book(pid, book(**FULL, **{"timber.RAFTER.2x10": 900}), actor_id=ACTOR, now=at(1))
     env = estimate(svc, pid, at(1))
     assert env["payload"]["coverage"] == "complete"
     assert any(w["code"] == "PRICE_ROWS_UNUSED" and "timber.RAFTER.2x10" in w["message"] for w in env["warnings"])
@@ -181,7 +191,7 @@ def test_duplicate_section_label_is_rejected(store):
 
 def test_width_change_recomputes_schedule_and_estimate(store):
     svc, pid = svc_project(store)
-    svc.set_price_book(pid, book(**{POST: 3150, BEAM: 4725}), actor_id=ACTOR, now=at(1))
+    svc.set_price_book(pid, book(**FULL), actor_id=ACTOR, now=at(1))
     before = estimate(svc, pid, at(1))["payload"]
     preview_commit(svc, pid, width_cmd(svc, pid, 12.192), now=at(2))
     schedule = svc.artifacts.get_artifact(pid, "timber_schedule", now=at(2))["payload"]

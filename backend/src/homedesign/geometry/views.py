@@ -44,6 +44,9 @@ class _Model:
         return [[self.x0, self.y0], [self.x1, self.y0], [self.x1, self.y1], [self.x0, self.y1]]
 
 
+PLAN_ROLES = frozenset({"POST", "BEAM"})
+
+
 def _plane_of(generation_key: str) -> tuple[str, str]:
     """(plane_id, 'posts'|'beams') per artifacts.md §5 plane rules."""
     if "/level-0/post" in generation_key:
@@ -65,7 +68,8 @@ def build_plan2d(snapshot: Snapshot) -> dict[str, Any]:
         "level-1": {"plane_id": "level-1", "level_id": m.level1.id, "z_m": m.level1.elevation_m, "posts": [], "beams": []},
         "eave": {"plane_id": "eave", "level_id": None, "z_m": m.z_eave, "posts": [], "beams": []},
     }
-    for member in m.members:  # already in generation_key order
+    # MODEL-005 §9 (artifacts.md §5 interim note): the plan lists posts and beams only until ART-002.
+    for member in (mem for mem in m.members if mem.member_role in PLAN_ROLES):  # already in generation_key order
         plane, group = _plane_of(member.generation_key)
         if group == "posts":
             item = {"member_id": member.id, "generation_key": member.generation_key,

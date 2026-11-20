@@ -4,6 +4,8 @@
 #   scripts/dev.sh            # PostgreSQL database "homedesign" (created and migrated if needed)
 #   scripts/dev.sh --memory   # in-memory store: nothing is saved when you stop
 #   scripts/dev.sh --open     # also open the browser (combine with --memory if you like)
+#   scripts/dev.sh --reset    # drop and recreate the local database first (needed after a model
+#                             # schema change: older projects are not migrated before release, D055)
 #
 # Then open http://localhost:5173 and sign in with: dev-token
 #
@@ -20,11 +22,13 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 STORE=postgres
 OPEN=false
+RESET=false
 for arg in "$@"; do
   case "$arg" in
     --memory) STORE=memory ;;
     --open) OPEN=true ;;
-    -h | --help) sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --reset) RESET=true ;;
+    -h | --help) sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $arg (try --help)" >&2; exit 2 ;;
   esac
 done
@@ -70,14 +74,20 @@ if [ "$STORE" = memory ]; then
   say "Store: in memory (projects are lost when you stop)"
 else
   command -v psql > /dev/null || fail "PostgreSQL client tools not found. Install PostgreSQL, or run: scripts/dev.sh --memory"
+  DB_NAME="$(cd "$ROOT/backend" && uv run python -c 'import sys; from psycopg.conninfo import conninfo_to_dict; print(conninfo_to_dict(sys.argv[1]).get("dbname") or "")' "$DATABASE_URL")"
+  if [ "$RESET" = true ]; then
+    [ -n "$DB_NAME" ] || fail "Cannot tell which database to reset from $DATABASE_URL."
+    say "Resetting database $DB_NAME (all local projects are deleted)"
+    dropdb --if-exists "$DB_NAME" || fail "Could not drop database $DB_NAME. Is it in use, or is PostgreSQL stopped?"
+  fi
   if ! psql "$DATABASE_URL" -Atqc 'select 1' > /dev/null 2>&1; then
-    DB_NAME="$(cd "$ROOT/backend" && uv run python -c 'import sys; from psycopg.conninfo import conninfo_to_dict; print(conninfo_to_dict(sys.argv[1]).get("dbname") or "")' "$DATABASE_URL")"
     [ -n "$DB_NAME" ] || fail "Cannot reach $DATABASE_URL. Is PostgreSQL running? (Or run: scripts/dev.sh --memory)"
     say "Creating database $DB_NAME"
     createdb "$DB_NAME" 2> /dev/null || fail "Could not create database $DB_NAME. Is PostgreSQL running? (Or run: scripts/dev.sh --memory)"
   fi
   say "Migrating $DATABASE_URL"
-  (cd "$ROOT/backend" && uv run python -m homedesign.project.migrate "$DATABASE_URL" > /dev/null)
+  (cd "$ROOT/backend" && uv run python -m homedesign.project.migrate "$DATABASE_URL" > /dev/null) \
+    || fail "Migration refused or failed (see above). After a model schema change, run: scripts/dev.sh --reset"
   export HOMEDESIGN_STORE=postgres HOMEDESIGN_DATABASE_URL="$DATABASE_URL"
   say "Store: PostgreSQL ($DATABASE_URL); projects are kept between runs"
 fi

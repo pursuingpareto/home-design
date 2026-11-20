@@ -52,11 +52,39 @@ This matches the Reference House 001 fixture (D025). Supporting several building
 | `Section` | `id`, `shape`, `actual_width_m`, `actual_depth_m`, `nominal_label` | Rectangular only in VS-01; actual dimensions positive; `nominal_label` unique within the snapshot ([D049](../product/decisions/D049-unique-section-labels.md)) |
 | `Material` | `id`, `name`, `species?`, `grade?`, `density_kg_m3?`, `provenance?` | Unknown grade and properties explicitly nullable; not assumed |
 
-`TimberMember.member_role` in VS-01: `POST`, `BEAM`, `FLOOR_JOIST` (only if generated), `RAFTER` (only if generated). Unsupported member families must not be fabricated by the generator. `start_m` and `end_m` describe the member reference axis; physical cut length can differ once connection machining is introduced. VS-01 schedules label length as **reference-axis length, not fabrication cut length**.
+`TimberMember.member_role` in VS-01 was `POST` or `BEAM`; version 2 roles are listed in §3.3. Unsupported member families must not be fabricated by the generator. `start_m` and `end_m` describe the member reference axis; physical cut length can differ once connection machining is introduced. VS-01 schedules label length as **reference-axis length, not fabrication cut length**.
 
 ### 3.2 Future extension types (not VS-01 deliverables)
 
-`Wall`, `Opening`, `AssemblyDefinition`, `AssemblyInstance`, `Layer`, `Connection`, `MEPSystem`, `MEPElement`, `LoadCase`, `AnalysisResult`, `CostDataset`, `EnvironmentalDataset`, `Approval`, `DesignAlternative`. Reserve type namespaces and IDs; do not create empty pretend engineering objects in VS-01.
+`Wall`, `Opening`, `AssemblyDefinition`, `AssemblyInstance`, `Layer`, `Connection`, `MEPSystem`, `MEPElement`, `LoadCase`, `AnalysisResult`, `CostDataset`, `EnvironmentalDataset`, `Approval`, `DesignAlternative`. Reserve type namespaces and IDs; do not create empty pretend engineering objects in VS-01. (`Connection` arrives in version 2, §3.3.)
+
+### 3.3 Version 2 records
+
+Approved as [MODEL-005](../implementation/tasks/MODEL-005.md) §12 items 1–2 and implemented with [TIMBER-002](../implementation/tasks/TIMBER-002.md). Version 2 **replaces** version 1 ([D055](../product/decisions/D055-pre-release-schema-replacement.md)); version 1 snapshots are rejected with `UNSUPPORTED_SCHEMA_VERSION`.
+
+- **Model schema version:** `model_schema_version` is 2.
+- **Record versions are per kind:** a kind's `schema_version` changes only when its own shape changes. In version 2, `TimberMember` and `FrameSystem` are at 2, `Connection` starts at 1, and every other kind stays at 1. Each value is still checked exactly (stage 1).
+- **Member roles:** `POST`, `BEAM`, `SILL`, `FLOOR_JOIST`, `PRINCIPAL_RAFTER`, `PURLIN`, `KNEE_BRACE` ([D052](../product/decisions/D052-vs02-frame-members.md)). The reserved `RAFTER` role is removed; a common-rafter role returns only when a rule generates one.
+- **`FrameSystem`** gains three required fields:
+  - `parameters`: the frame generation parameters, a strict object with five required fields (MODEL-005 §5, approved as §12 item 2):
+
+    | Field | Reference house ([D053](../product/decisions/D053-reference-house-001-v2-design-intent.md)) | Stage 3 | Stage 4 supported range (inclusive) |
+    |---|---|---|---|
+    | `joist_spacing_m` | 0.6096 (24") | > 0 | 0.3048–1.2192 m (12"–48") |
+    | `purlins_per_slope` | 2 (integer) | ≥ 0 | 0–4 |
+    | `knee_brace_leg_m` | 0.9144 (3'-0") | > 0 | 0.4572–1.2192 m (1'-6"–4'-0"), and the brace-fit rule |
+    | `knee_braces_level_1` | `true` | — | — |
+    | `knee_braces_eave` | `true` | — | — |
+
+    These are supported-range limits for the generator, not structural limits (as D032). **Brace fit:** when either brace plane is enabled, `2 × knee_brace_leg_m` must not exceed the shortest bay on either axis (+1e-6 m). It is checked on the full candidate, so a grid or footprint change can be rejected for the braces it would produce. The leg maximum (4') is below the minimum story height (8', D034), so braces always fit their posts. Zero purlins, or both brace planes off, are valid; the role's `member_defaults` entry is still required (D039). A bay may have no joists if the spacing is not less than the bay;
+  - `connection_ids[]`: every `Connection` record, ascending by `generation_key` (as `member_ids`, D030);
+  - `connection_defaults`: maps each junction class to a connection type, covering every class the rule generates ([D054](../product/decisions/D054-vs02-connection-catalog.md); as `member_defaults`, D039/D040).
+- **`Connection`** (new kind): `id`, `junction_class`, `connection_type`, `member_ids: [receiving, entering]` (exactly two `TimberMember` IDs), `location_m: [x, y, z]`, `generation_key`.
+  - Junction classes: `post-beam`, `post-sill`, `brace`, `joist-beam`, `rafter-peak`, `rafter-foot`, `purlin-rafter`.
+  - Types: `PEGGED_MORTISE_TENON`, `BRIDLE`, `HOUSED_DOVETAIL`, `STEEL_KNIFE_PLATE`, `JOIST_HANGER`; allowed pairs per the D054 catalog.
+  - Connections are generated, like members. Their IDs are minted from `"generation/" + generation_key` (D041), so generation keys are unique across members and connections together.
+  - No capacity, fastener, or machining fields (D054).
+- **Schema file:** the snapshot schema is exported as `schemas/snapshot.v2.schema.json`. The command, artifact, and OpenAPI files keep their `v1` names, which follow the API version (interfaces.md §8).
 
 ## 4. Canonical snapshot
 
@@ -73,16 +101,18 @@ Validation runs in five ordered stages ([D035](../product/decisions/D035-validat
 | Stage | Checks | Top-level code |
 |---|---|---|
 | 1 Syntactic | Required fields present, no unknown fields, types, enums, schema versions, finite numbers, canonical lowercase UUIDs (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys, timestamps | `VALIDATION_FAILED` |
-| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; `member_defaults` references resolve and cover every role the rule generates (D039); unique generation keys; unique section labels (D049); `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030) | `VALIDATION_FAILED` |
-| 3 Geometric | Positive, finite dimensions; pitch in (0, π/2); overhang ≥ 0; grid line fractions strictly ascending with endpoints 0 and 1; strictly increasing level elevations; story-height consistency (D033); datums: `Footprint.origin_m = [0, 0]` (D031) and Level 0 elevation `0` (D034); nonzero member axes | `VALIDATION_FAILED` |
-| 4 Domain | Supported VS-01 configurations only: D031 unsupported values; D032 and D034 bounds, checked on the full candidate snapshot (so a footprint change can be rejected for the bay lengths it produces); exactly two levels; supported generation rule and mode; member roles allowed by that rule. Never asserts structural adequacy or code compliance | `UNSUPPORTED_CONFIGURATION` |
-| 5 Conformance | Members are exactly what the generation rule produces: same keys, roles, sections and materials (from `member_defaults`), and endpoints within 1e-6 m per coordinate (D046). Runs only when stages 1–4 pass | `VALIDATION_FAILED` |
+| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; `member_defaults` references resolve and cover every role the rule generates (D039); unique generation keys; unique section labels (D049); `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030). *Version 2:* each `Connection` references two distinct `TimberMember` records; `FrameSystem.connection_ids` is exactly the set of connections, in ascending `generation_key`; `connection_defaults` covers every junction class the rule generates; generation keys are unique across members and connections together (§3.3) | `VALIDATION_FAILED` |
+| 3 Geometric | Positive, finite dimensions; pitch in (0, π/2); overhang ≥ 0; grid line fractions strictly ascending with endpoints 0 and 1; strictly increasing level elevations; story-height consistency (D033); datums: `Footprint.origin_m = [0, 0]` (D031) and Level 0 elevation `0` (D034); nonzero member axes. *Version 2:* joist spacing and brace leg > 0, purlins per slope ≥ 0 (§3.3) | `VALIDATION_FAILED` |
+| 4 Domain | Supported VS-01 configurations only: D031 unsupported values; D032 and D034 bounds, checked on the full candidate snapshot (so a footprint change can be rejected for the bay lengths it produces); exactly two levels; supported generation rule and mode; member roles allowed by that rule. *Version 2:* frame parameter bounds and the brace-fit rule; every `connection_defaults` entry and `Connection.connection_type` is allowed for its junction class by the D054 catalog (§3.3). Never asserts structural adequacy or code compliance | `UNSUPPORTED_CONFIGURATION` |
+| 5 Conformance | Members are exactly what the generation rule produces: same keys, roles, sections and materials (from `member_defaults`), and endpoints within 1e-6 m per coordinate (D046). *Version 2:* connections are exactly what the rule produces: same keys, junction classes, members, and types (from `connection_defaults`), and locations within 1e-6 m per coordinate. Runs only when stages 1–4 pass | `VALIDATION_FAILED` |
 
 Authorization (the caller's rights on the project or revision) is checked by the API layer before validation (`UNAUTHORIZED`, `FORBIDDEN`). It is not a stage of the model validator.
 
 Validation returns stable machine-readable codes and field paths, with human-readable messages; the messages are not part of the contract. Failures do not create a new revision.
 
 ### 6.1 Detail codes
+
+Rows marked *Version 2* come from [MODEL-005](../implementation/tasks/MODEL-005.md) §12 item 3. `MISSING_GENERATED_CONNECTION`, `CONNECTION_GEOMETRY_MISMATCH`, and `CONNECTION_ASSIGNMENT_MISMATCH` cannot occur until a rule generates connections (`CONN-001`).
 
 Each detail code belongs to one stage, and the stage determines its top-level code. Adding a code is backward compatible. Renaming, removing, or moving a code to another stage requires a decision (D035). Checks that span several fields report the main field as `path` and the other contributing fields as `related_paths`, using the mapping in [D037](../product/decisions/D037-error-related-paths.md).
 
@@ -100,7 +130,7 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `INVALID_TIMESTAMP` | 1 | Not an RFC 3339 UTC timestamp |
 | `INVALID_LINE_ID` | 1 | Grid line ID is not `x<n>` in `x_lines` or `y<n>` in `y_lines` (D042) |
 | `INTEGER_OUT_OF_RANGE` | 1 | Integer field non-integral or outside ±(2⁵³ − 1) (D029) |
-| `UNKNOWN_KIND` | 1 | `kind` is not a VS-01 entity kind |
+| `UNKNOWN_KIND` | 1 | `kind` is not a VS-01 entity kind (*version 2:* not a version 2 kind; `Connection` is known) |
 | `UNSUPPORTED_SCHEMA_VERSION` | 1 | `model_schema_version` or record `schema_version` is not supported |
 | `DUPLICATE_ID` | 2 | Two records share an ID |
 | `DANGLING_REFERENCE` | 2 | A referenced ID does not exist |
@@ -108,12 +138,15 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `BUILDING_IN_ENTITIES` | 2 | A `Building` record appears in `entities` (§3) |
 | `UNREFERENCED_ENTITY` | 2 | A record that must be referenced is not |
 | `MEMBER_SET_MISMATCH` | 2 | `FrameSystem.member_ids` differs from the set of `TimberMember` records |
-| `DUPLICATE_GENERATION_KEY` | 2 | Two members share a `generation_key` |
+| `DUPLICATE_GENERATION_KEY` | 2 | Two members share a `generation_key`. *Version 2:* the scope is members and connections together, because IDs are minted from keys (D041); `path` is the later record's key, `related_paths` the first's |
 | `ORDER_VIOLATION` | 2 | An array with a required order is out of order (D030) |
 | `DUPLICATE_LINE_ID` | 2 | A grid line ID repeats within an axis; `path` is each later occurrence's `id`, `related_paths` the first occurrence's (D042, D037) |
 | `DUPLICATE_SECTION_LABEL` | 2 | Two sections share a `nominal_label`; `path` is each later section's label (by `id` order), `related_paths` the first's (D049, D037) |
 | `DUPLICATE_PRICE_KEY` | 2 | A price-book row key repeats; `path` is the later row's `key`, `related_paths` the first's (price-book validation, EST-001) |
 | `MISSING_ROLE_DEFAULT` | 2 | `FrameSystem.member_defaults` lacks an entry for a role the generation rule generates (D039) |
+| `SELF_CONNECTION` | 2 | *Version 2.* A `Connection` lists the same member twice; `path` is `member_ids[1]`, `related_paths` `member_ids[0]` |
+| `CONNECTION_SET_MISMATCH` | 2 | *Version 2.* `FrameSystem.connection_ids` differs from the set of `Connection` records |
+| `MISSING_CONNECTION_DEFAULT` | 2 | *Version 2.* `FrameSystem.connection_defaults` lacks an entry for a junction class the rule generates; `value` names the class (D054) |
 | `OUT_OF_RANGE` | 3 | Physically meaningless value: non-positive length, pitch outside (0, π/2), negative overhang |
 | `NOT_STRICTLY_ASCENDING` | 3 | Grid fractions or level elevations not strictly increasing |
 | `GRID_ENDPOINT_MISSING` | 3 | Grid fractions do not start at 0 and end at 1 |
@@ -127,6 +160,10 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `UNEXPECTED_MEMBER` | 5 | A member's key is not generated by the rule; `path` is its `generation_key` (D046) |
 | `MEMBER_GEOMETRY_MISMATCH` | 5 | `start_m` or `end_m` differs from the rule by more than 1e-6 m in any coordinate (D046) |
 | `MEMBER_ASSIGNMENT_MISMATCH` | 5 | `member_role`, `section_id`, or `material_id` differs from the rule; for section and material, `related_paths` is the role's `member_defaults` field (D046, D037) |
+| `MISSING_GENERATED_CONNECTION` | 5 | *Version 2.* The rule generates a connection key that no record has; `path` is the frame's `connection_ids`, `value` the key |
+| `UNEXPECTED_CONNECTION` | 5 | *Version 2.* A connection's key is not generated by the rule; `path` is its `generation_key` |
+| `CONNECTION_GEOMETRY_MISMATCH` | 5 | *Version 2.* `location_m` differs from the rule by more than 1e-6 m in any coordinate |
+| `CONNECTION_ASSIGNMENT_MISMATCH` | 5 | *Version 2.* `junction_class`, `member_ids`, or `connection_type` differs from the rule; for `connection_type`, `related_paths` is the class's `connection_defaults` field (D037) |
 
 ## 7. Revision and storage policy (confirmed, D026)
 
@@ -146,6 +183,13 @@ Storage schema ([MODEL-004](../implementation/tasks/MODEL-004.md) §5, approved 
 ## 8. Migration rules
 
 Each record has a schema version. Persist a top-level model schema version. Migrations must be deterministic, tested with golden fixtures, and preserve stable IDs. Reject unsupported future schema versions explicitly. Do not silently discard unknown data.
+
+**Pre-release exception ([D055](../product/decisions/D055-pre-release-schema-replacement.md); [MODEL-005](../implementation/tasks/MODEL-005.md) §8, approved as §12 item 5):** version 2 replaces version 1 with no migration.
+
+- **One rule:** `vs01-post-beam-1` is deleted, and `vs02-frame-1` is the only registered rule. The supported-range constants live in `model/limits.py` (formerly `model/vs01.py`).
+- **One fixture:** the fixture and the packaged template become Reference House 001 v2. The v1 fixture is removed from the tree and kept only in git history.
+- **Stored-data guard:** the migration runner refuses a database that holds any revision with `model_schema_version` below 2. It names the database and the fix, and deletes nothing.
+- **Reset:** `scripts/dev.sh --reset` drops, recreates, and migrates the local development database. The test database is already recreated on every run.
 
 ## 9. VS-01 model acceptance tests
 

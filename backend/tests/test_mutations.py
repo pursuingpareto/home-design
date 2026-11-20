@@ -149,6 +149,27 @@ def _third_level(d):
     d["building"]["level_ids"].append(NEW_ID)
 
 
+def _params(**values):
+    return lambda d: _find(d, FRAME["id"])["parameters"].update(values)
+
+
+BEAM_AT_POST = _member_with_key("frame/axis-x/y0/x0-x1/plane-L1/beam")
+
+
+def _add_connection(*, member_ids=None, junction_class="post-beam", connection_type="PEGGED_MORTISE_TENON",
+                    key="connection/test", listed=True):
+    def mutate(d):
+        d["entities"].append({
+            "id": NEW_ID, "kind": "Connection", "schema_version": 1,
+            "junction_class": junction_class, "connection_type": connection_type,
+            "member_ids": member_ids if member_ids is not None else [A_POST["id"], BEAM_AT_POST["id"]],
+            "location_m": [0.0, 0.0, 3.048], "generation_key": key,
+        })
+        if listed:
+            _find(d, FRAME["id"])["connection_ids"].append(NEW_ID)
+    return mutate
+
+
 def _deep(d):
     nested: list = []
     for _ in range(40):
@@ -187,8 +208,11 @@ CASES: list[Case] = [
              [Expect(codes.NOT_STRICTLY_ASCENDING, epath(GRID, "x_lines", 2, "fraction"))], only=True),
     doc_case("12-missing-grid-endpoint", lambda d: _find(d, GRID["id"])["y_lines"].pop(), VF,
              [Expect(codes.GRID_ENDPOINT_MISSING, epath(GRID, "y_lines"))], only=True),
-    doc_case("13-model-schema-version-2", lambda d: d.__setitem__("model_schema_version", 2), VF,
+    doc_case("13-model-schema-version-1-retired", lambda d: d.__setitem__("model_schema_version", 1), VF,
              [Expect(codes.UNSUPPORTED_SCHEMA_VERSION, "model_schema_version")], only=True),
+    # MODEL-005 §4.1: record versions are per kind (FrameSystem 2, Footprint 1).
+    doc_case("13b-record-version-per-kind", _set(FRAME["id"], "schema_version", 1), VF,
+             [Expect(codes.UNSUPPORTED_SCHEMA_VERSION, epath(FRAME, "schema_version"))], only=True),
     doc_case("14-unknown-field", _set(FOOTPRINT["id"], "color", "red"), VF,
              [Expect(codes.UNKNOWN_FIELD, epath(FOOTPRINT, "color"))], only=True),
     text_case("15-duplicate-key", lambda b: b.replace(b'"width_m": 10.9728,', b'"width_m": 10.9728, "width_m": 10.9728,'), VF,
@@ -225,8 +249,9 @@ CASES: list[Case] = [
              [Expect(codes.OUT_OF_RANGE, epath(FOOTPRINT, "width_m"))], only=True),
     # Parameter-only edits leave members stale; stage 5 (D046) would then fail, so valid
     # cases regenerate members first.
-    doc_case("29-width-inside-epsilon", lambda d: (_set(FOOTPRINT["id"], "width_m", 3.6576 - 5e-7)(d), regenerate(d)), None, [], only=True),
-    doc_case("30-width-outside-epsilon", _set(FOOTPRINT["id"], "width_m", 3.6576 - 2e-6), UC,
+    # 4'-0" bays need short braces: twice the leg must fit the shortest bay (MODEL-005 §5.2).
+    doc_case("29-width-inside-epsilon", lambda d: (_set(FOOTPRINT["id"], "width_m", 3.6576 - 5e-7)(d), _params(knee_brace_leg_m=0.4572)(d), regenerate(d)), None, [], only=True),
+    doc_case("30-width-outside-epsilon", lambda d: (_set(FOOTPRINT["id"], "width_m", 3.6576 - 2e-6)(d), _params(knee_brace_leg_m=0.4572)(d)), UC,
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FOOTPRINT, "width_m"))], only=True),
     text_case("31-truncated", lambda b: b[: len(b) // 2], VF, [Expect(codes.MALFORMED_JSON, "")], only=True),
     text_case("32a-too-large", lambda b: b + b" " * (4 * 1024 * 1024), VF,
@@ -246,8 +271,8 @@ CASES: list[Case] = [
              [Expect(codes.DUPLICATE_GENERATION_KEY, epath(MEMBER_B, "generation_key"), (epath(MEMBER_A, "generation_key"),))]),
     doc_case("39-third-level", _third_level, UC,
              [Expect(codes.ENTITY_COUNT, "building.level_ids")], only=True),
-    doc_case("40-rafter-role", _set(MEMBERS[0]["id"], "member_role", "RAFTER"), UC,
-             [Expect(codes.UNSUPPORTED_VALUE, epath(MEMBERS[0], "member_role"))], only=True),
+    doc_case("40-retired-rafter-role", _set(MEMBERS[0]["id"], "member_role", "RAFTER"), VF,
+             [Expect(codes.INVALID_ENUM, epath(MEMBERS[0], "member_role"))], only=True),
     # D037 mapping row: level elevations
     doc_case("d037-elevations-not-ascending", _set(LEVEL1["id"], "elevation_m", 0.0), VF,
              [Expect(codes.NOT_STRICTLY_ASCENDING, epath(LEVEL1, "elevation_m"), (epath(LEVEL0, "elevation_m"),)),
@@ -266,9 +291,6 @@ CASES: list[Case] = [
              [Expect(codes.INVALID_ENUM, epath(FRAME, "member_defaults", "COLUMN"))], only=True),
     doc_case("d039-member-defaults-absent", lambda d: _find(d, FRAME["id"]).pop("member_defaults"), VF,
              [Expect(codes.MISSING_FIELD, epath(FRAME, "member_defaults"))], only=True),
-    doc_case("d039-unused-role-default-allowed",
-             lambda d: _find(d, FRAME["id"])["member_defaults"].__setitem__("FLOOR_JOIST", dict(FRAME["member_defaults"]["BEAM"])),
-             None, [], only=True),
     doc_case("d039-incomplete-role-default",
              lambda d: _find(d, FRAME["id"])["member_defaults"]["POST"].pop("material_id"), VF,
              [Expect(codes.MISSING_FIELD, epath(FRAME, "member_defaults", "POST", "material_id"))], only=True),
@@ -301,6 +323,54 @@ CASES: list[Case] = [
              [Expect(codes.MEMBER_ASSIGNMENT_MISMATCH, epath(A_POST, "member_role"))], only=True),
     doc_case("t001-stale-members-outside-domain", _set(FOOTPRINT["id"], "width_m", 30), UC,
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FOOTPRINT, "width_m"))]),
+    # MODEL-005 §5: frame parameters (stage 1 types, stage 3 physical checks, stage 4 bounds and brace fit)
+    doc_case("m005-purlins-not-integer", _params(purlins_per_slope=2.5), VF,
+             [Expect(codes.INTEGER_OUT_OF_RANGE, epath(FRAME, "parameters", "purlins_per_slope"))], only=True),
+    doc_case("m005-brace-flag-not-boolean", _params(knee_braces_eave="yes"), VF,
+             [Expect(codes.WRONG_TYPE, epath(FRAME, "parameters", "knee_braces_eave"))], only=True),
+    doc_case("m005-parameters-missing-key", lambda d: _find(d, FRAME["id"])["parameters"].pop("joist_spacing_m"), VF,
+             [Expect(codes.MISSING_FIELD, epath(FRAME, "parameters", "joist_spacing_m"))], only=True),
+    doc_case("m005-zero-spacing", _params(joist_spacing_m=0.0), VF,
+             [Expect(codes.OUT_OF_RANGE, epath(FRAME, "parameters", "joist_spacing_m"))], only=True),
+    doc_case("m005-negative-purlins", _params(purlins_per_slope=-1), VF,
+             [Expect(codes.OUT_OF_RANGE, epath(FRAME, "parameters", "purlins_per_slope"))], only=True),
+    doc_case("m005-spacing-too-wide", _params(joist_spacing_m=1.2192 + 2e-6), UC,
+             [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FRAME, "parameters", "joist_spacing_m"))], only=True),
+    doc_case("m005-spacing-at-bound", lambda d: (_params(joist_spacing_m=0.3048)(d), regenerate(d)), None, [], only=True),
+    doc_case("m005-five-purlins", _params(purlins_per_slope=5), UC,
+             [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FRAME, "parameters", "purlins_per_slope"))], only=True),
+    doc_case("m005-brace-leg-too-short", _params(knee_brace_leg_m=0.4572 - 2e-6), UC,
+             [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FRAME, "parameters", "knee_brace_leg_m"))], only=True),
+    doc_case("m005-braces-do-not-fit", _grid_fractions("x_lines", [0.0, 0.5, 0.5 + 5 * 0.3048 / 10.9728, 1.0]), UC,
+             [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FRAME, "parameters", "knee_brace_leg_m"),
+                     tuple(sorted((epath(FOOTPRINT, "width_m"), epath(GRID, "x_lines")), key=lambda s: s.encode("utf-16-be"))))], only=True),
+    doc_case("m005-braces-off-need-no-fit",
+             lambda d: (_grid_fractions("x_lines", [0.0, 0.5, 0.5 + 5 * 0.3048 / 10.9728, 1.0])(d),
+                        _params(knee_braces_level_1=False, knee_braces_eave=False)(d), regenerate(d)), None, [], only=True),
+    # MODEL-005 §4.4, §6: connections and connection types (D054)
+    doc_case("m005-disallowed-default-type", lambda d: _find(d, FRAME["id"])["connection_defaults"].__setitem__("post-beam", "JOIST_HANGER"), UC,
+             [Expect(codes.UNSUPPORTED_VALUE, epath(FRAME, "connection_defaults") + '["post-beam"]')], only=True),  # D036 quotes hyphenated keys
+    doc_case("m005-unknown-junction-class", lambda d: _find(d, FRAME["id"])["connection_defaults"].__setitem__("post-girt", "BRIDLE"), VF,
+             [Expect(codes.INVALID_ENUM, epath(FRAME, "connection_defaults") + '["post-girt"]')], only=True),
+    doc_case("m005-missing-connection-default", lambda d: _find(d, FRAME["id"])["connection_defaults"].pop("brace"), VF,
+             [Expect(codes.MISSING_CONNECTION_DEFAULT, epath(FRAME, "connection_defaults"))], only=True),
+    doc_case("m005-self-connection", _add_connection(member_ids=[A_POST["id"], A_POST["id"]]), VF,
+             [Expect(codes.SELF_CONNECTION, f"entities[{NEW_ID}].member_ids[1]", (f"entities[{NEW_ID}].member_ids[0]",))], only=True),
+    doc_case("m005-connection-to-a-section", _add_connection(member_ids=[A_POST["id"], SECTION_8X8["id"]]), VF,
+             [Expect(codes.WRONG_REFERENCE_KIND, f"entities[{NEW_ID}].member_ids[1]")], only=True),
+    doc_case("m005-connection-not-listed", _add_connection(listed=False), VF,
+             [Expect(codes.CONNECTION_SET_MISMATCH, epath(FRAME, "connection_ids"), (f"entities[{NEW_ID}]",))], only=True),
+    doc_case("m005-connection-reuses-member-key", _add_connection(key=A_POST["generation_key"]), VF,
+             [Expect(codes.DUPLICATE_GENERATION_KEY, f"entities[{NEW_ID}].generation_key", (epath(A_POST, "generation_key"),))]
+             if NEW_ID > A_POST["id"] else
+             [Expect(codes.DUPLICATE_GENERATION_KEY, epath(A_POST, "generation_key"), (f"entities[{NEW_ID}].generation_key",))], only=True),
+    doc_case("m005-disallowed-connection-type", _add_connection(connection_type="HOUSED_DOVETAIL"), UC,
+             [Expect(codes.UNSUPPORTED_VALUE, f"entities[{NEW_ID}].connection_type", (f"entities[{NEW_ID}].junction_class",))], only=True),
+    doc_case("m005-connection-wrong-member-count", _add_connection(member_ids=[A_POST["id"]]), VF,
+             [Expect(codes.WRONG_TYPE, f"entities[{NEW_ID}].member_ids")], only=True),
+    # Until CONN-001 the rule generates no connections, so any record is unexpected (MODEL-005 §6.5).
+    doc_case("m005-unexpected-connection", _add_connection(), VF,
+             [Expect(codes.UNEXPECTED_CONNECTION, f"entities[{NEW_ID}].generation_key")], only=True),
     # D049: unique section labels
     doc_case("d049-duplicate-section-label", _set(_BEAM_SECTION["id"], "nominal_label", "8x8"), VF,
              [Expect(codes.DUPLICATE_SECTION_LABEL, *_label_paths())], only=True),
@@ -329,8 +399,15 @@ def test_mutation(case: Case):
         assert codes.CATALOG[issue.code].top_level_code == result.code
 
 
-# Codes raised only outside snapshot validation, with the test that exercises them.
-NON_SNAPSHOT_CODES = {codes.DUPLICATE_PRICE_KEY: "test_estimating.py::test_invalid_books_are_rejected"}
+# Codes raised only outside snapshot validation, with the test that exercises them. The three
+# connection conformance codes need a rule that generates connections (CONN-001); until then
+# they are exercised by direct tests of the shared comparison.
+NON_SNAPSHOT_CODES = {
+    codes.DUPLICATE_PRICE_KEY: "test_estimating.py::test_invalid_books_are_rejected",
+    codes.MISSING_GENERATED_CONNECTION: "test_timber.py::test_connection_conformance_codes",
+    codes.CONNECTION_GEOMETRY_MISMATCH: "test_timber.py::test_connection_conformance_codes",
+    codes.CONNECTION_ASSIGNMENT_MISMATCH: "test_timber.py::test_connection_conformance_codes",
+}
 
 
 def test_every_catalog_code_is_exercised():
@@ -344,8 +421,8 @@ def test_missing_role_defaults_report_each_role():
     _find(doc, FRAME["id"])["member_defaults"] = {}
     result = validate_value(doc)
     assert [(i.code, i.path, i.value) for i in result.issues] == [
-        (codes.MISSING_ROLE_DEFAULT, epath(FRAME, "member_defaults"), "BEAM"),
-        (codes.MISSING_ROLE_DEFAULT, epath(FRAME, "member_defaults"), "POST"),
+        (codes.MISSING_ROLE_DEFAULT, epath(FRAME, "member_defaults"), role)
+        for role in sorted(("POST", "BEAM", "SILL", "FLOOR_JOIST", "PRINCIPAL_RAFTER", "PURLIN", "KNEE_BRACE"))
     ]
 
 
@@ -372,4 +449,4 @@ def test_issues_are_sorted_by_path_then_code():
             member["section_id"] = NEW_ID
     result = validate_value(doc)
     keys = [(i.path.encode("utf-16-be"), i.code) for i in result.issues]
-    assert keys == sorted(keys) and len(keys) == 58
+    assert keys == sorted(keys) and len(keys) == 193

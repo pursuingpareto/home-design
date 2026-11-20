@@ -281,8 +281,8 @@
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "name",
           "footprint_id",
           "level_ids",
@@ -324,6 +324,7 @@
             "AddSection": "#/components/schemas/AddSection",
             "CreateReferenceProject": "#/components/schemas/CreateReferenceProject",
             "SetFootprintDimensions": "#/components/schemas/SetFootprintDimensions",
+            "SetFrameParameters": "#/components/schemas/SetFrameParameters",
             "SetGableRoofParameters": "#/components/schemas/SetGableRoofParameters",
             "SetMemberSection": "#/components/schemas/SetMemberSection",
             "SetStoryHeights": "#/components/schemas/SetStoryHeights",
@@ -352,6 +353,9 @@
             "$ref": "#/components/schemas/SetMemberSection"
           },
           {
+            "$ref": "#/components/schemas/SetFrameParameters"
+          },
+          {
             "$ref": "#/components/schemas/AddSection"
           },
           {
@@ -369,6 +373,7 @@
                 "AddSection": "#/components/schemas/AddSection",
                 "CreateReferenceProject": "#/components/schemas/CreateReferenceProject",
                 "SetFootprintDimensions": "#/components/schemas/SetFootprintDimensions",
+                "SetFrameParameters": "#/components/schemas/SetFrameParameters",
                 "SetGableRoofParameters": "#/components/schemas/SetGableRoofParameters",
                 "SetMemberSection": "#/components/schemas/SetMemberSection",
                 "SetStoryHeights": "#/components/schemas/SetStoryHeights",
@@ -395,6 +400,9 @@
               },
               {
                 "$ref": "#/components/schemas/SetMemberSection"
+              },
+              {
+                "$ref": "#/components/schemas/SetFrameParameters"
               },
               {
                 "$ref": "#/components/schemas/AddSection"
@@ -497,6 +505,86 @@
           "artifact_statuses"
         ],
         "title": "CommitResponse",
+        "type": "object"
+      },
+      "Connection": {
+        "additionalProperties": false,
+        "description": "A generated junction of exactly two members (D054, MODEL-005 §4.4). Makes no capacity claim.",
+        "properties": {
+          "connection_type": {
+            "enum": [
+              "PEGGED_MORTISE_TENON",
+              "BRIDLE",
+              "HOUSED_DOVETAIL",
+              "STEEL_KNIFE_PLATE",
+              "JOIST_HANGER"
+            ],
+            "title": "Connection Type",
+            "type": "string"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "junction_class": {
+            "enum": [
+              "post-beam",
+              "post-sill",
+              "brace",
+              "joist-beam",
+              "rafter-peak",
+              "rafter-foot",
+              "purlin-rafter"
+            ],
+            "title": "Junction Class",
+            "type": "string"
+          },
+          "kind": {
+            "const": "Connection",
+            "title": "Kind",
+            "type": "string"
+          },
+          "location_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Location M",
+            "type": "array"
+          },
+          "member_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Member Ids",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "schema_version",
+          "junction_class",
+          "connection_type",
+          "member_ids",
+          "location_m",
+          "generation_key"
+        ],
+        "title": "Connection",
         "type": "object"
       },
       "CreateProjectRequest": {
@@ -775,8 +863,8 @@
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "origin_m",
           "width_m",
           "depth_m",
@@ -804,9 +892,116 @@
         "title": "FootprintArgs",
         "type": "object"
       },
+      "FrameParameters": {
+        "additionalProperties": false,
+        "description": "Inputs to the frame's generation rule (MODEL-005 §5). Bounds are checked in stages 3 and 4.",
+        "properties": {
+          "joist_spacing_m": {
+            "title": "Joist Spacing M",
+            "type": "number"
+          },
+          "knee_brace_leg_m": {
+            "title": "Knee Brace Leg M",
+            "type": "number"
+          },
+          "knee_braces_eave": {
+            "title": "Knee Braces Eave",
+            "type": "boolean"
+          },
+          "knee_braces_level_1": {
+            "title": "Knee Braces Level 1",
+            "type": "boolean"
+          },
+          "purlins_per_slope": {
+            "ge": -9007199254740991,
+            "le": 9007199254740991,
+            "title": "Purlins Per Slope",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "joist_spacing_m",
+          "purlins_per_slope",
+          "knee_brace_leg_m",
+          "knee_braces_level_1",
+          "knee_braces_eave"
+        ],
+        "title": "FrameParameters",
+        "type": "object"
+      },
+      "FrameParametersArgs": {
+        "additionalProperties": false,
+        "description": "D057: every frame parameter, all required (MODEL-005 §7.1).",
+        "properties": {
+          "joist_spacing_m": {
+            "title": "Joist Spacing M",
+            "type": "number"
+          },
+          "knee_brace_leg_m": {
+            "title": "Knee Brace Leg M",
+            "type": "number"
+          },
+          "knee_braces_eave": {
+            "title": "Knee Braces Eave",
+            "type": "boolean"
+          },
+          "knee_braces_level_1": {
+            "title": "Knee Braces Level 1",
+            "type": "boolean"
+          },
+          "purlins_per_slope": {
+            "ge": -9007199254740991,
+            "le": 9007199254740991,
+            "title": "Purlins Per Slope",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "joist_spacing_m",
+          "purlins_per_slope",
+          "knee_brace_leg_m",
+          "knee_braces_level_1",
+          "knee_braces_eave"
+        ],
+        "title": "FrameParametersArgs",
+        "type": "object"
+      },
       "FrameSystem": {
         "additionalProperties": false,
         "properties": {
+          "connection_defaults": {
+            "additionalProperties": {
+              "enum": [
+                "PEGGED_MORTISE_TENON",
+                "BRIDLE",
+                "HOUSED_DOVETAIL",
+                "STEEL_KNIFE_PLATE",
+                "JOIST_HANGER"
+              ],
+              "type": "string"
+            },
+            "propertyNames": {
+              "enum": [
+                "post-beam",
+                "post-sill",
+                "brace",
+                "joist-beam",
+                "rafter-peak",
+                "rafter-foot",
+                "purlin-rafter"
+              ]
+            },
+            "title": "Connection Defaults",
+            "type": "object"
+          },
+          "connection_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Connection Ids",
+            "type": "array"
+          },
           "generation_mode": {
             "title": "Generation Mode",
             "type": "string"
@@ -834,8 +1029,11 @@
               "enum": [
                 "POST",
                 "BEAM",
+                "SILL",
                 "FLOOR_JOIST",
-                "RAFTER"
+                "PRINCIPAL_RAFTER",
+                "PURLIN",
+                "KNEE_BRACE"
               ]
             },
             "title": "Member Defaults",
@@ -849,20 +1047,26 @@
             "title": "Member Ids",
             "type": "array"
           },
+          "parameters": {
+            "$ref": "#/components/schemas/FrameParameters"
+          },
           "schema_version": {
-            "const": 1,
+            "const": 2,
             "title": "Schema Version",
             "type": "integer"
           }
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "grid_id",
           "member_ids",
           "generation_mode",
-          "member_defaults"
+          "member_defaults",
+          "parameters",
+          "connection_ids",
+          "connection_defaults"
         ],
         "title": "FrameSystem",
         "type": "object"
@@ -908,8 +1112,8 @@
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "ridge_axis",
           "pitch_rad",
           "eave_overhang_m",
@@ -1047,8 +1251,8 @@
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "index",
           "elevation_m",
           "story_height_m"
@@ -1286,8 +1490,8 @@
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "name",
           "species",
           "grade",
@@ -1356,8 +1560,11 @@
             "enum": [
               "POST",
               "BEAM",
+              "SILL",
               "FLOOR_JOIST",
-              "RAFTER"
+              "PRINCIPAL_RAFTER",
+              "PURLIN",
+              "KNEE_BRACE"
             ],
             "title": "Role",
             "type": "string"
@@ -1442,8 +1649,11 @@
             "enum": [
               "POST",
               "BEAM",
+              "SILL",
               "FLOOR_JOIST",
-              "RAFTER"
+              "PRINCIPAL_RAFTER",
+              "PURLIN",
+              "KNEE_BRACE"
             ],
             "title": "Role",
             "type": "string"
@@ -2328,8 +2538,11 @@
             "enum": [
               "POST",
               "BEAM",
+              "SILL",
               "FLOOR_JOIST",
-              "RAFTER"
+              "PRINCIPAL_RAFTER",
+              "PURLIN",
+              "KNEE_BRACE"
             ],
             "title": "Role",
             "type": "string"
@@ -2394,8 +2607,11 @@
             "enum": [
               "POST",
               "BEAM",
+              "SILL",
               "FLOOR_JOIST",
-              "RAFTER"
+              "PRINCIPAL_RAFTER",
+              "PURLIN",
+              "KNEE_BRACE"
             ],
             "title": "Role",
             "type": "string"
@@ -2488,8 +2704,8 @@
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "shape",
           "actual_width_m",
           "actual_depth_m",
@@ -2533,6 +2749,43 @@
           "args"
         ],
         "title": "SetFootprintDimensions",
+        "type": "object"
+      },
+      "SetFrameParameters": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/FrameParametersArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "SetFrameParameters",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "SetFrameParameters",
         "type": "object"
       },
       "SetGableRoofParameters": {
@@ -2685,7 +2938,7 @@
       },
       "Snapshot": {
         "additionalProperties": false,
-        "description": "A VS-01 semantic snapshot (building-model.md §3).",
+        "description": "A semantic snapshot, model schema version 2 (building-model.md §3, §3.3).",
         "properties": {
           "building": {
             "$ref": "#/components/schemas/Building"
@@ -2700,6 +2953,7 @@
               "discriminator": {
                 "mapping": {
                   "Building": "#/components/schemas/Building",
+                  "Connection": "#/components/schemas/Connection",
                   "Footprint": "#/components/schemas/Footprint",
                   "FrameSystem": "#/components/schemas/FrameSystem",
                   "GableRoof": "#/components/schemas/GableRoof",
@@ -2734,6 +2988,9 @@
                   "$ref": "#/components/schemas/TimberMember"
                 },
                 {
+                  "$ref": "#/components/schemas/Connection"
+                },
+                {
                   "$ref": "#/components/schemas/Section"
                 },
                 {
@@ -2745,7 +3002,7 @@
             "type": "array"
           },
           "model_schema_version": {
-            "const": 1,
+            "const": 2,
             "title": "Model Schema Version",
             "type": "integer"
           },
@@ -2781,7 +3038,7 @@
           "building",
           "entities"
         ],
-        "title": "VS-01 semantic building snapshot (model schema version 1)",
+        "title": "Semantic building snapshot (model schema version 2)",
         "type": "object"
       },
       "StoredPriceBook": {
@@ -2875,8 +3132,8 @@
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "x_lines",
           "y_lines",
           "generation_rule_version"
@@ -2944,14 +3201,17 @@
             "enum": [
               "POST",
               "BEAM",
+              "SILL",
               "FLOOR_JOIST",
-              "RAFTER"
+              "PRINCIPAL_RAFTER",
+              "PURLIN",
+              "KNEE_BRACE"
             ],
             "title": "Member Role",
             "type": "string"
           },
           "schema_version": {
-            "const": 1,
+            "const": 2,
             "title": "Schema Version",
             "type": "integer"
           },
@@ -2972,8 +3232,8 @@
         },
         "required": [
           "id",
-          "schema_version",
           "kind",
+          "schema_version",
           "member_role",
           "start_m",
           "end_m",

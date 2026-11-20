@@ -25,7 +25,7 @@ ModelRevision + analysis inputs -> AnalysisResult (future)
 AnalysisResult + reviewed inputs -> ProfessionalApproval (future)
 ```
 
-Edges are registered by module-owned derivation rules with declared input selectors and output keys. Derived artifact nodes must form an acyclic graph in VS-01. If future iterative solvers require cycles, encapsulate them as a single solver node with explicit convergence criteria; do not allow unbounded recursive propagation.
+Edges are registered by module-owned derivation rules with declared input selectors and output keys. **VS-02 ([D056](../product/decisions/D056-dependency-selectors.md)):** the selectors *are* the graph. Impact is computed by comparing each artifact's selector fingerprint between base and candidate, and no edge list is maintained separately. Derived artifact nodes must form an acyclic graph in VS-01. If future iterative solvers require cycles, encapsulate them as a single solver node with explicit convergence criteria; do not allow unbounded recursive propagation.
 
 ## 3. Artifact status machine
 
@@ -40,20 +40,23 @@ UI must visibly label `STALE`, `COMPUTING`, `FAILED`, or `UNAVAILABLE`; it may s
 - Classification is rule-based, versioned, conservative, and server-enforced; future AI may suggest classification but cannot override it.
 - For VS-01, any footprint/roof/grid change that regenerates framing is treated as **consequential** by default, until a more nuanced policy is approved.
 
-### 4.1 VS-01 classification table (`vs01-change-classes-1`)
+### 4.1 Classification table (`vs02-change-classes-1`)
 
-Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7. The server applies this table; clients cannot override it.
+Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7, as `vs01-change-classes-1`, and replaced in VS-02 by `vs02-change-classes-1` ([D057](../product/decisions/D057-vs02-frame-command-roof-classification.md), MODEL-005 §7.3). The server applies this table; clients cannot override it.
 
 | Command | Class | Reason |
 |---|---|---|
-| `SetGableRoofParameters` | routine | Changes roof display geometry only; `vs01-post-beam-1` does not use the roof, so no members regenerate |
 | `AddSection` | routine | Adds a catalog record; no member changes |
+| `SetGableRoofParameters` | consequential | Regenerates principal rafters and purlins, which follow the pitch (D057; routine in `vs01-change-classes-1`, when no member used the roof) |
+| `SetFrameParameters` | consequential | Regenerates framing; may retire and create members |
 | `SetFootprintDimensions` | consequential | Regenerates framing |
 | `SetStoryHeights` | consequential | Regenerates framing |
 | `SetTimberGrid` | consequential | Regenerates framing; may retire and create members |
 | `SetMemberSection` | consequential | Changes every member of a role ([D040](../product/decisions/D040-setmembersection-role-default.md)) |
 | `UndoToRevision` | consequential | Can change anything ([D044](../product/decisions/D044-undo-to-revision.md)) |
 | `CreateReferenceProject` | consequential | Creates the whole model |
+
+`CONN-001` adds `SetConnectionType`.
 
 - **Routine** commands may be committed without a preview, and the commit still validates fully. **Consequential** commands require a preview and a confirmation bound to it (§5).
 - A no-op never requires confirmation ([D045](../product/decisions/D045-no-op-commits.md)).
@@ -83,7 +86,7 @@ Preview is non-mutating. Confirmation must bind to a specific preview token, bas
 - **Lazy recompute:** reading an artifact whose stored result is missing or has a different fingerprint (after a crash, a generator version change, or a price-book change) derives it on demand.
 - **No workers or outbox in VS-01:** steps 8–9 of §5 reduce to "persist the revision, then derive". `QUEUED`, `COMPUTING`, and `SUPERSEDED` remain in the contract for a later asynchronous worker, but VS-01 never produces them.
 
-Use a topological order of affected derivations. Cache by `(derivation_type, generator_version, input_fingerprint)`. In VS-01 the fingerprint includes the revision, so the cache never hits across revisions. It only prevents re-deriving the same revision ([artifacts.md §2.3](artifacts.md#23-fingerprint)). Jobs are at-least-once, idempotent, and safe to retry. Workers must not overwrite a newer result with an older computation. Failure in a noncritical derived artifact must not corrupt the committed semantic model. Propagate failure or unknown statuses to dependent artifacts rather than fabricating fallback numbers.
+Use a topological order of affected derivations. Cache by `(derivation_type, generator_version, input_fingerprint)`. In VS-01 the fingerprint includes the revision, so the cache never hits across revisions. It only prevents re-deriving the same revision ([artifacts.md §2.3](artifacts.md#23-fingerprint)). From VS-02 ([D056](../product/decisions/D056-dependency-selectors.md)), fingerprints exclude the revision, so unchanged artifacts are reused across revisions. Jobs are at-least-once, idempotent, and safe to retry. Workers must not overwrite a newer result with an older computation. Failure in a noncritical derived artifact must not corrupt the committed semantic model. Propagate failure or unknown statuses to dependent artifacts rather than fabricating fallback numbers.
 
 ## 7. Professional review dependency scope (future)
 

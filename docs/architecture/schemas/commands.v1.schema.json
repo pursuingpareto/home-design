@@ -106,6 +106,43 @@
       "title": "FootprintArgs",
       "type": "object"
     },
+    "FrameParametersArgs": {
+      "additionalProperties": false,
+      "description": "D057: every frame parameter, all required (MODEL-005 §7.1).",
+      "properties": {
+        "joist_spacing_m": {
+          "title": "Joist Spacing M",
+          "type": "number"
+        },
+        "knee_brace_leg_m": {
+          "title": "Knee Brace Leg M",
+          "type": "number"
+        },
+        "knee_braces_eave": {
+          "title": "Knee Braces Eave",
+          "type": "boolean"
+        },
+        "knee_braces_level_1": {
+          "title": "Knee Braces Level 1",
+          "type": "boolean"
+        },
+        "purlins_per_slope": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Purlins Per Slope",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "joist_spacing_m",
+        "purlins_per_slope",
+        "knee_brace_leg_m",
+        "knee_braces_level_1",
+        "knee_braces_eave"
+      ],
+      "title": "FrameParametersArgs",
+      "type": "object"
+    },
     "GableRoofArgs": {
       "additionalProperties": false,
       "properties": {
@@ -151,8 +188,11 @@
           "enum": [
             "POST",
             "BEAM",
+            "SILL",
             "FLOOR_JOIST",
-            "RAFTER"
+            "PRINCIPAL_RAFTER",
+            "PURLIN",
+            "KNEE_BRACE"
           ],
           "title": "Role",
           "type": "string"
@@ -211,6 +251,43 @@
         "args"
       ],
       "title": "SetFootprintDimensions",
+      "type": "object"
+    },
+    "SetFrameParameters": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/FrameParametersArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetFrameParameters",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetFrameParameters",
       "type": "object"
     },
     "SetGableRoofParameters": {
@@ -459,12 +536,13 @@
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Stage 1 (syntactic) contract for VS-01 command envelopes, discriminated by `type`. Generated from backend/src/homedesign/model/commands/envelope.py; do not edit by hand. Semantics: docs/architecture/interfaces.md §2–4 and §7.1.",
+  "description": "Stage 1 (syntactic) contract for command envelopes, discriminated by `type`. Generated from backend/src/homedesign/model/commands/envelope.py; do not edit by hand. Semantics: docs/architecture/interfaces.md §2–4 and §7.1.",
   "discriminator": {
     "mapping": {
       "AddSection": "#/$defs/AddSection",
       "CreateReferenceProject": "#/$defs/CreateReferenceProject",
       "SetFootprintDimensions": "#/$defs/SetFootprintDimensions",
+      "SetFrameParameters": "#/$defs/SetFrameParameters",
       "SetGableRoofParameters": "#/$defs/SetGableRoofParameters",
       "SetMemberSection": "#/$defs/SetMemberSection",
       "SetStoryHeights": "#/$defs/SetStoryHeights",
@@ -493,11 +571,14 @@
       "$ref": "#/$defs/SetMemberSection"
     },
     {
+      "$ref": "#/$defs/SetFrameParameters"
+    },
+    {
       "$ref": "#/$defs/AddSection"
     },
     {
       "$ref": "#/$defs/UndoToRevision"
     }
   ],
-  "title": "VS-01 command envelopes (MODEL-003)"
+  "title": "Command envelopes, model schema version 2 (MODEL-003, MODEL-005)"
 }

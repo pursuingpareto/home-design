@@ -6,7 +6,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from homedesign.model.schema import Uuid
+from homedesign.model.schema import MemberRole, Uuid
 
 XY = Annotated[list[float], Field(min_length=2, max_length=2)]
 XYZ = Annotated[list[float], Field(min_length=3, max_length=3)]
@@ -83,7 +83,7 @@ class Plan2dPayload(_Strict):
 class MeshMember(_Strict):
     member_id: Uuid
     generation_key: str
-    role: Literal["POST", "BEAM", "FLOOR_JOIST", "RAFTER"]
+    role: MemberRole
     primitive: Literal["oriented_box"] = "oriented_box"
     axis_start_m: XYZ
     axis_end_m: XYZ

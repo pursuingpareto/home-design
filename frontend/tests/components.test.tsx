@@ -27,7 +27,9 @@ describe("Plan2dView", () => {
       await userEvent.click(screen.getByRole("button", { name: label }));
       container.querySelectorAll("[data-member-id]").forEach((el) => ids.add(el.getAttribute("data-member-id")!));
     }
-    expect([...ids].sort()).toEqual(schedule.payload!.members.map((m) => m.member_id).sort());
+    // Posts and beams only until ART-002 (MODEL-005 §9, artifacts.md §5).
+    const postsAndBeams = schedule.payload!.members.filter((m) => m.role === "POST" || m.role === "BEAM");
+    expect([...ids].sort()).toEqual(postsAndBeams.map((m) => m.member_id).sort());
   });
 
   it("reports selection by member ID", async () => {
@@ -64,7 +66,7 @@ describe("panels", () => {
   it("lists every schedule member and the aggregates", async () => {
     const onSelect = vi.fn();
     render(<SchedulePanel schedule={schedule} units="imperial" selected={null} onSelect={onSelect} />);
-    expect(within(screen.getByTestId("schedule-members")).getAllByRole("row")).toHaveLength(59);
+    expect(within(screen.getByTestId("schedule-members")).getAllByRole("row")).toHaveLength(194);
     expect(screen.getByTestId("schedule-aggregates")).toHaveTextContent("BEAM8x1234");
     await userEvent.click(screen.getAllByRole("button", { name: /frame\// })[0]!);
     expect(onSelect).toHaveBeenCalledWith(schedule.payload!.members[0]!.member_id);
@@ -181,7 +183,7 @@ describe("Workspace with the real client over a fake server", () => {
     expect(screen.getByTestId("revision-kind")).toHaveTextContent("Head");
     expect(screen.getByTestId("status-plan2d")).toHaveTextContent("CURRENT");
     expect(screen.getByTestId("history")).toHaveTextContent("1. CreateReferenceProject");
-    expect(views.querySelector(".mesh3d")).toHaveAttribute("data-member-count", "58");
+    expect(views.querySelector(".mesh3d")).toHaveAttribute("data-member-count", "193");
     expect(calls.every((c) => !c.path.includes("token"))).toBe(true);
   });
 

@@ -567,8 +567,11 @@
           "enum": [
             "POST",
             "BEAM",
+            "SILL",
             "FLOOR_JOIST",
-            "RAFTER"
+            "PRINCIPAL_RAFTER",
+            "PURLIN",
+            "KNEE_BRACE"
           ],
           "title": "Role",
           "type": "string"
@@ -1108,8 +1111,11 @@
           "enum": [
             "POST",
             "BEAM",
+            "SILL",
             "FLOOR_JOIST",
-            "RAFTER"
+            "PRINCIPAL_RAFTER",
+            "PURLIN",
+            "KNEE_BRACE"
           ],
           "title": "Role",
           "type": "string"
@@ -1174,8 +1180,11 @@
           "enum": [
             "POST",
             "BEAM",
+            "SILL",
             "FLOOR_JOIST",
-            "RAFTER"
+            "PRINCIPAL_RAFTER",
+            "PURLIN",
+            "KNEE_BRACE"
           ],
           "title": "Role",
           "type": "string"

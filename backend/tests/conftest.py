@@ -16,13 +16,14 @@ hypothesis_settings.register_profile("ci", derandomize=True, max_examples=40, pr
 hypothesis_settings.register_profile("thorough", derandomize=False, max_examples=500, print_blob=True)
 hypothesis_settings.load_profile(os.environ.get("HYPOTHESIS_PROFILE", "ci"))
 
+from homedesign.model.limits import RECORD_SCHEMA_VERSIONS
 from homedesign.model.schema import Snapshot
 from homedesign.timber import get_rule
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FIXTURE_PATH = REPO_ROOT / "docs" / "reference-projects" / "vermont-timber-house" / "fixture.snapshot.json"
 VECTORS_PATH = REPO_ROOT / "tests" / "vectors" / "jcs" / "vectors.json"
-SCHEMA_PATH = REPO_ROOT / "docs" / "architecture" / "schemas" / "snapshot.v1.schema.json"
+SCHEMA_PATH = REPO_ROOT / "docs" / "architecture" / "schemas" / "snapshot.v2.schema.json"
 BUILDING_MODEL_DOC = REPO_ROOT / "docs" / "architecture" / "building-model.md"
 
 FIXTURE_BYTES = FIXTURE_PATH.read_bytes()
@@ -112,7 +113,7 @@ def regenerate(doc: dict[str, Any]) -> dict[str, Any]:
         {
             "id": existing.get(m.generation_key) or str(uuid.uuid5(_TEST_ID_NAMESPACE, m.generation_key)),
             "kind": "TimberMember",
-            "schema_version": 1,
+            "schema_version": RECORD_SCHEMA_VERSIONS["TimberMember"],
             **m.to_json(),
         }
         for m in generated

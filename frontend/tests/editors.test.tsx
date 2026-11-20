@@ -63,19 +63,16 @@ describe("tabbed editors (UI-002)", () => {
     expect(lastCommand(preview)).toMatchObject({ type: "SetStoryHeights", args: { story_heights_m: [3.048, 3.048] } });
   });
 
-  it("applies the roof directly, without a preview", async () => {
-    const result = { revision_id: "r2", sequence: 2, is_noop: false } as CommitResponse;
-    const apply = vi.fn(async (_: Command) => result);
-    const preview = vi.fn(async (_: Command) => {});
-    const props = renderEditors(preview, apply);
+  it("previews a roof change (consequential since D057)", async () => {
+    const apply = vi.fn(async (_: Command) => null);
+    const { preview } = renderEditors(undefined, apply);
     await tab("Roof");
     const pitch = screen.getByRole("textbox", { name: "Pitch" });
     await userEvent.clear(pitch);
     await userEvent.type(pitch, "10/12");
-    await userEvent.click(screen.getByRole("button", { name: "Apply" }));
-    expect(preview).not.toHaveBeenCalled();
-    expect(lastCommand(apply)).toMatchObject({ type: "SetGableRoofParameters", args: { pitch_rad: Math.atan(10 / 12), eave_overhang_m: 0.6096 } });
-    expect(props.onApplied).toHaveBeenCalledWith(result, expect.stringContaining("9/12 (36.87°) → 10/12"), fixture.snapshot.revision_id);
+    await userEvent.click(screen.getByRole("button", { name: "Preview" }));
+    expect(apply).not.toHaveBeenCalled();
+    expect(lastCommand(preview)).toMatchObject({ type: "SetGableRoofParameters", args: { pitch_rad: Math.atan(10 / 12), eave_overhang_m: 0.6096 } });
   });
 
   it("builds the grid command from positions and equal bays", async () => {

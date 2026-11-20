@@ -28,27 +28,40 @@ test("stories: raising Level 1 lifts the eave and lengthens the posts", async ({
   await expect(page.getByTestId("schedule-aggregates")).toContainText(`POST8x824240' 0"`); // 228' + 12 × 1'
 });
 
-test("roof: routine change applies without preview, and Undo goes through the preview", async ({ page }) => {
+test("roof: a pitch change is previewed (D057), and moves rafters and purlins", async ({ page }) => {
   await newProject(page);
   await tab(page, "Roof");
   await page.getByRole("textbox", { name: "Pitch" }).fill("10/12");
-  await page.getByRole("button", { name: "Apply" }).click();
-  await expect(page.getByTestId("applied-notice")).toContainText("Saved as revision 2. Roof pitch 9/12 (36.87°) → 10/12 (39.81°)");
-  await expect(page.getByTestId("impact-dialog")).toHaveCount(0);
+  await page.getByRole("button", { name: "Preview" }).click();
+  await expect(page.getByTestId("impact-dialog")).toContainText("pitch_rad");
+  await expect(page.getByTestId("impact-members")).toContainText("20 updated"); // 8 principal rafters, 12 purlins
+  await confirm(page);
   await revision(page, 2);
   await expect(page.getByRole("textbox", { name: "Pitch" })).toHaveValue("10/12");
+});
+
+test("sections: a routine change applies without preview, and Undo goes through the preview", async ({ page }) => {
+  await newProject(page);
+  await tab(page, "Sections");
+  await page.getByRole("textbox", { name: "Label" }).fill("10x10");
+  await page.getByRole("textbox", { name: "Actual width" }).fill(`9 1/2"`);
+  await page.getByRole("textbox", { name: "Actual depth" }).fill(`9 1/2"`);
+  await page.getByRole("button", { name: "Add section" }).click();
+  await expect(page.getByTestId("applied-notice")).toContainText("Saved as revision 2. Added section 10x10");
+  await expect(page.getByTestId("impact-dialog")).toHaveCount(0);
+  await revision(page, 2);
 
   await page.getByTestId("applied-notice").getByRole("button", { name: "Undo" }).click();
   await expect(page.getByTestId("impact-dialog")).toContainText("Review the impact");
   await confirm(page);
   await revision(page, 3);
-  await expect(page.getByRole("textbox", { name: "Pitch" })).toHaveValue("9/12");
+  await expect(page.getByTestId("section-catalog")).not.toContainText("10x10");
   await expect(page.getByTestId("history")).toContainText("UndoToRevision");
 });
 
 test("grid: dividing X into 4 bays keeps the original interior line IDs", async ({ page }) => {
   await newProject(page);
-  await expect(page.getByTestId("schedule-members")).toContainText("Members (58)");
+  await expect(page.getByTestId("schedule-members")).toContainText("Members (193)");
   await tab(page, "Grid");
   const x = page.getByTestId("grid-x");
   await x.getByRole("spinbutton").fill("4");
@@ -60,7 +73,7 @@ test("grid: dividing X into 4 bays keeps the original interior line IDs", async 
   await expect(x.getByRole("textbox", { name: "x1" })).toHaveValue(`9' 0"`);
   await expect(x.getByRole("textbox", { name: "x2" })).toHaveValue(`18' 0"`);
   await expect(x.getByRole("textbox", { name: "x4" })).toHaveValue(`27' 0"`); // the new line, numbered by the server
-  await expect(page.getByTestId("schedule-members")).not.toContainText("Members (58)");
+  await expect(page.getByTestId("schedule-members")).not.toContainText("Members (193)");
 });
 
 test("AC-06: a width the grid cannot support points to the Grid tab, and works after adding a bay", async ({ page }) => {
@@ -96,6 +109,11 @@ test("sections: add, reject a duplicate, apply to beams, and see the price row b
   await prices.getByLabel("Geography").fill("VT");
   await prices.getByLabel("BEAM 8x12").fill("14.40");
   await prices.getByLabel("POST 8x8").fill("9.60");
+  await prices.getByLabel("SILL 8x8").fill("9.60");
+  await prices.getByLabel("FLOOR_JOIST 4x8").fill("3.66");
+  await prices.getByLabel("PRINCIPAL_RAFTER 8x10").fill("11.90");
+  await prices.getByLabel("PURLIN 6x8").fill("7.16");
+  await prices.getByLabel("KNEE_BRACE 4x6").fill("2.74");
   await prices.getByRole("button", { name: "Save prices" }).click();
   await expect(page.getByTestId("estimate-coverage")).toContainText("complete");
   await prices.getByRole("button", { name: "Close" }).click();
@@ -129,7 +147,7 @@ test("sections: add, reject a duplicate, apply to beams, and see the price row b
 
 test("submitting a consequential tab without edits previews as a no-op", async ({ page }) => {
   await newProject(page);
-  for (const name of ["Footprint", "Stories", "Grid"]) {
+  for (const name of ["Footprint", "Stories", "Roof", "Grid"]) {
     await tab(page, name);
     await page.getByRole("tabpanel").getByRole("button", { name: "Preview" }).click();
     await expect(page.getByRole("heading", { name: "No changes" })).toBeVisible();

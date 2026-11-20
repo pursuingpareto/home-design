@@ -11,7 +11,7 @@ from conftest import REPO_ROOT
 from homedesign.dependencies import ARTIFACT_TYPES, ArtifactService, Derivation, Outcome, Registry, registry_of
 from homedesign.model.canonical import canonical_snapshot_value, fingerprint
 from homedesign.project import NotFound, ProjectService
-from test_project import ACTOR, KEY, T0, at, cid, create, head, roof_cmd
+from test_project import ACTOR, KEY, T0, at, cid, create, head, routine_cmd
 
 SCHEMA = json.loads((REPO_ROOT / "docs/architecture/schemas/artifacts.v1.schema.json").read_text())
 
@@ -66,7 +66,7 @@ def test_create_and_commit_report_stored_statuses(store):
     manifest = svc.artifacts.manifest(created.project_id)
     assert [e["artifact_type"] for e in manifest["artifacts"]] == list(ARTIFACT_TYPES)
     assert {e["artifact_type"]: e["status"] for e in manifest["artifacts"]} == EXPECTED
-    committed = svc.commit(created.project_id, roof_cmd(svc, created.project_id), actor_id=ACTOR, now=at(1))
+    committed = svc.commit(created.project_id, routine_cmd(svc, created.project_id), actor_id=ACTOR, now=at(1))
     assert committed.http_status == 201 and committed.body()["artifact_statuses"] == EXPECTED
     assert svc.artifacts.manifest(created.project_id)["revision_id"] == committed.revision_id
     _validator("Manifest").validate(manifest)
@@ -91,7 +91,7 @@ def test_envelope_contract_and_fingerprint(store):
         "snapshot": canonical_snapshot_value(snapshot),
     })
     assert envelope["input_fingerprint"] == expected
-    assert envelope["payload"] == {"kind": "plan2d", "members": 58}
+    assert envelope["payload"] == {"kind": "plan2d", "members": 193}
     _validator("ArtifactEnvelope").validate(envelope)
     unavailable = svc.artifacts.get_artifact(pid, "preliminary_estimate", now=T0)
     assert unavailable["status"] == "UNAVAILABLE" and unavailable["payload"] == {"coverage": "none"}
@@ -105,7 +105,7 @@ def test_old_head_artifacts_never_current_for_new_head(store):
     svc = service(store)
     created = create(svc)
     old = svc.artifacts.get_artifact(created.project_id, "mesh3d", now=T0)
-    new_head = svc.commit(created.project_id, roof_cmd(svc, created.project_id), actor_id=ACTOR, now=at(1)).revision_id
+    new_head = svc.commit(created.project_id, routine_cmd(svc, created.project_id), actor_id=ACTOR, now=at(1)).revision_id
     current = svc.artifacts.get_artifact(created.project_id, "mesh3d", now=at(1))
     assert current["source_revision_id"] == new_head != old["source_revision_id"]
     assert current["input_fingerprint"] != old["input_fingerprint"]
@@ -169,7 +169,7 @@ def test_external_input_change_makes_only_that_artifact_stale(store):
     statuses = svc.artifacts.statuses(created.project_id, created.revision_id)
     assert statuses == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "preliminary_estimate": "STALE"}
     envelope = svc.artifacts.get_artifact(created.project_id, "preliminary_estimate", now=at(4))
-    assert envelope["status"] == "CURRENT" and envelope["payload"] == {"coverage": "complete", "members": 58}
+    assert envelope["status"] == "CURRENT" and envelope["payload"] == {"coverage": "complete", "members": 193}
 
 
 # 7. historical revisions -----------------------------------------------------------------------
@@ -178,7 +178,7 @@ def test_external_input_change_makes_only_that_artifact_stale(store):
 def test_historical_artifacts_are_flagged_not_head(store):
     svc = service(store)
     created = create(svc)
-    svc.commit(created.project_id, roof_cmd(svc, created.project_id), actor_id=ACTOR, now=at(1))
+    svc.commit(created.project_id, routine_cmd(svc, created.project_id), actor_id=ACTOR, now=at(1))
     old = svc.artifacts.get_artifact(created.project_id, "plan2d", created.revision_id, now=at(2))
     assert (old["status"], old["head"], old["source_revision_id"]) == ("CURRENT", False, created.revision_id)
     assert svc.artifacts.manifest(created.project_id, created.revision_id)["head"] is False

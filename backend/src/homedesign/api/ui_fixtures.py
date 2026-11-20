@@ -30,7 +30,14 @@ NOW = datetime(2026, 11, 19, 12, 0, tzinfo=UTC)
 KEY = bytes(32)  # fixture-only signing key; tokens in the file are never valid on a real server
 BOOK = {
     "currency": "USD", "as_of": "2026-11-01", "source": "Fixture supplier quote", "geography": "Chittenden County, VT",
-    "rows": [{"key": "timber.BEAM.8x12", "unit": "m", "unit_price_minor": 4725}, {"key": "timber.POST.8x8", "unit": "m", "unit_price_minor": 3150}],
+    # One row per timber line of Reference House 001 v2 (D053), so this estimate is complete.
+    "rows": [
+        {"key": key, "unit": "m", "unit_price_minor": price}
+        for key, price in (
+            ("timber.BEAM.8x12", 4725), ("timber.FLOOR_JOIST.4x8", 1200), ("timber.KNEE_BRACE.4x6", 900), ("timber.POST.8x8", 3150),
+            ("timber.PRINCIPAL_RAFTER.8x10", 3900), ("timber.PURLIN.6x8", 2350), ("timber.SILL.8x8", 3150),
+        )
+    ],
 }
 
 

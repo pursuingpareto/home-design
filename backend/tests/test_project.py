@@ -70,8 +70,9 @@ def width_cmd(svc, project_id, width, **kw):
     return envelope(svc, project_id, "SetFootprintDimensions", {"width_m": width, "depth_m": fp.depth_m}, **kw)
 
 
-def roof_cmd(svc, project_id, pitch=0.5, **kw):
-    return envelope(svc, project_id, "SetGableRoofParameters", {"pitch_rad": pitch, "eave_overhang_m": 0.6096}, **kw)
+def routine_cmd(svc, project_id, n=1, **kw):
+    """A routine command (dependencies.md §4.1): AddSection, the only routine command since D057."""
+    return envelope(svc, project_id, "AddSection", {"nominal_label": f"routine-{n}", "actual_width_m": 0.1 + n / 1000, "actual_depth_m": 0.2}, **kw)
 
 
 def preview_commit(svc, project_id, command, *, actor=ACTOR, now=T0):
@@ -170,7 +171,7 @@ def test_invalid_tokens(store, variant):
     elif variant == "other-command":
         command = width_cmd(svc, pid, 12.8016)
     elif variant == "other-base":
-        assert svc.commit(pid, roof_cmd(svc, pid), actor_id=ACTOR, now=T0).http_status == 201  # head moves (routine)
+        assert svc.commit(pid, routine_cmd(svc, pid), actor_id=ACTOR, now=T0).http_status == 201  # head moves (routine)
         command = width_cmd(svc, pid, 12.192)  # same edit, rebased; the old token names the old base
     elif variant == "other-key":
         token = ProjectService(store, token_key=b"another-key").preview(pid, command, actor_id=ACTOR, now=T0).preview_token
@@ -181,7 +182,7 @@ def test_invalid_tokens(store, variant):
 def test_routine_commit_needs_no_token(store):
     svc = service(store)
     pid = create(svc).project_id
-    result = svc.commit(pid, roof_cmd(svc, pid), actor_id=ACTOR, now=T0)
+    result = svc.commit(pid, routine_cmd(svc, pid), actor_id=ACTOR, now=T0)
     assert result.http_status == 201 and result.sequence == 2
 
 
@@ -189,7 +190,7 @@ def test_routine_commit_with_bad_token_is_rejected(store):
     svc = service(store)
     pid = create(svc).project_id
     with pytest.raises(PreviewInvalid):
-        svc.commit(pid, roof_cmd(svc, pid), "not-a-token", actor_id=ACTOR, now=T0)
+        svc.commit(pid, routine_cmd(svc, pid), "not-a-token", actor_id=ACTOR, now=T0)
 
 
 # 5. stale base ----------------------------------------------------------------------------
@@ -216,7 +217,7 @@ def test_stale_preview_is_a_revision_conflict(store):
 def test_concurrent_commits_have_one_winner(pg_url, round_):
     svc = service(PostgresStore(pg_url))
     pid = create(svc).project_id
-    commands = [roof_cmd(svc, pid, pitch) for pitch in (0.5, 0.6)]
+    commands = [routine_cmd(svc, pid, n) for n in (1, 2)]
     barrier, outcomes = threading.Barrier(2), []
 
     def worker(command):
@@ -403,7 +404,7 @@ def test_replaying_the_operation_log_reproduces_history(store):
     y = [{"id": line.id, "fraction": line.fraction} for line in next(e for e in head(svc, pid).entities if e.kind == "TimberGrid").y_lines]
     preview_commit(svc, pid, width_cmd(svc, pid, 12.192), now=at(1))
     preview_commit(svc, pid, envelope(svc, pid, "SetTimberGrid", {"x_lines": x[:2] + [{"fraction": 0.5}] + x[2:], "y_lines": y}), now=at(2))
-    svc.commit(pid, roof_cmd(svc, pid), actor_id=ACTOR, now=at(3))
+    svc.commit(pid, routine_cmd(svc, pid), actor_id=ACTOR, now=at(3))
     first_rev = svc.list_revisions(pid)[0]["revision_id"]
     preview_commit(svc, pid, envelope(svc, pid, "UndoToRevision", {"target_revision_id": first_rev}), now=at(4))
     original = [(r["revision_id"], snapshot_fingerprint(svc.get_revision(pid, r["revision_id"]))) for r in svc.list_revisions(pid)]
@@ -456,7 +457,7 @@ def test_corrupted_snapshot_is_refused():
     with pytest.raises(CorruptRevision):
         svc.get_revision(created.project_id, created.revision_id)
     with pytest.raises(CorruptRevision):
-        svc.preview(created.project_id, roof_cmd(svc, created.project_id) | {"base_revision_id": created.revision_id}, actor_id=ACTOR, now=T0)
+        svc.preview(created.project_id, routine_cmd(svc, created.project_id) | {"base_revision_id": created.revision_id}, actor_id=ACTOR, now=T0)
 
 
 # 15. ordering --------------------------------------------------------------------------------------
@@ -465,16 +466,47 @@ def test_corrupted_snapshot_is_refused():
 def test_history_is_a_single_ordered_chain(store):
     svc = service(store)
     pid = create(svc).project_id
-    for pitch in (0.4, 0.5, 0.6):
-        svc.commit(pid, roof_cmd(svc, pid, pitch), actor_id=ACTOR, now=T0)
+    for n in (1, 2, 3):
+        svc.commit(pid, routine_cmd(svc, pid, n), actor_id=ACTOR, now=T0)
     history = svc.list_revisions(pid)
     assert [r["sequence"] for r in history] == [1, 2, 3, 4]
     assert history[0]["parent_revision_id"] is None
     assert all(b["parent_revision_id"] == a["revision_id"] for a, b in zip(history, history[1:]))
-    assert [r["command_type"] for r in history] == ["CreateReferenceProject"] + ["SetGableRoofParameters"] * 3
+    assert [r["command_type"] for r in history] == ["CreateReferenceProject"] + ["AddSection"] * 3
     assert svc.get_project(pid)["head_sequence"] == 4
 
 
 def test_actor_must_be_a_uuid(store):
     with pytest.raises(ValueError):
         create(service(store), actor="alice")
+
+
+# MODEL-005 §8.3 (D055): older databases are refused, never migrated or emptied (PostgreSQL only) ---------------
+
+
+def test_migration_refuses_a_database_with_version_1_projects(pg_url):
+    import psycopg
+    from psycopg import sql
+    from psycopg.conninfo import make_conninfo
+
+    from homedesign.project.migrate import OutdatedDatabase, migrate
+
+    name = "homedesign_test_outdated"  # name-guarded, like the main test database (MODEL-004 §7)
+    url = make_conninfo(pg_url, dbname=name)
+    with psycopg.connect(make_conninfo(pg_url, dbname="postgres"), autocommit=True) as admin:
+        admin.execute(sql.SQL("DROP DATABASE IF EXISTS {} WITH (FORCE)").format(sql.Identifier(name)))
+        admin.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
+    try:
+        assert migrate(url)  # a fresh database migrates normally
+        assert migrate(url) == []
+        pid, rev = "11111111-1111-4111-8111-111111111111", "22222222-2222-4222-8222-222222222222"
+        with psycopg.connect(url) as conn:  # a version 1 project, as an earlier build stored it
+            conn.execute("INSERT INTO projects VALUES (%s, %s, 1, now(), %s)", (pid, rev, ACTOR))
+            conn.execute("INSERT INTO revisions VALUES (%s, %s, NULL, 1, 1, '{}'::jsonb, 'sha256:0', now())", (rev, pid))
+        with pytest.raises(OutdatedDatabase, match=r"model schema version 1.*scripts/dev.sh --reset"):
+            migrate(url)
+        with psycopg.connect(url) as conn:  # nothing was changed
+            assert conn.execute("SELECT count(*) FROM revisions").fetchone()[0] == 1
+    finally:
+        with psycopg.connect(make_conninfo(pg_url, dbname="postgres"), autocommit=True) as admin:
+            admin.execute(sql.SQL("DROP DATABASE IF EXISTS {} WITH (FORCE)").format(sql.Identifier(name)))

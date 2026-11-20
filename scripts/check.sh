@@ -25,6 +25,9 @@ uv run pytest
 step "backend: committed schemas are current"
 uv run python -m homedesign.model.schema_export --check
 
+step "backend: Reference House 001 fixture and template are current"
+uv run python -m homedesign.timber.fixture --check
+
 step "backend: frontend fixtures are current"
 uv run python -m homedesign.api.ui_fixtures --check
 

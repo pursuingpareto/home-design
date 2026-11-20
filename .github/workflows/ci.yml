@@ -41,6 +41,7 @@ jobs:
       - run: uv sync --locked
       - run: uv run pytest
       - run: uv run python -m homedesign.model.schema_export --check
+      - run: uv run python -m homedesign.timber.fixture --check
       - run: uv run python -m homedesign.api.ui_fixtures --check
 
   vectors:

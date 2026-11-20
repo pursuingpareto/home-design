@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from . import codes
-from .vs01 import DEFAULT_MAX_BYTES, DEFAULT_MAX_DEPTH
+from .limits import DEFAULT_MAX_BYTES, DEFAULT_MAX_DEPTH
 
 _MAX_DOUBLE = 1.7976931348623157e308
 

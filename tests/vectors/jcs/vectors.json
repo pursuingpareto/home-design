@@ -195,8 +195,8 @@
   "geometry": {
     "source": "docs/reference-projects/vermont-timber-house/fixture.snapshot.json",
     "plan2d": {
-      "canonical_bytes": 12050,
-      "fingerprint": "sha256:305f0b356f2e31ad5f088e05bc7b4c16ce2360f59f2f54f3ab91ea6b5440167b"
+      "canonical_bytes": 12648,
+      "fingerprint": "sha256:0c9ce819456aeff9ee61d0718750aa95c65a87a87025babd1568d6329b4e238e"
     },
     "mesh3d": {
       "tan": 0.75,
@@ -204,7 +204,25 @@
         "units": "m",
         "members": [
           {
-            "member_id": "2354313a-7ce0-556f-afd4-e80ebe664ef9",
+            "member_id": "2e7c8a64-9380-5690-99fd-fea739808f21",
+            "generation_key": "frame/axis-x/y0/x0-x1/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              0,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "bd508230-4308-5bc8-81dd-67f70e1e982e",
             "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -214,7 +232,7 @@
               3.048
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               3.048
             ],
@@ -222,7 +240,43 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "6922f2ea-808f-54a1-b0bf-d8054cb604ad",
+            "member_id": "ad431d92-44af-5dd5-a71b-9401fbf77853",
+            "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/brace/x0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              0.9144,
+              0,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "b8612043-3f18-5de8-8e4c-fea18b38973c",
+            "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              2.7431999999999994,
+              0,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "e8282ba6-3486-5c3a-a005-1ffc606c873e",
             "generation_key": "frame/axis-x/y0/x0-x1/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -232,7 +286,7 @@
               5.7912
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               5.7912
             ],
@@ -240,17 +294,71 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "e455350e-d7c5-591b-b56f-e907d479c4c2",
+            "member_id": "0ca728d9-2451-5743-8a79-df474a742b25",
+            "generation_key": "frame/axis-x/y0/x0-x1/plane-eave/brace/x0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              0.9144,
+              0,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "d5a7fbef-3a6e-5eb5-af27-66c856077a43",
+            "generation_key": "frame/axis-x/y0/x0-x1/plane-eave/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              2.7431999999999994,
+              0,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "f44183b5-f158-58e0-a729-2fb14eecee3d",
+            "generation_key": "frame/axis-x/y0/x1-x2/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              0,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "daa41560-d2e7-57e0-af50-32b579900129",
             "generation_key": "frame/axis-x/y0/x1-x2/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               3.048
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               0,
               3.048
             ],
@@ -258,17 +366,53 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "610a2cb2-9645-5563-b4b2-74dbc6f915b8",
+            "member_id": "71b16b11-4259-59c5-b552-3e13c4f4f5f5",
+            "generation_key": "frame/axis-x/y0/x1-x2/plane-L1/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              4.571999999999999,
+              0,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "ceeaaf17-0be8-52a7-8360-394587470c26",
+            "generation_key": "frame/axis-x/y0/x1-x2/plane-L1/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              6.400799999999999,
+              0,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "3e6f3c47-53cd-5388-8eef-66d9020e1a86",
             "generation_key": "frame/axis-x/y0/x1-x2/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               5.7912
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               0,
               5.7912
             ],
@@ -276,12 +420,66 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "bd69634c-0727-5907-92ed-f4864d940d6d",
+            "member_id": "2fc1c4e4-4e3f-50b6-a2bf-499da4dfdc5e",
+            "generation_key": "frame/axis-x/y0/x1-x2/plane-eave/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              4.571999999999999,
+              0,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "eee011a9-e040-5733-9c89-4045c1ec5b3f",
+            "generation_key": "frame/axis-x/y0/x1-x2/plane-eave/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              6.400799999999999,
+              0,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "c81c10f3-ffae-535d-b9eb-3c3558e3069c",
+            "generation_key": "frame/axis-x/y0/x2-x3/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              10.9728,
+              0,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "1627e864-4089-57be-8f58-11f9b7f835ff",
             "generation_key": "frame/axis-x/y0/x2-x3/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               0,
               3.048
             ],
@@ -294,12 +492,48 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "5375b284-4700-530c-9e31-a2e6f3eb6d80",
+            "member_id": "750a0c58-89c9-5a20-bfa7-c2cdc91f5bad",
+            "generation_key": "frame/axis-x/y0/x2-x3/plane-L1/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              8.2296,
+              0,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "4df92e91-35d9-5937-8808-3cf4e19d439c",
+            "generation_key": "frame/axis-x/y0/x2-x3/plane-L1/brace/x3",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              10.058399999999999,
+              0,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "3d46f93f-cf24-5a30-9a68-20339b3db5a8",
             "generation_key": "frame/axis-x/y0/x2-x3/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               0,
               5.7912
             ],
@@ -312,7 +546,61 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "845c5899-6148-5814-abe0-7def0e92586c",
+            "member_id": "7ed905bd-a645-5e9a-b830-f05529687380",
+            "generation_key": "frame/axis-x/y0/x2-x3/plane-eave/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              8.2296,
+              0,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "ee52d815-13ed-50fe-a0a5-dba82bacc2ef",
+            "generation_key": "frame/axis-x/y0/x2-x3/plane-eave/brace/x3",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              10.058399999999999,
+              0,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "8ac29b14-aec4-5ce3-91c8-b8387fc9752a",
+            "generation_key": "frame/axis-x/y1/x0-x1/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              3.6576,
+              0
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              3.6576,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "5ccd0981-cc93-5041-b851-8531d1e612a5",
             "generation_key": "frame/axis-x/y1/x0-x1/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -322,7 +610,7 @@
               3.048
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               3.048
             ],
@@ -330,7 +618,43 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "46f85243-09d2-57ed-b0b3-f134e0a3de89",
+            "member_id": "721eccc9-c54a-56f8-8c3e-7eee4b603488",
+            "generation_key": "frame/axis-x/y1/x0-x1/plane-L1/brace/x0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              0.9144,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "874533f2-4493-5b2f-a592-67ad54396a6d",
+            "generation_key": "frame/axis-x/y1/x0-x1/plane-L1/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              2.7431999999999994,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "dbe4f0df-8887-54b2-a2e9-d606c740f144",
             "generation_key": "frame/axis-x/y1/x0-x1/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -340,7 +664,7 @@
               5.7912
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               5.7912
             ],
@@ -348,17 +672,71 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "511df67f-2585-5c2c-9fb8-9a4aa7cc5529",
+            "member_id": "962fc869-7dad-5ba4-b94f-6a159ea23bd2",
+            "generation_key": "frame/axis-x/y1/x0-x1/plane-eave/brace/x0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              0.9144,
+              3.6576,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "c80eeb4b-a18c-5e45-8daa-dcd69e565604",
+            "generation_key": "frame/axis-x/y1/x0-x1/plane-eave/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              2.7431999999999994,
+              3.6576,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "0edc9103-6133-5ddc-a8c6-0e0ecfba74b6",
+            "generation_key": "frame/axis-x/y1/x1-x2/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              0
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              3.6576,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "8ed56b05-67ca-5c9a-9d03-e9d6955dd521",
             "generation_key": "frame/axis-x/y1/x1-x2/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               3.048
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               3.048
             ],
@@ -366,17 +744,53 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "17f16149-9d8f-59e3-a1dc-0727f4d23d15",
+            "member_id": "fb7b3005-f9f2-5bf2-be95-71e6eefda060",
+            "generation_key": "frame/axis-x/y1/x1-x2/plane-L1/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              4.571999999999999,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "f177457e-7255-50a3-a24b-8ef415c48275",
+            "generation_key": "frame/axis-x/y1/x1-x2/plane-L1/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              6.400799999999999,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "7e9332ab-f643-5444-b7e5-be4c64ea0624",
             "generation_key": "frame/axis-x/y1/x1-x2/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               5.7912
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               5.7912
             ],
@@ -384,12 +798,66 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "00f26aa6-1d62-53a8-a389-591835b162bd",
+            "member_id": "84a82a02-08ff-5faa-a7d5-dd282d26a06d",
+            "generation_key": "frame/axis-x/y1/x1-x2/plane-eave/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              4.571999999999999,
+              3.6576,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "608bbd67-501a-509f-8243-72787d5996f7",
+            "generation_key": "frame/axis-x/y1/x1-x2/plane-eave/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              6.400799999999999,
+              3.6576,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "0894fc5c-d25d-501b-a1d7-cefc5b71b9dd",
+            "generation_key": "frame/axis-x/y1/x2-x3/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              0
+            ],
+            "axis_end_m": [
+              10.9728,
+              3.6576,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "f2bc04f5-4701-5dcc-8e6c-f3e4a9c30292",
             "generation_key": "frame/axis-x/y1/x2-x3/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               3.048
             ],
@@ -402,12 +870,48 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "67cb6d19-0caf-5949-b858-e77fc9a4c4db",
+            "member_id": "0cfafe37-b027-59b5-9b5f-8d1d04220475",
+            "generation_key": "frame/axis-x/y1/x2-x3/plane-L1/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              8.2296,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "614969d4-460d-5bfa-9677-8025cb40a0cb",
+            "generation_key": "frame/axis-x/y1/x2-x3/plane-L1/brace/x3",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              10.058399999999999,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "fe44d799-4fe0-5b6e-9423-4e0cecfcb5f1",
             "generation_key": "frame/axis-x/y1/x2-x3/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               5.7912
             ],
@@ -420,7 +924,61 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "7c6f8231-66bd-5f7d-a1cf-f413b5a1cd6e",
+            "member_id": "435dee62-c128-5fe0-b5ee-eaad862fd8c2",
+            "generation_key": "frame/axis-x/y1/x2-x3/plane-eave/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              8.2296,
+              3.6576,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "12934d94-384d-5f39-b1c3-cb57e35c7d34",
+            "generation_key": "frame/axis-x/y1/x2-x3/plane-eave/brace/x3",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              10.058399999999999,
+              3.6576,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "43e9ae2a-02d0-55a4-9293-5e9c8b3a23ba",
+            "generation_key": "frame/axis-x/y2/x0-x1/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              7.3152,
+              0
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              7.3152,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "00242a16-9849-54d2-8758-e8b47738d9bc",
             "generation_key": "frame/axis-x/y2/x0-x1/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -430,7 +988,7 @@
               3.048
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               3.048
             ],
@@ -438,7 +996,43 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "8e1b94e9-78d5-5e1d-a932-f3f891809715",
+            "member_id": "15f56a1f-7828-5039-a429-427e8f53c3c9",
+            "generation_key": "frame/axis-x/y2/x0-x1/plane-L1/brace/x0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              0.9144,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "6d5d0e6b-c42c-5c16-8205-3e2e3674922b",
+            "generation_key": "frame/axis-x/y2/x0-x1/plane-L1/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              2.7431999999999994,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "4449d4f7-d5d5-578c-bd1c-48439a90f0ee",
             "generation_key": "frame/axis-x/y2/x0-x1/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -448,7 +1042,7 @@
               5.7912
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               5.7912
             ],
@@ -456,17 +1050,71 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "cfb2d463-49db-5972-89da-74d88b29338b",
+            "member_id": "20889ce7-0a44-5870-8682-059008db4956",
+            "generation_key": "frame/axis-x/y2/x0-x1/plane-eave/brace/x0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              0.9144,
+              7.3152,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "a308b4bd-b7a8-5668-aae4-dde41e6b942e",
+            "generation_key": "frame/axis-x/y2/x0-x1/plane-eave/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              2.7431999999999994,
+              7.3152,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "19c1c5a1-b132-5c65-9b98-7ac8de95b879",
+            "generation_key": "frame/axis-x/y2/x1-x2/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              7.3152,
+              0
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              7.3152,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "44c3efe9-7bc5-56a5-a957-970d092aba34",
             "generation_key": "frame/axis-x/y2/x1-x2/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               3.048
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               3.048
             ],
@@ -474,17 +1122,53 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "8342a928-6e68-5a78-b1e8-f57b63600d66",
+            "member_id": "39bf8699-6861-57a7-8caa-96948a5bb098",
+            "generation_key": "frame/axis-x/y2/x1-x2/plane-L1/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              4.571999999999999,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "d2b34575-65d2-592c-838b-89616628f649",
+            "generation_key": "frame/axis-x/y2/x1-x2/plane-L1/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              6.400799999999999,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "db220cd7-38bd-5776-b392-92b28d820bde",
             "generation_key": "frame/axis-x/y2/x1-x2/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               5.7912
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               5.7912
             ],
@@ -492,12 +1176,66 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "4c6b8502-b741-5569-8ee4-9e089ee9ad26",
+            "member_id": "d44de1c9-c3da-5037-97af-e412e3b5ea11",
+            "generation_key": "frame/axis-x/y2/x1-x2/plane-eave/brace/x1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              4.571999999999999,
+              7.3152,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "3a6958e8-a994-5913-a36c-2f59415ebd3b",
+            "generation_key": "frame/axis-x/y2/x1-x2/plane-eave/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              6.400799999999999,
+              7.3152,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "2e416e35-5f68-5196-a4a2-ad0e41be6590",
+            "generation_key": "frame/axis-x/y2/x2-x3/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              7.3152,
+              0
+            ],
+            "axis_end_m": [
+              10.9728,
+              7.3152,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "0b75442c-bed8-5e3a-ad11-b6c6fd071fcf",
             "generation_key": "frame/axis-x/y2/x2-x3/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               3.048
             ],
@@ -510,12 +1248,48 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "4e810cdc-8ba3-5561-9c3e-92f9fb1680be",
+            "member_id": "4229b308-b866-5f6d-8d6c-23c66d5b6c5e",
+            "generation_key": "frame/axis-x/y2/x2-x3/plane-L1/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              8.2296,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "cc9b5301-9e52-55cf-aed5-10b04a2cd24c",
+            "generation_key": "frame/axis-x/y2/x2-x3/plane-L1/brace/x3",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              10.058399999999999,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "849f881c-2877-5c8d-9482-e2438fa793a1",
             "generation_key": "frame/axis-x/y2/x2-x3/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               5.7912
             ],
@@ -528,7 +1302,241 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "d4bb2e26-cedc-5d30-ae44-d0431928cca9",
+            "member_id": "9daa2f7d-98b4-5942-a18f-db29f8ed55e7",
+            "generation_key": "frame/axis-x/y2/x2-x3/plane-eave/brace/x2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              8.2296,
+              7.3152,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "8cce3cfa-87d5-5ab3-9fe5-8ec353dbfc89",
+            "generation_key": "frame/axis-x/y2/x2-x3/plane-eave/brace/x3",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              10.058399999999999,
+              7.3152,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "df8edf63-b38b-5fc8-a443-11b805d1bc41",
+            "generation_key": "frame/axis-y/x0-x1/j1/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0.6096,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              0.6096,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "1fa50487-0bdf-5d9b-bc4a-3c48e3727594",
+            "generation_key": "frame/axis-y/x0-x1/j1/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0.6096,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              0.6096,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "8a46d2a8-936c-5014-a308-e2e04fbf012d",
+            "generation_key": "frame/axis-y/x0-x1/j2/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              1.2192,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              1.2192,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "f27a9092-5819-528d-9091-e4df04e66a1f",
+            "generation_key": "frame/axis-y/x0-x1/j2/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              1.2192,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              1.2192,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "17f5b4a7-1f69-54b5-896d-8b0423f25cbe",
+            "generation_key": "frame/axis-y/x0-x1/j3/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              1.8288000000000002,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              1.8288000000000002,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "c1881249-a626-5274-bb12-d40f1d5dbabf",
+            "generation_key": "frame/axis-y/x0-x1/j3/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              1.8288000000000002,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              1.8288000000000002,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "76b307d4-bc4e-52bc-b5fc-3c85262db01d",
+            "generation_key": "frame/axis-y/x0-x1/j4/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              2.4384,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              2.4384,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "b5841ebd-94b6-52d3-96f0-1a0ed296b442",
+            "generation_key": "frame/axis-y/x0-x1/j4/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              2.4384,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              2.4384,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "711f4721-1881-5f25-bccc-29b0e0795436",
+            "generation_key": "frame/axis-y/x0-x1/j5/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.048,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              3.048,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "6a60dbe1-c232-56a1-b81e-b64908d7a288",
+            "generation_key": "frame/axis-y/x0-x1/j5/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.048,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              3.048,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "63fa453e-9771-5b3c-9b29-766f7299a7a4",
+            "generation_key": "frame/axis-y/x0/y0-y1/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              0,
+              3.6576,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "f90b98d1-8a6f-5be4-b9a4-c736efbc3636",
             "generation_key": "frame/axis-y/x0/y0-y1/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -546,7 +1554,43 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "aaad09dc-7383-5b63-a119-84dce422099c",
+            "member_id": "9b69f3ed-9804-52f7-a7c2-21b9f0f4d110",
+            "generation_key": "frame/axis-y/x0/y0-y1/plane-L1/brace/y0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              0,
+              0.9144,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "b6c6432e-92c1-506d-aefa-b21c40b60323",
+            "generation_key": "frame/axis-y/x0/y0-y1/plane-L1/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              0,
+              2.7432,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "24d38ffc-18fb-56b8-a7c5-11729a90c10a",
             "generation_key": "frame/axis-y/x0/y0-y1/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -564,7 +1608,61 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "4390b687-87d8-5b32-92f5-9b0920935b2e",
+            "member_id": "eb201584-a64a-5932-9ca6-0a555474f39b",
+            "generation_key": "frame/axis-y/x0/y0-y1/plane-eave/brace/y0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              0,
+              0.9144,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "7d3187ed-1484-5fc3-864a-0529d71e1795",
+            "generation_key": "frame/axis-y/x0/y0-y1/plane-eave/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              0,
+              2.7432,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "8090c679-d3a5-59f5-aecf-b0d6307d5c6d",
+            "generation_key": "frame/axis-y/x0/y1-y2/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              3.6576,
+              0
+            ],
+            "axis_end_m": [
+              0,
+              7.3152,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "7a02d90c-ef6c-54a2-bae4-0d1b23a2952d",
             "generation_key": "frame/axis-y/x0/y1-y2/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -582,7 +1680,43 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "ce532ff2-2b51-568a-8db7-352d12071544",
+            "member_id": "88830705-8086-5b45-9411-16cd776b38b9",
+            "generation_key": "frame/axis-y/x0/y1-y2/plane-L1/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              0,
+              4.572,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "21288b30-13d1-5c60-94ad-048942ffdbf5",
+            "generation_key": "frame/axis-y/x0/y1-y2/plane-L1/brace/y2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              0,
+              6.4008,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "f40aed22-b7a3-53e0-823e-5df9de2e4292",
             "generation_key": "frame/axis-y/x0/y1-y2/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -600,17 +1734,251 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "2046d699-3ac2-5714-9e30-5ed8dd04b22f",
+            "member_id": "85781e4d-f09c-5212-899f-e5e3f87fbd90",
+            "generation_key": "frame/axis-y/x0/y1-y2/plane-eave/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              0,
+              4.572,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "e7db35b9-2cff-56d9-9804-c56efcae217f",
+            "generation_key": "frame/axis-y/x0/y1-y2/plane-eave/brace/y2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              0,
+              6.4008,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "0393051a-cb3c-577f-8982-03c0a6321665",
+            "generation_key": "frame/axis-y/x1-x2/j1/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              4.2672,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              4.2672,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "594e41ee-0cf1-5af2-9f72-4ae0e5d96ff1",
+            "generation_key": "frame/axis-y/x1-x2/j1/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              4.2672,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              4.2672,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "f5aa7339-d913-511d-9cd3-dc5f813e952a",
+            "generation_key": "frame/axis-y/x1-x2/j2/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              4.876799999999999,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              4.876799999999999,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "67c365ac-8b6f-579f-9dbc-b99da7ba7f66",
+            "generation_key": "frame/axis-y/x1-x2/j2/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              4.876799999999999,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              4.876799999999999,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "a0d93f06-dc0f-51ab-b4ca-1b6d02bcd830",
+            "generation_key": "frame/axis-y/x1-x2/j3/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              5.4864,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              5.4864,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "6a699d58-1acc-50ae-a076-78bf7efc5149",
+            "generation_key": "frame/axis-y/x1-x2/j3/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              5.4864,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              5.4864,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "25d6f389-bc57-5018-81b2-ff7afc300fcb",
+            "generation_key": "frame/axis-y/x1-x2/j4/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              6.096,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              6.096,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "7595ba38-eb37-56ac-b7e0-8051f031bbc2",
+            "generation_key": "frame/axis-y/x1-x2/j4/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              6.096,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              6.096,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "27ad9d02-6652-51ca-a155-38877d7ff794",
+            "generation_key": "frame/axis-y/x1-x2/j5/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              6.7056,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              6.7056,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "836fb7e4-d8a5-5deb-af91-f18ebebfa52d",
+            "generation_key": "frame/axis-y/x1-x2/j5/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              6.7056,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              6.7056,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "f6ccd296-5a96-52cd-a22a-f15c7c1431ca",
+            "generation_key": "frame/axis-y/x1/y0-y1/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              3.6576,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "7fd14d9f-d337-5d09-9d97-86d14d80456a",
             "generation_key": "frame/axis-y/x1/y0-y1/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               3.048
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               3.048
             ],
@@ -618,17 +1986,53 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "78571ee2-172b-5da6-bbde-8c790f205279",
+            "member_id": "1d38a7b4-0531-5535-bc53-0d207e25091a",
+            "generation_key": "frame/axis-y/x1/y0-y1/plane-L1/brace/y0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              0.9144,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "f2df1212-8e83-5580-9edb-a0beb39bd100",
+            "generation_key": "frame/axis-y/x1/y0-y1/plane-L1/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              2.7432,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "eb56fc8f-81f6-5694-b11d-f70a151ec3cd",
             "generation_key": "frame/axis-y/x1/y0-y1/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               5.7912
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               5.7912
             ],
@@ -636,17 +2040,71 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "949b726c-e991-5377-97f2-23b0232f30cb",
+            "member_id": "2e924d1c-35b8-5e1c-9b0c-0d67d946d634",
+            "generation_key": "frame/axis-y/x1/y0-y1/plane-eave/brace/y0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              0.9144,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "4c24313e-8720-569a-9fa0-255ff3557c0f",
+            "generation_key": "frame/axis-y/x1/y0-y1/plane-eave/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              2.7432,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "76c084ac-bdc9-5ce2-a07a-82c10e1aca94",
+            "generation_key": "frame/axis-y/x1/y1-y2/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              0
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              7.3152,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "f944812a-bf94-5843-b0fe-6b9026ebfe18",
             "generation_key": "frame/axis-y/x1/y1-y2/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               3.048
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               3.048
             ],
@@ -654,17 +2112,53 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "f4743247-a114-5653-8ec5-5936c6d5bebe",
+            "member_id": "6ac1a542-2aa0-5203-b313-bc0dd4cbf020",
+            "generation_key": "frame/axis-y/x1/y1-y2/plane-L1/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              4.572,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "aa24169e-3cc5-5017-8c1d-3b4308657b15",
+            "generation_key": "frame/axis-y/x1/y1-y2/plane-L1/brace/y2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              6.4008,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "0ddf79d1-aae6-58fc-a278-fef3fdae810f",
             "generation_key": "frame/axis-y/x1/y1-y2/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               5.7912
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               5.7912
             ],
@@ -672,17 +2166,251 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "bd7f4165-cf17-5181-99dd-3f9b778b7145",
+            "member_id": "2d6757dd-fa9b-5dc6-a6d4-c0a815850ce4",
+            "generation_key": "frame/axis-y/x1/y1-y2/plane-eave/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              4.572,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "8e12c980-4597-5d89-901f-34c3486adde0",
+            "generation_key": "frame/axis-y/x1/y1-y2/plane-eave/brace/y2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              6.4008,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "2641f3b7-2a5f-552b-b03b-8104f8903767",
+            "generation_key": "frame/axis-y/x2-x3/j1/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.924799999999999,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              7.924799999999999,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "fa5ff2bb-edf1-5a0d-bb34-ffc89d780fb7",
+            "generation_key": "frame/axis-y/x2-x3/j1/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.924799999999999,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              7.924799999999999,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "74916c0a-3fb7-5ec8-b7b8-8e63d52d586c",
+            "generation_key": "frame/axis-y/x2-x3/j2/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              8.5344,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              8.5344,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "be2e6347-0b35-5416-ad46-409e974edec1",
+            "generation_key": "frame/axis-y/x2-x3/j2/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              8.5344,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              8.5344,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "aabb880f-60f0-57ba-b7b9-afe02fc1a0d1",
+            "generation_key": "frame/axis-y/x2-x3/j3/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              9.143999999999998,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              9.143999999999998,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "eda8f45f-560d-5e7c-8359-566a15842b7a",
+            "generation_key": "frame/axis-y/x2-x3/j3/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              9.143999999999998,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              9.143999999999998,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "82261103-6feb-589d-b780-9b15c54fa3a2",
+            "generation_key": "frame/axis-y/x2-x3/j4/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              9.753599999999999,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              9.753599999999999,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "34b619ca-0804-5c25-9082-4c255c593e79",
+            "generation_key": "frame/axis-y/x2-x3/j4/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              9.753599999999999,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              9.753599999999999,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "fa6e5641-d778-57f1-9331-9cf0659ec304",
+            "generation_key": "frame/axis-y/x2-x3/j5/y0-y1/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.363199999999999,
+              0,
+              3.048
+            ],
+            "axis_end_m": [
+              10.363199999999999,
+              3.6576,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "135f4570-51e9-5ce2-a12a-100194094e66",
+            "generation_key": "frame/axis-y/x2-x3/j5/y1-y2/plane-L1/joist",
+            "role": "FLOOR_JOIST",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.363199999999999,
+              3.6576,
+              3.048
+            ],
+            "axis_end_m": [
+              10.363199999999999,
+              7.3152,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "4ddf16e4-2e2c-577a-b6de-189a5cc897a8",
+            "generation_key": "frame/axis-y/x2/y0-y1/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              3.6576,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "40ad55a4-c5e9-5a1e-a147-052c71ccb969",
             "generation_key": "frame/axis-y/x2/y0-y1/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               0,
               3.048
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               3.048
             ],
@@ -690,17 +2418,53 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "914d11f8-06c6-53a2-97dc-1d9012156ad1",
+            "member_id": "c47aa281-36ea-539d-b5bc-999005269f4c",
+            "generation_key": "frame/axis-y/x2/y0-y1/plane-L1/brace/y0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              0.9144,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "9c4492b1-2c72-5f99-9ac4-99368cf6779d",
+            "generation_key": "frame/axis-y/x2/y0-y1/plane-L1/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              2.7432,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "5cb23cde-c4a8-5b09-9970-b4f9a74fec41",
             "generation_key": "frame/axis-y/x2/y0-y1/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               0,
               5.7912
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               5.7912
             ],
@@ -708,17 +2472,71 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "bcf552f1-682f-58e9-a777-9fc8a04f7a7e",
+            "member_id": "64f3ad41-a55b-5335-9c9b-ccbe8376b712",
+            "generation_key": "frame/axis-y/x2/y0-y1/plane-eave/brace/y0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              0.9144,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "982b41d3-173d-5089-a443-c8191466309b",
+            "generation_key": "frame/axis-y/x2/y0-y1/plane-eave/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              2.7432,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "d2531b66-a90f-5676-9b6f-0600e9acc50f",
+            "generation_key": "frame/axis-y/x2/y1-y2/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              0
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              7.3152,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "25e87970-ecb2-5e8a-84fc-0d9654d00c28",
             "generation_key": "frame/axis-y/x2/y1-y2/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               3.048
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               3.048
             ],
@@ -726,17 +2544,53 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "020f904a-7887-5ae1-8d23-6494b2d3cbee",
+            "member_id": "7d10dc18-54a3-5e7e-a210-613b8c31ffb2",
+            "generation_key": "frame/axis-y/x2/y1-y2/plane-L1/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              4.572,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "6acc9c36-c1c7-50c8-bdf9-6d0a9e5712dc",
+            "generation_key": "frame/axis-y/x2/y1-y2/plane-L1/brace/y2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              6.4008,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "efd2aa7b-02b6-50ae-85e3-dd95a9585ed5",
             "generation_key": "frame/axis-y/x2/y1-y2/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               5.7912
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               5.7912
             ],
@@ -744,7 +2598,61 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "59bdb824-6ba8-5c86-963d-c12ce489e8fc",
+            "member_id": "93e7e565-aa11-5d44-bd4a-992c797853ad",
+            "generation_key": "frame/axis-y/x2/y1-y2/plane-eave/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              4.572,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "4d62e9f1-8de9-51d5-b4bc-7681749baa99",
+            "generation_key": "frame/axis-y/x2/y1-y2/plane-eave/brace/y2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              6.4008,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "cfaafe43-fb9c-58af-9a49-9838374f2fb7",
+            "generation_key": "frame/axis-y/x3/y0-y1/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              10.9728,
+              3.6576,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "b5ee0f0b-3739-5f52-a850-ba7562c36739",
             "generation_key": "frame/axis-y/x3/y0-y1/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -762,7 +2670,43 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "8eab0db0-a013-5027-ba6b-7e75f2210c1a",
+            "member_id": "c3d625a0-8028-515a-80e2-79ee170d2587",
+            "generation_key": "frame/axis-y/x3/y0-y1/plane-L1/brace/y0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              0,
+              2.1336
+            ],
+            "axis_end_m": [
+              10.9728,
+              0.9144,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "4e697afd-df2b-546f-b04e-0e08562624f1",
+            "generation_key": "frame/axis-y/x3/y0-y1/plane-L1/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.7432,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "7473ab3e-e50a-5ccd-ba79-18772406260e",
             "generation_key": "frame/axis-y/x3/y0-y1/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -780,7 +2724,61 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "b3109820-88b5-553b-a6b8-fb17ddfb68b4",
+            "member_id": "115af591-5d03-5927-b5c9-9cd6da585ddf",
+            "generation_key": "frame/axis-y/x3/y0-y1/plane-eave/brace/y0",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              0,
+              4.8768
+            ],
+            "axis_end_m": [
+              10.9728,
+              0.9144,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "530c0605-b4cd-5b43-ab0f-a675e27a978e",
+            "generation_key": "frame/axis-y/x3/y0-y1/plane-eave/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.7432,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "00e048cc-3a28-5f80-ac66-337ec969c26d",
+            "generation_key": "frame/axis-y/x3/y1-y2/plane-L0/sill",
+            "role": "SILL",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              3.6576,
+              0
+            ],
+            "axis_end_m": [
+              10.9728,
+              7.3152,
+              0
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "6bc147a3-2e17-56ab-a4f3-f53a5018b94d",
             "generation_key": "frame/axis-y/x3/y1-y2/plane-L1/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -798,7 +2796,43 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "8cc896a8-f3ac-58aa-a9f0-f30cbf67f42d",
+            "member_id": "1713c67e-78ff-5b83-b5a3-3e45843e7d94",
+            "generation_key": "frame/axis-y/x3/y1-y2/plane-L1/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              3.6576,
+              2.1336
+            ],
+            "axis_end_m": [
+              10.9728,
+              4.572,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "16184669-e3cf-5b82-b96c-d1f483cc1092",
+            "generation_key": "frame/axis-y/x3/y1-y2/plane-L1/brace/y2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              7.3152,
+              2.1336
+            ],
+            "axis_end_m": [
+              10.9728,
+              6.4008,
+              3.048
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "784d04af-f256-5f6a-9d3e-f40678e7b601",
             "generation_key": "frame/axis-y/x3/y1-y2/plane-eave/beam",
             "role": "BEAM",
             "primitive": "oriented_box",
@@ -816,7 +2850,403 @@
             "section_depth_m": 0.3048
           },
           {
-            "member_id": "10c2f35d-2841-582c-ba55-6ca6ecac009d",
+            "member_id": "72d7b9df-b04b-5c23-ba13-db42e5902454",
+            "generation_key": "frame/axis-y/x3/y1-y2/plane-eave/brace/y1",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              3.6576,
+              4.8768
+            ],
+            "axis_end_m": [
+              10.9728,
+              4.572,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "6dcc04a6-757d-5786-a712-f0086483168f",
+            "generation_key": "frame/axis-y/x3/y1-y2/plane-eave/brace/y2",
+            "role": "KNEE_BRACE",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              7.3152,
+              4.8768
+            ],
+            "axis_end_m": [
+              10.9728,
+              6.4008,
+              5.7912
+            ],
+            "section_width_m": 0.1016,
+            "section_depth_m": 0.1524
+          },
+          {
+            "member_id": "4d09e733-d3e6-5238-9030-fcba2563ec98",
+            "generation_key": "frame/roof/x0-x1/north/p1/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              6.096,
+              6.7056
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              6.096,
+              6.7056
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "e0e91390-5a09-5a4f-ab65-c58d728be2b6",
+            "generation_key": "frame/roof/x0-x1/north/p2/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              4.8768,
+              7.619999999999999
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              4.8768,
+              7.619999999999999
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "3d077757-6d02-5f2c-924b-404a56455ba6",
+            "generation_key": "frame/roof/x0-x1/south/p1/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              1.2191999999999998,
+              6.7056
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              1.2191999999999998,
+              6.7056
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "db1e289c-1450-5e05-9355-ba836b52818c",
+            "generation_key": "frame/roof/x0-x1/south/p2/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              2.4383999999999997,
+              7.619999999999999
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              2.4383999999999997,
+              7.619999999999999
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "35a2032c-421e-52ca-aeb9-7f9b59d6d939",
+            "generation_key": "frame/roof/x0/north/principal-rafter",
+            "role": "PRINCIPAL_RAFTER",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              7.3152,
+              5.7912
+            ],
+            "axis_end_m": [
+              0,
+              3.6576,
+              8.5344
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.254
+          },
+          {
+            "member_id": "220e565d-0bcf-56fd-a36a-527f188da57c",
+            "generation_key": "frame/roof/x0/south/principal-rafter",
+            "role": "PRINCIPAL_RAFTER",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              0,
+              0,
+              5.7912
+            ],
+            "axis_end_m": [
+              0,
+              3.6576,
+              8.5344
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.254
+          },
+          {
+            "member_id": "dd4aae5b-48e0-5b92-a6f7-c39745f2ecbe",
+            "generation_key": "frame/roof/x1-x2/north/p1/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              6.096,
+              6.7056
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              6.096,
+              6.7056
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "27adb6df-6fec-555b-89d3-1a46ad3f2b62",
+            "generation_key": "frame/roof/x1-x2/north/p2/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              4.8768,
+              7.619999999999999
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              4.8768,
+              7.619999999999999
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "afd4cb15-c0fa-5acf-9a7b-6c0310756864",
+            "generation_key": "frame/roof/x1-x2/south/p1/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              1.2191999999999998,
+              6.7056
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              1.2191999999999998,
+              6.7056
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "13f8dd39-7e31-58df-a995-52e684e1943b",
+            "generation_key": "frame/roof/x1-x2/south/p2/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              2.4383999999999997,
+              7.619999999999999
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              2.4383999999999997,
+              7.619999999999999
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "2ce9a294-5a2c-56c3-91b7-67378f66d1be",
+            "generation_key": "frame/roof/x1/north/principal-rafter",
+            "role": "PRINCIPAL_RAFTER",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              7.3152,
+              5.7912
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              3.6576,
+              8.5344
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.254
+          },
+          {
+            "member_id": "3b5b3fe1-370c-5732-9f06-11c00b804be2",
+            "generation_key": "frame/roof/x1/south/principal-rafter",
+            "role": "PRINCIPAL_RAFTER",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              3.6575999999999995,
+              0,
+              5.7912
+            ],
+            "axis_end_m": [
+              3.6575999999999995,
+              3.6576,
+              8.5344
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.254
+          },
+          {
+            "member_id": "b492c2ca-b9be-5538-bb57-fdd1d61d3bbb",
+            "generation_key": "frame/roof/x2-x3/north/p1/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              6.096,
+              6.7056
+            ],
+            "axis_end_m": [
+              10.9728,
+              6.096,
+              6.7056
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "2d7d8d97-9c50-5ed4-b1ad-bb283a45e45c",
+            "generation_key": "frame/roof/x2-x3/north/p2/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              4.8768,
+              7.619999999999999
+            ],
+            "axis_end_m": [
+              10.9728,
+              4.8768,
+              7.619999999999999
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "9cf37b67-a33e-5835-a142-48310a21a9fe",
+            "generation_key": "frame/roof/x2-x3/south/p1/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              1.2191999999999998,
+              6.7056
+            ],
+            "axis_end_m": [
+              10.9728,
+              1.2191999999999998,
+              6.7056
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "b156bbe4-73fe-5a1c-93de-a535cbaf3993",
+            "generation_key": "frame/roof/x2-x3/south/p2/purlin",
+            "role": "PURLIN",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              2.4383999999999997,
+              7.619999999999999
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.4383999999999997,
+              7.619999999999999
+            ],
+            "section_width_m": 0.1524,
+            "section_depth_m": 0.2032
+          },
+          {
+            "member_id": "280e3278-33a9-590d-9c95-f5ba58dde5b2",
+            "generation_key": "frame/roof/x2/north/principal-rafter",
+            "role": "PRINCIPAL_RAFTER",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              7.3152,
+              5.7912
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              3.6576,
+              8.5344
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.254
+          },
+          {
+            "member_id": "75b4943b-533f-5e77-bdad-f8a4ac05ba8c",
+            "generation_key": "frame/roof/x2/south/principal-rafter",
+            "role": "PRINCIPAL_RAFTER",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              7.315199999999999,
+              0,
+              5.7912
+            ],
+            "axis_end_m": [
+              7.315199999999999,
+              3.6576,
+              8.5344
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.254
+          },
+          {
+            "member_id": "1ed7f9db-e858-53fc-912f-70207ccef4b9",
+            "generation_key": "frame/roof/x3/north/principal-rafter",
+            "role": "PRINCIPAL_RAFTER",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              7.3152,
+              5.7912
+            ],
+            "axis_end_m": [
+              10.9728,
+              3.6576,
+              8.5344
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.254
+          },
+          {
+            "member_id": "51c1c3ed-1a5c-5ea5-9b9d-03c683cab19b",
+            "generation_key": "frame/roof/x3/south/principal-rafter",
+            "role": "PRINCIPAL_RAFTER",
+            "primitive": "oriented_box",
+            "axis_start_m": [
+              10.9728,
+              0,
+              5.7912
+            ],
+            "axis_end_m": [
+              10.9728,
+              3.6576,
+              8.5344
+            ],
+            "section_width_m": 0.2032,
+            "section_depth_m": 0.254
+          },
+          {
+            "member_id": "53f7964d-8e2d-5609-9c26-8a1263322cd2",
             "generation_key": "frame/x0/y0/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -834,7 +3264,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "600f0d9a-cc76-5623-a7d5-0cf4ff6aeb98",
+            "member_id": "2e045f5f-8220-5e1b-920a-84edb6b23189",
             "generation_key": "frame/x0/y0/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -852,7 +3282,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "1d0848c2-2150-5319-a236-8ef1a9e65075",
+            "member_id": "7a006774-5806-54a5-986f-f484b392c7d2",
             "generation_key": "frame/x0/y1/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -870,7 +3300,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "2d639561-b04d-5bec-bae8-2154c898f89b",
+            "member_id": "b26a76a2-c27b-53e4-a59f-ca655dc91356",
             "generation_key": "frame/x0/y1/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -888,7 +3318,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "62a327d4-8386-5394-be0f-e3d7c0977c04",
+            "member_id": "8e9ac73b-2ec6-52d7-8ddd-d8725e7a094c",
             "generation_key": "frame/x0/y2/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -906,7 +3336,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "cd3e07f8-0185-5822-adc3-ce1535cc5ce6",
+            "member_id": "fe408321-8a29-587d-a1d6-ad400d807c8e",
             "generation_key": "frame/x0/y2/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -924,17 +3354,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "b3d66062-0c0b-5ff2-aa15-8391da008b6b",
+            "member_id": "54ab6150-1243-50a7-b62c-adf42cc16682",
             "generation_key": "frame/x1/y0/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               0
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               3.048
             ],
@@ -942,17 +3372,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "e4c4d48f-8619-5816-80f1-90a17a554ef4",
+            "member_id": "a5b46ab3-03ad-560b-aee7-9743f6994c24",
             "generation_key": "frame/x1/y0/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               3.048
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               0,
               5.7912
             ],
@@ -960,17 +3390,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "40b17d4b-76ed-5832-bb24-b106a84d0c48",
+            "member_id": "41a41d25-43ef-5bab-8268-ed0d1fa5edba",
             "generation_key": "frame/x1/y1/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               0
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               3.048
             ],
@@ -978,17 +3408,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "14ae72c2-ecc7-5478-9aaf-3b69ca0a382d",
+            "member_id": "d65fd220-84e9-572e-a12a-4b6e6cfdde5d",
             "generation_key": "frame/x1/y1/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               3.048
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               3.6576,
               5.7912
             ],
@@ -996,17 +3426,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "97a702eb-8f2a-54e8-9e0a-3a01a96ce6bb",
+            "member_id": "031b3943-3db0-5b96-b83c-f8c93b39bcb9",
             "generation_key": "frame/x1/y2/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               0
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               3.048
             ],
@@ -1014,17 +3444,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "cbaa9710-44bd-507a-ab8b-0862f5a4f879",
+            "member_id": "73f4657e-9327-5714-a890-fd64d8c97797",
             "generation_key": "frame/x1/y2/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               3.048
             ],
             "axis_end_m": [
-              3.6576,
+              3.6575999999999995,
               7.3152,
               5.7912
             ],
@@ -1032,17 +3462,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "20acc2ee-3920-5e9e-83ac-cd52ca6789fa",
+            "member_id": "ec9e7d13-471e-5666-b9e7-cd860e97ca40",
             "generation_key": "frame/x2/y0/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               0,
               0
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               0,
               3.048
             ],
@@ -1050,17 +3480,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "4b95eb1f-4714-518b-95ff-9d3947c594d0",
+            "member_id": "0fc93830-b49b-560f-a724-3f349cfdf275",
             "generation_key": "frame/x2/y0/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               0,
               3.048
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               0,
               5.7912
             ],
@@ -1068,17 +3498,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "4d464088-1b71-5e60-9991-fa2905b20a55",
+            "member_id": "b79bdc72-429d-5147-91e3-34366ca5e56c",
             "generation_key": "frame/x2/y1/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               0
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               3.048
             ],
@@ -1086,17 +3516,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "48c2f0ce-9928-576b-b025-94496a3919ec",
+            "member_id": "d4ccbc2e-27be-535d-821c-58bb4b93f809",
             "generation_key": "frame/x2/y1/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               3.048
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               3.6576,
               5.7912
             ],
@@ -1104,17 +3534,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "3b99e190-71b8-525d-8f9c-dffe56ae4f33",
+            "member_id": "ed4ab249-aee2-5bea-b1c7-c34be7fd1388",
             "generation_key": "frame/x2/y2/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               0
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               3.048
             ],
@@ -1122,17 +3552,17 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "3b57a1d3-a986-5c85-9da6-c7b2cf3d4cc7",
+            "member_id": "fa37e581-49a0-58bc-b2ca-8bbe8b97b606",
             "generation_key": "frame/x2/y2/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
             "axis_start_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               3.048
             ],
             "axis_end_m": [
-              7.3152,
+              7.315199999999999,
               7.3152,
               5.7912
             ],
@@ -1140,7 +3570,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "ce4b923c-6d4f-565c-a823-24c0a67664f1",
+            "member_id": "07709fdb-fbcb-512a-ac62-5b2bc4c59a63",
             "generation_key": "frame/x3/y0/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -1158,7 +3588,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "8b3c220b-2008-5b14-953b-347da017bef6",
+            "member_id": "33646aed-76c3-5f05-979b-7e6eafb9f540",
             "generation_key": "frame/x3/y0/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -1176,7 +3606,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "b4f15712-1f88-5d0f-b9a2-b9d3a61d30b9",
+            "member_id": "caf8d0ac-9216-56d7-be7d-c58cf5826c60",
             "generation_key": "frame/x3/y1/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -1194,7 +3624,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "2b6cdf4a-4e13-51ae-9fa9-0aad168beeee",
+            "member_id": "b02b2b34-0d12-585f-8974-c7f1efbe54a4",
             "generation_key": "frame/x3/y1/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -1212,7 +3642,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "f5dd47b3-e9e8-559c-a4fe-74a3307d4b07",
+            "member_id": "ce88246a-8e41-5c2b-8416-d146125d53d0",
             "generation_key": "frame/x3/y2/level-0/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -1230,7 +3660,7 @@
             "section_depth_m": 0.2032
           },
           {
-            "member_id": "1d383b8f-aeb8-531e-8f5c-d338a944ff30",
+            "member_id": "918ee44c-3346-5843-9e71-52f48273384b",
             "generation_key": "frame/x3/y2/level-1/post",
             "role": "POST",
             "primitive": "oriented_box",
@@ -1343,8 +3773,8 @@
       }
     },
     "timber_schedule": {
-      "canonical_bytes": 19247,
-      "fingerprint": "sha256:fbe8bbeba74f0fb2cfaa5e524d00101f3f9b104866df2e08ec2f0a616453c746",
+      "canonical_bytes": 66146,
+      "fingerprint": "sha256:49c283a8ad8c4cd7047045042ef7e42c9cc0765c1f438b80c4daf32479038d3c",
       "aggregates": [
         {
           "role": "BEAM",
@@ -1353,30 +3783,3150 @@
           "total_length_m": 124.35840000000005
         },
         {
+          "role": "FLOOR_JOIST",
+          "nominal_section": "4x8",
+          "count": 30,
+          "total_length_m": 109.72800000000004
+        },
+        {
+          "role": "KNEE_BRACE",
+          "nominal_section": "4x6",
+          "count": 68,
+          "total_length_m": 87.93466793750916
+        },
+        {
           "role": "POST",
           "nominal_section": "8x8",
           "count": 24,
           "total_length_m": 69.49440000000003
+        },
+        {
+          "role": "PRINCIPAL_RAFTER",
+          "nominal_section": "8x10",
+          "count": 8,
+          "total_length_m": 36.576
+        },
+        {
+          "role": "PURLIN",
+          "nominal_section": "6x8",
+          "count": 12,
+          "total_length_m": 43.8912
+        },
+        {
+          "role": "SILL",
+          "nominal_section": "8x8",
+          "count": 17,
+          "total_length_m": 62.179200000000016
         }
       ]
     }
   },
   "inventories": [
     {
-      "name": "reference-house-001-vs01-post-beam-1",
+      "name": "reference-house-001-vs02-frame-1",
       "source": "docs/reference-projects/vermont-timber-house/fixture.snapshot.json",
-      "rule": "vs01-post-beam-1",
-      "members": 58,
-      "canonical_bytes": 14431,
-      "fingerprint": "sha256:a9a26fff77901da0fba4e7edef8524693d44fcd01d2c1c22c784d26d28317702"
+      "rule": "vs02-frame-1",
+      "members": 193,
+      "canonical_bytes": 50271,
+      "fingerprint": "sha256:158027c947b907701e1ff1f524794d1a5afeda00e113326b00a92ef014b876c3",
+      "inventory": [
+        {
+          "generation_key": "frame/axis-x/y0/x0-x1/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            0,
+            0,
+            0
+          ],
+          "end_m": [
+            3.6575999999999995,
+            0,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            0,
+            3.048
+          ],
+          "end_m": [
+            3.6575999999999995,
+            0,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/brace/x0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            0.9144,
+            0,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x0-x1/plane-L1/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            2.7431999999999994,
+            0,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x0-x1/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            3.6575999999999995,
+            0,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x0-x1/plane-eave/brace/x0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            0.9144,
+            0,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x0-x1/plane-eave/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            2.7431999999999994,
+            0,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x1-x2/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            0
+          ],
+          "end_m": [
+            7.315199999999999,
+            0,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x1-x2/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            3.048
+          ],
+          "end_m": [
+            7.315199999999999,
+            0,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x1-x2/plane-L1/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            4.571999999999999,
+            0,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x1-x2/plane-L1/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            6.400799999999999,
+            0,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x1-x2/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            7.315199999999999,
+            0,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x1-x2/plane-eave/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            4.571999999999999,
+            0,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x1-x2/plane-eave/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            6.400799999999999,
+            0,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x2-x3/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            7.315199999999999,
+            0,
+            0
+          ],
+          "end_m": [
+            10.9728,
+            0,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x2-x3/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            0,
+            3.048
+          ],
+          "end_m": [
+            10.9728,
+            0,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x2-x3/plane-L1/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            8.2296,
+            0,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x2-x3/plane-L1/brace/x3",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            10.058399999999999,
+            0,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x2-x3/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            10.9728,
+            0,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x2-x3/plane-eave/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            8.2296,
+            0,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y0/x2-x3/plane-eave/brace/x3",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            10.058399999999999,
+            0,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x0-x1/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            0,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x0-x1/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x0-x1/plane-L1/brace/x0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            0.9144,
+            3.6576,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x0-x1/plane-L1/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            2.7431999999999994,
+            3.6576,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x0-x1/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            3.6576,
+            5.7912
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x0-x1/plane-eave/brace/x0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            0.9144,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x0-x1/plane-eave/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            2.7431999999999994,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x1-x2/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x1-x2/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x1-x2/plane-L1/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            4.571999999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x1-x2/plane-L1/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            6.400799999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x1-x2/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            5.7912
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x1-x2/plane-eave/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            4.571999999999999,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x1-x2/plane-eave/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            6.400799999999999,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x2-x3/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x2-x3/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x2-x3/plane-L1/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            8.2296,
+            3.6576,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x2-x3/plane-L1/brace/x3",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            10.058399999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x2-x3/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            5.7912
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x2-x3/plane-eave/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            8.2296,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y1/x2-x3/plane-eave/brace/x3",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            10.058399999999999,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x0-x1/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            0,
+            7.3152,
+            0
+          ],
+          "end_m": [
+            3.6575999999999995,
+            7.3152,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x0-x1/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            7.3152,
+            3.048
+          ],
+          "end_m": [
+            3.6575999999999995,
+            7.3152,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x0-x1/plane-L1/brace/x0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            0.9144,
+            7.3152,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x0-x1/plane-L1/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            2.7431999999999994,
+            7.3152,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x0-x1/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            7.3152,
+            5.7912
+          ],
+          "end_m": [
+            3.6575999999999995,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x0-x1/plane-eave/brace/x0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            0.9144,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x0-x1/plane-eave/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            2.7431999999999994,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x1-x2/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            0
+          ],
+          "end_m": [
+            7.315199999999999,
+            7.3152,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x1-x2/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            3.048
+          ],
+          "end_m": [
+            7.315199999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x1-x2/plane-L1/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            4.571999999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x1-x2/plane-L1/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            6.400799999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x1-x2/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            5.7912
+          ],
+          "end_m": [
+            7.315199999999999,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x1-x2/plane-eave/brace/x1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            4.571999999999999,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x1-x2/plane-eave/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            6.400799999999999,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x2-x3/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            0
+          ],
+          "end_m": [
+            10.9728,
+            7.3152,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x2-x3/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            3.048
+          ],
+          "end_m": [
+            10.9728,
+            7.3152,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x2-x3/plane-L1/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            8.2296,
+            7.3152,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x2-x3/plane-L1/brace/x3",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            10.058399999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x2-x3/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            5.7912
+          ],
+          "end_m": [
+            10.9728,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x2-x3/plane-eave/brace/x2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            8.2296,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-x/y2/x2-x3/plane-eave/brace/x3",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            10.058399999999999,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j1/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            0.6096,
+            0,
+            3.048
+          ],
+          "end_m": [
+            0.6096,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j1/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            0.6096,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            0.6096,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j2/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            1.2192,
+            0,
+            3.048
+          ],
+          "end_m": [
+            1.2192,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j2/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            1.2192,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            1.2192,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j3/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            1.8288000000000002,
+            0,
+            3.048
+          ],
+          "end_m": [
+            1.8288000000000002,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j3/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            1.8288000000000002,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            1.8288000000000002,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j4/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            2.4384,
+            0,
+            3.048
+          ],
+          "end_m": [
+            2.4384,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j4/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            2.4384,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            2.4384,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j5/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            3.048,
+            0,
+            3.048
+          ],
+          "end_m": [
+            3.048,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0-x1/j5/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            3.048,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            3.048,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y0-y1/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            0,
+            0,
+            0
+          ],
+          "end_m": [
+            0,
+            3.6576,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y0-y1/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            0,
+            3.048
+          ],
+          "end_m": [
+            0,
+            3.6576,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y0-y1/plane-L1/brace/y0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            0,
+            0.9144,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y0-y1/plane-L1/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            0,
+            2.7432,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y0-y1/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            0,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y0-y1/plane-eave/brace/y0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            0,
+            0.9144,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y0-y1/plane-eave/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            0,
+            2.7432,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y1-y2/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            0,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            0,
+            7.3152,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y1-y2/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            0,
+            7.3152,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y1-y2/plane-L1/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            0,
+            4.572,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y1-y2/plane-L1/brace/y2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            0,
+            6.4008,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y1-y2/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            0,
+            3.6576,
+            5.7912
+          ],
+          "end_m": [
+            0,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y1-y2/plane-eave/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            0,
+            4.572,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x0/y1-y2/plane-eave/brace/y2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            0,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            0,
+            6.4008,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j1/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            4.2672,
+            0,
+            3.048
+          ],
+          "end_m": [
+            4.2672,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j1/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            4.2672,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            4.2672,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j2/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            4.876799999999999,
+            0,
+            3.048
+          ],
+          "end_m": [
+            4.876799999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j2/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            4.876799999999999,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            4.876799999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j3/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            5.4864,
+            0,
+            3.048
+          ],
+          "end_m": [
+            5.4864,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j3/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            5.4864,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            5.4864,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j4/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            6.096,
+            0,
+            3.048
+          ],
+          "end_m": [
+            6.096,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j4/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            6.096,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            6.096,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j5/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            6.7056,
+            0,
+            3.048
+          ],
+          "end_m": [
+            6.7056,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1-x2/j5/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            6.7056,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            6.7056,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y0-y1/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            0
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y0-y1/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            3.048
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y0-y1/plane-L1/brace/y0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            3.6575999999999995,
+            0.9144,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y0-y1/plane-L1/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            3.6575999999999995,
+            2.7432,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y0-y1/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y0-y1/plane-eave/brace/y0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            3.6575999999999995,
+            0.9144,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y0-y1/plane-eave/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            3.6575999999999995,
+            2.7432,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y1-y2/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            3.6575999999999995,
+            7.3152,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y1-y2/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            3.6575999999999995,
+            7.3152,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y1-y2/plane-L1/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            3.6575999999999995,
+            4.572,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y1-y2/plane-L1/brace/y2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            3.6575999999999995,
+            6.4008,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y1-y2/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            5.7912
+          ],
+          "end_m": [
+            3.6575999999999995,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y1-y2/plane-eave/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            3.6575999999999995,
+            4.572,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x1/y1-y2/plane-eave/brace/y2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            3.6575999999999995,
+            6.4008,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j1/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            7.924799999999999,
+            0,
+            3.048
+          ],
+          "end_m": [
+            7.924799999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j1/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            7.924799999999999,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            7.924799999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j2/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            8.5344,
+            0,
+            3.048
+          ],
+          "end_m": [
+            8.5344,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j2/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            8.5344,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            8.5344,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j3/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            9.143999999999998,
+            0,
+            3.048
+          ],
+          "end_m": [
+            9.143999999999998,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j3/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            9.143999999999998,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            9.143999999999998,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j4/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            9.753599999999999,
+            0,
+            3.048
+          ],
+          "end_m": [
+            9.753599999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j4/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            9.753599999999999,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            9.753599999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j5/y0-y1/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            10.363199999999999,
+            0,
+            3.048
+          ],
+          "end_m": [
+            10.363199999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2-x3/j5/y1-y2/plane-L1/joist",
+          "member_role": "FLOOR_JOIST",
+          "start_m": [
+            10.363199999999999,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            10.363199999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "c4648631-ac40-5708-816b-cbe12d485df5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y0-y1/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            7.315199999999999,
+            0,
+            0
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y0-y1/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            0,
+            3.048
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y0-y1/plane-L1/brace/y0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            7.315199999999999,
+            0.9144,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y0-y1/plane-L1/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            7.315199999999999,
+            2.7432,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y0-y1/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y0-y1/plane-eave/brace/y0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            7.315199999999999,
+            0.9144,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y0-y1/plane-eave/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            7.315199999999999,
+            2.7432,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y1-y2/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            7.315199999999999,
+            7.3152,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y1-y2/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            7.315199999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y1-y2/plane-L1/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            7.315199999999999,
+            4.572,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y1-y2/plane-L1/brace/y2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            7.315199999999999,
+            6.4008,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y1-y2/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            5.7912
+          ],
+          "end_m": [
+            7.315199999999999,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y1-y2/plane-eave/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            7.315199999999999,
+            4.572,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x2/y1-y2/plane-eave/brace/y2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            7.315199999999999,
+            6.4008,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y0-y1/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            10.9728,
+            0,
+            0
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y0-y1/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            10.9728,
+            0,
+            3.048
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y0-y1/plane-L1/brace/y0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            0,
+            2.1336
+          ],
+          "end_m": [
+            10.9728,
+            0.9144,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y0-y1/plane-L1/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            10.9728,
+            2.7432,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y0-y1/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            10.9728,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y0-y1/plane-eave/brace/y0",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            0,
+            4.8768
+          ],
+          "end_m": [
+            10.9728,
+            0.9144,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y0-y1/plane-eave/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            10.9728,
+            2.7432,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y1-y2/plane-L0/sill",
+          "member_role": "SILL",
+          "start_m": [
+            10.9728,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            10.9728,
+            7.3152,
+            0
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y1-y2/plane-L1/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            10.9728,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            10.9728,
+            7.3152,
+            3.048
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y1-y2/plane-L1/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            3.6576,
+            2.1336
+          ],
+          "end_m": [
+            10.9728,
+            4.572,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y1-y2/plane-L1/brace/y2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            7.3152,
+            2.1336
+          ],
+          "end_m": [
+            10.9728,
+            6.4008,
+            3.048
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y1-y2/plane-eave/beam",
+          "member_role": "BEAM",
+          "start_m": [
+            10.9728,
+            3.6576,
+            5.7912
+          ],
+          "end_m": [
+            10.9728,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "e87a56f9-76cb-58a8-b8ee-4722c031a40b",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y1-y2/plane-eave/brace/y1",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            3.6576,
+            4.8768
+          ],
+          "end_m": [
+            10.9728,
+            4.572,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/axis-y/x3/y1-y2/plane-eave/brace/y2",
+          "member_role": "KNEE_BRACE",
+          "start_m": [
+            10.9728,
+            7.3152,
+            4.8768
+          ],
+          "end_m": [
+            10.9728,
+            6.4008,
+            5.7912
+          ],
+          "section_id": "53fc2e08-26f5-5c28-9f72-02c7f502374c",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x0-x1/north/p1/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            0,
+            6.096,
+            6.7056
+          ],
+          "end_m": [
+            3.6575999999999995,
+            6.096,
+            6.7056
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x0-x1/north/p2/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            0,
+            4.8768,
+            7.619999999999999
+          ],
+          "end_m": [
+            3.6575999999999995,
+            4.8768,
+            7.619999999999999
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x0-x1/south/p1/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            0,
+            1.2191999999999998,
+            6.7056
+          ],
+          "end_m": [
+            3.6575999999999995,
+            1.2191999999999998,
+            6.7056
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x0-x1/south/p2/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            0,
+            2.4383999999999997,
+            7.619999999999999
+          ],
+          "end_m": [
+            3.6575999999999995,
+            2.4383999999999997,
+            7.619999999999999
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x0/north/principal-rafter",
+          "member_role": "PRINCIPAL_RAFTER",
+          "start_m": [
+            0,
+            7.3152,
+            5.7912
+          ],
+          "end_m": [
+            0,
+            3.6576,
+            8.5344
+          ],
+          "section_id": "53da78af-c351-5582-b0ee-b6a0bbd69ed3",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x0/south/principal-rafter",
+          "member_role": "PRINCIPAL_RAFTER",
+          "start_m": [
+            0,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            0,
+            3.6576,
+            8.5344
+          ],
+          "section_id": "53da78af-c351-5582-b0ee-b6a0bbd69ed3",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x1-x2/north/p1/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            3.6575999999999995,
+            6.096,
+            6.7056
+          ],
+          "end_m": [
+            7.315199999999999,
+            6.096,
+            6.7056
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x1-x2/north/p2/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            3.6575999999999995,
+            4.8768,
+            7.619999999999999
+          ],
+          "end_m": [
+            7.315199999999999,
+            4.8768,
+            7.619999999999999
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x1-x2/south/p1/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            3.6575999999999995,
+            1.2191999999999998,
+            6.7056
+          ],
+          "end_m": [
+            7.315199999999999,
+            1.2191999999999998,
+            6.7056
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x1-x2/south/p2/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            3.6575999999999995,
+            2.4383999999999997,
+            7.619999999999999
+          ],
+          "end_m": [
+            7.315199999999999,
+            2.4383999999999997,
+            7.619999999999999
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x1/north/principal-rafter",
+          "member_role": "PRINCIPAL_RAFTER",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            5.7912
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            8.5344
+          ],
+          "section_id": "53da78af-c351-5582-b0ee-b6a0bbd69ed3",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x1/south/principal-rafter",
+          "member_role": "PRINCIPAL_RAFTER",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            8.5344
+          ],
+          "section_id": "53da78af-c351-5582-b0ee-b6a0bbd69ed3",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x2-x3/north/p1/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            7.315199999999999,
+            6.096,
+            6.7056
+          ],
+          "end_m": [
+            10.9728,
+            6.096,
+            6.7056
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x2-x3/north/p2/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            7.315199999999999,
+            4.8768,
+            7.619999999999999
+          ],
+          "end_m": [
+            10.9728,
+            4.8768,
+            7.619999999999999
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x2-x3/south/p1/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            7.315199999999999,
+            1.2191999999999998,
+            6.7056
+          ],
+          "end_m": [
+            10.9728,
+            1.2191999999999998,
+            6.7056
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x2-x3/south/p2/purlin",
+          "member_role": "PURLIN",
+          "start_m": [
+            7.315199999999999,
+            2.4383999999999997,
+            7.619999999999999
+          ],
+          "end_m": [
+            10.9728,
+            2.4383999999999997,
+            7.619999999999999
+          ],
+          "section_id": "09e23b73-541f-5ba8-b32c-fb3e597cb8c5",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x2/north/principal-rafter",
+          "member_role": "PRINCIPAL_RAFTER",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            5.7912
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            8.5344
+          ],
+          "section_id": "53da78af-c351-5582-b0ee-b6a0bbd69ed3",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x2/south/principal-rafter",
+          "member_role": "PRINCIPAL_RAFTER",
+          "start_m": [
+            7.315199999999999,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            8.5344
+          ],
+          "section_id": "53da78af-c351-5582-b0ee-b6a0bbd69ed3",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x3/north/principal-rafter",
+          "member_role": "PRINCIPAL_RAFTER",
+          "start_m": [
+            10.9728,
+            7.3152,
+            5.7912
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            8.5344
+          ],
+          "section_id": "53da78af-c351-5582-b0ee-b6a0bbd69ed3",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/roof/x3/south/principal-rafter",
+          "member_role": "PRINCIPAL_RAFTER",
+          "start_m": [
+            10.9728,
+            0,
+            5.7912
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            8.5344
+          ],
+          "section_id": "53da78af-c351-5582-b0ee-b6a0bbd69ed3",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x0/y0/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            0,
+            0,
+            0
+          ],
+          "end_m": [
+            0,
+            0,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x0/y0/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            0,
+            0,
+            3.048
+          ],
+          "end_m": [
+            0,
+            0,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x0/y1/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            0,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            0,
+            3.6576,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x0/y1/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            0,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            0,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x0/y2/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            0,
+            7.3152,
+            0
+          ],
+          "end_m": [
+            0,
+            7.3152,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x0/y2/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            0,
+            7.3152,
+            3.048
+          ],
+          "end_m": [
+            0,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x1/y0/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            0
+          ],
+          "end_m": [
+            3.6575999999999995,
+            0,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x1/y0/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            3.6575999999999995,
+            0,
+            3.048
+          ],
+          "end_m": [
+            3.6575999999999995,
+            0,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x1/y1/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x1/y1/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            3.6575999999999995,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            3.6575999999999995,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x1/y2/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            0
+          ],
+          "end_m": [
+            3.6575999999999995,
+            7.3152,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x1/y2/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            3.6575999999999995,
+            7.3152,
+            3.048
+          ],
+          "end_m": [
+            3.6575999999999995,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x2/y0/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            7.315199999999999,
+            0,
+            0
+          ],
+          "end_m": [
+            7.315199999999999,
+            0,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x2/y0/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            7.315199999999999,
+            0,
+            3.048
+          ],
+          "end_m": [
+            7.315199999999999,
+            0,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x2/y1/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x2/y1/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            7.315199999999999,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            7.315199999999999,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x2/y2/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            0
+          ],
+          "end_m": [
+            7.315199999999999,
+            7.3152,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x2/y2/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            7.315199999999999,
+            7.3152,
+            3.048
+          ],
+          "end_m": [
+            7.315199999999999,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x3/y0/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            10.9728,
+            0,
+            0
+          ],
+          "end_m": [
+            10.9728,
+            0,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x3/y0/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            10.9728,
+            0,
+            3.048
+          ],
+          "end_m": [
+            10.9728,
+            0,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x3/y1/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            10.9728,
+            3.6576,
+            0
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x3/y1/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            10.9728,
+            3.6576,
+            3.048
+          ],
+          "end_m": [
+            10.9728,
+            3.6576,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x3/y2/level-0/post",
+          "member_role": "POST",
+          "start_m": [
+            10.9728,
+            7.3152,
+            0
+          ],
+          "end_m": [
+            10.9728,
+            7.3152,
+            3.048
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        },
+        {
+          "generation_key": "frame/x3/y2/level-1/post",
+          "member_role": "POST",
+          "start_m": [
+            10.9728,
+            7.3152,
+            3.048
+          ],
+          "end_m": [
+            10.9728,
+            7.3152,
+            5.7912
+          ],
+          "section_id": "bf84459d-6300-5def-9665-e7ee995d816f",
+          "material_id": "d0055c4c-1014-56ac-95ed-86f72b05df37"
+        }
+      ]
     }
   ],
   "snapshots": [
     {
       "name": "reference-house-001",
       "source": "docs/reference-projects/vermont-timber-house/fixture.snapshot.json",
-      "canonical_bytes": 23404,
-      "fingerprint": "sha256:588f54c43c6dd0feb437995b406f779bcff591ba03c2e8b46222439607277b08"
+      "canonical_bytes": 78423,
+      "fingerprint": "sha256:4b83d3a1aaace9aacb0815d3d07c9e320958c1c38cbdfd486b7e5413ecaeac47"
     }
   ]
 }

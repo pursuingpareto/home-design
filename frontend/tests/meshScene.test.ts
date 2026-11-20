@@ -12,8 +12,11 @@ describe("mesh3d tessellation (artifacts.md §6)", () => {
     const scheduleIds = schedule.payload!.members.map((m) => m.member_id).sort();
     const planIds = plan.payload!.planes.flatMap((p) => [...p.posts, ...p.beams].map((m) => m.member_id)).sort();
     expect([...scene.members.keys()].sort()).toEqual(scheduleIds);
-    expect(planIds).toEqual(scheduleIds);
-    expect(scheduleIds).toHaveLength(58);
+    // The plan lists posts and beams only until ART-002 (MODEL-005 §9, artifacts.md §5).
+    const postsAndBeams = schedule.payload!.members.filter((m) => m.role === "POST" || m.role === "BEAM").map((m) => m.member_id).sort();
+    expect(planIds).toEqual(postsAndBeams);
+    expect(scheduleIds).toHaveLength(193);
+    expect(postsAndBeams).toHaveLength(58);
     scene.dispose();
   });
 
@@ -39,7 +42,12 @@ describe("mesh3d tessellation (artifacts.md §6)", () => {
     const scene = buildMeshScene(payload);
     expect(scene.group.getObjectByName("roof-south")).toBeDefined();
     expect(scene.group.getObjectByName("roof-north")).toBeDefined();
-    expect(scene.bounds.max.z).toBeCloseTo(payload.envelope.roof.ridge_start_m[2] ?? 0, 6);
+    // Bounds hold the ridge and every member axis; the principal rafters' boxes rise above the ridge line.
+    const ridge = new THREE.Vector3(...(payload.envelope.roof.ridge_start_m as [number, number, number]));
+    expect(scene.bounds.containsPoint(ridge)).toBe(true);
+    for (const m of payload.members) {
+      expect(scene.bounds.containsPoint(new THREE.Vector3(...(m.axis_end_m as [number, number, number])))).toBe(true);
+    }
     highlight(scene, post0());
     const selected = scene.members.get(post0())!.material as THREE.MeshStandardMaterial;
     expect(selected.color.getHex()).toBe(COLORS.selected);

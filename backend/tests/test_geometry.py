@@ -35,6 +35,11 @@ def member_ids(snapshot):
     return {e.id for e in snapshot.entities if e.kind == "TimberMember"}
 
 
+def plan_member_ids(snapshot):
+    """MODEL-005 §9 (artifacts.md §5 interim note): the plan lists posts and beams only."""
+    return {e.id for e in snapshot.entities if e.kind == "TimberMember" and e.member_role in ("POST", "BEAM")}
+
+
 # 1. plan2d -------------------------------------------------------------------------------
 
 
@@ -61,7 +66,9 @@ def test_reference_house_mesh():
     mesh, plan = build_mesh3d(FIXTURE_SNAPSHOT), build_plan2d(FIXTURE_SNAPSHOT)
     ids = [b["member_id"] for b in mesh["members"]]
     plan_ids = {i["member_id"] for p in plan["planes"] for g in ("posts", "beams") for i in p[g]}
-    assert len(ids) == 58 and set(ids) == member_ids(FIXTURE_SNAPSHOT) == plan_ids
+    # MODEL-005 §9: the mesh lists every member; the plan, posts and beams only until ART-002.
+    assert len(ids) == 193 and set(ids) == member_ids(FIXTURE_SNAPSHOT)
+    assert plan_ids == plan_member_ids(FIXTURE_SNAPSHOT) and len(plan_ids) == 58
     sections = {e.id: e for e in FIXTURE_SNAPSHOT.entities if e.kind == "Section"}
     stored = {e.id: e for e in FIXTURE_SNAPSHOT.entities if e.kind == "TimberMember"}
     for box in mesh["members"]:
@@ -168,7 +175,7 @@ def test_views_for_any_accepted_candidate(width, depth, extra_x, h0, h1):
     for snapshot in candidates:
         assert validate_value(snapshot.model_dump(mode="json")).valid
         plan, mesh = build_plan2d(snapshot), build_mesh3d(snapshot)
-        assert sum(len(p["posts"]) + len(p["beams"]) for p in plan["planes"]) == len(member_ids(snapshot))
+        assert sum(len(p["posts"]) + len(p["beams"]) for p in plan["planes"]) == len(plan_member_ids(snapshot))
         assert {b["member_id"] for b in mesh["members"]} == member_ids(snapshot)
         validate_against("Plan2dPayload", plan)
         validate_against("Mesh3dPayload", mesh)

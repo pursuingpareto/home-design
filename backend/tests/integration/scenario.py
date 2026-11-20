@@ -29,7 +29,14 @@ _NS = uuid.UUID("0d5c6a2e-91b4-4f3a-8e27-6b1f0c9d4a83")
 FT = 0.3048
 BOOK = {
     "currency": "USD", "as_of": "2026-11-01", "source": "Scenario supplier quote", "geography": "Chittenden County, VT",
-    "rows": [{"key": "timber.BEAM.8x12", "unit": "m", "unit_price_minor": 4725}, {"key": "timber.POST.8x8", "unit": "m", "unit_price_minor": 3150}],
+    # One row per timber line of Reference House 001 v2 (D053), so the estimate is complete.
+    "rows": [
+        {"key": key, "unit": "m", "unit_price_minor": price}
+        for key, price in (
+            ("timber.BEAM.8x12", 4725), ("timber.FLOOR_JOIST.4x8", 1200), ("timber.KNEE_BRACE.4x6", 900), ("timber.POST.8x8", 3150),
+            ("timber.PRINCIPAL_RAFTER.8x10", 3900), ("timber.PURLIN.6x8", 2350), ("timber.SILL.8x8", 3150),
+        )
+    ],
 }
 
 
@@ -134,8 +141,8 @@ class Scenario:
         view = self.consequential("stories-10-10", "SetStoryHeights", {"story_heights_m": [10 * FT, 10 * FT]})
         assert math.isclose(view.envelopes["mesh3d"]["payload"]["envelope"]["z_eave_m"], 20 * FT, abs_tol=1e-9)
 
-        # 6. Roof 10/12, routine: committed without a preview.
-        self.routine("roof-10-12", "SetGableRoofParameters", {"pitch_rad": math.atan(10 / 12), "eave_overhang_m": 2 * FT})
+        # 6. Roof 10/12: consequential since D057, because the pitch places rafters and purlins.
+        self.consequential("roof-10-12", "SetGableRoofParameters", {"pitch_rad": math.atan(10 / 12), "eave_overhang_m": 2 * FT})
 
         # 7. A new section on the beams: the old price row becomes unused and the estimate partial.
         view = self.routine("add-section-10x12", "AddSection", {"nominal_label": "10x12", "actual_width_m": 0.2413, "actual_depth_m": 0.2921})

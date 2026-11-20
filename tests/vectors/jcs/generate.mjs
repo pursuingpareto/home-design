@@ -58,34 +58,76 @@ const fixture = JSON.parse(readFileSync(join(repoRoot, fixturePath), "utf8"));
 fixture.entities.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 const fixtureCanonical = canonicalize(fixture);
 
-// Independent ECMAScript implementation of rule vs01-post-beam-1 (generation-rules.md,
-// "Numeric evaluation"): exact IEEE formulas, no rounding. Used to check that the
-// generated inventory is identical across languages (TIMBER-001 §7, test 3).
+// Independent ECMAScript implementation of rule vs02-frame-1 (generation-rules.md; TIMBER-002 §5;
+// D058 datum axes): exact IEEE formulas, no rounding. Used to check that the generated inventory
+// agrees across languages (TIMBER-002 §8): bit-identical, except principal rafter and purlin z
+// values, which depend on tan(pitch_rad) and must agree within 1e-12 m.
 function generateInventory(snapshot) {
   const byId = new Map();
   for (const e of snapshot.entities) if (!byId.has(e.id)) byId.set(e.id, e);
   const b = snapshot.building;
   const fp = byId.get(b.footprint_id);
   const [l0, l1] = b.level_ids.map((id) => byId.get(id));
+  const roof = byId.get(b.roof_id);
   const frame = byId.get(b.frame_system_id);
   const grid = byId.get(frame.grid_id);
+  const p = frame.parameters;
   const xs = grid.x_lines.map((l) => [l.id, fp.origin_m[0] + fp.width_m * l.fraction]);
   const ys = grid.y_lines.map((l) => [l.id, fp.origin_m[1] + fp.depth_m * l.fraction]);
   const z0 = l0.elevation_m, z1 = l1.elevation_m, zEave = l1.elevation_m + l1.story_height_m;
-  const post = frame.member_defaults.POST, beam = frame.member_defaults.BEAM;
+  const yS = fp.origin_m[1], yN = fp.origin_m[1] + fp.depth_m, yRidge = fp.origin_m[1] + fp.depth_m / 2;
+  const t = Math.tan(roof.pitch_rad);
+  const zRidge = zEave + (fp.depth_m / 2) * t;
   const out = [];
-  const add = (key, role, start, end, d) =>
+  const add = (key, role, start, end) => {
+    const d = frame.member_defaults[role];
     out.push({ generation_key: key, member_role: role, start_m: start, end_m: end, section_id: d.section_id, material_id: d.material_id });
+  };
   for (const [xi, x] of xs) for (const [yj, y] of ys) {
-    add(`frame/${xi}/${yj}/level-0/post`, "POST", [x, y, z0], [x, y, z1], post);
-    add(`frame/${xi}/${yj}/level-1/post`, "POST", [x, y, z1], [x, y, zEave], post);
+    add(`frame/${xi}/${yj}/level-0/post`, "POST", [x, y, z0], [x, y, z1]);
+    add(`frame/${xi}/${yj}/level-1/post`, "POST", [x, y, z1], [x, y, zEave]);
   }
-  for (const [plane, z] of [["plane-L1", z1], ["plane-eave", zEave]]) {
+  // Bay-lines along X (each Y line) and along Y (each X line) on one plane.
+  const bayLines = (plane, z) => {
+    const lines = [];
     for (const [yj, y] of ys) for (let i = 0; i + 1 < xs.length; i++)
-      add(`frame/axis-x/${yj}/${xs[i][0]}-${xs[i + 1][0]}/${plane}/beam`, "BEAM", [xs[i][1], y, z], [xs[i + 1][1], y, z], beam);
+      lines.push({ prefix: `frame/axis-x/${yj}/${xs[i][0]}-${xs[i + 1][0]}/${plane}`, a: xs[i], b: xs[i + 1], axis: "x", fixed: y, z });
     for (const [xi, x] of xs) for (let j = 0; j + 1 < ys.length; j++)
-      add(`frame/axis-y/${xi}/${ys[j][0]}-${ys[j + 1][0]}/${plane}/beam`, "BEAM", [x, ys[j][1], z], [x, ys[j + 1][1], z], beam);
+      lines.push({ prefix: `frame/axis-y/${xi}/${ys[j][0]}-${ys[j + 1][0]}/${plane}`, a: ys[j], b: ys[j + 1], axis: "y", fixed: x, z });
+    return lines;
+  };
+  const point = (line, along, z) => (line.axis === "x" ? [along, line.fixed, z] : [line.fixed, along, z]);
+  for (const line of bayLines("plane-L0", z0)) add(`${line.prefix}/sill`, "SILL", point(line, line.a[1], z0), point(line, line.b[1], z0));
+  const L = p.knee_brace_leg_m;
+  for (const [plane, z, braced] of [["plane-L1", z1, p.knee_braces_level_1], ["plane-eave", zEave, p.knee_braces_eave]]) {
+    for (const line of bayLines(plane, z)) {
+      add(`${line.prefix}/beam`, "BEAM", point(line, line.a[1], z), point(line, line.b[1], z));
+      if (!braced) continue;
+      add(`${line.prefix}/brace/${line.a[0]}`, "KNEE_BRACE", point(line, line.a[1], z - L), point(line, line.a[1] + L, z));
+      add(`${line.prefix}/brace/${line.b[0]}`, "KNEE_BRACE", point(line, line.b[1], z - L), point(line, line.b[1] - L, z));
+    }
   }
+  const s = p.joist_spacing_m;
+  for (let i = 0; i + 1 < xs.length; i++) {
+    const [xaId, xa] = xs[i], [xbId, xb] = xs[i + 1];
+    for (let j = 0; j + 1 < ys.length; j++)
+      for (let k = 1; xa + k * s < xb - 1e-6; k++) {
+        const xk = xa + k * s;
+        add(`frame/axis-y/${xaId}-${xbId}/j${k}/${ys[j][0]}-${ys[j + 1][0]}/plane-L1/joist`, "FLOOR_JOIST", [xk, ys[j][1], z1], [xk, ys[j + 1][1], z1]);
+      }
+  }
+  for (const [xi, x] of xs) {
+    add(`frame/roof/${xi}/south/principal-rafter`, "PRINCIPAL_RAFTER", [x, yS, zEave], [x, yRidge, zRidge]);
+    add(`frame/roof/${xi}/north/principal-rafter`, "PRINCIPAL_RAFTER", [x, yN, zEave], [x, yRidge, zRidge]);
+  }
+  const n = p.purlins_per_slope;
+  for (const [slope, yE] of [["south", yS], ["north", yN]])
+    for (let i = 1; i <= n; i++) {
+      const f = i / (n + 1);
+      const yi = yE + (yRidge - yE) * f, zi = zEave + (zRidge - zEave) * f;
+      for (let a = 0; a + 1 < xs.length; a++)
+        add(`frame/roof/${xs[a][0]}-${xs[a + 1][0]}/${slope}/p${i}/purlin`, "PURLIN", [xs[a][1], yi, zi], [xs[a + 1][1], yi, zi]);
+    }
   // String comparison compares UTF-16 code units.
   return out.sort((a, b) => (a.generation_key < b.generation_key ? -1 : a.generation_key > b.generation_key ? 1 : 0));
 }
@@ -122,7 +164,8 @@ function plan2d(snapshot) {
     "level-1": { plane_id: "level-1", level_id: m.l1.id, z_m: m.l1.elevation_m, posts: [], beams: [] },
     eave: { plane_id: "eave", level_id: null, z_m: m.zEave, posts: [], beams: [] },
   };
-  for (const mem of m.members) {
+  // MODEL-005 §9 (artifacts.md §5 interim note): posts and beams only until ART-002.
+  for (const mem of m.members.filter((x) => x.member_role === "POST" || x.member_role === "BEAM")) {
     const k = mem.generation_key;
     const [plane, group] = k.includes("/level-0/post") ? ["level-0", "posts"]
       : k.includes("/level-1/post") ? ["level-1", "posts"]
@@ -250,12 +293,14 @@ const output = {
   },
   inventories: [
     {
-      name: "reference-house-001-vs01-post-beam-1",
+      name: "reference-house-001-vs02-frame-1",
       source: fixturePath,
-      rule: "vs01-post-beam-1",
+      rule: "vs02-frame-1",
       members: generateInventory(fixture).length,
       canonical_bytes: Buffer.byteLength(inventoryCanonical, "utf8"),
       fingerprint: sha256(inventoryCanonical),
+      // Full inventory: rafter and purlin z values are compared within 1e-12 m, the rest exactly.
+      inventory: generateInventory(fixture),
     },
   ],
   snapshots: [

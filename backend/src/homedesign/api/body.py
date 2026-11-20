@@ -10,7 +10,7 @@ from homedesign.model import codes
 from homedesign.model.codes import Stage
 from homedesign.model.paths import EntityAddresser
 from homedesign.model.strict_json import parse
-from homedesign.model.vs01 import DEFAULT_MAX_BYTES
+from homedesign.model.limits import DEFAULT_MAX_BYTES
 from homedesign.model.validation import Issue, ValidationResult, _Collector, _scan_raw
 from homedesign.project.errors import CommandRejected, ProjectError
 

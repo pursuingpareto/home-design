@@ -13,7 +13,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict
 
 from homedesign.dependencies.registry import Derivation, DerivationContext, Outcome
-from homedesign.model.schema import Snapshot, Uuid
+from homedesign.model.schema import MemberRole, Snapshot, Uuid
 
 ASSUMPTIONS = (
     {"code": "REFERENCE_AXIS_LENGTH", "message": "Lengths are reference-axis distances, not fabrication cut lengths."},
@@ -38,7 +38,7 @@ class Assumption(_Strict):
 class ScheduleRow(_Strict):
     member_id: Uuid
     generation_key: str
-    role: Literal["POST", "BEAM", "FLOOR_JOIST", "RAFTER"]
+    role: MemberRole
     nominal_section: str
     section_id: Uuid
     material_id: Uuid
@@ -49,7 +49,7 @@ class ScheduleRow(_Strict):
 
 
 class ScheduleAggregate(_Strict):
-    role: Literal["POST", "BEAM", "FLOOR_JOIST", "RAFTER"]
+    role: MemberRole
     nominal_section: str
     count: int
     total_length_m: float

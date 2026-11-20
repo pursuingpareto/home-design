@@ -1,8 +1,11 @@
-/** Roof pitch and overhang (`SetGableRoofParameters`, routine: applied directly; UI-002 §5, §6.2). */
+/**
+ * Roof pitch and overhang (`SetGableRoofParameters`; UI-002 §6.2). Consequential since D057: the pitch
+ * places principal rafters and purlins, so changes go through the preview flow like the footprint.
+ */
 
 import { useCallback, useState, type FormEvent } from "react";
 
-import { formatLength, formatPitch, lengthInputText, parseLength } from "../../units/length";
+import { formatPitch, lengthInputText, parseLength } from "../../units/length";
 import { parsePitch, pitchInputText } from "../../units/pitch";
 import { placeDetails } from "../commands";
 import { envelope, one } from "./model";
@@ -12,7 +15,7 @@ import { useStoredFields, type Parsed } from "./useStoredFields";
 const KEYS = ["pitch", "overhang"] as const;
 const PATHS = { pitch: "args.pitch_rad", overhang: "args.eave_overhang_m" };
 
-export function RoofEditor({ projectId, snapshot, units, flow, onApplied }: EditorProps) {
+export function RoofEditor({ projectId, snapshot, units, flow }: EditorProps) {
   const roof = snapshot ? one(snapshot, "GableRoof") : null;
   const format = useCallback((key: string, v: number) => (key === "pitch" ? pitchInputText(v) : lengthInputText(v, units)), [units]);
   const stored = roof ? { pitch: roof.pitch_rad, overhang: roof.eave_overhang_m } : null;
@@ -20,7 +23,7 @@ export function RoofEditor({ projectId, snapshot, units, flow, onApplied }: Edit
   const [parseErrors, setParseErrors] = useState<Partial<Record<(typeof KEYS)[number], string>>>({});
   const { byField } = placeDetails(detailsFor(flow.state, ["SetGableRoofParameters"]), PATHS);
 
-  async function submit(event: FormEvent) {
+  function submit(event: FormEvent) {
     event.preventDefault();
     if (!snapshot || !roof) return;
     const pitch = resolve("pitch", (text): Parsed => {
@@ -33,12 +36,7 @@ export function RoofEditor({ projectId, snapshot, units, flow, onApplied }: Edit
     });
     setParseErrors({ pitch: pitch.ok ? undefined : pitch.error, overhang: overhang.ok ? undefined : overhang.error });
     if (!pitch.ok || !overhang.ok) return;
-    const base = snapshot.revision_id;
-    const result = await flow.apply(envelope(projectId, base, "SetGableRoofParameters", { pitch_rad: pitch.value, eave_overhang_m: overhang.value }));
-    if (result) {
-      const summary = `Roof pitch ${formatPitch(roof.pitch_rad)} → ${formatPitch(pitch.value)}; overhang ${formatLength(roof.eave_overhang_m, units)} → ${formatLength(overhang.value, units)}.`;
-      onApplied(result, summary, base);
-    }
+    void flow.preview(envelope(projectId, snapshot.revision_id, "SetGableRoofParameters", { pitch_rad: pitch.value, eave_overhang_m: overhang.value }));
   }
 
   return (
@@ -61,10 +59,10 @@ export function RoofEditor({ projectId, snapshot, units, flow, onApplied }: Edit
         problems={[parseErrors.overhang, ...(byField.overhang ?? [])]}
         onChange={(t) => setText("overhang", t)}
       />
-      <p className="hint">Roof changes are routine: they are applied without a preview, and can be undone.</p>
+      <p className="hint">A pitch change moves the principal rafters and purlins, so you review it before it is applied.</p>
       <div className="actions">
         <button type="submit" disabled={!roof || isBusy(flow.state)}>
-          Apply
+          Preview
         </button>
         <button type="button" onClick={() => (reset(), setParseErrors({}))}>
           Reset

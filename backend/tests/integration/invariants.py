@@ -78,12 +78,14 @@ def check_revision(api, pid: str, rev: str) -> RevisionView:
     mesh = view.envelopes["mesh3d"]["payload"]
     schedule = view.envelopes["timber_schedule"]["payload"]
 
-    # One inventory: plan, mesh, and schedule list exactly the snapshot's members (AC-03, artifacts §10.3).
+    # One inventory: mesh and schedule list exactly the snapshot's members (AC-03, artifacts §10.3).
+    # The plan lists the posts and beams only, until ART-002 (MODEL-005 §9, artifacts.md §5 interim note).
     plan_ids = [m["member_id"] for p in plan["planes"] for m in (*p["posts"], *p["beams"])]
     mesh_ids = [m["member_id"] for m in mesh["members"]]
     schedule_ids = [m["member_id"] for m in schedule["members"]]
-    for name, ids in (("plan", plan_ids), ("mesh", mesh_ids), ("schedule", schedule_ids)):
-        assert sorted(ids) == sorted(members), f"{name} member IDs differ from the snapshot inventory"
+    plan_members = [i for i, m in members.items() if m["member_role"] in ("POST", "BEAM")]
+    for name, ids, expected in (("plan", plan_ids, plan_members), ("mesh", mesh_ids, members), ("schedule", schedule_ids, members)):
+        assert sorted(ids) == sorted(expected), f"{name} member IDs differ from the snapshot inventory"
     assert len(set(schedule_ids)) == len(schedule_ids)
 
     # Dimensions agree with the semantic records (AC-01, artifacts §10.2).

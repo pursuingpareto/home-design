@@ -8,7 +8,20 @@ import * as THREE from "three";
 
 import type { Mesh3dPayload, MeshMember } from "../api/types";
 
-export const COLORS = { POST: 0x8a5a2b, BEAM: 0xb07a3f, FLOOR_JOIST: 0xb07a3f, RAFTER: 0xb07a3f, selected: 0x1f6feb, roof: 0x7f8c8d, level: 0x444444 };
+// The version 2 roles share one neutral timber tone until UI-003 styles them (MODEL-005 §9).
+const NEUTRAL = 0xc9a77c;
+export const COLORS = {
+  POST: 0x8a5a2b,
+  BEAM: 0xb07a3f,
+  SILL: NEUTRAL,
+  FLOOR_JOIST: NEUTRAL,
+  PRINCIPAL_RAFTER: NEUTRAL,
+  PURLIN: NEUTRAL,
+  KNEE_BRACE: NEUTRAL,
+  selected: 0x1f6feb,
+  roof: 0x7f8c8d,
+  level: 0x444444,
+};
 
 const v = (p: readonly number[]) => new THREE.Vector3(p[0] ?? 0, p[1] ?? 0, p[2] ?? 0);
 

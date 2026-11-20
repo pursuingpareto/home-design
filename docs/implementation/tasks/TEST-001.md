@@ -1,6 +1,6 @@
 # TEST-001 — Reference-house integration suite, traceability, and CI
 
-**Status:** Done locally (2026-11-19) — CI runs once the branch is pushed; see §12  
+**Status:** Done (2026-11-19) — passing locally and on GitHub Actions; see §12  
 **Owner module:** tests and tooling: `backend/tests/`, `tests/vectors/`, `.github/workflows/`, `scripts/`  
 **Slice:** VS-01  
 **Depends on:** `MODEL-001` through `UI-002` (all done)  
@@ -224,5 +224,5 @@ All §10 criteria are met. VS-01 is then complete by its own acceptance criteria
 - **Sequence IDs:** the sequence test fixes the project ID, derives command IDs from the step number, and samples sections by label. Hypothesis had detected that random project IDs changed the entity order between runs of one example.
 
 **Limitations:**
-- **CI on GitHub has not run yet.** It runs when the branch is pushed. Making it required before merging is a repository setting.
+- **CI on GitHub:** the first run failed only in `vectors`: `vectors.json` recorded the exact Node version, which differs between CI (Node 22) and local runs. The label now names the engine family only, and [run 44624998046](https://github.com/pursuingpareto/home-design/actions/runs/44624998046) passed all four jobs. Making CI required before merging is a repository setting.
 - **Golden scope:** the golden record covers one scenario. New derivations or generator versions need a reviewed regeneration.

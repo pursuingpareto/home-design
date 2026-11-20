@@ -32,7 +32,8 @@ def test_fixture_is_valid():
     result = validate_bytes(FIXTURE_BYTES)
     assert result.to_dict() == {"valid": True, "code": None, "issues": []}
     assert isinstance(result.snapshot, Snapshot)
-    assert len(result.snapshot.entities) == 67
+    # 12 non-generated records (D025 plus four D053 sections) and 193 members (TIMBER-002 §7).
+    assert len(result.snapshot.entities) == 206
 
 
 def test_round_trip_is_lossless():
@@ -84,7 +85,7 @@ def test_fixture_validates_against_committed_schema_independently():
     "mutate",
     [
         lambda d: d["building"].pop("footprint_id"),
-        lambda d: d.__setitem__("model_schema_version", 2),
+        lambda d: d.__setitem__("model_schema_version", 1),  # version 1 is retired (D055)
         lambda d: d["entities"][0].__setitem__("color", "red"),
         lambda d: d.__setitem__("project_id", d["project_id"].upper()),
         lambda d: d["entities"][0].__setitem__("width_m", "36"),

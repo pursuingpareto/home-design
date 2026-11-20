@@ -15,7 +15,8 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from . import codes, vs01
+from . import codes, limits
+from . import connections as connection_catalog
 from .codes import Stage
 from .paths import UUID_PATTERN, EntityAddresser, Step, render
 from .schema import ENTITY_KINDS, TIMESTAMP_PATTERN, X_LINE_ID_PATTERN, Y_LINE_ID_PATTERN, Snapshot
@@ -106,8 +107,8 @@ class _Collector:
 def validate_bytes(
     data: bytes,
     *,
-    max_bytes: int = vs01.DEFAULT_MAX_BYTES,
-    max_depth: int = vs01.DEFAULT_MAX_DEPTH,
+    max_bytes: int = limits.DEFAULT_MAX_BYTES,
+    max_depth: int = limits.DEFAULT_MAX_DEPTH,
 ) -> ValidationResult:
     """Parse and validate snapshot JSON bytes. Never raises."""
     outcome = parse(data, max_bytes=max_bytes, max_depth=max_depth)
@@ -117,7 +118,7 @@ def validate_bytes(
     return _validate_parsed(outcome.value, max_depth)
 
 
-def validate_value(value: Any, *, max_depth: int = vs01.DEFAULT_MAX_DEPTH) -> ValidationResult:
+def validate_value(value: Any, *, max_depth: int = limits.DEFAULT_MAX_DEPTH) -> ValidationResult:
     """Validate an already-parsed JSON value (for example, a candidate snapshot)."""
     depth_error = check_depth(value, max_depth)
     if depth_error is not None:
@@ -196,7 +197,7 @@ _PYDANTIC_CODE = {
 _MESSAGES = {
     codes.MISSING_FIELD: "Required field is missing.",
     codes.UNKNOWN_FIELD: "Field is not defined by the schema.",
-    codes.UNKNOWN_KIND: "Record kind is not a VS-01 entity kind.",
+    codes.UNKNOWN_KIND: "Record kind is not a model schema version 2 entity kind.",
     codes.INVALID_ENUM: "Value is not one of the allowed values.",
     codes.INVALID_UUID: "Must be a lowercase, hyphenated UUID.",
     codes.INVALID_TIMESTAMP: "Must be an RFC 3339 UTC timestamp ending in Z.",
@@ -338,6 +339,8 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
         for role, default in frame.member_defaults.items():
             check_ref(idx.path(index, "member_defaults", role, "section_id"), default.section_id, "Section")
             check_ref(idx.path(index, "member_defaults", role, "material_id"), default.material_id, "Material")
+        for k, connection_id in enumerate(frame.connection_ids):
+            check_ref(idx.path(index, "connection_ids", k), connection_id, "Connection")
         grid_hit = idx.resolve(frame.grid_id, "TimberGrid")
         rule = _rule(grid_hit[1].generation_rule_version) if grid_hit is not None else None
         if rule is not None:
@@ -347,6 +350,14 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
                     codes.MISSING_ROLE_DEFAULT,
                     f"member_defaults needs a {role} entry: {rule.version} generates {role} members (D039).",
                     role,
+                )
+            # MODEL-005 §6.2: a connection type for every junction class the rule generates (D054).
+            for junction_class in sorted(rule.generated_junction_classes - frame.connection_defaults.keys()):
+                out.add(
+                    idx.path(index, "connection_defaults"),
+                    codes.MISSING_CONNECTION_DEFAULT,
+                    f"connection_defaults needs a {junction_class} entry: {rule.version} generates {junction_class} junctions (D054).",
+                    junction_class,
                 )
     # D042: grid line IDs are unique per axis.
     for index, grid in idx.of_kind("TimberGrid"):
@@ -366,6 +377,18 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
     for index, member in idx.of_kind("TimberMember"):
         check_ref(idx.path(index, "section_id"), member.section_id, "Section")
         check_ref(idx.path(index, "material_id"), member.material_id, "Material")
+    # MODEL-005 §6.2: a connection joins two distinct existing members.
+    for index, connection in idx.of_kind("Connection"):
+        for k, member_id in enumerate(connection.member_ids):
+            check_ref(idx.path(index, "member_ids", k), member_id, "TimberMember")
+        if connection.member_ids[0] == connection.member_ids[1]:
+            out.add(
+                idx.path(index, "member_ids", 1),
+                codes.SELF_CONNECTION,
+                "A connection joins two different members.",
+                connection.member_ids[1],
+                [idx.path(index, "member_ids", 0)],
+            )
 
     # D038: every Footprint, Level, GableRoof, TimberGrid, FrameSystem must be referenced.
     referenced_frames = {building.frame_system_id}
@@ -386,32 +409,39 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
 
     frame_hit = idx.resolve(building.frame_system_id, "FrameSystem")
     members = idx.of_kind("TimberMember")
+    connections = idx.of_kind("Connection")
     if frame_hit is not None:
         frame_locator, frame = frame_hit
-        listed = set(frame.member_ids)
-        unlisted = [index for index, member in members if member.id not in listed]
-        if unlisted:
-            out.add(
-                idx.path(frame_locator, "member_ids"),
-                codes.MEMBER_SET_MISMATCH,
-                "member_ids must list exactly the snapshot's TimberMember records.",
-                related=[idx.path(index) for index in unlisted],
-            )
-        resolved_members = [idx.resolve(member_id, "TimberMember") for member_id in frame.member_ids]
-        if all(hit is not None for hit in resolved_members):
-            keys = [_utf16(hit[1].generation_key) for hit in resolved_members]  # type: ignore[index]
-            if any(b <= a for a, b in zip(keys, keys[1:])):
-                out.add(idx.path(frame_locator, "member_ids"), codes.ORDER_VIOLATION, "member_ids must be in strictly ascending generation_key order.")
+        # Members and connections are listed the same way: exactly the set, ascending by key (D030).
+        for field, kind, records, code in (
+            ("member_ids", "TimberMember", members, codes.MEMBER_SET_MISMATCH),
+            ("connection_ids", "Connection", connections, codes.CONNECTION_SET_MISMATCH),
+        ):
+            listed = set(getattr(frame, field))
+            unlisted = [index for index, record in records if record.id not in listed]
+            if unlisted:
+                out.add(
+                    idx.path(frame_locator, field),
+                    code,
+                    f"{field} must list exactly the snapshot's {kind} records.",
+                    related=[idx.path(index) for index in unlisted],
+                )
+            resolved = [idx.resolve(record_id, kind) for record_id in getattr(frame, field)]
+            if all(hit is not None for hit in resolved):
+                keys = [_utf16(hit[1].generation_key) for hit in resolved]  # type: ignore[index]
+                if any(b <= a for a, b in zip(keys, keys[1:])):
+                    out.add(idx.path(frame_locator, field), codes.ORDER_VIOLATION, f"{field} must be in strictly ascending generation_key order.")
 
+    # MODEL-005 §6.2: keys are unique across members and connections, because IDs are minted from them (D041).
     by_key: dict[str, list[tuple[int, Any]]] = defaultdict(list)
-    for index, member in members:
-        by_key[member.generation_key].append((index, member))
+    for index, record in (*members, *connections):
+        by_key[record.generation_key].append((index, record))
     for group in by_key.values():
         if len(group) > 1:
             group = sorted(group, key=lambda item: item[1].id)
             first_path = idx.path(group[0][0], "generation_key")
-            for index, member in group[1:]:
-                out.add(idx.path(index, "generation_key"), codes.DUPLICATE_GENERATION_KEY, "generation_key is used by more than one member.", member.generation_key, [first_path])
+            for index, record in group[1:]:
+                out.add(idx.path(index, "generation_key"), codes.DUPLICATE_GENERATION_KEY, "generation_key is used by more than one member or connection.", record.generation_key, [first_path])
 
     # D049: section labels are unique (they key schedule aggregates and price-book rows).
     by_label: dict[str, list[tuple[int, Any]]] = defaultdict(list)
@@ -490,7 +520,7 @@ def _stage_geometric(snapshot: Snapshot) -> ValidationResult | None:
         if not upper.elevation_m > lower.elevation_m:
             out.add(idx.path(upper_loc, "elevation_m"), codes.NOT_STRICTLY_ASCENDING, "Level elevations must strictly increase with index.", upper.elevation_m, [idx.path(lower_loc, "elevation_m")])
         gap = upper.elevation_m - lower.elevation_m
-        if abs(lower.story_height_m - gap) > vs01.LENGTH_EPSILON_M:
+        if abs(lower.story_height_m - gap) > limits.LENGTH_EPSILON_M:
             out.add(idx.path(lower_loc, "story_height_m"), codes.STORY_HEIGHT_MISMATCH, "Story height must equal the elevation gap to the next level (D033).", lower.story_height_m, [idx.path(upper_loc, "elevation_m")])
     if levels and levels[0][1].elevation_m != 0:
         out.add(idx.path(levels[0][0], "elevation_m"), codes.DATUM_MISMATCH, "Level 0 elevation must be exactly 0, the first-floor reference (D034).", levels[0][1].elevation_m)
@@ -510,8 +540,17 @@ def _stage_geometric(snapshot: Snapshot) -> ValidationResult | None:
             if not fractions[k] > fractions[k - 1]:
                 out.add(idx.path(grid_loc, axis, k, "fraction"), codes.NOT_STRICTLY_ASCENDING, "Grid line fractions must strictly increase.", fractions[k])
 
+    frame_loc, frame = r.frame
+    params = frame.parameters
+    for name in ("joist_spacing_m", "knee_brace_leg_m"):
+        value = getattr(params, name)
+        if not value > 0:
+            out.add(idx.path(frame_loc, "parameters", name), codes.OUT_OF_RANGE, "Must be greater than zero.", value)
+    if params.purlins_per_slope < 0:
+        out.add(idx.path(frame_loc, "parameters", "purlins_per_slope"), codes.OUT_OF_RANGE, "Must not be negative.", params.purlins_per_slope)
+
     for index, member in idx.of_kind("TimberMember"):
-        if math.dist(member.start_m, member.end_m) <= vs01.LENGTH_EPSILON_M:
+        if math.dist(member.start_m, member.end_m) <= limits.LENGTH_EPSILON_M:
             out.add(idx.path(index), codes.ZERO_LENGTH_MEMBER, "Member axis length must exceed 1e-6 m.")
     for index, section in idx.of_kind("Section"):
         for name in ("actual_width_m", "actual_depth_m"):
@@ -548,34 +587,34 @@ def _stage_domain(snapshot: Snapshot) -> ValidationResult | None:
 
     # D034 — exactly two levels, indices 0 and 1, story heights 8'–14'.
     levels = r.levels
-    if len(levels) != vs01.LEVEL_COUNT:
+    if len(levels) != limits.LEVEL_COUNT:
         out.add(idx.path("building", "level_ids"), codes.ENTITY_COUNT, "VS-01 supports exactly two levels (D034).", len(levels))
     else:
         for position, (loc, level) in enumerate(levels):
             if level.index != position:
                 out.add(idx.path(loc, "index"), codes.UNSUPPORTED_VALUE, "VS-01 level indices must be exactly 0 and 1 (D034).", level.index)
     for loc, level in levels:
-        if not vs01.within(level.story_height_m, vs01.STORY_HEIGHT_MIN_M, vs01.STORY_HEIGHT_MAX_M, vs01.LENGTH_EPSILON_M):
+        if not limits.within(level.story_height_m, limits.STORY_HEIGHT_MIN_M, limits.STORY_HEIGHT_MAX_M, limits.LENGTH_EPSILON_M):
             out.add(idx.path(loc, "story_height_m"), codes.OUT_OF_SUPPORTED_RANGE, "Story height must be between 8'-0\" and 14'-0\" (D034).", level.story_height_m)
 
     # D032 — footprint, roof, grid bounds.
     for name in ("width_m", "depth_m"):
         value = getattr(fp, name)
-        if not vs01.within(value, vs01.FOOTPRINT_MIN_M, vs01.FOOTPRINT_MAX_M, vs01.LENGTH_EPSILON_M):
+        if not limits.within(value, limits.FOOTPRINT_MIN_M, limits.FOOTPRINT_MAX_M, limits.LENGTH_EPSILON_M):
             out.add(idx.path(fp_loc, name), codes.OUT_OF_SUPPORTED_RANGE, "Footprint dimensions must be between 12'-0\" and 80'-0\" (D032).", value)
-    if not vs01.within(roof.pitch_rad, vs01.PITCH_MIN_RAD, vs01.PITCH_MAX_RAD, vs01.ANGLE_EPSILON_RAD):
+    if not limits.within(roof.pitch_rad, limits.PITCH_MIN_RAD, limits.PITCH_MAX_RAD, limits.ANGLE_EPSILON_RAD):
         out.add(idx.path(roof_loc, "pitch_rad"), codes.OUT_OF_SUPPORTED_RANGE, "Roof pitch must be between 3/12 and 12/12 (D032).", roof.pitch_rad)
-    if roof.eave_overhang_m > vs01.EAVE_OVERHANG_MAX_M + vs01.LENGTH_EPSILON_M:
+    if roof.eave_overhang_m > limits.EAVE_OVERHANG_MAX_M + limits.LENGTH_EPSILON_M:
         out.add(idx.path(roof_loc, "eave_overhang_m"), codes.OUT_OF_SUPPORTED_RANGE, "Eave overhang must not exceed 3'-0\" (D032).", roof.eave_overhang_m)
 
     for axis, length_name in (("x_lines", "width_m"), ("y_lines", "depth_m")):
         fractions = [line.fraction for line in getattr(grid, axis)]
-        if not vs01.GRID_STATIONS_MIN <= len(fractions) <= vs01.GRID_STATIONS_MAX:
+        if not limits.GRID_STATIONS_MIN <= len(fractions) <= limits.GRID_STATIONS_MAX:
             out.add(idx.path(grid_loc, axis), codes.OUT_OF_SUPPORTED_RANGE, "A grid axis must have 2 to 7 stations (D032).", len(fractions))
             continue
         length = getattr(fp, length_name)
         bays = [length * (b - a) for a, b in zip(fractions, fractions[1:])]
-        if any(not vs01.within(bay, vs01.BAY_MIN_M, vs01.BAY_MAX_M, vs01.LENGTH_EPSILON_M) for bay in bays):
+        if any(not limits.within(bay, limits.BAY_MIN_M, limits.BAY_MAX_M, limits.LENGTH_EPSILON_M) for bay in bays):
             listed = ", ".join(f"{bay:.4f}" for bay in bays)
             out.add(
                 idx.path(grid_loc, axis),
@@ -584,12 +623,48 @@ def _stage_domain(snapshot: Snapshot) -> ValidationResult | None:
                 related=[idx.path(fp_loc, length_name)],
             )
 
+    # MODEL-005 §5: frame parameter bounds and the brace-fit rule.
+    params = frame.parameters
+    ppath = lambda name: idx.path(frame_loc, "parameters", name)  # noqa: E731
+    if not limits.within(params.joist_spacing_m, limits.JOIST_SPACING_MIN_M, limits.JOIST_SPACING_MAX_M, limits.LENGTH_EPSILON_M):
+        out.add(ppath("joist_spacing_m"), codes.OUT_OF_SUPPORTED_RANGE, "Joist spacing must be between 12\" and 48\" (MODEL-005 §5).", params.joist_spacing_m)
+    if params.purlins_per_slope > limits.PURLINS_PER_SLOPE_MAX:
+        out.add(ppath("purlins_per_slope"), codes.OUT_OF_SUPPORTED_RANGE, "Purlins per slope must be between 0 and 4 (MODEL-005 §5).", params.purlins_per_slope)
+    if not limits.within(params.knee_brace_leg_m, limits.KNEE_BRACE_LEG_MIN_M, limits.KNEE_BRACE_LEG_MAX_M, limits.LENGTH_EPSILON_M):
+        out.add(ppath("knee_brace_leg_m"), codes.OUT_OF_SUPPORTED_RANGE, "Knee brace leg must be between 1'-6\" and 4'-0\" (MODEL-005 §5).", params.knee_brace_leg_m)
+    elif params.knee_braces_level_1 or params.knee_braces_eave:
+        shortest: tuple[float, str, str] | None = None
+        for axis, length_name in (("x_lines", "width_m"), ("y_lines", "depth_m")):
+            fractions = [line.fraction for line in getattr(grid, axis)]
+            length = getattr(fp, length_name)
+            for a, b in zip(fractions, fractions[1:]):
+                bay = length * (b - a)
+                if shortest is None or bay < shortest[0]:
+                    shortest = (bay, axis, length_name)
+        if shortest is not None and 2 * params.knee_brace_leg_m > shortest[0] + limits.LENGTH_EPSILON_M:
+            bay, axis, length_name = shortest
+            out.add(
+                ppath("knee_brace_leg_m"),
+                codes.OUT_OF_SUPPORTED_RANGE,
+                f"Two knee braces must fit under the shortest beam: twice the leg exceeds the {bay:.4f} m bay (MODEL-005 §5.2).",
+                params.knee_brace_leg_m,
+                [idx.path(fp_loc, length_name), idx.path(grid_loc, axis)],
+            )
+
+    # D054: connection types must be allowed for their junction class.
+    for junction_class, connection_type in frame.connection_defaults.items():
+        if not connection_catalog.allowed(junction_class, connection_type):
+            out.add(idx.path(frame_loc, "connection_defaults", junction_class), codes.UNSUPPORTED_VALUE, f"{connection_type} is not offered for {junction_class} junctions (D054).", connection_type)
+    for index, connection in idx.of_kind("Connection"):
+        if not connection_catalog.allowed(connection.junction_class, connection.connection_type):
+            out.add(idx.path(index, "connection_type"), codes.UNSUPPORTED_VALUE, f"{connection.connection_type} is not offered for {connection.junction_class} junctions (D054).", connection.connection_type, [idx.path(index, "junction_class")])
+
     # Generation rule and mode.
     rule = _rule(grid.generation_rule_version)
     if rule is None:
         out.add(idx.path(grid_loc, "generation_rule_version"), codes.UNSUPPORTED_VALUE, f"Supported generation rules: {', '.join(_registered_rules())}.", grid.generation_rule_version)
-    if frame.generation_mode != vs01.SUPPORTED_GENERATION_MODE:
-        out.add(idx.path(frame_loc, "generation_mode"), codes.UNSUPPORTED_VALUE, f"Only generation mode {vs01.SUPPORTED_GENERATION_MODE} is supported.", frame.generation_mode)
+    if frame.generation_mode != limits.SUPPORTED_GENERATION_MODE:
+        out.add(idx.path(frame_loc, "generation_mode"), codes.UNSUPPORTED_VALUE, f"Only generation mode {limits.SUPPORTED_GENERATION_MODE} is supported.", frame.generation_mode)
     if rule is not None:
         for index, member in idx.of_kind("TimberMember"):
             if member.member_role not in rule.generated_roles:
@@ -622,6 +697,7 @@ def _stage_conformance(snapshot: Snapshot) -> ValidationResult | None:
     rule = _rule(r.grid[1].generation_rule_version)
     assert rule is not None, "stage 4 guarantees a registered rule"
     locator = {entity.id: index for index, entity in enumerate(snapshot.entities)}
+    # Member and connection findings come from the rule's shared comparison (TIMBER-002 §6).
     for finding in rule.conformance(snapshot):
         out.add(
             idx.path(locator[finding.entity_id], *finding.field),

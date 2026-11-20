@@ -298,11 +298,11 @@ export interface components {
          * Command
          * @description Any VS-01 command envelope, discriminated by `type` (interfaces.md §2).
          */
-        Command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
+        Command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
         /** CommitRequest */
         CommitRequest: {
             /** Command */
-            command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
+            command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
             /**
              * Preview Token
              * @description Required for consequential commands that are not no-ops (D047).
@@ -333,6 +333,40 @@ export interface components {
             revision_id: string;
             /** Sequence */
             sequence: number;
+        };
+        /**
+         * Connection
+         * @description A generated junction of exactly two members (D054, MODEL-005 §4.4). Makes no capacity claim.
+         */
+        Connection: {
+            /**
+             * Connection Type
+             * @enum {string}
+             */
+            connection_type: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
+            /** Generation Key */
+            generation_key: string;
+            /** Id */
+            id: string;
+            /**
+             * Junction Class
+             * @enum {string}
+             */
+            junction_class: "post-beam" | "post-sill" | "brace" | "joist-beam" | "rafter-peak" | "rafter-foot" | "purlin-rafter";
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "Connection";
+            /** Location M */
+            location_m: number[];
+            /** Member Ids */
+            member_ids: string[];
+            /**
+             * Schema Version
+             * @constant
+             */
+            schema_version: 1;
         };
         /**
          * CreateProjectRequest
@@ -458,8 +492,46 @@ export interface components {
             /** Width M */
             width_m: number;
         };
+        /**
+         * FrameParameters
+         * @description Inputs to the frame's generation rule (MODEL-005 §5). Bounds are checked in stages 3 and 4.
+         */
+        FrameParameters: {
+            /** Joist Spacing M */
+            joist_spacing_m: number;
+            /** Knee Brace Leg M */
+            knee_brace_leg_m: number;
+            /** Knee Braces Eave */
+            knee_braces_eave: boolean;
+            /** Knee Braces Level 1 */
+            knee_braces_level_1: boolean;
+            /** Purlins Per Slope */
+            purlins_per_slope: number;
+        };
+        /**
+         * FrameParametersArgs
+         * @description D057: every frame parameter, all required (MODEL-005 §7.1).
+         */
+        FrameParametersArgs: {
+            /** Joist Spacing M */
+            joist_spacing_m: number;
+            /** Knee Brace Leg M */
+            knee_brace_leg_m: number;
+            /** Knee Braces Eave */
+            knee_braces_eave: boolean;
+            /** Knee Braces Level 1 */
+            knee_braces_level_1: boolean;
+            /** Purlins Per Slope */
+            purlins_per_slope: number;
+        };
         /** FrameSystem */
         FrameSystem: {
+            /** Connection Defaults */
+            connection_defaults: {
+                [key: string]: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
+            };
+            /** Connection Ids */
+            connection_ids: string[];
             /** Generation Mode */
             generation_mode: string;
             /** Grid Id */
@@ -477,11 +549,12 @@ export interface components {
             };
             /** Member Ids */
             member_ids: string[];
+            parameters: components["schemas"]["FrameParameters"];
             /**
              * Schema Version
              * @constant
              */
-            schema_version: 1;
+            schema_version: 2;
         };
         /** GableRoof */
         GableRoof: {
@@ -666,7 +739,7 @@ export interface components {
              * Role
              * @enum {string}
              */
-            role: "POST" | "BEAM" | "FLOOR_JOIST" | "RAFTER";
+            role: "POST" | "BEAM" | "SILL" | "FLOOR_JOIST" | "PRINCIPAL_RAFTER" | "PURLIN" | "KNEE_BRACE";
             /** Section Id */
             section_id: string;
         };
@@ -702,7 +775,7 @@ export interface components {
              * Role
              * @enum {string}
              */
-            role: "POST" | "BEAM" | "FLOOR_JOIST" | "RAFTER";
+            role: "POST" | "BEAM" | "SILL" | "FLOOR_JOIST" | "PRINCIPAL_RAFTER" | "PURLIN" | "KNEE_BRACE";
             /** Section Depth M */
             section_depth_m: number;
             /** Section Width M */
@@ -991,7 +1064,7 @@ export interface components {
              * Role
              * @enum {string}
              */
-            role: "POST" | "BEAM" | "FLOOR_JOIST" | "RAFTER";
+            role: "POST" | "BEAM" | "SILL" | "FLOOR_JOIST" | "PRINCIPAL_RAFTER" | "PURLIN" | "KNEE_BRACE";
             /** Total Length M */
             total_length_m: number;
         };
@@ -1019,7 +1092,7 @@ export interface components {
              * Role
              * @enum {string}
              */
-            role: "POST" | "BEAM" | "FLOOR_JOIST" | "RAFTER";
+            role: "POST" | "BEAM" | "SILL" | "FLOOR_JOIST" | "PRINCIPAL_RAFTER" | "PURLIN" | "KNEE_BRACE";
             /** Section Id */
             section_id: string;
             /** Species */
@@ -1080,6 +1153,21 @@ export interface components {
              * @enum {string}
              */
             type: "SetFootprintDimensions";
+        };
+        /** SetFrameParameters */
+        SetFrameParameters: {
+            args: components["schemas"]["FrameParametersArgs"];
+            /** Base Revision Id */
+            base_revision_id: string;
+            /** Command Id */
+            command_id: string;
+            /** Project Id */
+            project_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "SetFrameParameters";
         };
         /** SetGableRoofParameters */
         SetGableRoofParameters: {
@@ -1142,20 +1230,20 @@ export interface components {
             type: "SetTimberGrid";
         };
         /**
-         * VS-01 semantic building snapshot (model schema version 1)
-         * @description A VS-01 semantic snapshot (building-model.md §3).
+         * Semantic building snapshot (model schema version 2)
+         * @description A semantic snapshot, model schema version 2 (building-model.md §3, §3.3).
          */
         Snapshot: {
             building: components["schemas"]["Building"];
             /** Created At */
             created_at: string;
             /** Entities */
-            entities: (components["schemas"]["Building"] | components["schemas"]["Footprint"] | components["schemas"]["Level"] | components["schemas"]["GableRoof"] | components["schemas"]["TimberGrid"] | components["schemas"]["FrameSystem"] | components["schemas"]["TimberMember"] | components["schemas"]["Section"] | components["schemas"]["Material"])[];
+            entities: (components["schemas"]["Building"] | components["schemas"]["Footprint"] | components["schemas"]["Level"] | components["schemas"]["GableRoof"] | components["schemas"]["TimberGrid"] | components["schemas"]["FrameSystem"] | components["schemas"]["TimberMember"] | components["schemas"]["Connection"] | components["schemas"]["Section"] | components["schemas"]["Material"])[];
             /**
              * Model Schema Version
              * @constant
              */
-            model_schema_version: 1;
+            model_schema_version: 2;
             /** Parent Revision Id */
             parent_revision_id: string | null;
             /** Project Id */
@@ -1227,12 +1315,12 @@ export interface components {
              * Member Role
              * @enum {string}
              */
-            member_role: "POST" | "BEAM" | "FLOOR_JOIST" | "RAFTER";
+            member_role: "POST" | "BEAM" | "SILL" | "FLOOR_JOIST" | "PRINCIPAL_RAFTER" | "PURLIN" | "KNEE_BRACE";
             /**
              * Schema Version
              * @constant
              */
-            schema_version: 1;
+            schema_version: 2;
             /** Section Id */
             section_id: string;
             /** Start M */

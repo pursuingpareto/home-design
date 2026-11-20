@@ -14,7 +14,7 @@ from pydantic_core import PydanticCustomError
 
 from .. import codes
 from ..paths import render
-from ..schema import MemberRole, Uuid
+from ..schema import MemberRole, SafeInt, Uuid
 from ..validation import Issue, ValidationResult, _Collector, code_for_pydantic_error, message_for
 
 
@@ -72,6 +72,16 @@ class MemberSectionArgs(_Strict):
     section_id: Uuid
 
 
+class FrameParametersArgs(_Strict):
+    """D057: every frame parameter, all required (MODEL-005 §7.1)."""
+
+    joist_spacing_m: float
+    purlins_per_slope: SafeInt
+    knee_brace_leg_m: float
+    knee_braces_level_1: bool
+    knee_braces_eave: bool
+
+
 class AddSectionArgs(_Strict):
     nominal_label: str
     actual_width_m: float
@@ -124,6 +134,11 @@ class SetMemberSection(_Command):
     args: MemberSectionArgs
 
 
+class SetFrameParameters(_Command):
+    type: Literal["SetFrameParameters"]
+    args: FrameParametersArgs
+
+
 class AddSection(_Command):
     type: Literal["AddSection"]
     args: AddSectionArgs
@@ -142,6 +157,7 @@ AnyCommand = Annotated[
         SetGableRoofParameters,
         SetTimberGrid,
         SetMemberSection,
+        SetFrameParameters,
         AddSection,
         UndoToRevision,
     ],
@@ -156,6 +172,7 @@ COMMAND_TYPES = frozenset(
         "SetGableRoofParameters",
         "SetTimberGrid",
         "SetMemberSection",
+        "SetFrameParameters",
         "AddSection",
         "UndoToRevision",
     }
@@ -209,6 +226,7 @@ __all__ = [
     "Issue",
     "SetFootprintDimensions",
     "SetGableRoofParameters",
+    "SetFrameParameters",
     "SetMemberSection",
     "SetStoryHeights",
     "SetTimberGrid",

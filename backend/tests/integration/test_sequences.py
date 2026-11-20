@@ -30,7 +30,7 @@ def _grid_lines(view: RevisionView, axis: str) -> list[dict[str, Any]]:
 
 
 def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) -> tuple[str, dict[str, Any]]:
-    kind = data.draw(st.sampled_from(["footprint", "stories", "roof", "grid", "add_section", "member_section", "undo"]), label="kind")
+    kind = data.draw(st.sampled_from(["footprint", "stories", "roof", "grid", "frame", "add_section", "member_section", "undo"]), label="kind")
     length = lambda lo, hi: data.draw(st.floats(lo, hi, allow_nan=False, allow_infinity=False))  # noqa: E731
     if kind == "footprint":
         if data.draw(st.booleans(), label="inside"):  # half within what a 3 × 2 bay grid supports
@@ -40,6 +40,14 @@ def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) ->
         return "SetStoryHeights", {"story_heights_m": [length(7 * FT, 15 * FT), length(7 * FT, 15 * FT)]}
     if kind == "roof":
         return "SetGableRoofParameters", {"pitch_rad": length(math.atan(2 / 12), math.atan(13 / 12)), "eave_overhang_m": length(0.0, 3.5 * FT)}
+    if kind == "frame":  # MODEL-005 §5, §7.1: drawn inside and just outside the bounds
+        return "SetFrameParameters", {
+            "joist_spacing_m": length(10 / 12 * FT, 50 / 12 * FT),
+            "purlins_per_slope": data.draw(st.integers(-1, 5)),
+            "knee_brace_leg_m": length(1.25 * FT, 4.25 * FT),
+            "knee_braces_level_1": data.draw(st.booleans()),
+            "knee_braces_eave": data.draw(st.booleans()),
+        }
     if kind == "grid":
         axis = data.draw(st.sampled_from(["x", "y"]))
         lines = _grid_lines(view, axis)
@@ -64,7 +72,7 @@ def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) ->
         return "AddSection", {"nominal_label": data.draw(st.sampled_from(LABELS)), "actual_width_m": length(0.0, 0.4), "actual_depth_m": length(0.0, 0.4)}
     if kind == "member_section":
         sections = [s["id"] for s in sorted(view.entities("Section"), key=lambda s: (s["nominal_label"], s["actual_width_m"], s["actual_depth_m"]))]
-        return "SetMemberSection", {"role": data.draw(st.sampled_from(["POST", "BEAM"])), "section_id": data.draw(st.sampled_from(sections))}
+        return "SetMemberSection", {"role": data.draw(st.sampled_from(["POST", "BEAM", "SILL", "FLOOR_JOIST", "PRINCIPAL_RAFTER", "PURLIN", "KNEE_BRACE"])), "section_id": data.draw(st.sampled_from(sections))}
     return "UndoToRevision", {"target_revision_id": data.draw(st.sampled_from(history))}
 
 

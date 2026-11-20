@@ -83,6 +83,10 @@ A `FAILED` envelope's `error` is `{code, message}` with code `DERIVATION_FAILED`
 
 **Scope in VS-01** ([ART-001](../implementation/tasks/ART-001.md) §8, item 3): the input object includes `revision_id` and the whole snapshot, so a fingerprint never matches across revisions, and every revision derives its artifacts afresh. Per-artifact input selectors, where each artifact hashes only the fields it reads, are deferred. This is the intended VS-01 behavior, not a gap.
 
+**VS-02 amendment ([D056](../product/decisions/D056-dependency-selectors.md), not yet implemented):**
+- each artifact's input object is its **selector's** canonical selection, plus `generator_id`, `generator_version`, `model_schema_version`, and external inputs, without `revision_id`;
+- an artifact whose fingerprint is unchanged by a commit is reused for the new revision, with its own envelope and the same payload.
+
 Canonical bytes: RFC 8785 JSON Canonicalization Scheme, UTF-8 ([D029](../product/decisions/D029-canonical-json-rfc8785.md)). Object keys are ordered by JCS, arrays keep their documented order, and `null` is preserved. Do not include derived artifacts in the hashed snapshot.
 
 ### 2.4 Coordinates and units
@@ -120,6 +124,8 @@ Historical `GET` with an explicit `revision_id` returns the artifact **for that 
 ## 5. `plan2d` payload
 
 `generator_id`: `plan2d-vs01`. `generator_version`: `1`.
+
+**VS-02 interim note ([MODEL-005](../implementation/tasks/MODEL-005.md) §9, approved as §12 item 6):** from the MODEL-005 + TIMBER-002 merge until `ART-002`, `plan2d` lists **posts and beams only**. Sills, floor joists, principal rafters, purlins, and knee braces appear in `mesh3d` and `timber_schedule`, but not yet in the plan. The integration invariants compare the plan inventory with posts and beams only, citing this note. `ART-002` adds the other roles and removes this note. Payload `role` fields in `mesh3d` and `timber_schedule` take the seven version 2 roles ([building-model.md §3.3](building-model.md#33-version-2-records)); the examples in §5–§8 still show the VS-01 house until `ART-002` regenerates them.
 
 ```json
 {
@@ -195,7 +201,7 @@ Historical `GET` with an explicit `revision_id` returns the artifact **for that 
 }
 ```
 
-Plane rules (must match `vs01-post-beam-1`):
+Plane rules (posts and beams of `vs02-frame-1`, unchanged from `vs01-post-beam-1`):
 
 - `level-0`: posts with `generation_key` containing `/level-0/post`; no beams.
 - `level-1`: posts with `/level-1/post`; beams with `/plane-L1/`.

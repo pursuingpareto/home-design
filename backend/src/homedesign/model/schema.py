@@ -1,4 +1,4 @@
-"""Authoritative Pydantic schema for the VS-01 semantic snapshot (D028).
+"""Authoritative Pydantic schema for the semantic snapshot, model schema version 2 (D028, MODEL-005).
 
 Covers syntactic validation only (stage 1, D035). Referential, geometric, and
 domain rules live in ``validation.py``. Records keep their wire representation
@@ -23,7 +23,8 @@ from pydantic import (
 from pydantic_core import PydanticCustomError
 
 from .paths import UUID_PATTERN
-from .vs01 import MAX_SAFE_INTEGER, MODEL_SCHEMA_VERSION, RECORD_SCHEMA_VERSION
+from .connections import ConnectionType, JunctionClass
+from .limits import MAX_SAFE_INTEGER, MODEL_SCHEMA_VERSION, RECORD_SCHEMA_VERSIONS
 
 TIMESTAMP_PATTERN = r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$"
 # D042: stable grid-line IDs, x<n> / y<n> without leading zeros.
@@ -76,18 +77,26 @@ ModelSchemaVersion = Annotated[
     AfterValidator(_supported_version(MODEL_SCHEMA_VERSION)),
     WithJsonSchema({"type": "integer", "const": MODEL_SCHEMA_VERSION}),
 ]
-RecordSchemaVersion = Annotated[
-    SafeInt,
-    AfterValidator(_supported_version(RECORD_SCHEMA_VERSION)),
-    WithJsonSchema({"type": "integer", "const": RECORD_SCHEMA_VERSION}),
-]
+
+
+def RecordSchemaVersion(kind: str) -> Any:  # noqa: N802 (a type factory)
+    """The record ``schema_version`` for one kind; versions are per kind (MODEL-005 §4.1)."""
+    version = RECORD_SCHEMA_VERSIONS[kind]
+    return Annotated[
+        SafeInt,
+        AfterValidator(_supported_version(version)),
+        WithJsonSchema({"type": "integer", "const": version}),
+    ]
+
+
 Uuid = Annotated[str, StringConstraints(pattern=UUID_PATTERN)]
 Timestamp = Annotated[
     str, StringConstraints(pattern=TIMESTAMP_PATTERN), AfterValidator(_calendar_timestamp)
 ]
 Point2 = Annotated[list[float], Field(min_length=2, max_length=2)]
 Point3 = Annotated[list[float], Field(min_length=3, max_length=3)]
-MemberRole = Literal["POST", "BEAM", "FLOOR_JOIST", "RAFTER"]
+# D052, MODEL-005 §4.2. RAFTER (reserved in VS-01, never generated) is removed.
+MemberRole = Literal["POST", "BEAM", "SILL", "FLOOR_JOIST", "PRINCIPAL_RAFTER", "PURLIN", "KNEE_BRACE"]
 
 
 class _Strict(BaseModel):
@@ -96,11 +105,11 @@ class _Strict(BaseModel):
 
 class _Record(_Strict):
     id: Uuid
-    schema_version: RecordSchemaVersion
 
 
 class Building(_Record):
     kind: Literal["Building"]
+    schema_version: RecordSchemaVersion("Building")
     name: str
     footprint_id: Uuid
     level_ids: list[Uuid]
@@ -110,6 +119,7 @@ class Building(_Record):
 
 class Footprint(_Record):
     kind: Literal["Footprint"]
+    schema_version: RecordSchemaVersion("Footprint")
     origin_m: Point2
     width_m: float
     depth_m: float
@@ -118,6 +128,7 @@ class Footprint(_Record):
 
 class Level(_Record):
     kind: Literal["Level"]
+    schema_version: RecordSchemaVersion("Level")
     index: SafeInt
     elevation_m: float
     story_height_m: float
@@ -125,6 +136,7 @@ class Level(_Record):
 
 class GableRoof(_Record):
     kind: Literal["GableRoof"]
+    schema_version: RecordSchemaVersion("GableRoof")
     ridge_axis: Literal["X", "Y"]
     pitch_rad: float
     eave_overhang_m: float
@@ -147,6 +159,7 @@ class YGridLine(_Strict):
 
 class TimberGrid(_Record):
     kind: Literal["TimberGrid"]
+    schema_version: RecordSchemaVersion("TimberGrid")
     x_lines: list[XGridLine]
     y_lines: list[YGridLine]
     generation_rule_version: str
@@ -159,16 +172,31 @@ class RoleDefault(_Strict):
     material_id: Uuid
 
 
+class FrameParameters(_Strict):
+    """Inputs to the frame's generation rule (MODEL-005 §5). Bounds are checked in stages 3 and 4."""
+
+    joist_spacing_m: float
+    purlins_per_slope: SafeInt
+    knee_brace_leg_m: float
+    knee_braces_level_1: bool
+    knee_braces_eave: bool
+
+
 class FrameSystem(_Record):
     kind: Literal["FrameSystem"]
+    schema_version: RecordSchemaVersion("FrameSystem")
     grid_id: Uuid
     member_ids: list[Uuid]
     generation_mode: str
     member_defaults: dict[MemberRole, RoleDefault]
+    parameters: FrameParameters
+    connection_ids: list[Uuid]
+    connection_defaults: dict[JunctionClass, ConnectionType]
 
 
 class TimberMember(_Record):
     kind: Literal["TimberMember"]
+    schema_version: RecordSchemaVersion("TimberMember")
     member_role: MemberRole
     start_m: Point3
     end_m: Point3
@@ -179,6 +207,7 @@ class TimberMember(_Record):
 
 class Section(_Record):
     kind: Literal["Section"]
+    schema_version: RecordSchemaVersion("Section")
     shape: Literal["rectangular"]
     actual_width_m: float
     actual_depth_m: float
@@ -188,11 +217,24 @@ class Section(_Record):
 class Material(_Record):
     # D038: nullable properties are required keys; unknown is explicit null.
     kind: Literal["Material"]
+    schema_version: RecordSchemaVersion("Material")
     name: str
     species: str | None
     grade: str | None
     density_kg_m3: float | None
     provenance: str | None
+
+
+class Connection(_Record):
+    """A generated junction of exactly two members (D054, MODEL-005 §4.4). Makes no capacity claim."""
+
+    kind: Literal["Connection"]
+    schema_version: RecordSchemaVersion("Connection")
+    junction_class: JunctionClass
+    connection_type: ConnectionType
+    member_ids: Annotated[list[Uuid], Field(min_length=2, max_length=2)]  # [receiving, entering]
+    location_m: Point3
+    generation_key: str
 
 
 # Building is accepted here at the type level so that stage 2 can report
@@ -206,6 +248,7 @@ Entity = Annotated[
         TimberGrid,
         FrameSystem,
         TimberMember,
+        Connection,
         Section,
         Material,
     ],
@@ -221,6 +264,7 @@ ENTITY_KINDS = frozenset(
         "TimberGrid",
         "FrameSystem",
         "TimberMember",
+        "Connection",
         "Section",
         "Material",
     }
@@ -228,10 +272,10 @@ ENTITY_KINDS = frozenset(
 
 
 class Snapshot(_Strict):
-    """A VS-01 semantic snapshot (building-model.md §3)."""
+    """A semantic snapshot, model schema version 2 (building-model.md §3, §3.3)."""
 
     model_config = ConfigDict(
-        title="VS-01 semantic building snapshot (model schema version 1)",
+        title="Semantic building snapshot (model schema version 2)",
     )
 
     model_schema_version: ModelSchemaVersion
