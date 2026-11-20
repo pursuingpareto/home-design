@@ -10,7 +10,7 @@ A tool-independent, version-controlled specification for a web-first, parametric
 2. [User workflows](docs/product/workflows.md) and [requirements](docs/product/requirements.md)
 3. [Architecture overview](docs/architecture/overview.md), [building model](docs/architecture/building-model.md), [dependencies](docs/architecture/dependencies.md), [artifacts](docs/architecture/artifacts.md), and [interfaces](docs/architecture/interfaces.md)
 4. [Reference House 001](docs/reference-projects/vermont-timber-house/README.md)
-5. [Roadmap](docs/implementation/roadmap.md), [VS-01 scope and acceptance criteria](docs/implementation/acceptance-tests/vs-01.md), and [task index](docs/implementation/tasks/README.md)
+5. [Roadmap and status](docs/implementation/roadmap.md) (the single status document, with every task), and [VS-01 scope and acceptance criteria](docs/implementation/acceptance-tests/vs-01.md)
 6. [Decision register](docs/product/decisions/README.md) and [open decisions](docs/product/open-questions.md)
 
 ## Run the app locally
@@ -23,7 +23,7 @@ scripts/dev.sh --memory   # no database needed; projects are lost when you stop
 scripts/dev.sh --reset    # recreate the local database first (after a model schema change, D055)
 ```
 
-Open http://localhost:5173 and sign in with `dev-token`. Press Ctrl+C to stop both servers. The script installs dependencies when needed, creates and migrates the database, and keeps a local preview key in `.dev/` (git-ignored). `scripts/dev.sh --help` lists the options.
+Open http://localhost:5173 and sign in with `dev-token`. Press Ctrl+C to stop both servers. The script installs dependencies when needed, creates and migrates the database, and keeps a local preview key in `.dev/` (git-ignored). If a run is killed without Ctrl+C (for example `kill -9` or an IDE stopping it), a watchdog stops its servers, and any servers still left over are stopped at the next start. `scripts/dev.sh --help` lists the options.
 
 ## Status and conventions
 

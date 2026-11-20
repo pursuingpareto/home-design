@@ -16,6 +16,9 @@
 #
 # The preview-signing key is generated once and kept in .dev/preview-key (git-ignored), so open
 # previews survive restarts. Development only: never use these tokens or this key in production.
+#
+# If a run is killed without Ctrl+C (kill -9, a closed terminal, an IDE stopping it), a watchdog
+# stops its servers. Any servers an earlier run still left behind are stopped at the next start.
 
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -28,7 +31,7 @@ for arg in "$@"; do
     --memory) STORE=memory ;;
     --open) OPEN=true ;;
     --reset) RESET=true ;;
-    -h | --help) sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h | --help) sed -n '2,21p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $arg (try --help)" >&2; exit 2 ;;
   esac
 done
@@ -42,12 +45,53 @@ FIRST_TOKEN="${TOKENS%%=*}"
 say() { printf '\033[1m==>\033[0m %s\n' "$*"; }
 fail() { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; exit 1; }
 
+# --- this run's servers ------------------------------------------------------------------------------
+# The run file records this script's PID, then the process group of each server it starts. It is keyed
+# by the API port, so runs on other ports (for example Playwright's) are never touched.
+RUN_FILE="$ROOT/.dev/run-$API_PORT.pids"
+
+# A process is one of ours only if its command line is one of the two servers this script starts, so a
+# recycled PID can never make us stop someone else's program.
+is_our_server() { ps -o command= -p "$1" 2> /dev/null | grep -Eq 'uvicorn homedesign\.api\.app:create_app|vite --host 127\.0\.0\.1'; }
+
+# Stop a whole process group: TERM first, then KILL if it is still there after 5 seconds. (uvicorn's
+# reloader can outlive TERM when its worker is already gone.)
+stop_group() {
+  kill -TERM -- "-$1" 2> /dev/null || return 0
+  for _ in $(seq 1 20); do
+    kill -0 -- "-$1" 2> /dev/null || return 0
+    sleep 0.25
+  done
+  kill -KILL -- "-$1" 2> /dev/null || true
+}
+
+stop_leftovers() {
+  [ -s "$RUN_FILE" ] || return 0
+  local owner groups stopped=""
+  owner="$(head -n 1 "$RUN_FILE")"
+  groups="$(tail -n +2 "$RUN_FILE")"
+  if kill -0 "$owner" 2> /dev/null && ps -o command= -p "$owner" 2> /dev/null | grep -q 'dev\.sh'; then
+    fail "scripts/dev.sh is already running on port $API_PORT (pid $owner). Stop it with Ctrl+C in its terminal, or set HOMEDESIGN_API_PORT / HOMEDESIGN_UI_PORT."
+  fi
+  for group in $groups; do
+    if is_our_server "$group"; then
+      stop_group "$group"
+      stopped="$stopped $group"
+    fi
+  done
+  rm -f "$RUN_FILE"
+  if [ -n "$stopped" ]; then say "Stopped servers left over from an earlier run (process groups:$stopped)"; fi
+}
+
 # --- prerequisites --------------------------------------------------------------------------------
 command -v uv > /dev/null || fail "uv is not installed: https://docs.astral.sh/uv/"
 command -v npm > /dev/null || fail "Node.js (npm) is not installed: Node 22 or later is needed."
+mkdir -p "$ROOT/.dev"
+stop_leftovers
 for port in "$API_PORT" "$UI_PORT"; do
-  if lsof -nP -iTCP:"$port" -sTCP:LISTEN > /dev/null 2>&1; then
-    fail "Port $port is already in use. Stop whatever is using it (maybe an earlier run), or set HOMEDESIGN_API_PORT / HOMEDESIGN_UI_PORT."
+  holder="$(lsof -nP -tiTCP:"$port" -sTCP:LISTEN 2> /dev/null | head -n 1 || true)"
+  if [ -n "$holder" ]; then
+    fail "Port $port is already in use by pid $holder ($(ps -o comm= -p "$holder" 2> /dev/null || echo unknown)). Stop it, or set HOMEDESIGN_API_PORT / HOMEDESIGN_UI_PORT."
   fi
 done
 
@@ -61,7 +105,6 @@ fi
 # --- preview key (stable across restarts) -----------------------------------------------------------
 KEY_FILE="$ROOT/.dev/preview-key"
 if [ ! -s "$KEY_FILE" ]; then
-  mkdir -p "$ROOT/.dev"
   (umask 077 && openssl rand -hex 32 > "$KEY_FILE")
   say "Generated a local preview key in .dev/preview-key"
 fi
@@ -94,22 +137,43 @@ fi
 
 # --- run both; Ctrl+C stops both --------------------------------------------------------------------
 PIDS=()
+WATCHDOG=""
 cleanup() {
   trap - INT TERM EXIT
   echo
   say "Stopping"
+  if [ -n "$WATCHDOG" ]; then kill "$WATCHDOG" 2> /dev/null || true; fi
   # Each server runs in its own process group (set -m below), so this also stops uvicorn's reloader
   # worker and the node process behind npx.
-  for pid in ${PIDS[@]+"${PIDS[@]}"}; do kill -TERM -- "-$pid" 2> /dev/null || kill -TERM "$pid" 2> /dev/null || true; done
+  for pid in ${PIDS[@]+"${PIDS[@]}"}; do stop_group "$pid"; done
+  rm -f "$RUN_FILE"
   wait 2> /dev/null || true
 }
-trap cleanup INT TERM EXIT
+trap 'cleanup; exit 130' INT
+trap 'cleanup; exit 143' TERM
+trap cleanup EXIT
 set -m # job control: each background server gets its own process group
 
 (cd "$ROOT/backend" && exec uv run uvicorn homedesign.api.app:create_app --factory --host 127.0.0.1 --port "$API_PORT" --reload --reload-dir src) &
 PIDS+=($!)
 (cd "$ROOT/frontend" && HOMEDESIGN_API_URL="http://127.0.0.1:$API_PORT" HOMEDESIGN_UI_PORT="$UI_PORT" exec npx vite --host 127.0.0.1 --clearScreen false) &
 PIDS+=($!)
+printf '%s\n' "$$" "${PIDS[@]}" > "$RUN_FILE"
+
+# Watchdog, in its own process group: if this script dies without running cleanup (kill -9, for
+# example), it stops both servers. Normal exits stop the watchdog first.
+SELF=$$
+(
+  trap '' INT
+  while kill -0 "$SELF" 2> /dev/null; do sleep 1; done
+  for group in "${PIDS[@]}"; do stop_group "$group"; done
+  rm -f "$RUN_FILE"
+) > /dev/null 2>&1 &
+WATCHDOG=$!
+# The groups exist now. Disowned jobs are not reported ("Terminated: 15 …") when they stop; stop_group
+# waits for each group itself.
+disown -a
+set +m
 
 URL="http://localhost:$UI_PORT"
 for _ in $(seq 1 60); do
