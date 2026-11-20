@@ -133,6 +133,65 @@ function generateInventory(snapshot) {
 }
 const inventoryCanonical = canonicalize(generateInventory(fixture));
 
+// Independent ECMAScript implementation of the vs02-frame-1 junction rules (CONN-001 §4-5, D059):
+// one connection per entering member end. Built from the inventory above, by naming each
+// entering and receiving member's key and copying the entering member's endpoint, so the
+// locations agree with the inventory exactly. Only rafter-peak and purlin-rafter z values depend
+// on tan(pitch_rad) and are compared within 1e-12 m (TIMBER-002 §8).
+function generateConnections(snapshot) {
+  const byId = new Map();
+  for (const e of snapshot.entities) if (!byId.has(e.id)) byId.set(e.id, e);
+  const frame = byId.get(snapshot.building.frame_system_id);
+  const grid = byId.get(frame.grid_id);
+  const yIds = grid.y_lines.map((l) => l.id);
+  const members = new Map(generateInventory(snapshot).map((m) => [m.generation_key, m]));
+  const out = [];
+  const join = (cls, receiving, entering, end) => {
+    const r = members.get(receiving), e = members.get(entering);
+    if (!r || !e) throw new Error(`no member for ${cls}: ${receiving} / ${entering}`);
+    out.push({
+      generation_key: `connection/${cls}/${receiving}/${entering}`,
+      junction_class: cls,
+      connection_type: frame.connection_defaults[cls],
+      member_keys: [receiving, entering],
+      location_m: end === "start" ? e.start_m : e.end_m,
+    });
+  };
+  const below = { "plane-L1": "level-0", "plane-eave": "level-1" };
+  for (const m of members.values()) {
+    const k = m.generation_key;
+    let g;
+    if ((g = k.match(/^frame\/([^/]+)\/([^/]+)\/level-0\/post$/))) {
+      // post-sill: the Y sill of the bay starting at the post's Y line, or ending there on the last.
+      const j = yIds.indexOf(g[2]);
+      const [ya, yb] = j + 1 < yIds.length ? [yIds[j], yIds[j + 1]] : [yIds[j - 1], yIds[j]];
+      join("post-sill", `frame/axis-y/${g[1]}/${ya}-${yb}/plane-L0/sill`, k, "start");
+    } else if ((g = k.match(/^frame\/axis-x\/([^/]+)\/([^/-]+)-([^/]+)\/(plane-L1|plane-eave)\/beam$/))) {
+      join("post-beam", `frame/${g[2]}/${g[1]}/${below[g[4]]}/post`, k, "start");
+      join("post-beam", `frame/${g[3]}/${g[1]}/${below[g[4]]}/post`, k, "end");
+    } else if ((g = k.match(/^frame\/axis-y\/([^/]+)\/([^/-]+)-([^/]+)\/(plane-L1|plane-eave)\/beam$/))) {
+      join("post-beam", `frame/${g[1]}/${g[2]}/${below[g[4]]}/post`, k, "start");
+      join("post-beam", `frame/${g[1]}/${g[3]}/${below[g[4]]}/post`, k, "end");
+    } else if ((g = k.match(/^(frame\/axis-(x|y)\/([^/]+)\/[^/]+\/(plane-L1|plane-eave))\/brace\/([^/]+)$/))) {
+      const station = g[2] === "x" ? `${g[5]}/${g[3]}` : `${g[3]}/${g[5]}`;
+      join("brace", `frame/${station}/${below[g[4]]}/post`, k, "start");
+      join("brace", `${g[1]}/beam`, k, "end");
+    } else if ((g = k.match(/^frame\/axis-y\/([^/-]+)-([^/]+)\/j\d+\/([^/-]+)-([^/]+)\/plane-L1\/joist$/))) {
+      join("joist-beam", `frame/axis-x/${g[3]}/${g[1]}-${g[2]}/plane-L1/beam`, k, "start");
+      join("joist-beam", `frame/axis-x/${g[4]}/${g[1]}-${g[2]}/plane-L1/beam`, k, "end");
+    } else if ((g = k.match(/^frame\/roof\/([^/]+)\/(south|north)\/principal-rafter$/))) {
+      const bay = g[2] === "south" ? `${yIds[0]}-${yIds[1]}` : `${yIds[yIds.length - 2]}-${yIds[yIds.length - 1]}`;
+      join("rafter-foot", `frame/axis-y/${g[1]}/${bay}/plane-eave/beam`, k, "start");
+      if (g[2] === "north") join("rafter-peak", `frame/roof/${g[1]}/south/principal-rafter`, k, "end");
+    } else if ((g = k.match(/^frame\/roof\/([^/-]+)-([^/]+)\/(south|north)\/p\d+\/purlin$/))) {
+      join("purlin-rafter", `frame/roof/${g[1]}/${g[3]}/principal-rafter`, k, "start");
+      join("purlin-rafter", `frame/roof/${g[2]}/${g[3]}/principal-rafter`, k, "end");
+    }
+  }
+  return out.sort((a, b) => (a.generation_key < b.generation_key ? -1 : a.generation_key > b.generation_key ? 1 : 0));
+}
+const connectionsCanonical = canonicalize(generateConnections(fixture));
+
 // Independent ECMAScript implementation of the GEOM-001 views (artifacts.md §5-6, D048,
 // geometry.md "Numeric evaluation"). Only tan(pitch)-derived values may differ from other
 // implementations, within 1e-12 m.
@@ -301,6 +360,11 @@ const output = {
       fingerprint: sha256(inventoryCanonical),
       // Full inventory: rafter and purlin z values are compared within 1e-12 m, the rest exactly.
       inventory: generateInventory(fixture),
+      connection_count: generateConnections(fixture).length,
+      connections_canonical_bytes: Buffer.byteLength(connectionsCanonical, "utf8"),
+      connections_fingerprint: sha256(connectionsCanonical),
+      // Full list (CONN-001 §9): rafter-peak and purlin-rafter z values within 1e-12 m, the rest exactly.
+      connections: generateConnections(fixture),
     },
   ],
   snapshots: [

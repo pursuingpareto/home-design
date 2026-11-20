@@ -16,6 +16,7 @@ from hypothesis import HealthCheck, event, given, settings
 from hypothesis import strategies as st
 
 from api_support import make_api
+from homedesign.model.connections import CONNECTION_TYPES, JUNCTION_CLASSES
 from homedesign.project import MemoryStore
 from integration.invariants import RevisionView, assert_unchanged, check_revision, check_transition, project_state
 
@@ -30,7 +31,7 @@ def _grid_lines(view: RevisionView, axis: str) -> list[dict[str, Any]]:
 
 
 def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) -> tuple[str, dict[str, Any]]:
-    kind = data.draw(st.sampled_from(["footprint", "stories", "roof", "grid", "frame", "add_section", "member_section", "undo"]), label="kind")
+    kind = data.draw(st.sampled_from(["footprint", "stories", "roof", "grid", "frame", "add_section", "member_section", "connection_type", "undo"]), label="kind")
     length = lambda lo, hi: data.draw(st.floats(lo, hi, allow_nan=False, allow_infinity=False))  # noqa: E731
     if kind == "footprint":
         if data.draw(st.booleans(), label="inside"):  # half within what a 3 × 2 bay grid supports
@@ -73,6 +74,11 @@ def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) ->
     if kind == "member_section":
         sections = [s["id"] for s in sorted(view.entities("Section"), key=lambda s: (s["nominal_label"], s["actual_width_m"], s["actual_depth_m"]))]
         return "SetMemberSection", {"role": data.draw(st.sampled_from(["POST", "BEAM", "SILL", "FLOOR_JOIST", "PRINCIPAL_RAFTER", "PURLIN", "KNEE_BRACE"])), "section_id": data.draw(st.sampled_from(sections))}
+    if kind == "connection_type":  # CONN-001 §8: any class and type, so disallowed pairs are drawn too
+        return "SetConnectionType", {
+            "junction_class": data.draw(st.sampled_from(JUNCTION_CLASSES)),
+            "connection_type": data.draw(st.sampled_from(CONNECTION_TYPES)),
+        }
     return "UndoToRevision", {"target_revision_id": data.draw(st.sampled_from(history))}
 
 

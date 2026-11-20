@@ -75,9 +75,7 @@ Preserve `TimberMember.id` when the `generation_key` still exists after regenera
 
 ## Connections
 
-The rule declares all seven D054 junction classes, so projects carry their connection types from the start.
-
-**Approved, not yet implemented:** the rules below are approved ([D059](../../product/decisions/D059-vs02-junction-rules-connection-type-command.md); [CONN-001](../../implementation/tasks/CONN-001.md) §4–6). Until CONN-001 is implemented, the rule generates no `Connection` records.
+The rule declares all seven D054 junction classes and generates their `Connection` records ([D059](../../product/decisions/D059-vs02-junction-rules-connection-type-command.md); [CONN-001](../../implementation/tasks/CONN-001.md) §4–6). Members and connections are built in one pass, so a receiving member's key comes from the same variables as that member's own key, and no key is parsed.
 
 ### One connection per entering member end
 
@@ -108,8 +106,8 @@ A connection is generated for each member end that lands on another member's axi
 ## Fixture and cross-language check
 
 - **Fixture:** `uv run python -m homedesign.timber.fixture [--check]` builds `fixture.snapshot.json` and the packaged template from the D025 and D053 inputs. `--check` runs in `scripts/check.sh` and CI.
-- **Oracle:** `tests/vectors/jcs/generate.mjs` implements this rule independently in ECMAScript. Its inventory vector must match the Python generator under the numeric rules above.
+- **Oracle:** `tests/vectors/jcs/generate.mjs` implements this rule independently in ECMAScript. Its inventory vector, members and connections, must match the Python generator under the numeric rules above: bit-identical, except the `tan`-derived `z` values of rafters, purlins, and `rafter-peak` and `purlin-rafter` locations, within 1e-12 m.
 
 ## Out of scope for this rule version
 
-Connection records until `CONN-001` is implemented, splice and sill-joint connections (D059), girts and studs (VS-02b), ridge beams, collar ties, rafter tails, dormers, hips, valleys, ceiling joists, floor openings, machining, walls, and any structural adequacy check.
+Splice and sill-joint connections (D059), girts and studs (VS-02b), ridge beams, collar ties, rafter tails, dormers, hips, valleys, ceiling joists, floor openings, machining, walls, and any structural adequacy check.

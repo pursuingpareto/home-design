@@ -55,6 +55,16 @@ class GeneratedConnection:
     member_keys: tuple[str, str]  # (receiving, entering)
     location_m: Point3
 
+    def to_json(self, member_ids: tuple[str, str] | list[str]) -> dict[str, Any]:
+        """Record fields, with ``member_ids`` resolved from ``member_keys`` by the caller."""
+        return {
+            "generation_key": self.generation_key,
+            "junction_class": self.junction_class,
+            "connection_type": self.connection_type,
+            "member_ids": list(member_ids),
+            "location_m": list(self.location_m),
+        }
+
 
 @dataclass(frozen=True)
 class ConformanceIssue:

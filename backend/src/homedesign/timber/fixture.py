@@ -4,8 +4,9 @@ Usage (from backend/):
     uv run python -m homedesign.timber.fixture          # write both files
     uv run python -m homedesign.timber.fixture --check  # exit 1 if either is stale
 
-The non-generated records hold the D025 and D053 values, with fixed IDs. Members are the
-exact output of ``vs02-frame-1`` (no hand-entered decimals), with IDs derived from their keys.
+The non-generated records hold the D025 and D053 values, with fixed IDs. Members and
+connections are the exact output of ``vs02-frame-1`` (no hand-entered decimals), with IDs
+derived from their keys.
 Not an engineered design: every value is illustrative design intent (D025, D053, AC-08).
 """
 
@@ -29,7 +30,7 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 FIXTURE_PATH = REPO_ROOT / "docs" / "reference-projects" / "vermont-timber-house" / "fixture.snapshot.json"
 TEMPLATE_PATH = REPO_ROOT / "backend" / "src" / "homedesign" / "model" / "commands" / "templates" / "reference-house-001.json"
 
-# IDs for records added in version 2 (and for members) are UUIDv5 names under this fixed namespace.
+# IDs for records added in version 2 (and for members and connections) are UUIDv5 names under this fixed namespace.
 FIXTURE_NAMESPACE = uuid.UUID("2f0c9d34-6a1e-4b7f-9c2d-5e8a1b3f7c60")
 
 RULE = "vs02-frame-1"
@@ -116,10 +117,19 @@ def build() -> dict[str, Any]:
         ),
         "entities": [footprint, level0, level1, roof, grid, *sections, material, frame],
     }
-    generated = get_rule(RULE).generate(Snapshot.model_validate(doc))
-    members = [_record("TimberMember", _id("member/" + m.generation_key), **m.to_json()) for m in generated]
+    snapshot = Snapshot.model_validate(doc)
+    rule = get_rule(RULE)
+    members = [_record("TimberMember", _id("member/" + m.generation_key), **m.to_json()) for m in rule.generate(snapshot)]
+    member_ids = {m["generation_key"]: m["id"] for m in members}
+    # Connection keys start with "connection/", so their names never equal a member's (CONN-001 §9).
+    connections = [
+        _record("Connection", _id(c.generation_key), **c.to_json([member_ids[k] for k in c.member_keys]))
+        for c in rule.generate_connections(snapshot)
+    ]
     frame["member_ids"] = [m["id"] for m in members]
+    frame["connection_ids"] = [c["id"] for c in connections]
     doc["entities"].extend(members)
+    doc["entities"].extend(connections)
     result = validate_value(doc)
     if not result.valid:
         raise SystemExit(f"generated fixture does not validate: {result.to_dict()}")

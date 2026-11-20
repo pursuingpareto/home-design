@@ -1,6 +1,6 @@
 # CONN-001 — Connection generation and `SetConnectionType`
 
-**Status:** Approved (2026-11-20), ready to implement. All ten §11 proposals were approved; items 7–10 are recorded as [D059](../../product/decisions/D059-vs02-junction-rules-connection-type-command.md). Nothing is implemented.  
+**Status:** Done (2026-11-20). All ten §11 proposals were approved; items 7–10 are recorded as [D059](../../product/decisions/D059-vs02-junction-rules-connection-type-command.md). Implementation notes are in §15.  
 **Owner module:** `timber` (junction rules, fixture, oracle); `model` (regeneration, preview diff, `SetConnectionType`); `api` (preview response)  
 **Slice:** VS-02  
 **Depends on:** [`TIMBER-002`](TIMBER-002.md) and [`MODEL-005`](MODEL-005.md) (done). Merges on its own, with CI passing ([vs-02.md](../acceptance-tests/vs-02.md) §12.2).  
@@ -318,3 +318,50 @@ Items 7–9 settle D054's open point ("exact junction rules … and so the conne
 - All §12 tests pass, with the updated VS-01 and VS-02 suites, Vitest, and Playwright. The vector and fixture checks pass, and `scripts/check.sh` and CI pass.
 - D059 is recorded. The documents in §10 and the roadmap are updated.
 - Changed files, tests, limitations, and next steps are summarized (AGENTS.md).
+
+## 15. Implementation notes (2026-11-20)
+
+**Delivered:**
+- `backend/src/homedesign/timber/`:
+  - `rules/vs02_frame_1.py`: one internal pass, `_build`, makes members and connections together. Receiving keys come from small key helpers (`_post_key`, `_bay_key`, `_rafter_key`) called with the same variables as the members' own keys, so no key is parsed. Each `location_m` is the entering member's endpoint tuple itself. `generate` and `generate_connections` keep their signatures and return the two parts;
+  - `inventory.py`: `GeneratedConnection.to_json(member_ids)`, shared by `propose`, the fixture builder, and the test helper;
+  - `fixture.py`: the 312 connections, with IDs `UUIDv5(fixture namespace, "reference-house-001/" + key)`. Connection keys start with `connection/`, so their names never equal a member's (`…/member/frame/…`).
+- `backend/src/homedesign/model/commands/`:
+  - `propose.py`: `_regenerate` replaces members and connections, keeping IDs by key and minting new ones from `"generation/" + key`. `_diff` returns a `{added, removed, updated}` diff per generated kind, and neither kind appears in `changes`. `CandidateChange` now carries `members` and `connections` diffs, replacing the three `members_*` fields. `SetConnectionType` and its consequential row;
+  - `envelope.py`: `SetConnectionType` with `ConnectionTypeArgs {junction_class, connection_type}`, typed by the catalog's `JunctionClass` and `ConnectionType`.
+- `api/models.py`: `ConnectionRef` and `ConnectionChanges`, and a required `connections` field on `PreviewResponse`.
+- Regenerated, all reviewed: the fixture and packaged template (518 records), `commands.v1.schema.json`, `openapi.v1.json`, `frontend/src/api/schema.d.ts`, the UI fixture, the golden scenario record, and `vectors.json`.
+- `tests/vectors/jcs/generate.mjs`: an independent ECMAScript implementation of §4–5. It matches the ECMAScript inventory's member keys by pattern, names each receiving key from them, and copies the endpoint. The `inventories` vector gains `connections` (312 entries, 96,926 canonical bytes), with its count and fingerprint. `vectors.json` grows from 203 KB to 351 KB, more than §9's estimate of 60–100 KB, because the long keys appear in each entry's key and again in `member_keys`. It is bit-identical to Python on this platform, `tan`-derived values included.
+- Documents: generation-rules.md, building-model.md §3.3 and §6.1, interfaces.md §2–3 (with the `connections` example), dependencies.md §4.1 (the row), the reference house README, D059 (implemented), and the roadmap.
+
+**Tests:** 84 new tests in `test_connections.py`, covering §12 tests 1–7 and 9–12:
+- the fixture is exact rule output, with D059's receiving choices pinned for each class;
+- the junction rules: bit-identical locations, the receiving axis within 1e-9 m, and roles per class;
+- counts for all 36 grids, parameter bounds, and the largest case (2,110);
+- keys split back into their member keys;
+- identity under every §5.3 edit, including a brace toggle and undo;
+- the preview diff and its orders;
+- `SetConnectionType` for every class, with its errors, no-op, a class with no connections, and `PREVIEW_REQUIRED` over HTTP;
+- the oracle;
+- zero cases;
+- determinism and two property tests;
+- no claims (AC2-07).
+
+The other updates:
+- `test_mutations.py` reaches all four connection conformance codes from fixture mutations (§12 test 8), and the catalog-coverage note no longer lists them;
+- the VS-01 command tests assert their connection counts with reasons. For example, a 40' width adds 12 `joist-beam` connections and moves 240 (the 72 tied to x = 0 stay), and removing `x2` retires 158 and adds 88;
+- the integration invariants check §6 counts, roles, bit-identical locations, receiving axes, types, and keys after every step, and that surviving connections keep their IDs and `member_ids`. The property sequences draw `SetConnectionType`, disallowed pairs included.
+
+**`propose` time, largest supported case** (1,216 members, 2,110 connections, a width edit that regenerates everything; median of 7 on the development machine): **0.47 s**. Building members and connections once takes about 4 ms, and each `propose` builds them five times (validation twice, regeneration once, and conformance on the regenerated candidate twice). Most of the time is canonical JSON in the diff and the no-op comparison, so the per-snapshot cache that §13 suggested was not needed. `TEST-002` sets any budget.
+
+**Choices made during implementation:**
+
+- **Enum arguments of another JSON type** (for example `"junction_class": 3`) are `INVALID_ENUM`, as `SetMemberSection`'s `role` already is. `WRONG_TYPE` applies to `args` itself, for example a string. interfaces.md §2 says so.
+- **Removing a member in a mutation** now also removes the connections that name it. Otherwise stage 3 reports their dangling `member_ids` before conformance runs. The `t001-missing-member` case and the per-role mutations do this, so each still yields exactly `MISSING_GENERATED_MEMBER`.
+- **The direct test of the shared comparison** (`test_connection_conformance_codes`) was removed, because fixture mutations now cover the same codes, paths, and `related_paths`.
+
+**Limitations:**
+
+- Connections are not presented anywhere yet: no plan or mesh markers, schedule counts, or "each" estimate lines (`ART-002`). The schedule's `NO_CONNECTIONS` assumption stays until then.
+- The browser ignores the preview's `connections` and has no connection-type editor (`UI-003`).
+- `impacted_artifacts` still lists all four artifacts (`DEP-001`).

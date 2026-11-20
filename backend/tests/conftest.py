@@ -100,25 +100,35 @@ def store(request):
 
 
 def regenerate(doc: dict[str, Any]) -> dict[str, Any]:
-    """Test helper: replace the members with the rule's output for the doc's parameters.
+    """Test helper: replace members and connections with the rule's output for the doc.
 
-    Keeps a member's ID when its key survives and gives new keys a test-only UUIDv5.
-    (Production ID assignment is MODEL-003's job, D041.)
+    Keeps a record's ID when its key survives and gives new keys a test-only UUIDv5.
+    (Production ID assignment is MODEL-003's job, D041; CONN-001 §5.2.)
     """
     snapshot = Snapshot.model_validate(doc)
     grid = next(e for e in snapshot.entities if e.kind == "TimberGrid")
-    generated = get_rule(grid.generation_rule_version).generate(snapshot)
-    existing = {e["generation_key"]: e["id"] for e in doc["entities"] if e["kind"] == "TimberMember"}
+    rule = get_rule(grid.generation_rule_version)
+    existing = {e["generation_key"]: e["id"] for e in doc["entities"] if e["kind"] in ("TimberMember", "Connection")}
+
+    def record_id(key: str) -> str:
+        return existing.get(key) or str(uuid.uuid5(_TEST_ID_NAMESPACE, key))
+
     members = [
-        {
-            "id": existing.get(m.generation_key) or str(uuid.uuid5(_TEST_ID_NAMESPACE, m.generation_key)),
-            "kind": "TimberMember",
-            "schema_version": RECORD_SCHEMA_VERSIONS["TimberMember"],
-            **m.to_json(),
-        }
-        for m in generated
+        {"id": record_id(m.generation_key), "kind": "TimberMember", "schema_version": RECORD_SCHEMA_VERSIONS["TimberMember"], **m.to_json()}
+        for m in rule.generate(snapshot)
     ]
-    doc["entities"] = [e for e in doc["entities"] if e["kind"] != "TimberMember"] + members
+    member_ids = {m["generation_key"]: m["id"] for m in members}
+    connections = [
+        {
+            "id": record_id(c.generation_key),
+            "kind": "Connection",
+            "schema_version": RECORD_SCHEMA_VERSIONS["Connection"],
+            **c.to_json([member_ids[k] for k in c.member_keys]),
+        }
+        for c in rule.generate_connections(snapshot)
+    ]
+    doc["entities"] = [e for e in doc["entities"] if e["kind"] not in ("TimberMember", "Connection")] + members + connections
     frame = next(e for e in doc["entities"] if e["kind"] == "FrameSystem")
     frame["member_ids"] = [m["id"] for m in members]
+    frame["connection_ids"] = [c["id"] for c in connections]
     return doc

@@ -55,7 +55,7 @@ def test_registry():
     assert get_rule("vs01-post-beam-1") is None  # retired (D055)
     assert RULE.generated_roles == set(ROLES)
     assert RULE.generated_junction_classes == set(JUNCTION_CLASSES)
-    assert RULE.generate_connections(_snapshot(FIXTURE)) == ()  # until CONN-001
+    assert len(RULE.generate_connections(_snapshot(FIXTURE))) == 312  # CONN-001 §6; test_connections.py
 
 
 def test_retired_rule_is_unsupported():
@@ -342,8 +342,11 @@ def test_conformance_mutations_for_every_role(role):
         assert wrong.issues[0].related_paths[0].endswith(f".member_defaults.{role}.section_id")
 
     def remove(d, m):
-        d["entities"].remove(m)
+        # With the connections that name it, so only the member is missing (CONN-001).
+        gone = {m["id"]} | {c["id"] for c in entities_of(d, "Connection") if m["id"] in c["member_ids"]}
+        d["entities"] = [e for e in d["entities"] if e["id"] not in gone]
         _frame(d)["member_ids"].remove(m["id"])
+        _frame(d)["connection_ids"] = [i for i in _frame(d)["connection_ids"] if i not in gone]
 
     missing = mutated(remove)
     assert codes_of(missing) == {"MISSING_GENERATED_MEMBER"} and missing.issues[0].value == member["generation_key"]
@@ -375,33 +378,3 @@ def test_random_parameters_never_raise(spacing, purlins, leg, level_1, eave, pit
     result = validate_value(doc)
     assert result.valid, result.to_dict()
     assert Counter(m.member_role for m in RULE.generate(result.snapshot)) == _expected_counts(doc)
-
-
-def test_connection_conformance_codes():
-    """MODEL-005 §6.5: the shared comparison, exercised directly until a rule generates connections (CONN-001)."""
-    from homedesign.timber.inventory import GeneratedConnection, connection_conformance
-
-    doc = fresh_fixture()
-    post = next(m for m in entities_of(doc, "TimberMember") if m["generation_key"] == "frame/x0/y0/level-0/post")
-    beam = next(m for m in entities_of(doc, "TimberMember") if m["generation_key"] == "frame/axis-x/y0/x0-x1/plane-L1/beam")
-    record_id = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
-    doc["entities"].append({
-        "id": record_id, "kind": "Connection", "schema_version": 1, "junction_class": "post-beam",
-        "connection_type": "STEEL_KNIFE_PLATE", "member_ids": [beam["id"], post["id"]],
-        "location_m": [0.0, 0.0, 3.048 + 2e-6], "generation_key": "connection/a",
-    })
-    _frame(doc)["connection_ids"].append(record_id)
-    snapshot = _snapshot(doc)
-    expected = [
-        GeneratedConnection("connection/a", "post-beam", "PEGGED_MORTISE_TENON", (post["generation_key"], beam["generation_key"]), (0.0, 0.0, 3.048)),
-        GeneratedConnection("connection/b", "brace", "PEGGED_MORTISE_TENON", (post["generation_key"], beam["generation_key"]), (0.0, 0.0, 3.048)),
-    ]
-    found = {(i.code, i.field) for i in connection_conformance(snapshot, expected)}
-    assert found == {
-        ("MISSING_GENERATED_CONNECTION", ("connection_ids",)),
-        ("CONNECTION_ASSIGNMENT_MISMATCH", ("member_ids",)),
-        ("CONNECTION_ASSIGNMENT_MISMATCH", ("connection_type",)),
-        ("CONNECTION_GEOMETRY_MISMATCH", ("location_m",)),
-    }
-    type_issue = next(i for i in connection_conformance(snapshot, expected) if i.field == ("connection_type",))
-    assert type_issue.related == ((_frame(doc)["id"], ("connection_defaults", "post-beam")),)

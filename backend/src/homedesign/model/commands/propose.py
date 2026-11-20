@@ -35,6 +35,8 @@ CLASSIFICATION = {
     "SetStoryHeights": "consequential",
     "SetTimberGrid": "consequential",
     "SetMemberSection": "consequential",
+    # D059: switches every connection of a junction class, with budget implications.
+    "SetConnectionType": "consequential",
     "UndoToRevision": "consequential",
     "CreateReferenceProject": "consequential",
 }
@@ -59,6 +61,21 @@ def spath(entity_id: str, *steps: str | int) -> str:
 # --- results -----------------------------------------------------------------
 
 
+_GENERATED_KINDS = ("TimberMember", "Connection")  # never listed in `changes` (interfaces.md §3)
+
+
+@dataclass(frozen=True)
+class _GeneratedDiff:
+    """``{added, removed, updated}`` for one generated kind (interfaces.md §3)."""
+
+    added: tuple[dict[str, str], ...]
+    removed: tuple[dict[str, str], ...]
+    updated: tuple[str, ...]
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"added": [dict(r) for r in self.added], "removed": [dict(r) for r in self.removed], "updated": list(self.updated)}
+
+
 @dataclass(frozen=True)
 class CandidateChange:
     candidate: Snapshot
@@ -70,9 +87,8 @@ class CandidateChange:
     is_noop: bool
     classification: str
     changes: tuple[dict[str, Any], ...]
-    members_added: tuple[dict[str, str], ...]
-    members_removed: tuple[dict[str, str], ...]
-    members_updated: tuple[str, ...]
+    members: _GeneratedDiff
+    connections: _GeneratedDiff
     classification_version: str = CLASSIFICATION_VERSION
     impacted_artifacts: tuple[str, ...] = IMPACTED_ARTIFACTS
     warnings: tuple[dict[str, str], ...] = WARNINGS
@@ -92,11 +108,8 @@ class CandidateChange:
             "confirmation_required": self.confirmation_required,
             "is_noop": self.is_noop,
             "changes": [dict(c) for c in self.changes],
-            "members": {
-                "added": [dict(m) for m in self.members_added],
-                "removed": [dict(m) for m in self.members_removed],
-                "updated": list(self.members_updated),
-            },
+            "members": self.members.to_dict(),
+            "connections": self.connections.to_dict(),
             "impacted_artifacts": list(self.impacted_artifacts),
             "warnings": [dict(w) for w in self.warnings],
         }
@@ -234,6 +247,14 @@ def _apply_member_section(draft: dict, ctx: _Context) -> _Applied:
     return _Applied({spath(frame["id"], "member_defaults", args.role, "section_id"): "args.section_id"}, regenerate=True)
 
 
+def _apply_connection_type(draft: dict, ctx: _Context) -> _Applied:
+    """CONN-001 §8: a disallowed pair is reported by the stage 4 catalog check on the candidate."""
+    args = ctx.command.args
+    frame, _ = _frame_and_grid(draft)
+    frame["connection_defaults"][args.junction_class] = args.connection_type
+    return _Applied({spath(frame["id"], "connection_defaults", args.junction_class): "args.connection_type"}, regenerate=True)
+
+
 def _apply_add_section(draft: dict, ctx: _Context) -> _Applied:
     args = ctx.command.args
     section_id = ctx.mint("entity", "section")
@@ -274,6 +295,7 @@ _APPLY: dict[str, Callable[[dict, _Context], _Applied]] = {
     "SetTimberGrid": _apply_grid,
     "SetMemberSection": _apply_member_section,
     "SetFrameParameters": _apply_frame_parameters,
+    "SetConnectionType": _apply_connection_type,
     "AddSection": _apply_add_section,
     "UndoToRevision": _apply_undo,
 }
@@ -296,23 +318,38 @@ def _link_args(result: ValidationResult, field_map: dict[str, str]) -> Validatio
     return replace(result, issues=tuple(issues))
 
 
-def _regenerate(draft: dict, base_members: dict[str, str], mint_entity: Callable[[str], str]) -> None:
+def _regenerate(draft: dict, base_ids: dict[str, str], mint_entity: Callable[[str], str]) -> None:
+    """Replace members and connections with the rule's output (CONN-001 §7.1).
+
+    ``base_ids`` maps the base's member and connection keys to their IDs: a surviving key
+    keeps its ID, and a new key gets an ID minted from ``"generation/" + key`` (D041).
+    """
     from homedesign.timber import get_rule
 
     snapshot = Snapshot.model_validate(draft)  # stages 1–4 already passed
     frame, grid = _frame_and_grid(draft)
-    generated = get_rule(grid["generation_rule_version"]).generate(snapshot)
+    rule = get_rule(grid["generation_rule_version"])
+
+    def record_id(key: str) -> str:
+        return base_ids.get(key) or mint_entity("generation/" + key)
+
     members = [
-        {
-            "id": base_members.get(m.generation_key) or mint_entity("generation/" + m.generation_key),
-            "kind": "TimberMember",
-            "schema_version": RECORD_SCHEMA_VERSIONS["TimberMember"],
-            **m.to_json(),
-        }
-        for m in generated
+        {"id": record_id(m.generation_key), "kind": "TimberMember", "schema_version": RECORD_SCHEMA_VERSIONS["TimberMember"], **m.to_json()}
+        for m in rule.generate(snapshot)
     ]
-    draft["entities"] = [e for e in draft["entities"] if e["kind"] != "TimberMember"] + members
+    member_ids = {m["generation_key"]: m["id"] for m in members}
+    connections = [
+        {
+            "id": record_id(c.generation_key),
+            "kind": "Connection",
+            "schema_version": RECORD_SCHEMA_VERSIONS["Connection"],
+            **c.to_json([member_ids[k] for k in c.member_keys]),
+        }
+        for c in rule.generate_connections(snapshot)
+    ]
+    draft["entities"] = [e for e in draft["entities"] if e["kind"] not in _GENERATED_KINDS] + members + connections
     frame["member_ids"] = [m["id"] for m in members]
+    frame["connection_ids"] = [c["id"] for c in connections]
 
 
 def _content(value: dict | None) -> bytes:
@@ -321,18 +358,37 @@ def _content(value: dict | None) -> bytes:
     return canonical_json({"building": value["building"], "entities": sorted(value["entities"], key=lambda e: e["id"])})
 
 
-def _diff(base: dict | None, cand: dict) -> tuple[tuple, tuple, tuple, tuple]:
-    def records(value):
-        if value is None:
-            return {}, {}
-        others = {value["building"]["id"]: value["building"]}
-        members = {}
-        for e in value["entities"]:
-            (members if e["kind"] == "TimberMember" else others)[e["id"]] = e
-        return others, members
+def _generated_diff(before: dict[str, dict], after: dict[str, dict]) -> _GeneratedDiff:
+    def summary(r):
+        return {"id": r["id"], "generation_key": r["generation_key"]}
 
-    b_rec, b_mem = records(base)
-    c_rec, c_mem = records(cand)
+    by_key = lambda r: _utf16(r["generation_key"])  # noqa: E731
+    return _GeneratedDiff(
+        added=tuple(summary(r) for r in sorted((after[i] for i in after.keys() - before.keys()), key=by_key)),
+        removed=tuple(summary(r) for r in sorted((before[i] for i in before.keys() - after.keys()), key=by_key)),
+        updated=tuple(sorted(i for i in before.keys() & after.keys() if canonical_json(before[i]) != canonical_json(after[i]))),
+    )
+
+
+def _diff(base: dict | None, cand: dict) -> tuple[tuple, _GeneratedDiff, _GeneratedDiff]:
+    """Field changes of authored records, and the member and connection diffs (interfaces.md §3).
+
+    Generated records (members and connections) never appear in ``changes``; the frame's
+    ``member_ids``, ``connection_ids``, and defaults do.
+    """
+
+    def records(value):
+        others: dict[str, dict] = {}
+        generated: dict[str, dict[str, dict]] = {kind: {} for kind in _GENERATED_KINDS}
+        if value is None:
+            return others, generated
+        others[value["building"]["id"]] = value["building"]
+        for e in value["entities"]:
+            generated.get(e["kind"], others)[e["id"]] = e
+        return others, generated
+
+    b_rec, b_gen = records(base)
+    c_rec, c_gen = records(cand)
     changes = []
     for rid in b_rec.keys() | c_rec.keys():
         before, after = b_rec.get(rid), c_rec.get(rid)
@@ -344,15 +400,9 @@ def _diff(base: dict | None, cand: dict) -> tuple[tuple, tuple, tuple, tuple]:
             if canonical_json(before.get(name)) != canonical_json(after.get(name)):
                 changes.append({"entity_kind": after["kind"], "entity_id": rid, "field": name, "before": before.get(name), "after": after.get(name)})
     changes.sort(key=lambda c: (_utf16(c["entity_kind"]), c["entity_id"], _utf16(c["field"])))
-
-    def summary(m):
-        return {"id": m["id"], "generation_key": m["generation_key"]}
-
-    by_key = lambda m: _utf16(m["generation_key"])  # noqa: E731
-    added = tuple(summary(m) for m in sorted((c_mem[i] for i in c_mem.keys() - b_mem.keys()), key=by_key))
-    removed = tuple(summary(m) for m in sorted((b_mem[i] for i in b_mem.keys() - c_mem.keys()), key=by_key))
-    updated = tuple(sorted(i for i in b_mem.keys() & c_mem.keys() if canonical_json(b_mem[i]) != canonical_json(c_mem[i])))
-    return tuple(changes), added, removed, updated
+    members = _generated_diff(b_gen["TimberMember"], c_gen["TimberMember"])
+    connections = _generated_diff(b_gen["Connection"], c_gen["Connection"])
+    return tuple(changes), members, connections
 
 
 def _finish(
@@ -370,14 +420,14 @@ def _finish(
         if not (applied.regenerate and stale_only):
             return _rejected(_link_args(pre, applied.field_map))
     if applied.regenerate:
-        base_members = {}
+        base_ids = {}
         if base_value is not None:
-            base_members = {e["generation_key"]: e["id"] for e in base_value["entities"] if e["kind"] == "TimberMember"}
-        _regenerate(draft, base_members, lambda key: mint_fn("entity", key))
+            base_ids = {e["generation_key"]: e["id"] for e in base_value["entities"] if e["kind"] in _GENERATED_KINDS}
+        _regenerate(draft, base_ids, lambda key: mint_fn("entity", key))
     final = validate_value(draft)
     if not final.valid:
         return _rejected(_link_args(final, applied.field_map))
-    changes, added, removed, updated = _diff(base_value, draft)
+    changes, members, connections = _diff(base_value, draft)
     return ProposeResult(
         change=CandidateChange(
             candidate=final.snapshot,
@@ -389,9 +439,8 @@ def _finish(
             is_noop=base_value is not None and _content(base_value) == _content(draft),
             classification=CLASSIFICATION[command.type],
             changes=changes,
-            members_added=added,
-            members_removed=removed,
-            members_updated=updated,
+            members=members,
+            connections=connections,
         )
     )
 

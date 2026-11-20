@@ -13,6 +13,7 @@ from pydantic.json_schema import SkipJsonSchema
 from pydantic_core import PydanticCustomError
 
 from .. import codes
+from ..connections import ConnectionType, JunctionClass
 from ..paths import render
 from ..schema import MemberRole, SafeInt, Uuid
 from ..validation import Issue, ValidationResult, _Collector, code_for_pydantic_error, message_for
@@ -70,6 +71,13 @@ class TimberGridArgs(_Strict):
 class MemberSectionArgs(_Strict):
     role: MemberRole
     section_id: Uuid
+
+
+class ConnectionTypeArgs(_Strict):
+    """D054, D059: a type per junction class, never per connection (CONN-001 §8.1)."""
+
+    junction_class: JunctionClass
+    connection_type: ConnectionType
 
 
 class FrameParametersArgs(_Strict):
@@ -139,6 +147,11 @@ class SetFrameParameters(_Command):
     args: FrameParametersArgs
 
 
+class SetConnectionType(_Command):
+    type: Literal["SetConnectionType"]
+    args: ConnectionTypeArgs
+
+
 class AddSection(_Command):
     type: Literal["AddSection"]
     args: AddSectionArgs
@@ -158,6 +171,7 @@ AnyCommand = Annotated[
         SetTimberGrid,
         SetMemberSection,
         SetFrameParameters,
+        SetConnectionType,
         AddSection,
         UndoToRevision,
     ],
@@ -173,6 +187,7 @@ COMMAND_TYPES = frozenset(
         "SetTimberGrid",
         "SetMemberSection",
         "SetFrameParameters",
+        "SetConnectionType",
         "AddSection",
         "UndoToRevision",
     }
@@ -224,6 +239,7 @@ __all__ = [
     "COMMAND_TYPES",
     "CreateReferenceProject",
     "Issue",
+    "SetConnectionType",
     "SetFootprintDimensions",
     "SetGableRoofParameters",
     "SetFrameParameters",

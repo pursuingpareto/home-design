@@ -114,9 +114,24 @@ def _swap_endpoints(member):
 
 
 def _remove_member(member):
+    """Remove a member and the connections that name it, so only the member is missing."""
     def mutate(d):
-        d["entities"] = [e for e in d["entities"] if e["id"] != member["id"]]
-        _find(d, FRAME["id"])["member_ids"].remove(member["id"])
+        gone = {e["id"] for e in d["entities"] if e["id"] == member["id"] or (e["kind"] == "Connection" and member["id"] in e["member_ids"])}
+        d["entities"] = [e for e in d["entities"] if e["id"] not in gone]
+        frame = _find(d, FRAME["id"])
+        frame["member_ids"].remove(member["id"])
+        frame["connection_ids"] = [i for i in frame["connection_ids"] if i not in gone]
+    return mutate
+
+
+CONNECTIONS = entities_of(FIXTURE, "Connection")
+A_CONNECTION = next(c for c in CONNECTIONS if c["generation_key"] == "connection/post-beam/frame/x0/y0/level-0/post/frame/axis-x/y0/x0-x1/plane-L1/beam")
+
+
+def _remove_connection(connection):
+    def mutate(d):
+        d["entities"] = [e for e in d["entities"] if e["id"] != connection["id"]]
+        _find(d, FRAME["id"])["connection_ids"].remove(connection["id"])
     return mutate
 
 
@@ -368,9 +383,21 @@ CASES: list[Case] = [
              [Expect(codes.UNSUPPORTED_VALUE, f"entities[{NEW_ID}].connection_type", (f"entities[{NEW_ID}].junction_class",))], only=True),
     doc_case("m005-connection-wrong-member-count", _add_connection(member_ids=[A_POST["id"]]), VF,
              [Expect(codes.WRONG_TYPE, f"entities[{NEW_ID}].member_ids")], only=True),
-    # Until CONN-001 the rule generates no connections, so any record is unexpected (MODEL-005 §6.5).
+    # CONN-001 §12 test 8: connection conformance (D046, MODEL-005 §6.5) from minimal fixture mutations.
     doc_case("m005-unexpected-connection", _add_connection(), VF,
              [Expect(codes.UNEXPECTED_CONNECTION, f"entities[{NEW_ID}].generation_key")], only=True),
+    doc_case("c001-missing-connection", _remove_connection(A_CONNECTION), VF,
+             [Expect(codes.MISSING_GENERATED_CONNECTION, epath(FRAME, "connection_ids"))], only=True),
+    doc_case("c001-location-inside-epsilon", lambda d: _find(d, A_CONNECTION["id"])["location_m"].__setitem__(2, A_CONNECTION["location_m"][2] + 5e-7), None, [], only=True),
+    doc_case("c001-moved-location", lambda d: _find(d, A_CONNECTION["id"])["location_m"].__setitem__(2, A_CONNECTION["location_m"][2] + 2e-6), VF,
+             [Expect(codes.CONNECTION_GEOMETRY_MISMATCH, epath(A_CONNECTION, "location_m"))], only=True),
+    doc_case("c001-wrong-junction-class", _set(A_CONNECTION["id"], "junction_class", "brace"), VF,
+             [Expect(codes.CONNECTION_ASSIGNMENT_MISMATCH, epath(A_CONNECTION, "junction_class"))], only=True),
+    doc_case("c001-swapped-members", _set(A_CONNECTION["id"], "member_ids", A_CONNECTION["member_ids"][::-1]), VF,
+             [Expect(codes.CONNECTION_ASSIGNMENT_MISMATCH, epath(A_CONNECTION, "member_ids"))], only=True),
+    doc_case("c001-engineered-type-on-one-connection", _set(A_CONNECTION["id"], "connection_type", "STEEL_KNIFE_PLATE"), VF,
+             [Expect(codes.CONNECTION_ASSIGNMENT_MISMATCH, epath(A_CONNECTION, "connection_type"),
+                     (epath(FRAME, "connection_defaults") + '["post-beam"]',))], only=True),
     # D049: unique section labels
     doc_case("d049-duplicate-section-label", _set(_BEAM_SECTION["id"], "nominal_label", "8x8"), VF,
              [Expect(codes.DUPLICATE_SECTION_LABEL, *_label_paths())], only=True),
@@ -399,14 +426,10 @@ def test_mutation(case: Case):
         assert codes.CATALOG[issue.code].top_level_code == result.code
 
 
-# Codes raised only outside snapshot validation, with the test that exercises them. The three
-# connection conformance codes need a rule that generates connections (CONN-001); until then
-# they are exercised by direct tests of the shared comparison.
+# Codes raised only outside snapshot validation, with the test that exercises them. Since
+# CONN-001 every connection conformance code is reached by a fixture mutation above.
 NON_SNAPSHOT_CODES = {
     codes.DUPLICATE_PRICE_KEY: "test_estimating.py::test_invalid_books_are_rejected",
-    codes.MISSING_GENERATED_CONNECTION: "test_timber.py::test_connection_conformance_codes",
-    codes.CONNECTION_GEOMETRY_MISMATCH: "test_timber.py::test_connection_conformance_codes",
-    codes.CONNECTION_ASSIGNMENT_MISMATCH: "test_timber.py::test_connection_conformance_codes",
 }
 
 

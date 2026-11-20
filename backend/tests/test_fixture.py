@@ -32,8 +32,9 @@ def test_fixture_is_valid():
     result = validate_bytes(FIXTURE_BYTES)
     assert result.to_dict() == {"valid": True, "code": None, "issues": []}
     assert isinstance(result.snapshot, Snapshot)
-    # 12 non-generated records (D025 plus four D053 sections) and 193 members (TIMBER-002 §7).
-    assert len(result.snapshot.entities) == 206
+    # 13 non-generated records (D025 plus four D053 sections), 193 members (TIMBER-002 §7),
+    # and 312 connections (CONN-001 §6).
+    assert len(result.snapshot.entities) == 518
 
 
 def test_round_trip_is_lossless():

@@ -298,11 +298,11 @@ export interface components {
          * Command
          * @description Any VS-01 command envelope, discriminated by `type` (interfaces.md §2).
          */
-        Command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
+        Command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["SetConnectionType"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
         /** CommitRequest */
         CommitRequest: {
             /** Command */
-            command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
+            command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["SetConnectionType"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
             /**
              * Preview Token
              * @description Required for consequential commands that are not no-ops (D047).
@@ -367,6 +367,41 @@ export interface components {
              * @constant
              */
             schema_version: 1;
+        };
+        /**
+         * ConnectionChanges
+         * @description Generated connections the commit adds, removes, or changes (CONN-001 §7.2), shaped like `members`.
+         */
+        ConnectionChanges: {
+            /** Added */
+            added: components["schemas"]["ConnectionRef"][];
+            /** Removed */
+            removed: components["schemas"]["ConnectionRef"][];
+            /** Updated */
+            updated: string[];
+        };
+        /** ConnectionRef */
+        ConnectionRef: {
+            /** Generation Key */
+            generation_key: string;
+            /** Id */
+            id: string;
+        };
+        /**
+         * ConnectionTypeArgs
+         * @description D054, D059: a type per junction class, never per connection (CONN-001 §8.1).
+         */
+        ConnectionTypeArgs: {
+            /**
+             * Connection Type
+             * @enum {string}
+             */
+            connection_type: "PEGGED_MORTISE_TENON" | "BRIDLE" | "HOUSED_DOVETAIL" | "STEEL_KNIFE_PLATE" | "JOIST_HANGER";
+            /**
+             * Junction Class
+             * @enum {string}
+             */
+            junction_class: "post-beam" | "post-sill" | "brace" | "joist-beam" | "rafter-peak" | "rafter-foot" | "purlin-rafter";
         };
         /**
          * CreateProjectRequest
@@ -893,6 +928,7 @@ export interface components {
             command_hash: string;
             /** Confirmation Required */
             confirmation_required: boolean;
+            connections: components["schemas"]["ConnectionChanges"];
             /** Expires At */
             expires_at: string;
             /** Impacted Artifacts */
@@ -1138,6 +1174,21 @@ export interface components {
              * @constant
              */
             shape: "rectangular";
+        };
+        /** SetConnectionType */
+        SetConnectionType: {
+            args: components["schemas"]["ConnectionTypeArgs"];
+            /** Base Revision Id */
+            base_revision_id: string;
+            /** Command Id */
+            command_id: string;
+            /** Project Id */
+            project_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "SetConnectionType";
         };
         /** SetFootprintDimensions */
         SetFootprintDimensions: {

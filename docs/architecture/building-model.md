@@ -83,7 +83,7 @@ Approved as [MODEL-005](../implementation/tasks/MODEL-005.md) §12 items 1–2 a
   - Junction classes: `post-beam`, `post-sill`, `brace`, `joist-beam`, `rafter-peak`, `rafter-foot`, `purlin-rafter`.
   - Types: `PEGGED_MORTISE_TENON`, `BRIDLE`, `HOUSED_DOVETAIL`, `STEEL_KNIFE_PLATE`, `JOIST_HANGER`; allowed pairs per the D054 catalog.
   - Connections are generated, like members. Their IDs are minted from `"generation/" + generation_key` (D041), so generation keys are unique across members and connections together.
-  - *VS-02 amendment ([CONN-001](../implementation/tasks/CONN-001.md) §11 items 2–3, approved; not yet implemented):* the generation key is `connection/{junction_class}/{receiving member key}/{entering member key}`, so it never collides with member keys (which start with `frame/`) and survives exactly when both members survive and still meet. Connections regenerate whenever members do: a surviving key keeps its ID and its `member_ids`, a new key gets a minted ID, and a removed key is retired and never reused.
+  - **Generation key** ([CONN-001](../implementation/tasks/CONN-001.md) §5): the generation key is `connection/{junction_class}/{receiving member key}/{entering member key}`, so it never collides with member keys (which start with `frame/`) and survives exactly when both members survive and still meet. Connections regenerate whenever members do: a surviving key keeps its ID and its `member_ids`, a new key gets a minted ID, and a removed key is retired and never reused.
   - No capacity, fastener, or machining fields (D054).
 - **Schema file:** the snapshot schema is exported as `schemas/snapshot.v2.schema.json`. The command, artifact, and OpenAPI files keep their `v1` names, which follow the API version (interfaces.md §8).
 
@@ -113,7 +113,7 @@ Validation returns stable machine-readable codes and field paths, with human-rea
 
 ### 6.1 Detail codes
 
-Rows marked *Version 2* come from [MODEL-005](../implementation/tasks/MODEL-005.md) §12 item 3. `MISSING_GENERATED_CONNECTION`, `CONNECTION_GEOMETRY_MISMATCH`, and `CONNECTION_ASSIGNMENT_MISMATCH` cannot occur until a rule generates connections (`CONN-001`).
+Rows marked *Version 2* come from [MODEL-005](../implementation/tasks/MODEL-005.md) §12 item 3. The connection conformance codes are reachable from fixture mutations since `vs02-frame-1` generates connections ([CONN-001](../implementation/tasks/CONN-001.md)).
 
 Each detail code belongs to one stage, and the stage determines its top-level code. Adding a code is backward compatible. Renaming, removing, or moving a code to another stage requires a decision (D035). Checks that span several fields report the main field as `path` and the other contributing fields as `related_paths`, using the mapping in [D037](../product/decisions/D037-error-related-paths.md).
 

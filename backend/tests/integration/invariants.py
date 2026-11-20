@@ -38,6 +38,9 @@ class RevisionView:
     def members(self) -> dict[str, dict[str, Any]]:
         return {m["id"]: m for m in self.entities("TimberMember")}
 
+    def connections(self) -> dict[str, dict[str, Any]]:
+        return {c["id"]: c for c in self.entities("Connection")}
+
 
 def read_revision(api, pid: str, rev: str) -> RevisionView:
     response = api.get(f"/api/v1/projects/{pid}/revisions/{rev}")
@@ -118,6 +121,9 @@ def check_revision(api, pid: str, rev: str) -> RevisionView:
         assert close(aggregates[key]["total_length_m"], sum(lengths), EPS * len(lengths))
     assert sum(a["count"] for a in schedule["aggregates"]) == len(members)
 
+    # Connections reconcile with the frame (CONN-001 §6) and lie on both members' axes (§4.2, D058).
+    check_connections(view)
+
     # The estimate follows the schedule and never invents a total (artifacts §8.1, §10.4, §10.8).
     estimate_env = view.envelopes["preliminary_estimate"]
     estimate = estimate_env["payload"]
@@ -138,14 +144,67 @@ def check_revision(api, pid: str, rev: str) -> RevisionView:
     return view
 
 
+# Receiving and entering roles per junction class (D054, CONN-001 §4.2).
+JUNCTION_ROLES = {
+    "post-beam": ("POST", "BEAM"),
+    "post-sill": ("SILL", "POST"),
+    "brace": (("POST", "BEAM"), "KNEE_BRACE"),
+    "joist-beam": ("BEAM", "FLOOR_JOIST"),
+    "rafter-peak": ("PRINCIPAL_RAFTER", "PRINCIPAL_RAFTER"),
+    "rafter-foot": ("BEAM", "PRINCIPAL_RAFTER"),
+    "purlin-rafter": ("PRINCIPAL_RAFTER", "PURLIN"),
+}
+
+
+def _on_axis(point, start, end, eps: float = 1e-9) -> bool:
+    ab = [e - s for s, e in zip(start, end, strict=True)]
+    ap = [p - s for s, p in zip(start, point, strict=True)]
+    t = sum(a * b for a, b in zip(ap, ab, strict=True)) / sum(c * c for c in ab)
+    closest = [s + t * c for s, c in zip(start, ab, strict=True)]
+    return -eps <= t <= 1 + eps and math.dist(point, closest) <= eps
+
+
+def check_connections(view: RevisionView) -> None:
+    members = view.members()
+    connections = list(view.connections().values())
+    roles = Counter(m["member_role"] for m in members.values())
+    grid = view.one("TimberGrid")
+    nx, ny = len(grid["x_lines"]), len(grid["y_lines"])
+    expected = Counter({
+        "post-beam": 2 * roles["BEAM"],
+        "post-sill": nx * ny,
+        "brace": 2 * roles["KNEE_BRACE"],
+        "joist-beam": 2 * roles["FLOOR_JOIST"],
+        "rafter-peak": nx,
+        "rafter-foot": 2 * nx,
+        "purlin-rafter": 2 * roles["PURLIN"],
+    })
+    assert Counter(c["junction_class"] for c in connections) == +expected, "connection counts differ from CONN-001 §6"
+    defaults = view.one("FrameSystem")["connection_defaults"]
+    for c in connections:
+        receiving, entering = (members[i] for i in c["member_ids"])
+        want_receiving, want_entering = JUNCTION_ROLES[c["junction_class"]]
+        assert receiving["member_role"] in (want_receiving if isinstance(want_receiving, tuple) else (want_receiving,)), c["generation_key"]
+        assert entering["member_role"] == want_entering, c["generation_key"]
+        assert c["location_m"] in (entering["start_m"], entering["end_m"]), c["generation_key"]  # copied, bit for bit
+        assert _on_axis(c["location_m"], receiving["start_m"], receiving["end_m"]), c["generation_key"]
+        assert c["connection_type"] == defaults[c["junction_class"]]
+        assert c["generation_key"] == f"connection/{c['junction_class']}/{receiving['generation_key']}/{entering['generation_key']}"
+
+
 def check_transition(before: RevisionView, after: RevisionView, *, preserve_ids: bool = True) -> None:
-    """Surviving generation keys keep their member IDs (building-model §9.4, D042). Not for undo (D044)."""
+    """Surviving generation keys keep their member and connection IDs (building-model §9.4, D042;
+    CONN-001 §5.2), and a surviving connection keeps its members. Not for undo (D044)."""
     if not preserve_ids:
         return
-    old = {m["generation_key"]: m["id"] for m in before.entities("TimberMember")}
-    new = {m["generation_key"]: m["id"] for m in after.entities("TimberMember")}
-    changed = {k for k in old.keys() & new.keys() if old[k] != new[k]}
-    assert not changed, f"member IDs changed for surviving keys: {sorted(changed)[:5]}"
+    for kind in ("TimberMember", "Connection"):
+        old = {m["generation_key"]: m["id"] for m in before.entities(kind)}
+        new = {m["generation_key"]: m["id"] for m in after.entities(kind)}
+        changed = {k for k in old.keys() & new.keys() if old[k] != new[k]}
+        assert not changed, f"{kind} IDs changed for surviving keys: {sorted(changed)[:5]}"
+    old_members = {c["generation_key"]: c["member_ids"] for c in before.entities("Connection")}
+    for c in after.entities("Connection"):
+        assert old_members.get(c["generation_key"], c["member_ids"]) == c["member_ids"], c["generation_key"]
 
 
 @dataclass(frozen=True)

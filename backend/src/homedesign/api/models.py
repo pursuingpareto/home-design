@@ -106,6 +106,19 @@ class MemberChanges(_Strict):
     updated: list[str]
 
 
+class ConnectionRef(_Strict):
+    id: str
+    generation_key: str
+
+
+class ConnectionChanges(_Strict):
+    """Generated connections the commit adds, removes, or changes (CONN-001 §7.2), shaped like `members`."""
+
+    added: list[ConnectionRef]
+    removed: list[ConnectionRef]
+    updated: list[str]
+
+
 class PreviewWarning(_Strict):
     code: str
     message: str
@@ -123,6 +136,7 @@ class PreviewResponse(_Strict):
     is_noop: bool
     changes: list[FieldChange]
     members: MemberChanges
+    connections: ConnectionChanges
     impacted_artifacts: list[str]
     warnings: list[PreviewWarning]
 

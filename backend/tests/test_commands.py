@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections import Counter
 
 import jsonschema
 import pytest
@@ -85,6 +86,16 @@ def members_by_key(snapshot):
     return {m.generation_key: m for m in of_kind(snapshot, "TimberMember")}
 
 
+def connections_by_key(snapshot):
+    return {c.generation_key: c for c in of_kind(snapshot, "Connection")}
+
+
+def classes(entries):
+    """Connection counts per junction class, from preview entries or generation keys."""
+    keys = [e["generation_key"] if isinstance(e, dict) else e for e in entries]
+    return dict(Counter(k.split("/")[1] for k in keys))
+
+
 def token(key, line_id):
     return re.search(rf"(^|[/-]){line_id}([/-]|$)", key) is not None
 
@@ -100,14 +111,23 @@ def test_width_change_preserves_member_ids():
     # gains a sixth joist at 12'-0" in both spans (TIMBER-002 §5.4).
     assert before.keys() <= after.keys()
     assert all(after[k].id == m.id for k, m in before.items())
-    added = sorted(m["generation_key"] for m in change.members_added)
+    added = sorted(m["generation_key"] for m in change.members.added)
     assert added == sorted(f"frame/axis-y/{bay}/j6/{span}/plane-L1/joist" for bay in ("x0-x1", "x1-x2", "x2-x3") for span in ("y0-y1", "y1-y2"))
-    assert not change.members_removed
+    assert not change.members.removed
     # Exactly the members whose axes move are updated; members tied to x = 0 alone do not move.
     moved = {m.id for k, m in before.items() if (m.start_m, m.end_m) != (after[k].start_m, after[k].end_m)}
-    assert set(change.members_updated) == moved
-    assert len(change.members_updated) == 155
-    assert [(c["entity_kind"], c["field"]) for c in change.changes] == [("Footprint", "width_m"), ("FrameSystem", "member_ids")]
+    assert set(change.members.updated) == moved
+    assert len(change.members.updated) == 155
+    # CONN-001 §5.3: every connection key survives with its ID; the six new joists add two
+    # joist-beam connections each. Connections at x = 0 alone stay put: 3 post-sill, 14 post-beam
+    # (the x0 Y beams' ends and the X beams' starts), 28 brace, 1 rafter-peak, and 2 rafter-foot.
+    assert classes(change.connections.added) == {"joist-beam": 12} and not change.connections.removed
+    assert len(change.connections.updated) == 312 - 72 == 240
+    before_c, after_c = connections_by_key(BASE), connections_by_key(cand)
+    assert all(after_c[k].id == c.id and after_c[k].member_ids == c.member_ids for k, c in before_c.items())
+    assert [(c["entity_kind"], c["field"]) for c in change.changes] == [
+        ("Footprint", "width_m"), ("FrameSystem", "connection_ids"), ("FrameSystem", "member_ids"),
+    ]
     assert change.classification == "consequential" and change.confirmation_required
 
 
@@ -124,10 +144,10 @@ def test_removing_interior_line_retires_exactly_its_members():
     x = [line for line in lines("x_lines") if line["id"] != "x2"]
     change = run("SetTimberGrid", {"x_lines": x, "y_lines": lines("y_lines")}).change
     before = members_by_key(BASE)
-    removed = {m["generation_key"] for m in change.members_removed}
+    removed = {m["generation_key"] for m in change.members.removed}
     # The x2 posts, and every sill, beam, brace, joist, rafter, and purlin of the x1-x2 and x2-x3 bays.
     assert removed == {k for k in before if token(k, "x2")} and len(removed) == 92
-    added = {m["generation_key"]: m["id"] for m in change.members_added}
+    added = {m["generation_key"]: m["id"] for m in change.members.added}
     # The merged 24' bay: 3 sills, 6 beams, 12 braces, 22 joists (11 per span), 4 purlins.
     assert set(added) == {k for k in members_by_key(change.candidate) if "x1-x3" in k} and len(added) == 47
     for key, member_id in added.items():
@@ -135,6 +155,16 @@ def test_removing_interior_line_retires_exactly_its_members():
     after = members_by_key(change.candidate)
     for key in before.keys() - removed:
         assert after[key].id == before[key].id
+    # CONN-001 §5.3: the retired members' connections go (two per beam, brace, joist, and purlin
+    # of the two bays, the x2 post feet, and the x2 rafter pair), and the merged bay's come back.
+    # No surviving connection moves.
+    assert classes(change.connections.removed) == {
+        "brace": 64, "joist-beam": 40, "post-beam": 32, "post-sill": 3, "purlin-rafter": 16, "rafter-foot": 2, "rafter-peak": 1,
+    }
+    assert classes(change.connections.added) == {"brace": 24, "joist-beam": 44, "post-beam": 12, "purlin-rafter": 8}
+    assert not change.connections.updated
+    for c in change.connections.added:
+        assert c["id"] == mint("entity", P, ACTOR, CID, "generation/" + c["generation_key"])  # D041
 
 
 def test_inserting_line_mints_next_line_id():
@@ -144,8 +174,12 @@ def test_inserting_line_mints_next_line_id():
     grid = one(change.candidate, "TimberGrid")
     assert [line.id for line in grid.x_lines] == ["x0", "x1", "x4", "x2", "x3"]
     # The split bay's 35 members are retired; the two new bays and the x4 posts and rafters are added.
-    assert len(change.members_added) == 80 and len(change.members_removed) == 35
-    assert {m["generation_key"] for m in change.members_removed} == {k for k in members_by_key(BASE) if "x1-x2" in k}
+    assert len(change.members.added) == 80 and len(change.members.removed) == 35
+    # Connections of the split bay's 32 members (two ends each) go; the new bays' and the x4
+    # posts' and rafters' connections come.
+    assert len(change.connections.removed) == 64 and len(change.connections.added) == 134
+    assert classes(change.connections.added)["post-sill"] == 3 and classes(change.connections.added)["rafter-peak"] == 1
+    assert {m["generation_key"] for m in change.members.removed} == {k for k in members_by_key(BASE) if "x1-x2" in k}
     before, after = members_by_key(BASE), members_by_key(change.candidate)
     for key in ("frame/x0/y0/level-0/post", "frame/x3/y2/level-1/post"):
         assert after[key].id == before[key].id
@@ -166,7 +200,9 @@ def test_story_heights():
     change = run("SetStoryHeights", {"story_heights_m": [3.3528, 2.7432]}).change
     l0, l1 = (next(e for e in change.candidate.entities if e.id == i) for i in change.candidate.building.level_ids)
     assert (l0.elevation_m, l0.story_height_m, l1.elevation_m, l1.story_height_m) == (0.0, 3.3528, 3.3528, 2.7432)
-    assert change.members_updated and not change.members_added
+    assert change.members.updated and not change.members.added
+    # Every connection above Level 0 moves; the 12 post feet stay on Level 0.
+    assert len(change.connections.updated) == 300 and not (change.connections.added or change.connections.removed)
 
 
 def test_roof_is_consequential_and_moves_rafters_and_purlins():
@@ -174,14 +210,18 @@ def test_roof_is_consequential_and_moves_rafters_and_purlins():
     change = run("SetGableRoofParameters", {"pitch_rad": 0.5, "eave_overhang_m": 0.3048}).change
     assert change.classification == "consequential" and change.confirmation_required
     assert {c["field"] for c in change.changes} == {"pitch_rad", "eave_overhang_m"}
-    assert not (change.members_added or change.members_removed)
+    assert not (change.members.added or change.members.removed)
     roles = {m.id: m.member_role for m in of_kind(BASE, "TimberMember")}
-    assert {roles[i] for i in change.members_updated} == {"PRINCIPAL_RAFTER", "PURLIN"} and len(change.members_updated) == 20
+    assert {roles[i] for i in change.members.updated} == {"PRINCIPAL_RAFTER", "PURLIN"} and len(change.members.updated) == 20
+    # Only the tan-derived locations move: peaks and purlin ends. Rafter feet stay at z_eave.
+    by_id = {c.id: c.junction_class for c in of_kind(BASE, "Connection")}
+    assert Counter(by_id[i] for i in change.connections.updated) == {"purlin-rafter": 24, "rafter-peak": 4}
 
 
 def test_overhang_alone_moves_no_member():
     change = run("SetGableRoofParameters", {"pitch_rad": ROOF.pitch_rad, "eave_overhang_m": 0.3048}).change
-    assert not (change.members_added or change.members_removed or change.members_updated)  # D058: no rafter tails
+    assert not (change.members.added or change.members.removed or change.members.updated)  # D058: no rafter tails
+    assert not (change.connections.added or change.connections.removed or change.connections.updated)
 
 
 def test_frame_parameters():
@@ -189,13 +229,20 @@ def test_frame_parameters():
     args = {"joist_spacing_m": 0.4064, "purlins_per_slope": 3, "knee_brace_leg_m": 0.9144, "knee_braces_level_1": True, "knee_braces_eave": False}
     change = run("SetFrameParameters", args).change
     assert change.classification == "consequential"
-    assert [(c["entity_kind"], c["field"]) for c in change.changes] == [("FrameSystem", "member_ids"), ("FrameSystem", "parameters")]
-    removed = {m["generation_key"] for m in change.members_removed}
-    added = {m["generation_key"] for m in change.members_added}
+    assert [(c["entity_kind"], c["field"]) for c in change.changes] == [
+        ("FrameSystem", "connection_ids"), ("FrameSystem", "member_ids"), ("FrameSystem", "parameters"),
+    ]
+    removed = {m["generation_key"] for m in change.members.removed}
+    added = {m["generation_key"] for m in change.members.added}
     assert {k for k in removed if "/brace/" in k} == {k for k in members_by_key(BASE) if "plane-eave/brace" in k}
     assert all("/p3/" in k or "/j" in k for k in added)  # 16" spacing: j6–j8; a third purlin
     before, after = members_by_key(BASE), members_by_key(change.candidate)
     assert all(after[k].id == before[k].id for k in before.keys() & after.keys())
+    # Eave braces off: 34 braces, two connections each. 16" joists: 3 more per span (j6–j8), two
+    # ends each, in 6 spans; every joist moves. A third purlin: 2 slopes × 3 bays × 2 ends; p1 and p2 move.
+    assert classes(change.connections.removed) == {"brace": 68}
+    assert classes(change.connections.added) == {"joist-beam": 36, "purlin-rafter": 12}
+    assert len(change.connections.updated) == 60 + 24
 
 
 def test_frame_parameters_no_op_and_errors():
@@ -232,7 +279,7 @@ def test_add_section_then_use_it():
     assert added.classification == "routine"
     assert [(c["entity_kind"], c["entity_id"], c["field"], c["before"]) for c in added.changes] == [("Section", section_id, "", None)]
     used = run("SetMemberSection", {"role": "POST", "section_id": section_id}, base=added.candidate, cid="22222222-2222-4222-8222-222222222222").change
-    assert len(used.members_updated) == 24
+    assert len(used.members.updated) == 24
     assert all(m.section_id == section_id for m in of_kind(used.candidate, "TimberMember") if m.member_role == "POST")
 
 
@@ -342,7 +389,7 @@ def test_two_actors_same_command_id_mint_different_ids():
     a = run("SetTimberGrid", args, actor=ACTOR).change
     b = run("SetTimberGrid", args, actor=ACTOR_B).change
     assert a.revision_id != b.revision_id
-    assert not {m["id"] for m in a.members_added} & {m["id"] for m in b.members_added}
+    assert not {m["id"] for m in a.members.added} & {m["id"] for m in b.members.added}
 
 
 # --- 9. undo ------------------------------------------------------------------------
@@ -356,7 +403,8 @@ def test_undo_round_trip_restores_original_ids():
     assert cand.parent_revision_id == mid.revision_id and cand.revision_id not in (BASE.revision_id, mid.revision_id)
     content = lambda s: canonical_json({"building": s.model_dump(mode="json")["building"], "entities": sorted(s.model_dump(mode="json")["entities"], key=lambda e: e["id"])})  # noqa: E731
     assert content(cand) == content(BASE)
-    assert {m["id"] for m in undo.members_added} == {m["id"] for m in removed.members_removed}  # D044: original IDs
+    assert {m["id"] for m in undo.members.added} == {m["id"] for m in removed.members.removed}  # D044: original IDs
+    assert {c["id"] for c in undo.connections.added} == {c["id"] for c in removed.connections.removed}
 
 
 def test_undo_to_identical_content_is_noop():
@@ -378,9 +426,10 @@ def test_created_project_equals_fixture_exactly():
     result = create()
     change, cand = result.change, result.change.candidate
     assert cand.parent_revision_id is None and cand.project_id == P
-    assert len(change.members_added) == 193 and change.classification == "consequential"
+    assert len(change.members.added) == 193 and change.classification == "consequential"
+    assert len(change.connections.added) == 312  # CONN-001 §5.2: minted by the regeneration
     id_map = {}
-    fixture_records = [FIXTURE["building"], *(e for e in FIXTURE["entities"] if e["kind"] != "TimberMember")]
+    fixture_records = [FIXTURE["building"], *(e for e in FIXTURE["entities"] if e["kind"] not in ("TimberMember", "Connection"))]
     for record in fixture_records:
         id_map[record["id"]] = mint("entity", P, ACTOR, CREATE_ID, "template/" + record["id"])
 
@@ -396,6 +445,7 @@ def test_created_project_equals_fixture_exactly():
         expected = remap(record)
         if record["kind"] == "FrameSystem":
             expected["member_ids"] = created[expected["id"]]["member_ids"]
+            expected["connection_ids"] = created[expected["id"]]["connection_ids"]
         assert created[expected["id"]] == expected
     fixture_members = {e["generation_key"]: e for e in FIXTURE["entities"] if e["kind"] == "TimberMember"}
     for key, member in members_by_key(cand).items():
@@ -404,6 +454,16 @@ def test_created_project_equals_fixture_exactly():
         assert (member.member_role, member.section_id, member.material_id) == (f["member_role"], id_map[f["section_id"]], id_map[f["material_id"]])
         assert (member.start_m, member.end_m) == (f["start_m"], f["end_m"])  # bit-identical
     assert set(fixture_members) == set(members_by_key(cand))
+    member_keys = {m.id: m.generation_key for m in of_kind(cand, "TimberMember")}
+    fixture_member_keys = {m["id"]: k for k, m in fixture_members.items()}
+    fixture_connections = {e["generation_key"]: e for e in FIXTURE["entities"] if e["kind"] == "Connection"}
+    assert set(fixture_connections) == set(connections_by_key(cand))
+    for key, connection in connections_by_key(cand).items():
+        f = fixture_connections[key]
+        assert connection.id == mint("entity", P, ACTOR, CREATE_ID, "generation/" + key)
+        assert (connection.junction_class, connection.connection_type) == (f["junction_class"], f["connection_type"])
+        assert [member_keys[i] for i in connection.member_ids] == [fixture_member_keys[i] for i in f["member_ids"]]
+        assert connection.location_m == f["location_m"]  # bit-identical
 
 
 def test_two_projects_share_no_ids():
@@ -426,13 +486,14 @@ def test_noop_on_generated_base():
     preview = change.to_preview_dict()
     assert change.is_noop and preview["revision_id"] is None and preview["confirmation_required"] is False
     assert preview["changes"] == [] and preview["members"] == {"added": [], "removed": [], "updated": []}
+    assert preview["connections"] == {"added": [], "removed": [], "updated": []}  # D045
 
 
 def test_fixture_base_is_exact_generator_output():
     # TIMBER-002 §7: regenerating the fixture with its own parameters changes nothing.
     fixture = Snapshot.model_validate(FIXTURE)
     change = run("SetFootprintDimensions", {"width_m": 10.9728, "depth_m": 7.3152}, base=fixture).change
-    assert change.is_noop and not change.members_updated and change.changes == ()
+    assert change.is_noop and not change.members.updated and change.changes == ()
 
 
 # --- preview contract and classification -----------------------------------------------
@@ -442,7 +503,7 @@ def test_preview_dict_shape():
     preview = run("SetFootprintDimensions", {"width_m": 12.192, "depth_m": FP.depth_m}).change.to_preview_dict()
     assert set(preview) == {
         "base_revision_id", "revision_id", "command_hash", "classification", "classification_version",
-        "confirmation_required", "is_noop", "changes", "members", "impacted_artifacts", "warnings",
+        "confirmation_required", "is_noop", "changes", "members", "connections", "impacted_artifacts", "warnings",
     }
     assert preview["classification_version"] == CLASSIFICATION_VERSION
     assert preview["impacted_artifacts"] == ["mesh3d", "plan2d", "preliminary_estimate", "timber_schedule"]

@@ -61,6 +61,42 @@
       "title": "AddSectionArgs",
       "type": "object"
     },
+    "ConnectionTypeArgs": {
+      "additionalProperties": false,
+      "description": "D054, D059: a type per junction class, never per connection (CONN-001 §8.1).",
+      "properties": {
+        "connection_type": {
+          "enum": [
+            "PEGGED_MORTISE_TENON",
+            "BRIDLE",
+            "HOUSED_DOVETAIL",
+            "STEEL_KNIFE_PLATE",
+            "JOIST_HANGER"
+          ],
+          "title": "Connection Type",
+          "type": "string"
+        },
+        "junction_class": {
+          "enum": [
+            "post-beam",
+            "post-sill",
+            "brace",
+            "joist-beam",
+            "rafter-peak",
+            "rafter-foot",
+            "purlin-rafter"
+          ],
+          "title": "Junction Class",
+          "type": "string"
+        }
+      },
+      "required": [
+        "junction_class",
+        "connection_type"
+      ],
+      "title": "ConnectionTypeArgs",
+      "type": "object"
+    },
     "CreateReferenceProject": {
       "additionalProperties": false,
       "description": "Creation envelope: no project or base revision exists yet (interfaces.md §2).",
@@ -214,6 +250,43 @@
       "additionalProperties": false,
       "properties": {},
       "title": "NoArgs",
+      "type": "object"
+    },
+    "SetConnectionType": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/ConnectionTypeArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetConnectionType",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetConnectionType",
       "type": "object"
     },
     "SetFootprintDimensions": {
@@ -541,6 +614,7 @@
     "mapping": {
       "AddSection": "#/$defs/AddSection",
       "CreateReferenceProject": "#/$defs/CreateReferenceProject",
+      "SetConnectionType": "#/$defs/SetConnectionType",
       "SetFootprintDimensions": "#/$defs/SetFootprintDimensions",
       "SetFrameParameters": "#/$defs/SetFrameParameters",
       "SetGableRoofParameters": "#/$defs/SetGableRoofParameters",
@@ -572,6 +646,9 @@
     },
     {
       "$ref": "#/$defs/SetFrameParameters"
+    },
+    {
+      "$ref": "#/$defs/SetConnectionType"
     },
     {
       "$ref": "#/$defs/AddSection"
