@@ -1,6 +1,6 @@
 # TEST-002 — VS-02 traceability, the golden scenario's new commands, and budgets
 
-**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12; item 6 is approved.  
+**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12; items 6 and 7 are approved.  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes.  
 **Slice:** VS-02  
 **Depends on:** `MODEL-005`, `TIMBER-002`, `CONN-001`, `ART-002`, `DEP-001`, and `UI-003` (all done; `main` at `e632578`). Merges on its own, with CI passing ([vs-02.md](../acceptance-tests/vs-02.md) §12.2).  
@@ -204,7 +204,7 @@ The `ci` profile is derandomized, so the gate is deterministic: it fails only wh
 
 No product document sets a size or time target, and requirements.md has no performance requirement. Budgets are therefore new requirements, for the product owner. The proposals below are ceilings that catch regressions, not targets to tune toward.
 
-### 8.1 Payload size (item 7, judgment)
+### 8.1 Payload size (item 7, judgment; approved 2026-11-20)
 
 **Measured** (ART-002 §17; RFC 8785 canonical bytes of the payload):
 
@@ -319,7 +319,7 @@ Any change that is not a confirmation is a small UI change of its own, outside t
 **Your judgment** (one at a time, in this order):
 
 6. **Matrix form and drift check** (§5.1–5.2): a separate `vs-02-traceability.md`; one row per criterion bullet (17 AC rows) plus the 7 VS-02 contract checks; enforced against vs-02.md's IDs **and wording**, so a reworded criterion fails until its row is reviewed. *Alternatives:* one row per criterion; VS-02 sections in the VS-01 file; IDs only. **Approved as proposed (2026-11-20):** one row per bullet, checked against IDs and wording.
-7. **Payload size budgets** (§8.1): each payload at most 256 KiB for the reference house and 2 MB for the largest supported case, in canonical bytes, gated in CI. *Alternatives:* no size budget; tighter ceilings.
+7. **Payload size budgets** (§8.1): each payload at most 256 KiB for the reference house and 2 MB for the largest supported case, in canonical bytes, gated in CI. *Alternatives:* no size budget; tighter ceilings. **Approved as proposed (2026-11-20).**
 8. **Time budgets** (§8.2): ceilings at about 5–10× today (preview 1 s for the reference house and 5 s for the largest case; commit 5 s for the largest case; in the browser, 10 s to first render and 3 s to the preview dialog), median of 5, gated in CI, with a stop-and-report rule above half a ceiling. *Alternatives:* report only, with no ceiling; user-facing targets in a production build.
 9. **UI-003's four flagged choices** (§10), each confirmed as implemented, or changed in a UI change of its own: (a) untouched Connections rows disabled; (b) per-key dialog rows; (c) "Steel knife plate"; (d) the brace-fit pointer naming Footprint too.
 
