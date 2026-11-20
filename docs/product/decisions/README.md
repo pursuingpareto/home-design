@@ -62,6 +62,7 @@
 - D060: [VS-02 artifact payloads](D060-vs02-artifact-payloads.md) — a fourth `roof` plan plane for rafters, purlins, and their connections; plumb purlins in 3D; ART-002 ships the interim browser changes, including per-piece prices; amends D027 (implemented, ART-002).
 - D061: [VS-02 selector contents](D061-vs02-selector-contents.md) — selections hold exactly what each builder reads, after its projections (AC2-04 governs over D056 item 4's lists); builders take their selection as their only model input; DEP-001 carries the if-and-only-if impact property; refines D056 (implemented, DEP-001).
 - D062: [VS-02 browser connections](D062-vs02-browser-connections.md) — one marker glyph per shared point; 3D markers drawn over members, with one Connections switch; connection types in a new Connections tab; the editor's catalog generated from the backend; resolves D060's coincident-marker point (implemented, UI-003).
+- D063: [VS-02 traceability and budgets](D063-vs02-traceability-and-budgets.md) — a separate VS-02 matrix with one row per criterion bullet and the VS-02 contract checks, checked against vs-02.md's IDs and wording; payload size ceilings of 256 KiB (reference house) and 2 MB (largest supported case); time ceilings gated in CI at about 5–10× today (confirmed; TEST-002).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 

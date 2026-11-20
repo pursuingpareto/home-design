@@ -1,6 +1,6 @@
 # TEST-002 — VS-02 traceability, the golden scenario's new commands, and budgets
 
-**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12; items 6 and 7 are approved.  
+**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12; items 6–8 are approved and recorded as [D063](../../product/decisions/D063-vs02-traceability-and-budgets.md).  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes.  
 **Slice:** VS-02  
 **Depends on:** `MODEL-005`, `TIMBER-002`, `CONN-001`, `ART-002`, `DEP-001`, and `UI-003` (all done; `main` at `e632578`). Merges on its own, with CI passing ([vs-02.md](../acceptance-tests/vs-02.md) §12.2).  
@@ -226,7 +226,7 @@ Canonical bytes are measured, not HTTP bodies: they are deterministic and indepe
 - **no size budget:** the golden record already fixes the scenario's payloads exactly, so any change is reviewed; but nothing bounds growth in the largest case;
 - **tighter ceilings** (for example 1.25× today): they flag growth sooner, and fail on ordinary VS-02b additions.
 
-### 8.2 Preview, commit, and render time (item 8, judgment)
+### 8.2 Preview, commit, and render time (item 8, judgment; approved 2026-11-20)
 
 **Measured:**
 
@@ -320,10 +320,10 @@ Any change that is not a confirmation is a small UI change of its own, outside t
 
 6. **Matrix form and drift check** (§5.1–5.2): a separate `vs-02-traceability.md`; one row per criterion bullet (17 AC rows) plus the 7 VS-02 contract checks; enforced against vs-02.md's IDs **and wording**, so a reworded criterion fails until its row is reviewed. *Alternatives:* one row per criterion; VS-02 sections in the VS-01 file; IDs only. **Approved as proposed (2026-11-20):** one row per bullet, checked against IDs and wording.
 7. **Payload size budgets** (§8.1): each payload at most 256 KiB for the reference house and 2 MB for the largest supported case, in canonical bytes, gated in CI. *Alternatives:* no size budget; tighter ceilings. **Approved as proposed (2026-11-20).**
-8. **Time budgets** (§8.2): ceilings at about 5–10× today (preview 1 s for the reference house and 5 s for the largest case; commit 5 s for the largest case; in the browser, 10 s to first render and 3 s to the preview dialog), median of 5, gated in CI, with a stop-and-report rule above half a ceiling. *Alternatives:* report only, with no ceiling; user-facing targets in a production build.
+8. **Time budgets** (§8.2): ceilings at about 5–10× today (preview 1 s for the reference house and 5 s for the largest case; commit 5 s for the largest case; in the browser, 10 s to first render and 3 s to the preview dialog), median of 5, gated in CI, with a stop-and-report rule above half a ceiling. *Alternatives:* report only, with no ceiling; user-facing targets in a production build. **Approved as proposed (2026-11-20).**
 9. **UI-003's four flagged choices** (§10), each confirmed as implemented, or changed in a UI change of its own: (a) untouched Connections rows disabled; (b) per-key dialog rows; (c) "Steel knife plate"; (d) the brace-fit pointer naming Footprint too.
 
-Items 6–8, once approved, are recorded as D063.
+Items 6–8 are approved and recorded as **[D063](../../product/decisions/D063-vs02-traceability-and-budgets.md)**.
 
 ## 13. Acceptance criteria and automated tests
 

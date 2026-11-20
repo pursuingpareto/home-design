@@ -6,7 +6,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 ## Next steps
 
-1. Review [TEST-002](tasks/TEST-002.md)'s §12 proposals: the five routine items together, then the four judgment items one at a time (the matrix form and its drift check, payload size budgets, time budgets, and UI-003's four flagged choices). The approved judgment items are recorded as D063.
+1. Finish reviewing [TEST-002](tasks/TEST-002.md)'s §12 proposals. Judgment items 6–8 (the matrix form and its drift check, payload size budgets, and time budgets) are approved and recorded as [D063](../product/decisions/D063-vs02-traceability-and-budgets.md). Item 9 (UI-003's four flagged choices) and the five routine items remain.
 2. Implement `TEST-002` in a fresh session once approved. VS-02 is then complete.
 3. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
