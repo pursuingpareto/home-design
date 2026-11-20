@@ -6,6 +6,7 @@
 **Amended (2026-11-19):** the envelope and manifest gain a `head` flag, true only when the artifact is for the current head ([ART-001](../../implementation/tasks/ART-001.md) §8, item 4). The change is additive; all other fields are unchanged.  
 **Amended by:** [D048](D048-roof-plane-through-wall-line.md) — the `mesh3d` roof surfaces' overhang edge is at 5.334 m (true 9/12 slope), not 5.7912 m; the ridge stays at 8.5344 m.  
 **Amended (2026-11-19):** price-book metadata (`currency`, `as_of`, `source`, `geography`) is book-level rather than per row; books are versioned per project ([EST-001](../../implementation/tasks/EST-001.md) §7, item 4; artifacts.md §8.2).
+**Amended by, when implemented:** [D060](D060-vs02-artifact-payloads.md) and [ART-002](../../implementation/tasks/ART-002.md) — version 2 payloads: `plan2d` gains a `roof` plane and an array per role, and loses `section_id`; connection markers in `plan2d` and `mesh3d`; connections and counts in `timber_schedule`; `kind`-discriminated estimate lines with "each" connection lines; price-book rows in `m` or `each`.
 
 ## Decision
 

@@ -2,11 +2,11 @@
 
 The single status document for the project ([AGENTS.md](../../AGENTS.md), "Documentation maintenance"). Update it whenever a task's status changes. Decisions are in the [decision register](../product/decisions/README.md); each task file holds its own implementation notes.
 
-**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), and its connections (312, D059) with `SetConnectionType` are done. Version 2 payloads, dependency selectors, browser support, and traceability remain.
+**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), and its connections (312, D059) with `SetConnectionType` are done. Version 2 payloads (ART-002, specified and approved), dependency selectors, browser support, and traceability remain.
 
 ## Next steps
 
-1. Draft `ART-002` in a fresh session. Include the D059 assumption line: joints without a junction class (post splices, sill joints) are not counted. The connection records it presents are described in [CONN-001](tasks/CONN-001.md) §15.
+1. Implement [ART-002](tasks/ART-002.md) in a fresh session. Its §12 proposals are approved; items 8–10 are [D060](../product/decisions/D060-vs02-artifact-payloads.md). Its §10 lists what each derivation reads, as input for `DEP-001`.
 2. Then `DEP-001`, `UI-003`, and `TEST-002`, in the order of [vs-02.md](acceptance-tests/vs-02.md) §12.2.
 3. Optional: make the CI workflow required for merges to `main` (a GitHub repository setting).
 
@@ -44,7 +44,7 @@ The [task index](tasks/README.md) describes what a task file contains.
 | [MODEL-005](tasks/MODEL-005.md) | VS-02: schema version 2 (new roles, `Connection`, frame parameters), retire version 1, frame parameter commands; merges together with TIMBER-002 | Done (2026-11-19), with TIMBER-002 |
 | [TIMBER-002](tasks/TIMBER-002.md) | VS-02: `vs02-frame-1` (sills, joists, principal rafters, purlins, knee braces), Reference House 001 v2 fixture, ECMAScript oracle | Done (2026-11-19), with MODEL-005 |
 | [CONN-001](tasks/CONN-001.md) | VS-02: connection generation per junction class (312 connections for Reference House 001 v2), preview connection diff, `SetConnectionType` | Done (2026-11-20; [D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md)) |
-| ART-002 | VS-02: version 2 plan, mesh, schedule, and estimate payloads; "each" price-book rows | Not drafted — **next** |
+| [ART-002](tasks/ART-002.md) | VS-02: version 2 plan, mesh, schedule, and estimate payloads; "each" price-book rows | Approved, not started (2026-11-20; [D060](../product/decisions/D060-vs02-artifact-payloads.md)) — **next** |
 | DEP-001 | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Not drafted |
 | UI-003 | VS-02: browser support for the complete frame and connections | Not drafted |
 | TEST-002 | VS-02: traceability, golden scenario, and the impact property for AC2-01 to AC2-09 | Not drafted |
