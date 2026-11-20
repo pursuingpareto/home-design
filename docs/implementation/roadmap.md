@@ -8,7 +8,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 1. Draft `DEP-001` (dependency selectors and exact `impacted_artifacts`, [D056](../product/decisions/D056-dependency-selectors.md)) in a fresh session. [ART-002](tasks/ART-002.md) §10 lists what each derivation reads, and its two consequences (a pitch-only roof edit leaves `plan2d` unchanged; the plan's selector hashes plan projections, not 3D axes).
 2. Then `UI-003` and `TEST-002`, in the order of [vs-02.md](acceptance-tests/vs-02.md) §12.2.
-3. Optional: make the CI workflow required for merges to `main` (a GitHub repository setting).
+3. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
 

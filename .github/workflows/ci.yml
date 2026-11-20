@@ -1,11 +1,13 @@
-# TEST-001 §8: every check on pushes to main and on pull requests. Mirrors scripts/check.sh.
+# TEST-001 §8: every check on pull requests. Mirrors scripts/check.sh.
+# main only moves by fast-forward to a commit whose pull request passed (AGENTS.md), so there is no
+# separate run on pushes to main; a ruleset on main requires these checks. Run by hand with
+# workflow_dispatch.
 # Third-party actions are pinned to full commit SHAs; the comment names the version.
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read

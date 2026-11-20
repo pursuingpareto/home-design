@@ -152,7 +152,9 @@ Any failing example Hypothesis finds is added as an explicit regression test.
 3. **Frontend:** `npm ci`, `check:api`, `typecheck`, Vitest, and `build`.
 4. **End to end:** Playwright in Chromium.
 
-**GitHub Actions** (proposal 6): `.github/workflows/ci.yml` runs on pushes to `main` and on pull requests. It has four jobs mirroring the steps above:
+**GitHub Actions** (proposal 6): `.github/workflows/ci.yml` runs on pull requests, and by hand (`workflow_dispatch`). It has four jobs mirroring the steps above:
+
+> **Amended (2026-11-20, by the product owner):** the workflow no longer runs on pushes to `main`. `main` only moves by fast-forward to a commit whose pull request passed (AGENTS.md, "CI before `main` moves"), so that run tested identical code a second time. A ruleset on `main` that requires the four checks replaces it as the guard against unchecked commits.
 
 | Job | Runs on | Needs |
 |---|---|---|
@@ -164,7 +166,7 @@ Any failing example Hypothesis finds is added as an explicit regression test.
 - **Pinned actions:** third-party actions are pinned to full commit SHAs, with the version in a comment, so the workflow cannot change underneath us.
 - **Postgres in CI:** the backend job sets `HOMEDESIGN_TEST_DATABASE_URL` to the service container. The existing name guard (`homedesign_test`) applies unchanged.
 - **No secrets** are needed. The preview key and development tokens in tests are test-only values, already in the test configuration.
-- **Nothing runs on GitHub until the branch is pushed.** Requiring the workflow before merging (branch protection) is a repository setting for the owner.
+- **Nothing runs on GitHub until a pull request is opened.** Requiring the checks on `main` (a ruleset) is a repository setting for the owner.
 
 **Determinism and flakes** (proposal 7):
 - No automatic retries, locally or in CI. A flaky test is a bug.
@@ -178,7 +180,7 @@ Any failing example Hypothesis finds is added as an explicit regression test.
 3. ~~**Golden scenario fingerprints** (§6):~~ **Approved** (2026-11-19). a committed per-revision record of snapshot, artifact-input, and payload fingerprints, with a drift check. Intended output changes appear as reviewed diffs.
 4. ~~**Property-based sequences** (§7):~~ **Approved** (2026-11-19). Hypothesis-generated command sequences, deterministic in CI (40 sequences), with a `thorough` profile on demand.
 5. ~~**`scripts/check.sh`** (§8):~~ **Approved** (2026-11-19). one local command for everything CI runs. The alternative is a Makefile, which is less portable on Windows and adds no capability here.
-6. ~~**GitHub Actions CI** (§8):~~ **Approved** (2026-11-19). four jobs on pushes to `main` and on pull requests, with PostgreSQL 18 and Node 22, actions pinned to SHAs, and traces uploaded on failure. The repository is already on GitHub. Turning on branch protection stays with the owner.
+6. ~~**GitHub Actions CI** (§8):~~ **Approved** (2026-11-19). four jobs on pushes to `main` and on pull requests (pull requests only since 2026-11-20, §8), with PostgreSQL 18 and Node 22, actions pinned to SHAs, and traces uploaded on failure. The repository is already on GitHub. Turning on branch protection stays with the owner.
 7. ~~**Flake policy** (§8):~~ **Approved** (2026-11-19). no automatic retries; fixed clocks and seeds; quarantine only with a tracking issue, reflected in the matrix.
 
 ## 10. Acceptance criteria
