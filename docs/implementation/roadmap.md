@@ -8,7 +8,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 1. Implement [ART-002](tasks/ART-002.md) in a fresh session. Its §12 proposals are approved; items 8–10 are [D060](../product/decisions/D060-vs02-artifact-payloads.md). Its §10 lists what each derivation reads, as input for `DEP-001`.
 2. Then `DEP-001`, `UI-003`, and `TEST-002`, in the order of [vs-02.md](acceptance-tests/vs-02.md) §12.2.
-3. Optional: make the CI workflow required for merges to `main` (a GitHub repository setting).
+3. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
 

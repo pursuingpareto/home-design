@@ -45,7 +45,7 @@ Do not invent requirements when documentation is ambiguous. Identify unresolved 
 - **Standing approvals:**
   - Test-only changes need no approval.
   - Once the work is done and `scripts/check.sh` passes, commit and fast-forward `main` without asking. The fast-forward goes through CI (next item).
-- **CI before `main` moves:** commit on a branch, push it, and open a pull request. When its CI passes, fast-forward `main` to the branch (`git merge --ff-only`) and push `main`, so `main` gets the exact commits CI checked. Never force-push, and never enable auto-merge.
+- **CI before `main` moves:** commit on a branch, push it, and open a pull request. When its CI passes, fast-forward `main` to the branch (`git merge --ff-only`) and push `main`, so `main` gets the exact commits CI checked. CI runs on pull requests only, not again on `main`; a ruleset on `main` requires its checks, so `main` refuses a commit whose pull request has not passed. Never force-push, and never enable auto-merge.
 - **One session per task:** start each task (drafting or implementing) in a fresh session. The task file, the decisions, and `docs/implementation/roadmap.md` are the handoff, so a task file must stand on its own.
 - **Local processes:** stop servers this repository's tools started (for example a leftover `scripts/dev.sh` server) without asking.
 

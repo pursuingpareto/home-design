@@ -35,7 +35,7 @@ Open http://localhost:5173 and sign in with `dev-token`. Press Ctrl+C to stop bo
 
 ## Repository layout
 
-`docs/` contains the working specification. `backend/` contains the Python backend and HTTP API (see [backend/README.md](backend/README.md)), and `frontend/` the VS-01 browser client (see [frontend/README.md](frontend/README.md)). `tests/vectors/` holds language-neutral test vectors and the golden scenario record. Run every check with `scripts/check.sh`; GitHub Actions runs the same checks on pushes to `main` and on pull requests (`.github/workflows/ci.yml`). The [VS-01 traceability matrix](docs/implementation/acceptance-tests/vs-01-traceability.md) maps each acceptance criterion to its tests.
+`docs/` contains the working specification. `backend/` contains the Python backend and HTTP API (see [backend/README.md](backend/README.md)), and `frontend/` the VS-01 browser client (see [frontend/README.md](frontend/README.md)). `tests/vectors/` holds language-neutral test vectors and the golden scenario record. Run every check with `scripts/check.sh`; GitHub Actions runs the same checks on pull requests (`.github/workflows/ci.yml`); `main` only takes commits whose checks passed. The [VS-01 traceability matrix](docs/implementation/acceptance-tests/vs-01-traceability.md) maps each acceptance criterion to its tests.
 
 ## Safety boundary
 
