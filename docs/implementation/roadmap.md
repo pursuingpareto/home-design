@@ -6,7 +6,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 ## Next steps
 
-1. Approve [UI-003](tasks/UI-003.md)'s judgment items 12–13 (§12), one at a time (items 1–11 are approved), record items 10–13 as D062, then implement it in a fresh session.
+1. Approve [UI-003](tasks/UI-003.md)'s judgment item 13 (§12) (items 1–12 are approved), record items 10–13 as D062, then implement it in a fresh session.
 2. Then draft `TEST-002` in a fresh session ([vs-02.md](acceptance-tests/vs-02.md) §12.2). It traces the if-and-only-if impact property that DEP-001 delivered (D061), and AC2-08 through UI-003's browser tests.
 3. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
@@ -46,7 +46,7 @@ The [task index](tasks/README.md) describes what a task file contains.
 | [CONN-001](tasks/CONN-001.md) | VS-02: connection generation per junction class (312 connections for Reference House 001 v2), preview connection diff, `SetConnectionType` | Done (2026-11-20; [D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md)) |
 | [ART-002](tasks/ART-002.md) | VS-02: version 2 plan, mesh, schedule, and estimate payloads; "each" price-book rows | Done (2026-11-20; [D060](../product/decisions/D060-vs02-artifact-payloads.md)) |
 | [DEP-001](tasks/DEP-001.md) | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Done (2026-11-20; [D061](../product/decisions/D061-vs02-selector-contents.md)) |
-| [UI-003](tasks/UI-003.md) | VS-02: browser support for the complete frame and connections (roles and markers in 2D and 3D, the Frame tab, connection types, schedule tables, the confirmation dialog) | Drafted; items 1–11 approved, judgment items 12–13 awaiting approval (2026-11-20) — **next** |
+| [UI-003](tasks/UI-003.md) | VS-02: browser support for the complete frame and connections (roles and markers in 2D and 3D, the Frame tab, connection types, schedule tables, the confirmation dialog) | Drafted; items 1–12 approved, judgment item 13 awaiting approval (2026-11-20) — **next** |
 | TEST-002 | VS-02: traceability and the golden scenario's new commands for AC2-01 to AC2-09 (the if-and-only-if impact property shipped with DEP-001, D061) | Not drafted |
 
 ## Current limitations (until the remaining VS-02 tasks)
