@@ -376,6 +376,6 @@ Implemented on one branch with [TIMBER-002](TIMBER-002.md); its notes cover the 
 
 - No connections are generated, and the preview has no connection diff (`CONN-001`).
 - `plan2d` shows posts and beams only (`ART-002`).
-- The browser has no Frame tab yet, and a frame-parameter error from another tab points to the Sections tab, where `FrameSystem` fields map today (`UI-003`).
+- The browser has no Frame tab yet, and a frame-parameter error from another tab points to the Sections tab, where `FrameSystem` fields map today (`UI-003`). *Resolved by UI-003 (2026-11-20): `FrameSystem` paths map by field, so `parameters…` points to the Frame tab (UI-003 §7.3).*
 - `impacted_artifacts` still lists all four artifacts (`DEP-001`).
 

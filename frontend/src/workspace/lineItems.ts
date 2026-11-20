@@ -4,12 +4,13 @@
  */
 
 import type { EstimatePayload, TimberSchedulePayload } from "../api/types";
+import { roleLabel } from "../display/labels";
 
 export type LineItem = EstimatePayload["line_items"][number];
 export type ConnectionCatalog = TimberSchedulePayload["connection_catalog"];
 
-/** "BEAM 8x12" for timber; the catalog's description for a connection type, or the type when it is not at hand. */
+/** "Beam 8x12" for timber (UI-003 §8.3); the catalog's description for a connection type, or the type when it is not at hand. */
 export function lineLabel(line: LineItem, catalog: ConnectionCatalog | null): string {
-  if (line.kind === "timber") return `${line.role} ${line.nominal_section}`;
+  if (line.kind === "timber") return `${roleLabel(line.role)} ${line.nominal_section}`;
   return catalog?.types.find((t) => t.connection_type === line.connection_type)?.description ?? line.connection_type;
 }

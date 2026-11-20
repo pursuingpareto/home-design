@@ -5,16 +5,47 @@ import { useEffect, useRef } from "react";
 import { ApiError } from "../api/client";
 import { ErrorNotice } from "../app/ErrorNotice";
 import { formatLength, type UnitSystem } from "../units/length";
-import type { Snapshot } from "../api/types";
+import { ARTIFACT_TYPES, type PreviewResponse, type Snapshot } from "../api/types";
+import { ARTIFACT_LABEL, typeLabel } from "../display/labels";
 import { describeDetail } from "./commands";
 import { otherTabs, TAB_LABEL, TAB_OF_COMMAND } from "./editors/model";
 import type { FlowState } from "./useCommandFlow";
 
+type Change = PreviewResponse["changes"][number];
+
 function displayValue(field: string, value: unknown, units: UnitSystem): string {
   if (typeof value === "number" && field.endsWith("_m")) return formatLength(value, units);
+  if (typeof value === "string" && field.startsWith("connection_defaults[")) return typeLabel(value);
   if (value === null || value === undefined) return "—";
   const text = JSON.stringify(value);
   return text.length > 80 ? `${text.slice(0, 77)}…` : text;
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+/**
+ * Display rows for a change. A change to `parameters` or `connection_defaults` is served as the whole
+ * object, so it is shown per key that differs, as `parameters.<field>` and `connection_defaults["…"]`
+ * (UI-003 §9). Other changes are one row each, as before.
+ */
+export function changeRows(change: Change): { key: string; kind: string; field: string; before: unknown; after: unknown }[] {
+  const { before, after } = change;
+  if ((change.field === "parameters" || change.field === "connection_defaults") && isRecord(before) && isRecord(after)) {
+    const keys = [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((k) => JSON.stringify(before[k]) !== JSON.stringify(after[k]));
+    return keys.map((k) => {
+      const field = change.field === "parameters" ? `parameters.${k}` : `connection_defaults["${k}"]`;
+      return { key: `${change.entity_id}/${field}`, kind: change.entity_kind, field, before: before[k], after: after[k] };
+    });
+  }
+  return [{ key: `${change.entity_id}/${change.field}`, kind: change.entity_kind, field: change.field, before, after }];
+}
+
+/** "Updates: … Unchanged: …" in the revision bar's order, or none (UI-003 §9; DEP-001 §9.2). */
+export function artifactsText(impacted: readonly string[]): string {
+  if (impacted.length === 0) return "No derived views or reports change.";
+  const updates = ARTIFACT_TYPES.filter((t) => impacted.includes(t)).map((t) => ARTIFACT_LABEL[t]);
+  const unchanged = ARTIFACT_TYPES.filter((t) => !impacted.includes(t)).map((t) => ARTIFACT_LABEL[t]);
+  return `Updates: ${updates.join(", ")}.${unchanged.length > 0 ? ` Unchanged: ${unchanged.join(", ")}.` : ""}`;
 }
 
 export function ImpactDialog({
@@ -109,9 +140,9 @@ export function ImpactDialog({
               </tr>
             </thead>
             <tbody>
-              {preview.changes.map((c) => (
-                <tr key={`${c.entity_id}/${c.field}`}>
-                  <td>{c.entity_kind}</td>
+              {preview.changes.flatMap(changeRows).map((c) => (
+                <tr key={c.key}>
+                  <td>{c.kind}</td>
                   <td>{c.field || "(record)"}</td>
                   <td>{displayValue(c.field, c.before, units)}</td>
                   <td>{displayValue(c.field, c.after, units)}</td>
@@ -122,12 +153,11 @@ export function ImpactDialog({
           <p data-testid="impact-members">
             Timber members: {preview.members.added.length} added, {preview.members.removed.length} removed, {preview.members.updated.length} updated.
           </p>
-          {/* DEP-001 §9.2: exactly the artifacts whose payload changes; the others are reused. */}
-          <p data-testid="impact-artifacts">
-            {preview.impacted_artifacts.length > 0
-              ? `Regenerated: ${preview.impacted_artifacts.join(", ")}.`
-              : "No derived views or reports change."}
+          <p data-testid="impact-connections">
+            Connections: {preview.connections.added.length} added, {preview.connections.removed.length} removed, {preview.connections.updated.length} updated.
           </p>
+          {/* DEP-001 §9.2: exactly the artifacts whose payload changes; the others are reused unchanged. */}
+          <p data-testid="impact-artifacts">{artifactsText(preview.impacted_artifacts)}</p>
         </>
       )}
       <ul className="warnings">

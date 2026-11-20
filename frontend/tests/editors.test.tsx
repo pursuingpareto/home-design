@@ -40,8 +40,8 @@ describe("tabbed editors (UI-002)", () => {
     const catalog = screen.getByTestId("section-catalog");
     expect(catalog).toHaveTextContent(`8x8`);
     expect(catalog).toHaveTextContent(`8x12`);
-    expect(screen.getByRole("combobox", { name: "BEAM" })).toHaveDisplayValue("8x12");
-    expect(screen.getByRole("combobox", { name: "POST" })).toHaveDisplayValue("8x8");
+    expect(screen.getByRole("combobox", { name: "Beam" })).toHaveDisplayValue("8x12");
+    expect(screen.getByRole("combobox", { name: "Post" })).toHaveDisplayValue("8x8");
   });
 
   it("keeps typed values across tab switches", async () => {
@@ -112,10 +112,10 @@ describe("tabbed editors (UI-002)", () => {
     expect(preview).not.toHaveBeenCalled();
 
     const post = fixture.snapshot.entities.find((e) => e.kind === "Section" && e.nominal_label === "8x8")!;
-    const beamSelect = screen.getByRole("combobox", { name: "BEAM" });
-    expect(screen.getByRole("button", { name: "Preview BEAM change" })).toBeDisabled();
+    const beamSelect = screen.getByRole("combobox", { name: "Beam" });
+    expect(screen.getByRole("button", { name: "Preview Beam change" })).toBeDisabled();
     await userEvent.selectOptions(beamSelect, "8x8");
-    await userEvent.click(screen.getByRole("button", { name: "Preview BEAM change" }));
+    await userEvent.click(screen.getByRole("button", { name: "Preview Beam change" }));
     expect(lastCommand(preview)).toMatchObject({ type: "SetMemberSection", args: { role: "BEAM", section_id: post.id } });
     expect(screen.getByTestId("pricing-note")).toHaveTextContent("timber.BEAM.8x12");
   });

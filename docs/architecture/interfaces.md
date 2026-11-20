@@ -173,6 +173,8 @@ All routes are under `/api/v1` and require authentication ([API-001](../implemen
 
 The OpenAPI document is served at `/openapi.json`, outside `/api/v1`, and committed as [`schemas/openapi.v1.json`](schemas/openapi.v1.json). `GET …/revisions/{rev}` returns the snapshot's canonical bytes (D029, D030).
 
+The connection catalog (D054) is not served by any route. It is committed as [`schemas/connection-catalog.json`](schemas/connection-catalog.json), generated from `backend/src/homedesign/model/connections.py` with the other exports (`homedesign.model.schema_export`): the catalog version, each junction class's default and alternative type, and each type's family and description. The frontend turns it into `src/api/connectionCatalog.ts` with `npm run generate:api`; both drift checks fail when it is stale ([D062](../product/decisions/D062-vs02-browser-connections.md), UI-003 §10). It only limits what the browser offers; the server still validates every command (D028).
+
 Artifact envelopes and payloads are specified in [artifacts.md](artifacts.md) (D027). `{type}` is one of `plan2d`, `mesh3d`, `timber_schedule`, `preliminary_estimate`.
 
 **Artifact statuses:**

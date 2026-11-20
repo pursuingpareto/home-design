@@ -6,7 +6,9 @@
 import { useState, type KeyboardEvent } from "react";
 
 import type { Command } from "../../api/types";
+import { ConnectionsEditor } from "./ConnectionsEditor";
 import { FootprintEditor } from "./FootprintEditor";
+import { FrameEditor } from "./FrameEditor";
 import { GridEditor } from "./GridEditor";
 import { TAB_LABEL, TAB_OF_COMMAND, type TabId } from "./model";
 import { RoofEditor } from "./RoofEditor";
@@ -62,7 +64,9 @@ export function Editors(props: EditorsProps) {
           {tab === "stories" && <StoriesEditor key={props.versions.stories ?? 0} {...props} />}
           {tab === "roof" && <RoofEditor key={props.versions.roof ?? 0} {...props} />}
           {tab === "grid" && <GridEditor key={props.versions.grid ?? 0} {...props} />}
+          {tab === "frame" && <FrameEditor key={props.versions.frame ?? 0} {...props} />}
           {tab === "sections" && <SectionsEditor key={props.versions.sections ?? 0} {...props} />}
+          {tab === "connections" && <ConnectionsEditor key={props.versions.connections ?? 0} {...props} />}
         </div>
       ))}
     </section>

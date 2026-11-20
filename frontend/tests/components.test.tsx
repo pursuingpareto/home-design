@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { AppContext } from "../src/app/context";
+import { NO_HIGHLIGHT } from "../src/views/highlight";
 import { Plan2dView } from "../src/views/Plan2dView";
 import { placeDetails } from "../src/workspace/commands";
 import { FootprintEditor } from "../src/workspace/editors/FootprintEditor";
@@ -18,7 +19,7 @@ afterEach(cleanup);
 
 describe("Plan2dView", () => {
   it("labels dimensions from value_m and shows every member of each plane", async () => {
-    const { container } = render(<Plan2dView plan={plan.payload!} units="imperial" selected={null} onSelect={() => {}} />);
+    const { container } = render(<Plan2dView plan={plan.payload!} units="imperial" highlight={NO_HIGHLIGHT} showConnections onSelect={() => {}} />);
     expect(screen.getByTestId("dim-footprint-width")).toHaveTextContent(`Width: 36' 0"`);
     expect(screen.getByTestId("dim-footprint-depth")).toHaveTextContent(`Depth: 24' 0"`);
     expect(screen.getByRole("img")).toHaveAccessibleName(`Plan, Level 0. Width 36' 0", Depth 24' 0".`);
@@ -31,8 +32,8 @@ describe("Plan2dView", () => {
     expect(ids.sort()).toEqual(schedule.payload!.members.map((m) => m.member_id).sort());
   });
 
-  it("shows rafters and purlins on the roof tab, drawn neutrally", async () => {
-    const { container } = render(<Plan2dView plan={plan.payload!} units="imperial" selected={null} onSelect={() => {}} />);
+  it("shows rafters and purlins on the roof tab, with their role styles (UI-003 §4)", async () => {
+    const { container } = render(<Plan2dView plan={plan.payload!} units="imperial" highlight={NO_HIGHLIGHT} showConnections onSelect={() => {}} />);
     await userEvent.click(screen.getByRole("button", { name: "Roof" }));
     expect(screen.getByRole("img")).toHaveAccessibleName(/^Plan, Roof\./);
     expect(container.querySelectorAll('line[data-array="rafters"]')).toHaveLength(8);
@@ -43,10 +44,10 @@ describe("Plan2dView", () => {
 
   it("reports selection by member ID", async () => {
     const onSelect = vi.fn();
-    const { container } = render(<Plan2dView plan={plan.payload!} units="metric" selected={null} onSelect={onSelect} />);
+    const { container } = render(<Plan2dView plan={plan.payload!} units="metric" highlight={NO_HIGHLIGHT} showConnections onSelect={onSelect} />);
     const first = container.querySelector("[data-member-id]")!;
     await userEvent.click(first);
-    expect(onSelect).toHaveBeenCalledWith(first.getAttribute("data-member-id"));
+    expect(onSelect).toHaveBeenCalledWith({ kind: "member", id: first.getAttribute("data-member-id") });
     expect(screen.getByTestId("dim-footprint-width")).toHaveTextContent("10.973 m");
   });
 });
@@ -84,7 +85,7 @@ describe("panels", () => {
       `$${(line.amount_minor! / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
     ]);
     const timber = [...container.querySelector('tr[data-key="timber.BEAM.8x12"]')!.querySelectorAll("td")].map((td) => td.textContent);
-    expect(timber[0]).toBe("BEAM 8x12");
+    expect(timber[0]).toBe("Beam 8x12"); // display labels (UI-003 §8.3)
     expect(timber[2]).toMatch(/^\$47\.25\/m ≈ \$/);
   });
 
@@ -95,11 +96,11 @@ describe("panels", () => {
 
   it("lists every schedule member and the aggregates", async () => {
     const onSelect = vi.fn();
-    render(<SchedulePanel schedule={schedule} units="imperial" selected={null} onSelect={onSelect} />);
+    render(<SchedulePanel schedule={schedule} units="imperial" highlight={NO_HIGHLIGHT} onSelect={onSelect} />);
     expect(within(screen.getByTestId("schedule-members")).getAllByRole("row")).toHaveLength(194);
-    expect(screen.getByTestId("schedule-aggregates")).toHaveTextContent("BEAM8x1234");
-    await userEvent.click(screen.getAllByRole("button", { name: /frame\// })[0]!);
-    expect(onSelect).toHaveBeenCalledWith(schedule.payload!.members[0]!.member_id);
+    expect(screen.getByTestId("schedule-aggregates")).toHaveTextContent("Beam8x1234");
+    await userEvent.click(within(screen.getByTestId("schedule-members")).getAllByRole("button", { name: /frame\// })[0]!);
+    expect(onSelect).toHaveBeenCalledWith({ kind: "member", id: schedule.payload!.members[0]!.member_id }, false);
   });
 });
 
@@ -160,9 +161,9 @@ describe("edit flow pieces", () => {
     expect(screen.getByRole("button", { name: "Confirm" })).toBeEnabled();
   });
 
-  it("lists exactly the impacted artifacts, or says none change (DEP-001 §9.2)", () => {
+  it("lists exactly the impacted artifacts, or says none change (DEP-001 §9.2, UI-003 §9)", () => {
     const { rerender } = render(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: fixture.width_preview }} units="imperial" snapshot={fixture.snapshot} onConfirm={() => {}} onCancel={() => {}} />);
-    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(`Regenerated: ${fixture.width_preview.impacted_artifacts.join(", ")}.`);
+    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^Updates: 2D plan, 3D model, Timber schedule, Estimate\.$/);
     const none = { ...fixture.width_preview, impacted_artifacts: [] };  // e.g. a connection type for a class with no connections
     rerender(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: none }} units="imperial" snapshot={fixture.snapshot} onConfirm={() => {}} onCancel={() => {}} />);
     expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^No derived views or reports change\.$/);

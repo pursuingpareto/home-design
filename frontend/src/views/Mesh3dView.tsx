@@ -1,7 +1,8 @@
 /**
  * 3D view of a `mesh3d` payload (UI-001 §4, §6). Plain Three.js behind this component boundary: it
- * takes a payload and a selection and reports picks, and never reads the API or the model.
- * The camera's up vector is +Z, so the data is drawn as served (D026).
+ * takes a payload and the highlighted IDs and reports picks, and never reads the API or the model.
+ * The camera's up vector is +Z, so the data is drawn as served (D026). Connection glyphs are drawn
+ * over the members and picked before them (D062).
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -9,14 +10,19 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import type { Mesh3dPayload } from "../api/types";
+import { roleLabel, type Role } from "../display/labels";
 import { formatLength, type UnitSystem } from "../units/length";
-import { buildMeshScene, highlight, type MeshScene } from "./meshScene";
+import type { Highlight, Pick } from "./highlight";
+import { Legend, typesOf } from "./Legend";
+import { glyphTitle, groupMarkers } from "./markers";
+import { buildMeshScene, highlight, pick, setMarkersVisible, type MeshScene } from "./meshScene";
 
 export interface Mesh3dViewProps {
   mesh: Mesh3dPayload;
   units: UnitSystem;
-  selected: string | null;
-  onSelect: (memberId: string | null) => void;
+  highlight: Highlight;
+  showConnections: boolean;
+  onSelect: (pick: Pick | null) => void;
 }
 
 function footprintExtent(mesh: Mesh3dPayload): { width: number; depth: number } {
@@ -25,7 +31,7 @@ function footprintExtent(mesh: Mesh3dPayload): { width: number; depth: number } 
   return { width: Math.max(...xs) - Math.min(...xs), depth: Math.max(...ys) - Math.min(...ys) };
 }
 
-export function Mesh3dView({ mesh, units, selected, onSelect }: Mesh3dViewProps) {
+export function Mesh3dView({ mesh, units, highlight: highlighted, showConnections, onSelect }: Mesh3dViewProps) {
   const host = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<MeshScene | null>(null);
   const renderRef = useRef<(() => void) | null>(null);
@@ -33,6 +39,10 @@ export function Mesh3dView({ mesh, units, selected, onSelect }: Mesh3dViewProps)
   onSelectRef.current = onSelect;
   const [webgl, setWebgl] = useState(true);
   const extent = useMemo(() => footprintExtent(mesh), [mesh]);
+  const glyphs = useMemo(() => groupMarkers(mesh.connections, (m) => m.location_m), [mesh]);
+  const roles = useMemo(() => new Set<Role>(mesh.members.map((m) => m.role)), [mesh]);
+  const showRef = useRef(showConnections);
+  showRef.current = showConnections;
 
   useEffect(() => {
     const element = host.current;
@@ -45,6 +55,7 @@ export function Mesh3dView({ mesh, units, selected, onSelect }: Mesh3dViewProps)
       return;
     }
     const built = buildMeshScene(mesh);
+    setMarkersVisible(built, showRef.current);
     sceneRef.current = built;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf6f7f9);
@@ -81,22 +92,45 @@ export function Mesh3dView({ mesh, units, selected, onSelect }: Mesh3dViewProps)
     const raycaster = new THREE.Raycaster();
     let down: { x: number; y: number } | null = null;
     const onDown = (e: PointerEvent) => (down = { x: e.clientX, y: e.clientY });
-    const onUp = (e: PointerEvent) => {
-      if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) return; // a drag, not a click
+    const pickAt = (e: PointerEvent) => {
       const rect = renderer.domElement.getBoundingClientRect();
       const ndc = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
       raycaster.setFromCamera(ndc, camera);
-      const hit = raycaster.intersectObjects([...built.members.values()], false)[0];
-      onSelectRef.current((hit?.object.userData.memberId as string | undefined) ?? null);
+      return pick(built, raycaster);
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) return; // a drag, not a click
+      onSelectRef.current(pickAt(e));
+    };
+    // The hovered member's or glyph's tooltip, as the plan's titles show them (UI-003 §5.1).
+    let hoverFrame = 0;
+    const onMove = (e: PointerEvent) => {
+      if (e.buttons || hoverFrame) return;
+      hoverFrame = requestAnimationFrame(() => {
+        hoverFrame = 0;
+        const hit = pickAt(e);
+        let title = "";
+        if (hit?.kind === "member") {
+          const box = built.members.get(hit.id);
+          title = box ? `${roleLabel(box.userData.role as string)} · ${box.userData.generationKey as string}` : "";
+        } else if (hit) {
+          const glyph = built.markers.glyphs.find((g) => g.markers[0]?.connection_id === hit.ids[0]);
+          title = glyph ? glyphTitle(glyph) : "";
+        }
+        renderer.domElement.title = title;
+      });
     };
     renderer.domElement.addEventListener("pointerdown", onDown);
     renderer.domElement.addEventListener("pointerup", onUp);
+    renderer.domElement.addEventListener("pointermove", onMove);
 
     return () => {
       observer.disconnect();
       controls.dispose();
       renderer.domElement.removeEventListener("pointerdown", onDown);
       renderer.domElement.removeEventListener("pointerup", onUp);
+      renderer.domElement.removeEventListener("pointermove", onMove);
+      cancelAnimationFrame(hoverFrame);
       built.dispose();
       renderer.dispose();
       renderer.domElement.remove();
@@ -107,17 +141,30 @@ export function Mesh3dView({ mesh, units, selected, onSelect }: Mesh3dViewProps)
 
   useEffect(() => {
     if (sceneRef.current) {
-      highlight(sceneRef.current, selected);
+      highlight(sceneRef.current, highlighted);
+      setMarkersVisible(sceneRef.current, showConnections);
       renderRef.current?.();
     }
-  }, [selected, mesh]);
+  }, [highlighted, showConnections, mesh]);
 
-  const summary = `3D frame: ${mesh.members.length} members, footprint ${formatLength(extent.width, units)} × ${formatLength(extent.depth, units)}.`;
+  const summary = `3D frame: ${mesh.members.length} members, ${mesh.connections.length} connections, footprint ${formatLength(extent.width, units)} × ${formatLength(extent.depth, units)}.`;
   return (
-    <figure className="mesh3d" aria-label={summary} data-member-count={mesh.members.length} data-footprint-width-m={extent.width} data-footprint-depth-m={extent.depth} data-eave-z-m={mesh.envelope.z_eave_m}>
+    <figure
+      className="mesh3d"
+      aria-label={summary}
+      data-member-count={mesh.members.length}
+      data-connection-count={mesh.connections.length}
+      data-glyph-count={showConnections ? glyphs.length : 0}
+      data-footprint-width-m={extent.width}
+      data-footprint-depth-m={extent.depth}
+      data-eave-z-m={mesh.envelope.z_eave_m}
+    >
       <div ref={host} className="mesh3d-canvas" />
       {!webgl && <p className="notice">3D rendering is not available in this browser.</p>}
-      <figcaption>{summary} Drag to orbit, scroll to zoom, click a member to select it.</figcaption>
+      <Legend testId="mesh-legend" roles={roles} types={showConnections ? typesOf(mesh.connections) : []} mixed={showConnections && glyphs.some((g) => g.style === "mixed")} />
+      <figcaption>
+        {summary} Drag to orbit, scroll to zoom, click a member{showConnections ? " or a connection" : ""} to select it.
+      </figcaption>
     </figure>
   );
 }

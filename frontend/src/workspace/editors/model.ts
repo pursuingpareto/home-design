@@ -23,17 +23,28 @@ export function envelope<T extends string, A>(projectId: string, baseRevisionId:
 
 // --- tabs -------------------------------------------------------------------------------------------
 
-export type TabId = "footprint" | "stories" | "roof" | "grid" | "sections";
+export type TabId = "footprint" | "stories" | "roof" | "grid" | "frame" | "sections" | "connections";
 
-export const TAB_LABEL: Record<TabId, string> = { footprint: "Footprint", stories: "Stories", roof: "Roof", grid: "Grid", sections: "Sections" };
+/** The tabs, in order (UI-003 §7; D062: a Connections tab). */
+export const TAB_LABEL: Record<TabId, string> = {
+  footprint: "Footprint",
+  stories: "Stories",
+  roof: "Roof",
+  grid: "Grid",
+  frame: "Frame",
+  sections: "Sections",
+  connections: "Connections",
+};
 
 export const TAB_OF_COMMAND: Record<string, TabId | undefined> = {
   SetFootprintDimensions: "footprint",
   SetStoryHeights: "stories",
   SetGableRoofParameters: "roof",
   SetTimberGrid: "grid",
+  SetFrameParameters: "frame",
   AddSection: "sections",
   SetMemberSection: "sections",
+  SetConnectionType: "connections",
 };
 
 const TAB_OF_KIND: Partial<Record<Entity["kind"], TabId>> = {
@@ -44,6 +55,13 @@ const TAB_OF_KIND: Partial<Record<Entity["kind"], TabId>> = {
   Section: "sections",
   FrameSystem: "sections",
 };
+
+/** A `FrameSystem` path maps to a tab by its field (UI-003 §7.3); anything else stays on Sections. */
+function frameTab(rest: string): TabId {
+  if (/^\.parameters\b/.test(rest)) return "frame";
+  if (/^\.connection_defaults\b/.test(rest)) return "connections";
+  return "sections"; // member_defaults, and anything else on FrameSystem
+}
 
 /**
  * Tabs other than the submitted one whose stored fields appear in the details (UI-002 §7). The entity
@@ -56,9 +74,9 @@ export function otherTabs(details: readonly ErrorDetail[], snapshot: Snapshot | 
   const tabs = new Set<TabId>();
   for (const detail of details) {
     for (const path of [detail.path, ...(detail.related_paths ?? [])]) {
-      const id = /^entities\[([0-9a-f-]{36})\]/.exec(path)?.[1];
-      const kind = id ? kinds.get(id) : undefined;
-      const tab = kind ? TAB_OF_KIND[kind] : undefined;
+      const match = /^entities\[([0-9a-f-]{36})\](.*)$/.exec(path);
+      const kind = match ? kinds.get(match[1]!) : undefined;
+      const tab = kind === "FrameSystem" ? frameTab(match![2]!) : kind ? TAB_OF_KIND[kind] : undefined;
       if (tab && tab !== submitted) tabs.add(tab);
     }
   }
@@ -178,4 +196,21 @@ export function gridDetails(details: readonly ErrorDetail[], submittedOrder: Rec
     if (!placed) other.push(detail);
   }
   return { rows, axes, other };
+}
+
+// --- frame (UI-003 §7.1) -------------------------------------------------------------------------------
+
+/** A purlin count is a whole number; its range is the server's to check (D028). */
+export function parseWholeNumber(text: string): { ok: true; value: number } | { ok: false; error: string } {
+  const trimmed = text.trim();
+  return /^-?\d+$/.test(trimmed) ? { ok: true, value: Number(trimmed) } : { ok: false, error: "Enter a whole number" };
+}
+
+// --- connections (UI-003 §7.2) --------------------------------------------------------------------------
+
+/** The head snapshot's connection count per junction class. */
+export function connectionCounts(snapshot: Snapshot): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const c of entitiesOf(snapshot, "Connection")) counts[c.junction_class] = (counts[c.junction_class] ?? 0) + 1;
+  return counts;
 }

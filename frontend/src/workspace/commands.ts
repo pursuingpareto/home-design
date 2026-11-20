@@ -45,8 +45,8 @@ export function placeDetails<F extends string>(
   return { byField, other };
 }
 
-const DETAIL_TEXT: Record<string, string> = {
-  OUT_OF_SUPPORTED_RANGE: "Outside the range VS-01 supports",
+export const DETAIL_TEXT: Readonly<Record<string, string>> = {
+  OUT_OF_SUPPORTED_RANGE: "Outside the supported range",
   OUT_OF_RANGE: "Out of range",
   WRONG_TYPE: "Wrong type",
   MISSING_FIELD: "Required",
@@ -54,7 +54,7 @@ const DETAIL_TEXT: Record<string, string> = {
   INVALID_TIMESTAMP: "Not a valid date",
   DUPLICATE_PRICE_KEY: "Duplicate price row",
   DANGLING_REFERENCE: "Refers to something that does not exist",
-  UNSUPPORTED_VALUE: "Not supported in VS-01",
+  UNSUPPORTED_VALUE: "Not supported",
 };
 
 /** A short human label for a detail code; the code itself stays visible for support. */

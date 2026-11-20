@@ -58,10 +58,33 @@ figcaption { color: var(--muted); font-size: 0.85rem; display: flex; gap: 12px; 
 .plan2d .eave { fill: none; stroke: #8c959f; stroke-dasharray: 0.2 0.15; stroke-width: 0.03; }
 .plan2d .footprint { fill: #f3efe8; stroke: var(--fg); stroke-width: 0.05; }
 .plan2d .ridge { stroke: #8c959f; stroke-width: 0.04; stroke-dasharray: 0.4 0.2; }
-.plan2d .beam { stroke: var(--wood); stroke-width: 0.2; cursor: pointer; }
-.plan2d .post { fill: var(--wood); cursor: pointer; }
-.plan2d .member { stroke: #c9a77c; stroke-width: 0.1; cursor: pointer; } /* the other roles, one neutral style until UI-003 (ART-002 §9) */
-.plan2d .selected { stroke: var(--accent); fill: var(--accent); }
+/* UI-003 §4: colors come from src/display/palette.ts as attributes; weights per role here. */
+.plan2d .beam { stroke-width: 0.2; cursor: pointer; }
+.plan2d .post { cursor: pointer; }
+.plan2d .member { cursor: pointer; }
+.plan2d .member.sills { stroke-width: 0.2; }
+.plan2d .member.joists { stroke-width: 0.05; }
+.plan2d .member.rafters, .plan2d .member.purlins { stroke-width: 0.12; }
+.plan2d .member.braces { stroke-width: 0.06; stroke-dasharray: 0.15 0.08; }
+.plan2d .connection-glyph { cursor: pointer; }
+.plan2d .connection-glyph circle { stroke-width: 0.025; }
+.plan2d .connection-glyph.selected circle { stroke-width: 0.06; }
+.plan2d .connection-glyph text { font-weight: 600; pointer-events: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; list-style: none; padding: 0; margin: 6px 0; font-size: 0.8rem; color: var(--muted); }
+.legend li { display: flex; align-items: center; gap: 4px; }
+.swatch { display: inline-block; width: 14px; height: 6px; border-radius: 1px; }
+.swatch.marker { width: 8px; height: 8px; border-radius: 50%; }
+.swatch.mixed { background: white; border: 2px solid; width: 6px; height: 6px; }
+.view-options { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; }
+.schedule tr.related { background: #ffe3ee; }
+.schedule .role { display: inline-flex; align-items: center; gap: 4px; }
+.connections-editor table { table-layout: fixed; font-size: 0.85rem; }
+.connections-editor th:nth-child(1) { width: 36%; }
+.connections-editor th:nth-child(2) { width: 20%; }
+.connections-editor td button { margin-top: 4px; }
+.connections-editor td { vertical-align: top; padding: 4px; overflow-wrap: anywhere; }
+.connections-editor select { width: 100%; }
+.connections-editor td .hint { font-size: 0.75rem; color: var(--muted); }
 .plan2d .dimension line { stroke: var(--fg); stroke-width: 0.02; }
 .plan2d .dimension text { font-size: 0.45px; fill: var(--fg); }
 .plane-tabs { display: flex; gap: 4px; margin-bottom: 6px; }

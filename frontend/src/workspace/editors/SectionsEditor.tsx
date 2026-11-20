@@ -6,6 +6,7 @@
 import { useCallback, useState, type FormEvent } from "react";
 
 import type { Snapshot } from "../../api/types";
+import { roleLabel } from "../../display/labels";
 import { formatLength, parseLength } from "../../units/length";
 import { describeDetail, placeDetails } from "../commands";
 import { entitiesOf, envelope, one } from "./model";
@@ -26,7 +27,7 @@ export function SectionsEditor({ projectId, snapshot, units, flow, onApplied, on
   const roleDetails = detailsFor(flow.state, ["SetMemberSection"]);
   const busy = isBusy(flow.state);
 
-  const usedBy = useCallback((sectionId: string) => roles.filter((r) => defaults[r]?.section_id === sectionId).join(", ") || "—", [roles, defaults]);
+  const usedBy = useCallback((sectionId: string) => roles.filter((r) => defaults[r]?.section_id === sectionId).map(roleLabel).join(", ") || "—", [roles, defaults]);
 
   async function add(event: FormEvent) {
     event.preventDefault();
@@ -82,7 +83,9 @@ export function SectionsEditor({ projectId, snapshot, units, flow, onApplied, on
         const id = `role-${role}`;
         return (
           <div className="field role-row" key={role}>
-            <label htmlFor={id}>{role}</label>
+            <label htmlFor={id} title={role}>
+              {roleLabel(role)}
+            </label>
             <select id={id} value={selected} onChange={(e) => setChoice((c) => ({ ...c, [role]: e.target.value }))}>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -91,7 +94,7 @@ export function SectionsEditor({ projectId, snapshot, units, flow, onApplied, on
               ))}
             </select>
             <button type="button" disabled={busy || selected === current} onClick={() => setRole(role)}>
-              Preview {role} change
+              Preview {roleLabel(role)} change
             </button>
           </div>
         );

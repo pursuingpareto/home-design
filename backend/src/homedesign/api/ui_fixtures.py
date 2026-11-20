@@ -55,6 +55,18 @@ def build() -> dict[str, Any]:
         "type": "SetFootprintDimensions", "args": {"width_m": 12.192, "depth_m": footprint["depth_m"]},
     }
     preview = svc.preview(PROJECT_ID, width_command, actor_id=ACTOR_ID, now=NOW).body
+    # UI-003 §11: a frame change (eave braces off) and a connection-type change, from the created house.
+    frame = next(e for e in snapshot["entities"] if e["kind"] == "FrameSystem")
+    frame_command = {
+        "command_id": "00000000-0000-4000-8000-0000000000c3", "project_id": PROJECT_ID, "base_revision_id": head,
+        "type": "SetFrameParameters", "args": frame["parameters"] | {"knee_braces_eave": False},
+    }
+    frame_preview = svc.preview(PROJECT_ID, frame_command, actor_id=ACTOR_ID, now=NOW).body
+    type_command = {
+        "command_id": "00000000-0000-4000-8000-0000000000c4", "project_id": PROJECT_ID, "base_revision_id": head,
+        "type": "SetConnectionType", "args": {"junction_class": "joist-beam", "connection_type": "JOIST_HANGER"},
+    }
+    type_preview = svc.preview(PROJECT_ID, type_command, actor_id=ACTOR_ID, now=NOW).body
     manifest = svc.artifacts.manifest(PROJECT_ID)
     with patch("homedesign.project.service.uuid.uuid4", return_value=uuid.UUID(PRICE_BOOK_ID)):  # random in production
         svc.set_price_book(PROJECT_ID, BOOK, actor_id=ACTOR_ID, now=NOW)
@@ -69,6 +81,10 @@ def build() -> dict[str, Any]:
         "price_book": svc.get_price_book(PROJECT_ID),
         "width_command": width_command,
         "width_preview": preview,
+        "frame_command": frame_command,
+        "frame_preview": frame_preview,
+        "type_command": type_command,
+        "type_preview": type_preview,
     }
 
 

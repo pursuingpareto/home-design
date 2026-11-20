@@ -1,11 +1,12 @@
 /** The project workspace (UI-001 §4): one revision's views, schedule, estimate, edits, and history. */
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { ApiError } from "../api/client";
 import type { CommitResponse, EstimatePayload } from "../api/types";
 import { useApp } from "../app/context";
 import { ErrorNotice } from "../app/ErrorNotice";
+import { readShowConnections, writeShowConnections } from "../app/preferences";
 import { href, navigate } from "../app/routing";
 import { undoCommand } from "./commands";
 import { Editors, tabForCommand } from "./editors/Editors";
@@ -15,10 +16,19 @@ import { EstimatePanel, HistoryPanel, PreliminaryBanner, RevisionBar, SchedulePa
 import { PriceBookForm } from "./PriceBookForm";
 import { useCommandFlow } from "./useCommandFlow";
 import { useRevisionData } from "./useRevisionData";
+import { highlightOf, sameSelection, type Selection } from "./selection";
 
 export function Workspace({ projectId, revisionId }: { projectId: string; revisionId: string | null }) {
   const { api, units, signOut } = useApp();
-  const [selected, setSelected] = useState<string | null>(null);
+  // One member or a set of connections (UI-003 §6).
+  const [selection, setSelection] = useState<Selection>(null);
+  const select = useCallback((next: Selection, toggle = true) => setSelection((current) => (toggle && sameSelection(current, next) ? null : next)), []);
+  // The "Connections" switch for both views, remembered per browser (D062).
+  const [showConnections, setShowConnectionsState] = useState(() => readShowConnections());
+  const setShowConnections = useCallback((show: boolean) => {
+    writeShowConnections(show);
+    setShowConnectionsState(show);
+  }, []);
   // The line items the price-book form was opened with; kept while the estimate is re-read after a save.
   const [priceItems, setPriceItems] = useState<EstimatePayload | null>(null);
   const [notFound, setNotFound] = useState(false);
@@ -37,12 +47,14 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
   const { data, reload, reloadEstimate } = useRevisionData(api, projectId, revisionId, onError);
   // Connection descriptions come from the same revision's schedule (ART-002 §6.3, §9).
   const catalog = data.schedule?.status === "CURRENT" ? (data.schedule.payload?.connection_catalog ?? null) : null;
+  const viewsRevision = data.plan?.source_revision_id ?? null;
+  const highlight = useMemo(() => highlightOf(selection, data.schedule, viewsRevision), [selection, data.schedule, viewsRevision]);
 
   const flow = useCommandFlow({
     api,
     projectId,
     onCommitted: (_result, command) => {
-      setSelected(null);
+      setSelection(null);
       setApplied(null);
       const tab = tabForCommand(command);
       if (tab) setVersions((v) => ({ ...v, [tab]: (v[tab] ?? 0) + 1 }));
@@ -83,7 +95,7 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
       )}
       <ErrorNotice error={data.error instanceof ApiError && data.error.status === 404 ? null : data.error} />
       <div className="workspace-grid">
-        <ViewsPanel data={data} units={units} selected={selected} onSelect={setSelected} />
+        <ViewsPanel data={data} units={units} highlight={highlight} showConnections={showConnections} onShowConnections={setShowConnections} onSelect={select} />
         <aside className="side">
           {/* Shown for the head route even while reloading, so typed input survives a conflict reload. */}
           {applied && (
@@ -145,7 +157,7 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
           />
         </aside>
       </div>
-      <SchedulePanel schedule={data.schedule} units={units} selected={selected} onSelect={setSelected} />
+      <SchedulePanel schedule={data.schedule} units={units} highlight={highlight} onSelect={select} />
       <ImpactDialog state={flow.state} units={units} snapshot={data.snapshot} onConfirm={() => void flow.confirm()} onCancel={flow.cancel} />
     </main>
   );

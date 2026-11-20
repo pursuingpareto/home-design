@@ -12,6 +12,7 @@ import type {
   RevisionSummary,
   ScheduleEnvelope,
   SetFootprintDimensions,
+  Command,
   Snapshot,
   StoredPriceBook,
 } from "../src/api/types";
@@ -26,6 +27,11 @@ export const fixture = raw as unknown as {
   price_book: StoredPriceBook;
   width_command: SetFootprintDimensions;
   width_preview: PreviewResponse;
+  /** UI-003 §11: eave braces off, and `joist-beam` → `JOIST_HANGER`, from the created house. */
+  frame_command: Command;
+  frame_preview: PreviewResponse;
+  type_command: Command;
+  type_preview: PreviewResponse;
 };
 
 export const plan = fixture.envelopes.plan2d;

@@ -1,27 +1,35 @@
 /**
  * Tessellate a `mesh3d` payload into a Three.js group (artifacts.md §6). Only the documented
- * primitives are drawn: oriented boxes for members, the roof surfaces, and level outlines. No other
- * geometry is computed here (UI-001 §6). Coordinates stay as served: meters, +Z up.
+ * primitives are drawn: oriented boxes for members, the roof surfaces, and level outlines, plus a
+ * fixed-size glyph per distinct connection position (D062). No other geometry is computed here
+ * (UI-001 §6). Coordinates stay as served: meters, +Z up.
  */
 
 import * as THREE from "three";
 
 import type { Mesh3dPayload, MeshMember } from "../api/types";
+import type { Role } from "../display/labels";
+import { glyphColor, ROLE_COLOR, SELECTION_COLOR } from "../display/palette";
+import type { Highlight, Pick } from "./highlight";
+import { groupMarkers, type Glyph } from "./markers";
 
-// The version 2 roles share one neutral timber tone until UI-003 styles them (MODEL-005 §9).
-const NEUTRAL = 0xc9a77c;
 export const COLORS = {
-  POST: 0x8a5a2b,
-  BEAM: 0xb07a3f,
-  SILL: NEUTRAL,
-  FLOOR_JOIST: NEUTRAL,
-  PRINCIPAL_RAFTER: NEUTRAL,
-  PURLIN: NEUTRAL,
-  KNEE_BRACE: NEUTRAL,
-  selected: 0x1f6feb,
+  ...ROLE_COLOR,
+  selected: SELECTION_COLOR.selected,
+  related: SELECTION_COLOR.related,
   roof: 0x7f8c8d,
   level: 0x444444,
 };
+
+type MeshMarker = Mesh3dPayload["connections"][number];
+
+// A connection glyph's radius and its count label's size, in meters: fixed display symbols that say
+// nothing about a joint's size (D054, D062, AC2-07).
+const CONNECTION_MARK_3D_M = 0.12;
+const COUNT_LABEL_M = 0.4;
+// Members are drawn first (render order 0); the roof is transparent; markers and their counts come
+// after both, without depth testing, so they stay visible inside the boxes (D062).
+export const MARKER_RENDER_ORDER = 2;
 
 const v = (p: readonly number[]) => new THREE.Vector3(p[0] ?? 0, p[1] ?? 0, p[2] ?? 0);
 
@@ -57,9 +65,18 @@ export function memberMatrix(member: MeshMember): { matrix: THREE.Matrix4; size:
   return { matrix, size: new THREE.Vector3(length, member.section_width_m, member.section_depth_m) };
 }
 
+export interface MeshMarkers {
+  /** One instance per glyph; instance `i` is `glyphs[i]`. */
+  mesh: THREE.InstancedMesh;
+  glyphs: Glyph<MeshMarker>[];
+  /** Count labels for glyphs of several connections (absent where the browser has no 2D canvas). */
+  labels: THREE.Group;
+}
+
 export interface MeshScene {
   group: THREE.Group;
   members: Map<string, THREE.Mesh>;
+  markers: MeshMarkers;
   bounds: THREE.Box3;
   dispose: () => void;
 }
@@ -110,15 +127,104 @@ export function buildMeshScene(payload: Mesh3dPayload): MeshScene {
   }
 
   group.updateMatrixWorld(true);
-  const bounds = new THREE.Box3().setFromObject(group);
-  return { group, members, bounds, dispose: () => disposables.forEach((d) => d.dispose()) };
+  const bounds = new THREE.Box3().setFromObject(group); // members, roof, and outlines; markers lie inside
+  const markers = buildMarkers(payload, disposables);
+  group.add(markers.mesh, markers.labels);
+  group.updateMatrixWorld(true);
+  return { group, members, markers, bounds, dispose: () => disposables.forEach((d) => d.dispose()) };
 }
 
-/** Highlight one member (or none). Colors come from COLORS only. */
-export function highlight(scene: MeshScene, selected: string | null): void {
+function buildMarkers(payload: Mesh3dPayload, disposables: { dispose: () => void }[]): MeshMarkers {
+  const glyphs = groupMarkers<MeshMarker>(payload.connections, (m) => m.location_m);
+  const geometry = new THREE.OctahedronGeometry(CONNECTION_MARK_3D_M);
+  const material = new THREE.MeshBasicMaterial({ depthTest: false, depthWrite: false, transparent: true });
+  disposables.push(geometry, material);
+  const mesh = new THREE.InstancedMesh(geometry, material, Math.max(glyphs.length, 1));
+  mesh.count = glyphs.length;
+  mesh.name = "connection-markers";
+  mesh.renderOrder = MARKER_RENDER_ORDER;
+  const at = new THREE.Matrix4();
+  glyphs.forEach((glyph, i) => {
+    mesh.setMatrixAt(i, at.makeTranslation(v(glyph.position)));
+    mesh.setColorAt(i, new THREE.Color(glyphColor(glyph.style)));
+  });
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  mesh.computeBoundingSphere();
+
+  const labels = new THREE.Group();
+  labels.name = "connection-counts";
+  const textures = new Map<number, THREE.Texture | null>();
+  const textureFor = (count: number) => {
+    if (!textures.has(count)) {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 64;
+      const context = canvas.getContext("2d");
+      let texture: THREE.Texture | null = null;
+      if (context) {
+        context.font = "bold 44px system-ui, sans-serif";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.lineWidth = 8;
+        context.strokeStyle = "#ffffff";
+        context.strokeText(String(count), 32, 34);
+        context.fillStyle = "#212529";
+        context.fillText(String(count), 32, 34);
+        texture = new THREE.CanvasTexture(canvas);
+        disposables.push(texture);
+      }
+      textures.set(count, texture);
+    }
+    return textures.get(count) ?? null;
+  };
+  for (const glyph of glyphs) {
+    if (glyph.markers.length < 2) continue;
+    const map = textureFor(glyph.markers.length);
+    if (!map) continue;
+    const spriteMaterial = new THREE.SpriteMaterial({ map, depthTest: false, depthWrite: false, transparent: true });
+    disposables.push(spriteMaterial);
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.position.copy(v(glyph.position)).add(new THREE.Vector3(0, 0, CONNECTION_MARK_3D_M + COUNT_LABEL_M / 2));
+    sprite.scale.set(COUNT_LABEL_M, COUNT_LABEL_M, 1);
+    sprite.renderOrder = MARKER_RENDER_ORDER + 1;
+    sprite.raycast = () => {}; // labels are not picked; their glyph is
+    labels.add(sprite);
+  }
+  return { mesh, glyphs, labels };
+}
+
+/** Show or hide the markers (the "Connections" switch, D062). */
+export function setMarkersVisible(scene: MeshScene, visible: boolean): void {
+  scene.markers.mesh.visible = visible;
+  scene.markers.labels.visible = visible;
+}
+
+/** Highlight per UI-003 §6. Colors come from the palette only. */
+export function highlight(scene: MeshScene, h: Highlight): void {
   for (const [id, mesh] of scene.members) {
     const material = mesh.material as THREE.MeshStandardMaterial;
-    const role = mesh.userData.role as keyof typeof COLORS;
-    material.color.setHex(id === selected ? COLORS.selected : COLORS[role]);
+    const role = mesh.userData.role as Role;
+    material.color.setHex(id === h.member ? COLORS.selected : h.related.has(id) ? COLORS.related : COLORS[role]);
   }
+  const color = new THREE.Color();
+  scene.markers.glyphs.forEach((glyph, i) => {
+    const selected = glyph.markers.some((m) => h.connections.has(m.connection_id));
+    scene.markers.mesh.setColorAt(i, color.setHex(selected ? COLORS.selected : glyphColor(glyph.style)));
+  });
+  if (scene.markers.mesh.instanceColor) scene.markers.mesh.instanceColor.needsUpdate = true;
+}
+
+/**
+ * What a ray picks (D062): a visible marker glyph before any member, since markers are drawn over the
+ * members; otherwise the nearest member; otherwise nothing.
+ */
+export function pick(scene: MeshScene, raycaster: THREE.Raycaster): Pick | null {
+  if (scene.markers.mesh.visible) {
+    const hit = raycaster.intersectObject(scene.markers.mesh, false)[0];
+    const glyph = hit?.instanceId !== undefined ? scene.markers.glyphs[hit.instanceId] : undefined;
+    if (glyph) return { kind: "connections", ids: glyph.markers.map((m) => m.connection_id) };
+  }
+  const member = raycaster.intersectObjects([...scene.members.values()], false)[0];
+  const id = member?.object.userData.memberId as string | undefined;
+  return id ? { kind: "member", id } : null;
 }

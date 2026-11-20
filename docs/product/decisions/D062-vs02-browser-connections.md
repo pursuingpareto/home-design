@@ -1,6 +1,6 @@
 # D062 — VS-02 browser: grouped connection markers, 3D visibility, a Connections tab, a generated catalog
 
-**Status:** Confirmed (to be implemented in VS-02, [UI-003](../../implementation/tasks/UI-003.md))  
+**Status:** Confirmed; implemented ([UI-003](../../implementation/tasks/UI-003.md), VS-02)  
 **Date:** 2026-11-20  
 **Scope:** How the browser draws connection markers, where connection types are edited, and where the editor gets the connection catalog. Approved from [UI-003](../../implementation/tasks/UI-003.md) §12, items 10–13. The routine items 1–9 of that list are specified in the task file.  
 **Resolves:** the open point of [D060](D060-vs02-artifact-payloads.md), "how the browser draws coincident connection markers", and the choice that [vs-02.md](../../implementation/acceptance-tests/vs-02.md) §12.2 left open ("connection types in the Sections tab, or a new tab").

@@ -1,0 +1,68 @@
+{
+  "catalog_version": "vs02-connections-1",
+  "connection_types": [
+    {
+      "connection_type": "PEGGED_MORTISE_TENON",
+      "description": "Pegged mortise and tenon. Representational only: no capacity, sizes, or fasteners.",
+      "family": "traditional"
+    },
+    {
+      "connection_type": "BRIDLE",
+      "description": "Bridle joint. Representational only: no capacity, sizes, or fasteners.",
+      "family": "traditional"
+    },
+    {
+      "connection_type": "HOUSED_DOVETAIL",
+      "description": "Housed dovetail. Representational only: no capacity, sizes, or fasteners.",
+      "family": "traditional"
+    },
+    {
+      "connection_type": "STEEL_KNIFE_PLATE",
+      "description": "Concealed steel knife plate with dowels. Representational only: no capacity, sizes, or fasteners.",
+      "family": "engineered"
+    },
+    {
+      "connection_type": "JOIST_HANGER",
+      "description": "Joist hanger. Representational only: no capacity, sizes, or fasteners.",
+      "family": "engineered"
+    }
+  ],
+  "description": "The VS-02 connection catalog (D054), generated from backend/src/homedesign/model/connections.py by homedesign.model.schema_export; do not edit by hand. Types are representational only (AC2-07).",
+  "junction_classes": [
+    {
+      "alternative": "STEEL_KNIFE_PLATE",
+      "default": "PEGGED_MORTISE_TENON",
+      "junction_class": "post-beam"
+    },
+    {
+      "alternative": "STEEL_KNIFE_PLATE",
+      "default": "PEGGED_MORTISE_TENON",
+      "junction_class": "post-sill"
+    },
+    {
+      "alternative": "STEEL_KNIFE_PLATE",
+      "default": "PEGGED_MORTISE_TENON",
+      "junction_class": "brace"
+    },
+    {
+      "alternative": "JOIST_HANGER",
+      "default": "HOUSED_DOVETAIL",
+      "junction_class": "joist-beam"
+    },
+    {
+      "alternative": "STEEL_KNIFE_PLATE",
+      "default": "BRIDLE",
+      "junction_class": "rafter-peak"
+    },
+    {
+      "alternative": "STEEL_KNIFE_PLATE",
+      "default": "PEGGED_MORTISE_TENON",
+      "junction_class": "rafter-foot"
+    },
+    {
+      "alternative": "STEEL_KNIFE_PLATE",
+      "default": "PEGGED_MORTISE_TENON",
+      "junction_class": "purlin-rafter"
+    }
+  ]
+}

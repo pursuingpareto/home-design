@@ -169,13 +169,13 @@ test("price book: complete then partial coverage", async ({ page }) => {
   const form = page.getByTestId("price-book-form");
   await form.getByLabel("Source").fill("E2E supplier quote");
   await form.getByLabel("Geography").fill("Chittenden County, VT");
-  await form.getByLabel("BEAM 8x12").fill("14.40");
-  await form.getByLabel("POST 8x8").fill("9.60");
-  await form.getByLabel("SILL 8x8").fill("9.60");
-  await form.getByLabel("FLOOR_JOIST 4x8").fill("3.66");
-  await form.getByLabel("PRINCIPAL_RAFTER 8x10").fill("11.90");
-  await form.getByLabel("PURLIN 6x8").fill("7.16");
-  await form.getByLabel("KNEE_BRACE 4x6").fill("2.74");
+  await form.getByLabel("Beam 8x12").fill("14.40");
+  await form.getByLabel("Post 8x8").fill("9.60");
+  await form.getByLabel("Sill 8x8").fill("9.60");
+  await form.getByLabel("Floor joist 4x8").fill("3.66");
+  await form.getByLabel("Principal rafter 8x10").fill("11.90");
+  await form.getByLabel("Purlin 6x8").fill("7.16");
+  await form.getByLabel("Knee brace 4x6").fill("2.74");
   await expect(form.getByTestId("stored-timber.BEAM.8x12")).toContainText("$47.24/m"); // 1440 c/ft × 1250/381 = 4724.41
   // Connection lines are priced per piece, with no unit conversion (ART-002 §9, AC2-08).
   await form.getByLabel("Pegged mortise and tenon").fill("45.00");
@@ -193,7 +193,7 @@ test("price book: complete then partial coverage", async ({ page }) => {
   await expect(pegged).toContainText("$11,160.00"); // 4500 c × 248
   await expect(form.getByLabel("Pegged mortise and tenon")).toHaveValue("45.00"); // reloaded from the stored book
 
-  await form.getByLabel("POST 8x8").fill("");
+  await form.getByLabel("Post 8x8").fill("");
   await form.getByRole("button", { name: "Save prices" }).click();
   await expect(form).toContainText("Saved as version 2.");
   await expect(page.getByTestId("estimate-coverage")).toContainText("partial");

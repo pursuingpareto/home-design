@@ -25,7 +25,7 @@ test("stories: raising Level 1 lifts the eave and lengthens the posts", async ({
   await confirm(page);
   await revision(page, 2);
   await expect(page.locator(".mesh3d")).toHaveAttribute("data-eave-z-m", "6.096");
-  await expect(page.getByTestId("schedule-aggregates")).toContainText(`POST8x824240' 0"`); // 228' + 12 × 1'
+  await expect(page.getByTestId("schedule-aggregates")).toContainText(`Post8x824240' 0"`); // 228' + 12 × 1'
 });
 
 test("roof: a pitch change is previewed (D057), and moves rafters and purlins", async ({ page }) => {
@@ -107,13 +107,13 @@ test("sections: add, reject a duplicate, apply to beams, and see the price row b
   const prices = page.getByTestId("price-book-form");
   await prices.getByLabel("Source").fill("E2E quote");
   await prices.getByLabel("Geography").fill("VT");
-  await prices.getByLabel("BEAM 8x12").fill("14.40");
-  await prices.getByLabel("POST 8x8").fill("9.60");
-  await prices.getByLabel("SILL 8x8").fill("9.60");
-  await prices.getByLabel("FLOOR_JOIST 4x8").fill("3.66");
-  await prices.getByLabel("PRINCIPAL_RAFTER 8x10").fill("11.90");
-  await prices.getByLabel("PURLIN 6x8").fill("7.16");
-  await prices.getByLabel("KNEE_BRACE 4x6").fill("2.74");
+  await prices.getByLabel("Beam 8x12").fill("14.40");
+  await prices.getByLabel("Post 8x8").fill("9.60");
+  await prices.getByLabel("Sill 8x8").fill("9.60");
+  await prices.getByLabel("Floor joist 4x8").fill("3.66");
+  await prices.getByLabel("Principal rafter 8x10").fill("11.90");
+  await prices.getByLabel("Purlin 6x8").fill("7.16");
+  await prices.getByLabel("Knee brace 4x6").fill("2.74");
   await prices.getByLabel("Pegged mortise and tenon").fill("45.00"); // per piece (ART-002 §9)
   await prices.getByLabel("Bridle joint").fill("65.00");
   await prices.getByLabel("Housed dovetail").fill("38.00");
@@ -138,11 +138,11 @@ test("sections: add, reject a duplicate, apply to beams, and see the price row b
   await page.getByRole("dialog").getByRole("button", { name: "Close" }).click();
   await expect(page.getByRole("textbox", { name: "Label" })).toHaveAttribute("aria-invalid", "true");
 
-  await page.getByRole("combobox", { name: "BEAM" }).selectOption({ label: "10x12" });
-  await page.getByRole("button", { name: "Preview BEAM change" }).click();
+  await page.getByRole("combobox", { name: "Beam" }).selectOption({ label: "10x12" });
+  await page.getByRole("button", { name: "Preview Beam change" }).click();
   await confirm(page);
   await revision(page, 3);
-  await expect(page.getByTestId("schedule-aggregates")).toContainText("BEAM10x1234");
+  await expect(page.getByTestId("schedule-aggregates")).toContainText("Beam10x1234");
   await expect(page.getByTestId("estimate-coverage")).toContainText("partial");
   await page.getByTestId("pricing-note").getByRole("button", { name: "Set unit prices" }).click();
   await expect(page.getByTestId("price-book-form").locator('tr[data-key="timber.BEAM.8x12"]')).toContainText("unused");
@@ -150,11 +150,16 @@ test("sections: add, reject a duplicate, apply to beams, and see the price row b
 
 test("submitting a consequential tab without edits previews as a no-op", async ({ page }) => {
   await newProject(page);
-  for (const name of ["Footprint", "Stories", "Roof", "Grid"]) {
+  for (const name of ["Footprint", "Stories", "Roof", "Grid", "Frame"]) {
     await tab(page, name);
     await page.getByRole("tabpanel").getByRole("button", { name: "Preview" }).click();
     await expect(page.getByRole("heading", { name: "No changes" })).toBeVisible();
     await page.getByRole("dialog").getByRole("button", { name: "Close" }).click();
   }
+  // Connections rows preview only a changed type (UI-003 §7.2), so an untouched row cannot be submitted.
+  await tab(page, "Connections");
+  const previews = page.getByTestId("connection-types").getByRole("button", { name: /^Preview / });
+  await expect(previews).toHaveCount(7);
+  for (const button of await previews.all()) await expect(button).toBeDisabled();
   await expect(page.getByTestId("history").locator("li")).toHaveCount(1);
 });

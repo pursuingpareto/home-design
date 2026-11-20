@@ -1,7 +1,7 @@
 """Export the JSON Schemas and the OpenAPI document committed under docs/ (D028).
 
 Usage (from backend/):
-    uv run python -m homedesign.model.schema_export          # write snapshot, command, artifact schemas, and openapi.v1.json
+    uv run python -m homedesign.model.schema_export          # write snapshot, command, artifact schemas, openapi.v1.json, and the connection catalog
     uv run python -m homedesign.model.schema_export --check  # exit 1 if it is stale
 """
 
@@ -20,6 +20,7 @@ SCHEMA_PATH = SCHEMA_DIR / "snapshot.v2.schema.json"  # named after the model sc
 COMMANDS_SCHEMA_PATH = SCHEMA_DIR / "commands.v1.schema.json"
 ARTIFACTS_SCHEMA_PATH = SCHEMA_DIR / "artifacts.v1.schema.json"
 OPENAPI_PATH = SCHEMA_DIR / "openapi.v1.json"
+CONNECTION_CATALOG_PATH = SCHEMA_DIR / "connection-catalog.json"  # D062: the editor's catalog (UI-003 §10)
 JSON_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
 
 
@@ -97,9 +98,40 @@ def render_openapi() -> str:
     return _render(openapi_document())
 
 
+def connection_catalog() -> dict[str, Any]:
+    """The D054 catalog for clients (D062, UI-003 §10): the version, each class's default and
+    alternative in D054 order, and each type's family and description. The server still validates
+    every command (D028); this only limits what an editor offers."""
+    from . import connections as c
+
+    return {
+        "description": (
+            "The VS-02 connection catalog (D054), generated from backend/src/homedesign/model/connections.py "
+            "by homedesign.model.schema_export; do not edit by hand. Types are representational only (AC2-07)."
+        ),
+        "catalog_version": c.CATALOG_VERSION,
+        "junction_classes": [
+            {"junction_class": jc, "default": c.DEFAULTS[jc], "alternative": c.ALTERNATIVES[jc]} for jc in c.JUNCTION_CLASSES
+        ],
+        "connection_types": [
+            {"connection_type": t, "family": c.FAMILIES[t], "description": c.DESCRIPTIONS[t]} for t in c.CONNECTION_TYPES
+        ],
+    }
+
+
+def render_connection_catalog() -> str:
+    return _render(connection_catalog())
+
+
 def main(argv: list[str] | None = None) -> int:
     args = sys.argv[1:] if argv is None else argv
-    outputs = {SCHEMA_PATH: render_schema(), COMMANDS_SCHEMA_PATH: render_commands_schema(), ARTIFACTS_SCHEMA_PATH: render_artifacts_schema(), OPENAPI_PATH: render_openapi()}
+    outputs = {
+        SCHEMA_PATH: render_schema(),
+        COMMANDS_SCHEMA_PATH: render_commands_schema(),
+        ARTIFACTS_SCHEMA_PATH: render_artifacts_schema(),
+        OPENAPI_PATH: render_openapi(),
+        CONNECTION_CATALOG_PATH: render_connection_catalog(),
+    }
     if "--check" in args:
         stale = [p for p, text in outputs.items() if (p.read_text(encoding="utf-8") if p.exists() else "") != text]
         for path in stale:

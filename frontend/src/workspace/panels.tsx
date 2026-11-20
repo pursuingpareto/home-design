@@ -1,21 +1,22 @@
 /** Read-only workspace panels: revision bar, preliminary banner, views, schedule, estimate, history (UI-001 §4). */
 
-import type { ArtifactType, EstimateEnvelope, Envelope, RevisionSummary, ScheduleEnvelope } from "../api/types";
+import { useEffect, useRef } from "react";
+
+import type { EstimateEnvelope, Envelope, RevisionSummary, ScheduleEnvelope } from "../api/types";
 import { ARTIFACT_TYPES } from "../api/types";
+import { ARTIFACT_LABEL, junctionLabel, roleLabel, typeLabel } from "../display/labels";
+import { css, ROLE_COLOR } from "../display/palette";
 import { formatLength, type UnitSystem } from "../units/length";
 import { approxPerFoot, formatCents } from "../units/money";
+import type { Highlight, Pick } from "../views/highlight";
 import { Mesh3dView } from "../views/Mesh3dView";
 import { pairViews, type ViewState } from "../views/pairing";
 import { Plan2dView } from "../views/Plan2dView";
 import { lineLabel, type ConnectionCatalog } from "./lineItems";
 import { statusOf, type RevisionData } from "./useRevisionData";
 
-const TYPE_LABEL: Record<ArtifactType, string> = {
-  plan2d: "2D plan",
-  mesh3d: "3D model",
-  timber_schedule: "Timber schedule",
-  preliminary_estimate: "Estimate",
-};
+/** A pick from a view or the schedule. `toggle` clears the selection when it is picked again (UI-003 §6). */
+export type OnSelect = (pick: Pick | null, toggle?: boolean) => void;
 
 export const shortId = (id: string) => id.slice(0, 8);
 
@@ -34,7 +35,7 @@ export function RevisionBar({ data }: { data: RevisionData }) {
           const status = statusOf(data, type);
           return (
             <li key={type} className={`chip status-${status.toLowerCase()}`} data-testid={`status-${type}`}>
-              {TYPE_LABEL[type]}: {status}
+              {ARTIFACT_LABEL[type]}: {status}
             </li>
           );
         })}
@@ -66,11 +67,38 @@ function stateText(state: ViewState): string {
   }
 }
 
-export function ViewsPanel({ data, units, selected, onSelect }: { data: RevisionData; units: UnitSystem; selected: string | null; onSelect: (id: string | null) => void }) {
+function ConnectionsSwitch({ show, onChange }: { show: boolean; onChange: (show: boolean) => void }) {
+  return (
+    <div className="view-options">
+      <label>
+        <input type="checkbox" role="switch" checked={show} onChange={(e) => onChange(e.target.checked)} /> Connections
+      </label>
+      <span className="hint">Markers are symbols of fixed size; they show no joint size or capacity.</span>
+    </div>
+  );
+}
+
+export function ViewsPanel({
+  data,
+  units,
+  highlight,
+  showConnections,
+  onShowConnections,
+  onSelect,
+}: {
+  data: RevisionData;
+  units: UnitSystem;
+  highlight: Highlight;
+  showConnections: boolean;
+  onShowConnections: (show: boolean) => void;
+  onSelect: OnSelect;
+}) {
   const pairing = pairViews(data.plan, data.mesh);
+  const toggle = (pick: Pick | null) => onSelect(pick);
   if (pairing.kind === "unpaired") {
     return (
       <section className="views" aria-label="Plan and 3D views" data-testid="views-unpaired">
+        <ConnectionsSwitch show={showConnections} onChange={onShowConnections} />
         <div className="view-placeholder" data-testid="plan-state">
           2D plan: {pairing.mismatch ? "Waiting for matching revisions…" : stateText(pairing.plan)}
         </div>
@@ -82,8 +110,9 @@ export function ViewsPanel({ data, units, selected, onSelect }: { data: Revision
   }
   return (
     <section className="views" aria-label="Plan and 3D views" data-testid="views-paired" data-source-revision-id={pairing.revisionId}>
-      <Plan2dView plan={pairing.plan} units={units} selected={selected} onSelect={onSelect} />
-      <Mesh3dView mesh={pairing.mesh} units={units} selected={selected} onSelect={onSelect} />
+      <ConnectionsSwitch show={showConnections} onChange={onShowConnections} />
+      <Plan2dView plan={pairing.plan} units={units} highlight={highlight} showConnections={showConnections} onSelect={toggle} />
+      <Mesh3dView mesh={pairing.mesh} units={units} highlight={highlight} showConnections={showConnections} onSelect={toggle} />
       <p className="source">
         Both views: revision <code>{shortId(pairing.revisionId)}</code>
         {pairing.head ? " (head)" : " (historical)"}
@@ -92,8 +121,37 @@ export function ViewsPanel({ data, units, selected, onSelect }: { data: Revision
   );
 }
 
-export function SchedulePanel({ schedule, units, selected, onSelect }: { schedule: ScheduleEnvelope | null; units: UnitSystem; selected: string | null; onSelect: (id: string | null) => void }) {
+function RoleCell({ role }: { role: string }) {
+  const color = (ROLE_COLOR as Record<string, number>)[role];
+  return (
+    <span className="role" title={role} data-role={role}>
+      {color !== undefined && <span className="swatch" style={{ background: css(color) }} aria-hidden="true" />}
+      {roleLabel(role)}
+    </span>
+  );
+}
+
+export function SchedulePanel({ schedule, units, highlight, onSelect }: { schedule: ScheduleEnvelope | null; units: UnitSystem; highlight: Highlight; onSelect: OnSelect }) {
   const payload = schedule?.status === "CURRENT" ? schedule.payload : null;
+  const keyOf = new Map(payload?.members.map((m) => [m.member_id, m.generation_key]) ?? []);
+  const list = useRef<HTMLDivElement>(null);
+  const firstSelected = payload?.connections.find((c) => highlight.connections.has(c.connection_id))?.connection_id ?? null;
+  // Scroll the connection list (not the page) to the first selected row (UI-003 §6).
+  useEffect(() => {
+    const container = list.current;
+    const row = firstSelected ? container?.querySelector<HTMLElement>(`tr[data-connection-id="${firstSelected}"]`) : null;
+    if (!container || !row) return;
+    const header = container.querySelector("thead")?.getBoundingClientRect().height ?? 0;
+    container.scrollTop += row.getBoundingClientRect().top - container.getBoundingClientRect().top - header;
+  }, [firstSelected]);
+  const memberLink = (id: string | undefined) =>
+    id ? (
+      <button type="button" className="link" data-member-id={id} onClick={(e) => (e.stopPropagation(), onSelect({ kind: "member", id }, false))}>
+        {keyOf.get(id) ?? id}
+      </button>
+    ) : (
+      "—"
+    );
   return (
     <section className="schedule" aria-labelledby="schedule-heading">
       <h2 id="schedule-heading">Timber schedule</h2>
@@ -117,7 +175,9 @@ export function SchedulePanel({ schedule, units, selected, onSelect }: { schedul
             <tbody>
               {payload.aggregates.map((a) => (
                 <tr key={`${a.role}/${a.nominal_section}`}>
-                  <td>{a.role}</td>
+                  <td>
+                    <RoleCell role={a.role} />
+                  </td>
                   <td>{a.nominal_section}</td>
                   <td>{a.count}</td>
                   <td>{formatLength(a.total_length_m, units)}</td>
@@ -144,26 +204,103 @@ export function SchedulePanel({ schedule, units, selected, onSelect }: { schedul
                 </tr>
               </thead>
               <tbody>
-                {payload.members.map((m) => (
-                  <tr
-                    key={m.member_id}
-                    data-member-id={m.member_id}
-                    aria-selected={m.member_id === selected}
-                    className={m.member_id === selected ? "selected" : undefined}
-                    onClick={() => onSelect(m.member_id === selected ? null : m.member_id)}
-                  >
-                    <td>
-                      <button type="button" className="link" onClick={(e) => (e.stopPropagation(), onSelect(m.member_id))}>
-                        {m.generation_key}
-                      </button>
-                    </td>
-                    <td>{m.role}</td>
-                    <td>{m.nominal_section}</td>
-                    <td>{m.species ?? "—"}</td>
-                    <td>{formatLength(m.length_m, units)}</td>
-                    <td>{m.quantity}</td>
-                  </tr>
-                ))}
+                {payload.members.map((m) => {
+                  const selected = m.member_id === highlight.member;
+                  const related = highlight.related.has(m.member_id);
+                  return (
+                    <tr
+                      key={m.member_id}
+                      data-member-id={m.member_id}
+                      aria-selected={selected}
+                      className={selected ? "selected" : related ? "related" : undefined}
+                      onClick={() => onSelect({ kind: "member", id: m.member_id })}
+                    >
+                      <td>
+                        <button type="button" className="link" onClick={(e) => (e.stopPropagation(), onSelect({ kind: "member", id: m.member_id }, false))}>
+                          {m.generation_key}
+                        </button>
+                      </td>
+                      <td>
+                        <RoleCell role={m.role} />
+                      </td>
+                      <td>{m.nominal_section}</td>
+                      <td>{m.species ?? "—"}</td>
+                      <td>{formatLength(m.length_m, units)}</td>
+                      <td>{m.quantity}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <table data-testid="schedule-connection-aggregates">
+            <caption>Connections by junction and type</caption>
+            <thead>
+              <tr>
+                <th scope="col">Junction</th>
+                <th scope="col">Type</th>
+                <th scope="col">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payload.connection_aggregates.map((a) => (
+                <tr key={`${a.junction_class}/${a.connection_type}`} data-junction-class={a.junction_class} data-connection-type={a.connection_type}>
+                  <td>{junctionLabel(a.junction_class)}</td>
+                  <td>{typeLabel(a.connection_type)}</td>
+                  <td>{a.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <table data-testid="schedule-connection-types">
+            <caption>Connection types in use</caption>
+            <thead>
+              <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Family</th>
+                <th scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payload.connection_catalog.types.map((t) => (
+                <tr key={t.connection_type} data-connection-type={t.connection_type}>
+                  <td>{typeLabel(t.connection_type)}</td>
+                  <td>{t.family}</td>
+                  <td>{t.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="scroll" ref={list}>
+            <table data-testid="schedule-connections">
+              <caption>Connections ({payload.connections.length})</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Junction</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Receiving member</th>
+                  <th scope="col">Entering member</th>
+                </tr>
+              </thead>
+              <tbody>
+                {payload.connections.map((c) => {
+                  const selected = highlight.connections.has(c.connection_id);
+                  return (
+                    <tr
+                      key={c.connection_id}
+                      data-connection-id={c.connection_id}
+                      aria-selected={selected}
+                      className={selected ? "selected" : undefined}
+                      title={c.generation_key}
+                      onClick={() => onSelect({ kind: "connections", ids: [c.connection_id] })}
+                    >
+                      <td>{junctionLabel(c.junction_class)}</td>
+                      <td>{typeLabel(c.connection_type)}</td>
+                      <td>{memberLink(c.member_ids[0])}</td>
+                      <td>{memberLink(c.member_ids[1])}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

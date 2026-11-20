@@ -88,7 +88,7 @@ describe("mesh3d tessellation (artifacts.md §6)", () => {
     for (const m of payload.members) {
       expect(scene.bounds.containsPoint(new THREE.Vector3(...(m.axis_end_m as [number, number, number])))).toBe(true);
     }
-    highlight(scene, post0());
+    highlight(scene, { member: post0(), related: new Set(), connections: new Set() });
     const selected = scene.members.get(post0())!.material as THREE.MeshStandardMaterial;
     expect(selected.color.getHex()).toBe(COLORS.selected);
     scene.dispose();

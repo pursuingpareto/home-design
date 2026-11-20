@@ -571,3 +571,24 @@ def test_connections_make_no_claims():
     preview = change.to_preview_dict()
     assert [w["code"] for w in preview["warnings"]] == ["PRELIMINARY_UNVERIFIED"]
     assert set(preview["connections"]) == {"added", "removed", "updated"}
+
+
+def test_committed_connection_catalog_is_current():
+    """D062, UI-003 §10: the browser's catalog is an export of model/connections.py, drift-checked."""
+    from homedesign.model.connections import ALLOWED, CATALOG_VERSION, DESCRIPTIONS, FAMILIES
+    from homedesign.model.schema_export import CONNECTION_CATALOG_PATH, render_connection_catalog
+
+    assert CONNECTION_CATALOG_PATH.read_text(encoding="utf-8") == render_connection_catalog(), (
+        "connection-catalog.json is stale. Run `uv run python -m homedesign.model.schema_export` and commit the result."
+    )
+    exported = json.loads(CONNECTION_CATALOG_PATH.read_text(encoding="utf-8"))
+    assert exported["catalog_version"] == CATALOG_VERSION
+    assert [c["junction_class"] for c in exported["junction_classes"]] == list(JUNCTION_CLASSES)
+    for row in exported["junction_classes"]:
+        assert {row["default"], row["alternative"]} == ALLOWED[row["junction_class"]]
+        assert row["default"] == DEFAULTS[row["junction_class"]] and row["alternative"] == ALTERNATIVES[row["junction_class"]]
+    assert [t["connection_type"] for t in exported["connection_types"]] == list(CONNECTION_TYPES)
+    for t in exported["connection_types"]:
+        assert t["family"] == FAMILIES[t["connection_type"]]
+        assert t["description"] == DESCRIPTIONS[t["connection_type"]]
+        assert "Representational only" in t["description"]
