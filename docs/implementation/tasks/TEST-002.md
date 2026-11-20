@@ -1,6 +1,6 @@
 # TEST-002 — VS-02 traceability, the golden scenario's new commands, and budgets
 
-**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12.  
+**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12; item 6 is approved.  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes.  
 **Slice:** VS-02  
 **Depends on:** `MODEL-005`, `TIMBER-002`, `CONN-001`, `ART-002`, `DEP-001`, and `UI-003` (all done; `main` at `e632578`). Merges on its own, with CI passing ([vs-02.md](../acceptance-tests/vs-02.md) §12.2).  
@@ -82,7 +82,7 @@ After this task:
 
 ## 5. The VS-02 traceability matrix (items 6 and 4)
 
-### 5.1 Form (item 6, judgment)
+### 5.1 Form (item 6, judgment; approved 2026-11-20)
 
 A new document, `docs/implementation/acceptance-tests/vs-02-traceability.md`, beside the VS-01 matrix, which stays as it is and is still enforced (AC2-05 points to it).
 
@@ -99,7 +99,7 @@ A new document, `docs/implementation/acceptance-tests/vs-02-traceability.md`, be
 - **one row per criterion** (9 + 7 rows), as the VS-01 matrix does. It is shorter, but a row can be satisfied by tests of one bullet only;
 - **VS-02 sections in vs-01-traceability.md.** One file, but the two slices' counts and parsers mix, and a VS-02 edit risks the VS-01 check.
 
-### 5.2 The drift check against vs-02.md (item 6, judgment)
+### 5.2 The drift check against vs-02.md (item 6, judgment; approved 2026-11-20)
 
 `test_traceability.py` gains `test_every_vs02_item_is_traced`, which:
 
@@ -318,7 +318,7 @@ Any change that is not a confirmation is a small UI change of its own, outside t
 
 **Your judgment** (one at a time, in this order):
 
-6. **Matrix form and drift check** (§5.1–5.2): a separate `vs-02-traceability.md`; one row per criterion bullet (17 AC rows) plus the 7 VS-02 contract checks; enforced against vs-02.md's IDs **and wording**, so a reworded criterion fails until its row is reviewed. *Alternatives:* one row per criterion; VS-02 sections in the VS-01 file; IDs only.
+6. **Matrix form and drift check** (§5.1–5.2): a separate `vs-02-traceability.md`; one row per criterion bullet (17 AC rows) plus the 7 VS-02 contract checks; enforced against vs-02.md's IDs **and wording**, so a reworded criterion fails until its row is reviewed. *Alternatives:* one row per criterion; VS-02 sections in the VS-01 file; IDs only. **Approved as proposed (2026-11-20):** one row per bullet, checked against IDs and wording.
 7. **Payload size budgets** (§8.1): each payload at most 256 KiB for the reference house and 2 MB for the largest supported case, in canonical bytes, gated in CI. *Alternatives:* no size budget; tighter ceilings.
 8. **Time budgets** (§8.2): ceilings at about 5–10× today (preview 1 s for the reference house and 5 s for the largest case; commit 5 s for the largest case; in the browser, 10 s to first render and 3 s to the preview dialog), median of 5, gated in CI, with a stop-and-report rule above half a ceiling. *Alternatives:* report only, with no ceiling; user-facing targets in a production build.
 9. **UI-003's four flagged choices** (§10), each confirmed as implemented, or changed in a UI change of its own: (a) untouched Connections rows disabled; (b) per-key dialog rows; (c) "Steel knife plate"; (d) the brace-fit pointer naming Footprint too.
