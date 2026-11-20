@@ -71,6 +71,7 @@ class PreviewResult:
     change: CandidateChange
     preview_token: str
     expires_at: str
+    impacted_artifacts: list[str]  # DEP-001 §6, computed here: the model package does not know the derivations
     body: dict[str, Any] = field(repr=False)
 
 
@@ -158,8 +159,10 @@ class ProjectService:
             command_hash=change.command_hash,
             expires_at=expires,
         )
-        body = change.to_preview_dict() | {"preview_token": token, "expires_at": format_timestamp(expires)}
-        return PreviewResult(change, token, format_timestamp(expires), body)
+        # DEP-001 §6: exactly the artifacts whose fingerprints differ; empty for a no-op.
+        impacted = self.artifacts.impact(project_id, head, change.candidate)
+        body = change.to_preview_dict() | {"impacted_artifacts": impacted, "preview_token": token, "expires_at": format_timestamp(expires)}
+        return PreviewResult(change, token, format_timestamp(expires), impacted, body)
 
     # --- commit --------------------------------------------------------------
 

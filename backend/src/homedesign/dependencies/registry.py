@@ -1,7 +1,11 @@
-"""Derivation registry (ART-001 §3).
+"""Derivation registry (ART-001 §3; DEP-001 §4).
 
 Artifact content comes from derivations registered by GEOM-001 and EST-001. A type with
 no registered derivation is always reported as MISSING (never invented, artifacts.md §2.1).
+
+Every derivation declares a pure selector (D056, D061). The selector extracts exactly what the
+derivation reads; the selection is fingerprinted, and it is the derivation's only model input.
+The selectors are the dependency graph: impact is computed by comparing selections' fingerprints.
 """
 
 from __future__ import annotations
@@ -9,8 +13,6 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from typing import Any, Literal
-
-from homedesign.model.schema import Snapshot
 
 # artifacts.md §1: every VS-01 manifest lists exactly these, in this order.
 ARTIFACT_TYPES: tuple[str, ...] = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")
@@ -26,10 +28,17 @@ class Outcome:
 
 @dataclass(frozen=True)
 class DerivationContext:
+    """What a derivation may read (D061 item 9): its selection and its external inputs. No snapshot."""
+
     project_id: str
-    snapshot: Snapshot
+    selection: Any  # the derivation's own selection (DEP-001 §4.2)
     external: dict[str, Any]  # inputs from outside the snapshot (e.g. the price book, EST-001)
-    upstream: dict[str, Outcome]  # outcomes of declared dependencies for the same revision
+
+
+# A selector receives the snapshot when the derivation has no dependencies, and otherwise the
+# outcomes of its declared dependencies for the same revision, by type (DEP-001 §4.2: the estimate
+# selects from the schedule's outcome, never from the snapshot). It must be pure and return I-JSON.
+Selector = Callable[[Any], Any]
 
 
 @dataclass(frozen=True)
@@ -37,10 +46,11 @@ class Derivation:
     artifact_type: str
     generator_id: str
     generator_version: str
+    select: Selector  # Snapshot -> selection, or {dependency: Outcome} -> selection (see Selector)
     derive: Callable[[DerivationContext], Outcome]
     depends_on: tuple[str, ...] = ()
     # Returns extra inputs from outside the snapshot, given (tx, project_id). Keys are merged into
-    # the fingerprint input object, except keys starting with "_", which are context only and must
+    # the fingerprint input object (DEP-001 §5), except keys starting with "_", which are context only and must
     # be fully determined by the fingerprinted keys. All keys are passed as context.external.
     external_inputs: Callable[[Any, str], dict[str, Any]] | None = None
 

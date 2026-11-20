@@ -1,6 +1,6 @@
 # D056 — Dependency selectors: impact by comparing input fingerprints
 
-**Status:** Confirmed (implemented in VS-02)  
+**Status:** Confirmed; implemented ([DEP-001](../../implementation/tasks/DEP-001.md), VS-02)  
 **Date:** 2026-11-19  
 **Scope:** How artifacts declare their inputs, how a preview determines impacted artifacts, and when an artifact is re-derived. Approved as decision 6 of the [VS-02 scope proposal](../../implementation/acceptance-tests/vs-02.md) (§11), within [D051](D051-vs02-slice-boundary.md).  
 **Amends, when VS-02 implements it:**

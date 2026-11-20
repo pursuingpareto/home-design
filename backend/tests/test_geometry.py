@@ -13,7 +13,7 @@ from hypothesis import strategies as st
 
 from conftest import FIXTURE, REPO_ROOT, VECTORS_PATH, fresh_fixture
 from homedesign.estimating import ESTIMATE
-from homedesign.geometry import MESH3D, PLAN2D, build_mesh3d, build_plan2d
+from homedesign.geometry import MESH3D, PLAN2D, build_mesh3d, build_plan2d, select_mesh3d, select_plan2d
 from homedesign.geometry.views import plan_slot
 from homedesign.model import validate_value
 from homedesign.model.canonical import fingerprint
@@ -56,7 +56,7 @@ def utf16_sorted(keys):
 
 
 def test_reference_house_plan():
-    plan = build_plan2d(FIXTURE_SNAPSHOT)
+    plan = build_plan2d(select_plan2d(FIXTURE_SNAPSHOT))
     counts = [(p["plane_id"], {a: len(p[a]) for a in ARRAYS if p[a]}, len(p["connections"])) for p in plan["planes"]]
     assert counts == [  # ART-002 §4.1, §4.2
         ("level-0", {"posts": 12, "sills": 17}, 12),
@@ -79,9 +79,9 @@ def test_reference_house_plan():
 
 def test_one_inventory_in_plan_mesh_and_schedule():
     """§13 test 1 (AC2-02): the same 193 member IDs everywhere."""
-    from homedesign.timber.schedule import build_schedule
+    from homedesign.timber.schedule import build_schedule, select_schedule
 
-    plan, mesh, schedule = build_plan2d(FIXTURE_SNAPSHOT), build_mesh3d(FIXTURE_SNAPSHOT), build_schedule(FIXTURE_SNAPSHOT)
+    plan, mesh, schedule = build_plan2d(select_plan2d(FIXTURE_SNAPSHOT)), build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT)), build_schedule(select_schedule(FIXTURE_SNAPSHOT))
     plan_ids = [i["member_id"] for _, _, i in plan_entries(plan)]
     assert len(plan_ids) == 193 and len(set(plan_ids)) == 193
     assert set(plan_ids) == {b["member_id"] for b in mesh["members"]} == {r["member_id"] for r in schedule["members"]} == member_ids(FIXTURE_SNAPSHOT)
@@ -92,7 +92,7 @@ def test_plan_positions_are_exact_projections():
     stored = {e.id: e for e in FIXTURE_SNAPSHOT.entities if e.kind == "TimberMember"}
     array_roles = {"posts": "POST", "beams": "BEAM", "sills": "SILL", "joists": "FLOOR_JOIST", "braces": "KNEE_BRACE",
                    "rafters": "PRINCIPAL_RAFTER", "purlins": "PURLIN"}
-    for _, array, entry in plan_entries(build_plan2d(FIXTURE_SNAPSHOT)):
+    for _, array, entry in plan_entries(build_plan2d(select_plan2d(FIXTURE_SNAPSHOT))):
         member = stored[entry["member_id"]]
         assert member.member_role == array_roles[array] and entry["generation_key"] == member.generation_key
         if array == "posts":
@@ -103,7 +103,7 @@ def test_plan_positions_are_exact_projections():
 
 def test_plan_markers_are_on_the_entering_members_plane():
     """§13 test 3: one marker per connection, at the projection of its location, on member_ids[1]'s plane."""
-    plan = build_plan2d(FIXTURE_SNAPSHOT)
+    plan = build_plan2d(select_plan2d(FIXTURE_SNAPSHOT))
     records = connection_records(FIXTURE_SNAPSHOT)
     plane_of = {entry["member_id"]: plane for plane, _, entry in plan_entries(plan)}
     markers = [(p["plane_id"], c) for p in plan["planes"] for c in p["connections"]]
@@ -138,14 +138,14 @@ def test_member_matching_no_plane_fails_the_derivation():
     member = next(e for e in doc["entities"] if e["kind"] == "TimberMember" and e["member_role"] == "SILL")
     member["generation_key"] = member["generation_key"].replace("/plane-L0/", "/plane-L9/")
     with pytest.raises(ValueError):
-        build_plan2d(Snapshot.model_validate(doc))
+        build_plan2d(select_plan2d(Snapshot.model_validate(doc)))
 
 
 # 2. mesh3d (ART-002 §13 tests 3–4) -------------------------------------------------------------------
 
 
 def test_reference_house_mesh():
-    mesh, plan = build_mesh3d(FIXTURE_SNAPSHOT), build_plan2d(FIXTURE_SNAPSHOT)
+    mesh, plan = build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT)), build_plan2d(select_plan2d(FIXTURE_SNAPSHOT))
     ids = [b["member_id"] for b in mesh["members"]]
     assert len(ids) == 193 and set(ids) == member_ids(FIXTURE_SNAPSHOT)
     sections = {e.id: e for e in FIXTURE_SNAPSHOT.entities if e.kind == "Section"}
@@ -160,7 +160,7 @@ def test_reference_house_mesh():
 
 
 def test_mesh_markers_copy_the_records():
-    mesh = build_mesh3d(FIXTURE_SNAPSHOT)
+    mesh = build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT))
     records = connection_records(FIXTURE_SNAPSHOT)
     assert len(mesh["connections"]) == 312 and {c["connection_id"] for c in mesh["connections"]} == set(records)
     assert utf16_sorted([c["generation_key"] for c in mesh["connections"]])
@@ -199,7 +199,7 @@ def _close(a, b, eps=1e-12):
 
 def test_box_orientation_for_every_role():
     """§13 test 4: width horizontal (or +X for posts), depth perpendicular to the axis, per role."""
-    mesh = build_mesh3d(FIXTURE_SNAPSHOT)
+    mesh = build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT))
     pitch = mesh["envelope"]["roof"]["pitch_rad"]
     first = {}
     for box in mesh["members"]:
@@ -230,7 +230,7 @@ def test_box_orientation_for_every_role():
 
 
 def test_roof_planes_have_the_confirmed_pitch():
-    roof = build_mesh3d(FIXTURE_SNAPSHOT)["envelope"]["roof"]
+    roof = build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT))["envelope"]["roof"]
     t = math.tan(roof["pitch_rad"])
     for surface in roof["surfaces"]:
         zs = [p[2] for p in surface["ring_m"]]
@@ -325,15 +325,15 @@ def test_generator_versions():
 
 
 def test_plan_matches_independent_ecmascript_implementation():
-    plan = build_plan2d(FIXTURE_SNAPSHOT)
-    assert canonical_json(plan) == canonical_json(build_plan2d(FIXTURE_SNAPSHOT))
+    plan = build_plan2d(select_plan2d(FIXTURE_SNAPSHOT))
+    assert canonical_json(plan) == canonical_json(build_plan2d(select_plan2d(FIXTURE_SNAPSHOT)))
     assert len(canonical_json(plan)) == VECTORS["plan2d"]["canonical_bytes"]
     assert fingerprint(plan) == VECTORS["plan2d"]["fingerprint"]
 
 
 def test_mesh_matches_independent_ecmascript_implementation():
     """Bit-identical except tan(pitch)-derived heights, within 1e-12 m (geometry.md)."""
-    mesh, expected = build_mesh3d(FIXTURE_SNAPSHOT), VECTORS["mesh3d"]["payload"]
+    mesh, expected = build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT)), VECTORS["mesh3d"]["payload"]
     assert mesh["members"] == expected["members"]
     assert mesh["connections"] == expected["connections"]  # copied from the records on both sides
     ours, theirs = mesh["envelope"], expected["envelope"]
@@ -360,10 +360,10 @@ def _keys(value):
 def test_no_capacity_size_or_fastener_fields():
     """§13 test 13 (AC2-07): the payloads say where connections are and what type, nothing more."""
     from homedesign.estimating import build_estimate
-    from homedesign.timber.schedule import build_schedule
+    from homedesign.timber.schedule import build_schedule, select_schedule
 
-    schedule = build_schedule(FIXTURE_SNAPSHOT)
-    payloads = (build_plan2d(FIXTURE_SNAPSHOT), build_mesh3d(FIXTURE_SNAPSHOT), schedule, build_estimate(schedule, None)[1])
+    schedule = build_schedule(select_schedule(FIXTURE_SNAPSHOT))
+    payloads = (build_plan2d(select_plan2d(FIXTURE_SNAPSHOT)), build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT)), schedule, build_estimate(schedule, None)[1])
     keys = {k for p in payloads for k in _keys(p)}
     assert not {k for k in keys if any(w in k for w in ("capacity", "fastener", "size", "peg", "plate", "dowel", "load"))}
 
@@ -392,7 +392,7 @@ def test_views_for_any_accepted_candidate(width, depth, extra_x, h0, h1):
             candidates.append(result.change.candidate)
     for snapshot in candidates:
         assert validate_value(snapshot.model_dump(mode="json")).valid
-        plan, mesh = build_plan2d(snapshot), build_mesh3d(snapshot)
+        plan, mesh = build_plan2d(select_plan2d(snapshot)), build_mesh3d(select_mesh3d(snapshot))
         plan_ids = [i["member_id"] for _, _, i in plan_entries(plan)]
         assert len(plan_ids) == len(set(plan_ids)) and set(plan_ids) == member_ids(snapshot)
         assert {b["member_id"] for b in mesh["members"]} == member_ids(snapshot)

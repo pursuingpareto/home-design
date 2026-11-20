@@ -40,7 +40,6 @@ CLASSIFICATION = {
     "UndoToRevision": "consequential",
     "CreateReferenceProject": "consequential",
 }
-IMPACTED_ARTIFACTS = ("mesh3d", "plan2d", "preliminary_estimate", "timber_schedule")  # interfaces.md §3
 WARNINGS = (
     {
         "code": "PRELIMINARY_UNVERIFIED",
@@ -90,7 +89,6 @@ class CandidateChange:
     members: _GeneratedDiff
     connections: _GeneratedDiff
     classification_version: str = CLASSIFICATION_VERSION
-    impacted_artifacts: tuple[str, ...] = IMPACTED_ARTIFACTS
     warnings: tuple[dict[str, str], ...] = WARNINGS
 
     @property
@@ -98,7 +96,7 @@ class CandidateChange:
         return self.classification == "consequential" and not self.is_noop  # D045
 
     def to_preview_dict(self) -> dict[str, Any]:
-        """interfaces.md §3 fields (``preview_id``/``expires_at`` are added by the server)."""
+        """interfaces.md §3 fields. The server adds ``impacted_artifacts`` (DEP-001 §6), the token, and ``expires_at``."""
         return {
             "base_revision_id": self.base_revision_id,
             "revision_id": None if self.is_noop else self.revision_id,
@@ -110,7 +108,6 @@ class CandidateChange:
             "changes": [dict(c) for c in self.changes],
             "members": self.members.to_dict(),
             "connections": self.connections.to_dict(),
-            "impacted_artifacts": list(self.impacted_artifacts),
             "warnings": [dict(w) for w in self.warnings],
         }
 

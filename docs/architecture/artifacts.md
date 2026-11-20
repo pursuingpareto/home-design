@@ -60,7 +60,7 @@ Same machine as [dependencies](dependencies.md#3-artifact-status-machine), plus 
 |---|---|---|
 | `MISSING` | Never computed for this revision | 202 with envelope, `payload` omitted |
 | `QUEUED` / `COMPUTING` | Derivation in flight | 202, `payload` omitted |
-| `CURRENT` | Fingerprint matches the inputs for `source_revision_id` | 200 with `payload` |
+| `CURRENT` | Fingerprint matches the inputs for `source_revision_id`, whether the payload was derived for this revision or reused from another revision of the project with the same fingerprint (§2.3) | 200 with `payload` |
 | `FAILED` | Derivation failed; semantic model unchanged | 200 envelope with `error`; or 503 if the failure is a dependency outage. Never invent geometry or totals |
 | `STALE` | Newer applicable inputs exist for this project head | Never returned as the current artifact for head. Manifest may list `STALE` |
 | `UNAVAILABLE` | Inputs insufficient (VS-01: no unit prices for the estimate) | 200 envelope, `payload` may list unpriced quantities; no grand total |
@@ -76,22 +76,36 @@ A `FAILED` envelope's `error` is `{code, message}` with code `DERIVATION_FAILED`
 
 ### 2.3 Fingerprint
 
-`input_fingerprint` is `sha256:` plus lowercase hex of SHA-256 over the canonical input object for that generator:
+`input_fingerprint` is `sha256:` plus lowercase hex of SHA-256 over the canonical input object for that generator ([D056](../product/decisions/D056-dependency-selectors.md), [D061](../product/decisions/D061-vs02-selector-contents.md), [DEP-001](../implementation/tasks/DEP-001.md) §5):
 
-- `plan2d` / `mesh3d` / `timber_schedule`: `{ "revision_id", "model_schema_version", "generator_id", "generator_version", "snapshot" }` where `snapshot` is the canonical semantic building snapshot ([D030](../product/decisions/D030-canonical-snapshot-entity-order.md): `entities` sorted by `id`), not derived meshes.
-- `preliminary_estimate`: the above plus `{ "price_book_id", "price_book_version", "as_of", "currency" }` or an explicit `"price_book": null`.
+```json
+{"selection": { "…": "§2.5" }, "generator_id": "plan2d-vs01", "generator_version": "2", "model_schema_version": 2}
+```
 
-**Scope in VS-01** ([ART-001](../implementation/tasks/ART-001.md) §8, item 3): the input object includes `revision_id` and the whole snapshot, so a fingerprint never matches across revisions, and every revision derives its artifacts afresh. Per-artifact input selectors, where each artifact hashes only the fields it reads, are deferred. This is the intended VS-01 behavior, not a gap.
+- `preliminary_estimate` adds its external inputs: `{ "price_book_id", "price_book_version", "as_of", "currency" }`, or an explicit `"price_book": null`.
+- The object holds no `revision_id`, no snapshot, no `project_id`, and no selector version. A selector change changes fingerprints, so stored rows read as `STALE` and are recomputed on read, as after a generator version change.
+- **Reuse** (DEP-001 §7): when a revision's artifact has the fingerprint and generator version of a stored `CURRENT` or `UNAVAILABLE` row of any revision **of the same project**, that row is copied for the new revision (payload, warnings, and `generated_at` included) instead of being derived again. `FAILED` rows are never copied. The envelope is the new revision's own: `source_revision_id` and `head` name the requested revision (AC-07). Lazy recompute on read uses the same lookup; the manifest never derives or copies.
 
-**VS-02 amendment ([D056](../product/decisions/D056-dependency-selectors.md), not yet implemented):**
-- each artifact's input object is its **selector's** canonical selection, plus `generator_id`, `generator_version`, `model_schema_version`, and external inputs, without `revision_id`;
-- an artifact whose fingerprint is unchanged by a commit is reused for the new revision, with its own envelope and the same payload.
+*Before VS-02* (ART-001 §8, item 3), the input object held `revision_id` and the whole snapshot, so fingerprints never matched across revisions and every revision derived its artifacts afresh.
 
-Canonical bytes: RFC 8785 JSON Canonicalization Scheme, UTF-8 ([D029](../product/decisions/D029-canonical-json-rfc8785.md)). Object keys are ordered by JCS, arrays keep their documented order, and `null` is preserved. Do not include derived artifacts in the hashed snapshot.
+Canonical bytes: RFC 8785 JSON Canonicalization Scheme, UTF-8 ([D029](../product/decisions/D029-canonical-json-rfc8785.md)). Object keys are ordered by JCS, arrays keep their documented order, and `null` is preserved. Selections hold no derived artifacts, except the estimate's copy of the schedule's three lists (§2.5).
 
 ### 2.4 Coordinates and units
 
 Payload geometry uses D026: meters, +X east, +Y north, +Z up, radians. Display conversion to feet-inches is a UI concern. Payloads include `"units": "m"` (or a units object on the schedule/estimate). Measurements in the plan are explicit `value_m` fields, never pixel lengths.
+
+### 2.5 Selections (VS-02)
+
+Each derivation declares a pure **selector**: it extracts exactly the values its builder reads, after the projections the builder itself applies, and nothing else ([D061](../product/decisions/D061-vs02-selector-contents.md)). The builder takes the selection as its only model input. The selectors are the dependency graph ([dependencies.md](dependencies.md) §2). Arrays of members and connections are in `generation_key` order; numbers are the stored doubles.
+
+| Artifact | Selection |
+|---|---|
+| `plan2d` | `footprint` (`origin_m`, `width_m`, `depth_m`, `rotation_rad`); `levels` (both IDs and elevations, Level 1's `story_height_m`); `roof.eave_overhang_m`; per member `id`, `generation_key`, `role`, `start_xy_m`, and `end_xy_m` except for posts; per connection `id`, `generation_key`, `junction_class`, `connection_type`, `xy_m`, `entering_member_id` |
+| `mesh3d` | `footprint` (`origin_m`, `width_m`, `depth_m`); `levels` (elevations, Level 1's `story_height_m`); `roof` (`ridge_axis`, `pitch_rad`, `eave_overhang_m`); per member `id`, `generation_key`, `role`, `start_m`, `end_m`, and its section's `actual_width_m` and `actual_depth_m` (not its `section_id`); per connection `id`, `generation_key`, `junction_class`, `connection_type`, `location_m` |
+| `timber_schedule` | per member `id`, `generation_key`, `role`, `length_m` (its reference-axis length, not its axis), `section_id`, `nominal_label`, `material_id`, `species`, `grade`; per connection `id`, `generation_key`, `junction_class`, `connection_type`, `member_ids` |
+| `preliminary_estimate` | `{"timber_schedule": {aggregates, connection_aggregates, assumptions}}`, copied from the same revision's schedule payload, or `{"timber_schedule": null}` when the schedule is not `CURRENT`. It reads no snapshot. The price book is an external input (§2.3) |
+
+No selection holds the `TimberGrid`, the `FrameSystem`, unused sections and materials, record `schema_version` fields, or revision metadata: their effects reach payloads only through the members and connections. The exact shapes, with examples, are in [DEP-001](../implementation/tasks/DEP-001.md) §4.2.
 
 ## 3. Manifest
 

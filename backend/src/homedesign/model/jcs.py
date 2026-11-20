@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 from typing import Any
 
 
@@ -75,10 +76,12 @@ def _utf16_sort_key(key: str) -> bytes:
     return key.encode("utf-16-be")
 
 
+_SURROGATE = re.compile("[\ud800-\udfff]")  # any surrogate code point: Python strings never pair them
+
+
 def _check_well_formed(text: str) -> None:
-    for char in text:
-        if 0xD800 <= ord(char) <= 0xDFFF:
-            raise CanonicalizationError("string contains a lone surrogate (not I-JSON)")
+    if _SURROGATE.search(text):
+        raise CanonicalizationError("string contains a lone surrogate (not I-JSON)")
 
 
 def _format_string(text: str) -> str:

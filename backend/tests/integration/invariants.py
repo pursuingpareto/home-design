@@ -14,8 +14,12 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from typing import Any
 
-from homedesign.model import canonical_snapshot, validate_bytes
+from homedesign.dependencies import Outcome
+from homedesign.estimating import build_estimate, select_estimate
+from homedesign.geometry import build_mesh3d, build_plan2d, select_mesh3d, select_plan2d
+from homedesign.model import canonical_json, canonical_snapshot, validate_bytes
 from homedesign.model.schema import Snapshot
+from homedesign.timber.schedule import build_schedule, select_schedule
 
 EPS = 1e-6
 ARTIFACTS = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")
@@ -150,7 +154,49 @@ def check_revision(api, pid: str, rev: str) -> RevisionView:
     else:
         assert estimate["totals"]["grand_total_minor"] is None  # never 0 for missing prices
         assert "COST_INPUTS_MISSING" in [w["code"] for w in estimate_env["warnings"]]
+
+    check_fresh_build(api, pid, view)
     return view
+
+
+def check_fresh_build(api, pid: str, view: RevisionView) -> None:
+    """D056 item 5, DEP-001 §10: every served payload, reused or derived, equals a fresh build, byte for byte.
+
+    The plan, mesh, and schedule are built from the revision's snapshot; the estimate from that schedule
+    and the project's current price book.
+    """
+    snapshot = Snapshot.model_validate(view.snapshot)
+    schedule = build_schedule(select_schedule(snapshot))
+    with api.service.store.transaction() as tx:
+        book = tx.get_price_book(pid)
+    status, estimate, warnings = build_estimate(select_estimate({"timber_schedule": Outcome("CURRENT", schedule)})["timber_schedule"], book)
+    fresh = {
+        "plan2d": build_plan2d(select_plan2d(snapshot)),
+        "mesh3d": build_mesh3d(select_mesh3d(snapshot)),
+        "timber_schedule": schedule,
+        "preliminary_estimate": estimate,
+    }
+    for kind, payload in fresh.items():
+        assert canonical_json(view.envelopes[kind]["payload"]) == canonical_json(payload), f"{kind} differs from a fresh build"
+    estimate_env = view.envelopes["preliminary_estimate"]
+    assert estimate_env["status"] == status
+    assert estimate_env["warnings"][1:] == list(warnings)  # after PRELIMINARY_UNVERIFIED
+
+
+def outcome_key(envelope: dict[str, Any]) -> bytes:
+    """What AC2-04 compares: the artifact's status, payload, and error, canonically (DEP-001 §10)."""
+    return canonical_json({"status": envelope["status"], "payload": envelope["payload"], "error": envelope["error"]})
+
+
+def check_impact(before: RevisionView, after: RevisionView, impacted: list[str]) -> None:
+    """AC2-04: `impacted_artifacts` lists an artifact if and only if its outcome changes, and only listed
+    artifacts change fingerprint; the others are reused with the base's fingerprint (D056 item 3)."""
+    changed = sorted(kind for kind in ARTIFACTS if outcome_key(before.envelopes[kind]) != outcome_key(after.envelopes[kind]))
+    assert sorted(impacted) == changed, f"impacted {sorted(impacted)} but outcomes changed for {changed}"
+    assert impacted == sorted(impacted) and len(set(impacted)) == len(impacted)
+    for kind in ARTIFACTS:
+        same = before.envelopes[kind]["input_fingerprint"] == after.envelopes[kind]["input_fingerprint"]
+        assert same == (kind not in impacted), f"{kind}: fingerprint {'unchanged' if same else 'changed'}, impacted={kind in impacted}"
 
 
 # Receiving and entering roles per junction class (D054, CONN-001 §4.2).

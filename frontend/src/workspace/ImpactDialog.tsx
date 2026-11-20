@@ -122,7 +122,12 @@ export function ImpactDialog({
           <p data-testid="impact-members">
             Timber members: {preview.members.added.length} added, {preview.members.removed.length} removed, {preview.members.updated.length} updated.
           </p>
-          <p>Regenerated: {preview.impacted_artifacts.join(", ")}.</p>
+          {/* DEP-001 §9.2: exactly the artifacts whose payload changes; the others are reused. */}
+          <p data-testid="impact-artifacts">
+            {preview.impacted_artifacts.length > 0
+              ? `Regenerated: ${preview.impacted_artifacts.join(", ")}.`
+              : "No derived views or reports change."}
+          </p>
         </>
       )}
       <ul className="warnings">

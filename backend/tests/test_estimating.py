@@ -20,7 +20,7 @@ from homedesign.model.canonical import fingerprint
 from homedesign.model.schema import Snapshot
 from homedesign.project import CommandRejected, NotFound, ProjectService
 from homedesign.project.postgres import PostgresStore
-from homedesign.timber.schedule import build_schedule, reference_length
+from homedesign.timber.schedule import build_schedule, select_schedule, reference_length
 from test_connections import _expected_counts, _grid_doc, _with
 from test_project import ACTOR, KEY, T0, at, cid, create, envelope, preview_commit, width_cmd
 
@@ -83,7 +83,7 @@ def estimate(svc, pid, now=T0):
 
 
 def test_reference_house_schedule():
-    schedule = build_schedule(FIXTURE_SNAPSHOT)
+    schedule = build_schedule(select_schedule(FIXTURE_SNAPSHOT))
     members = {e.id for e in FIXTURE_SNAPSHOT.entities if e.kind == "TimberMember"}
     assert len(schedule["members"]) == 193 and {r["member_id"] for r in schedule["members"]} == members
     keys = [r["generation_key"] for r in schedule["members"]]
@@ -109,7 +109,7 @@ def test_reference_house_schedule():
 
 
 def test_reference_house_schedule_connections():
-    schedule = build_schedule(FIXTURE_SNAPSHOT)
+    schedule = build_schedule(select_schedule(FIXTURE_SNAPSHOT))
     records = {e.id: e for e in FIXTURE_SNAPSHOT.entities if e.kind == "Connection"}
     rows = schedule["connections"]
     assert len(rows) == 312 and {r["connection_id"] for r in rows} == set(records)
@@ -138,7 +138,7 @@ def test_catalog_families_and_descriptions():
 
 
 def _class_counts(doc) -> Counter:
-    schedule = build_schedule(Snapshot.model_validate(doc))
+    schedule = build_schedule(select_schedule(Snapshot.model_validate(doc)))
     counts = Counter()
     for a in schedule["connection_aggregates"]:
         counts[a["junction_class"]] += a["count"]
@@ -166,7 +166,7 @@ def test_schedule_counts_at_parameter_bounds(parameters):
 
 def test_zero_cases_omit_their_rows():
     """§13 test 10: both brace planes off and zero purlins leave no brace or purlin-rafter rows."""
-    schedule = build_schedule(Snapshot.model_validate(_with(purlins_per_slope=0, knee_braces_level_1=False, knee_braces_eave=False)))
+    schedule = build_schedule(select_schedule(Snapshot.model_validate(_with(purlins_per_slope=0, knee_braces_level_1=False, knee_braces_eave=False))))
     classes = {a["junction_class"] for a in schedule["connection_aggregates"]}
     assert classes == {"joist-beam", "post-beam", "post-sill", "rafter-foot", "rafter-peak"}
     validate_against("TimberSchedulePayload", schedule)
@@ -178,7 +178,7 @@ def test_reference_length_is_the_plain_formula():
 
 
 def test_schedule_matches_independent_ecmascript_implementation():
-    schedule = build_schedule(FIXTURE_SNAPSHOT)
+    schedule = build_schedule(select_schedule(FIXTURE_SNAPSHOT))
     assert fingerprint(schedule) == VECTOR["fingerprint"] and schedule["aggregates"] == VECTOR["aggregates"]
     assert schedule["connection_aggregates"] == VECTOR["connection_aggregates"]
 
@@ -366,7 +366,7 @@ def test_width_change_recomputes_schedule_and_estimate(store):
 
 
 def test_estimate_is_deterministic():
-    schedule = build_schedule(FIXTURE_SNAPSHOT)
+    schedule = build_schedule(select_schedule(FIXTURE_SNAPSHOT))
     row = {"price_book_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", "version": 3, "book": book(**{POST: 3150, BEAM: 4725})}
     assert build_estimate(schedule, row) == build_estimate(schedule, row)
 

@@ -3,18 +3,18 @@
 from homedesign.dependencies.registry import Derivation, DerivationContext, Outcome
 
 from .payloads import Mesh3dPayload, Plan2dPayload
-from .views import build_mesh3d, build_plan2d
+from .views import build_mesh3d, build_plan2d, select_mesh3d, select_plan2d
 
 
 def _plan2d(context: DerivationContext) -> Outcome:
-    return Outcome("CURRENT", build_plan2d(context.snapshot))
+    return Outcome("CURRENT", build_plan2d(context.selection))
 
 
 def _mesh3d(context: DerivationContext) -> Outcome:
-    return Outcome("CURRENT", build_mesh3d(context.snapshot))
+    return Outcome("CURRENT", build_mesh3d(context.selection))
 
 
-PLAN2D = Derivation("plan2d", "plan2d-vs01", "2", _plan2d)
-MESH3D = Derivation("mesh3d", "mesh3d-vs01", "2", _mesh3d)
+PLAN2D = Derivation("plan2d", "plan2d-vs01", "2", select_plan2d, _plan2d)
+MESH3D = Derivation("mesh3d", "mesh3d-vs01", "2", select_mesh3d, _mesh3d)
 
-__all__ = ["MESH3D", "PLAN2D", "Mesh3dPayload", "Plan2dPayload", "build_mesh3d", "build_plan2d"]
+__all__ = ["MESH3D", "PLAN2D", "Mesh3dPayload", "Plan2dPayload", "build_mesh3d", "build_plan2d", "select_mesh3d", "select_plan2d"]

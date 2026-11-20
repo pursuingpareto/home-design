@@ -1,10 +1,10 @@
 # D061 — VS-02 selector contents, builders over selections, and where the impact property is tested
 
-**Status:** Confirmed (to be implemented in VS-02, [DEP-001](../../implementation/tasks/DEP-001.md))  
+**Status:** Confirmed; implemented ([DEP-001](../../implementation/tasks/DEP-001.md), VS-02)  
 **Date:** 2026-11-20  
 **Scope:** What each version 2 selector extracts, how derivations consume their selections, and which task carries AC2-04's if-and-only-if check. Approved from [DEP-001](../../implementation/tasks/DEP-001.md) §13, items 8–10. The routine items 1–7 of that list are specified in the task file, and go into artifacts.md, interfaces.md, and dependencies.md with the implementation.  
 **Refines:** [D056](D056-dependency-selectors.md) item 4, which left "exact field lists" to the VS-02 task files. D056 is otherwise unchanged.  
-**Amends, when DEP-001 is implemented:** the task breakdown in [vs-02.md](../../implementation/acceptance-tests/vs-02.md) §12.2. "The if-and-only-if impact property" moves from `TEST-002` to `DEP-001`.
+**Amends** (done with DEP-001): the task breakdown in [vs-02.md](../../implementation/acceptance-tests/vs-02.md) §12.2. "The if-and-only-if impact property" moves from `TEST-002` to `DEP-001`.
 
 ## Decision
 

@@ -1035,8 +1035,11 @@ export interface components {
             connections: components["schemas"]["ConnectionChanges"];
             /** Expires At */
             expires_at: string;
-            /** Impacted Artifacts */
-            impacted_artifacts: string[];
+            /**
+             * Impacted Artifacts
+             * @description Exactly the artifact types whose payload for the new revision differs from the base's, sorted; possibly empty (interfaces.md §3, DEP-001 §6). The others are reused unchanged.
+             */
+            impacted_artifacts: ("plan2d" | "mesh3d" | "timber_schedule" | "preliminary_estimate")[];
             /** Is Noop */
             is_noop: boolean;
             members: components["schemas"]["MemberChanges"];

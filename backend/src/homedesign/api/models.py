@@ -14,6 +14,7 @@ from homedesign.estimating.pricebook import PriceBook
 from homedesign.model.commands.envelope import AnyCommand, CreateReferenceProject
 
 ArtifactStatus = Literal["CURRENT", "STALE", "MISSING", "UNAVAILABLE", "FAILED"]
+ArtifactType = Literal["plan2d", "mesh3d", "timber_schedule", "preliminary_estimate"]  # artifacts.md §1
 
 
 class _Strict(BaseModel):
@@ -137,7 +138,11 @@ class PreviewResponse(_Strict):
     changes: list[FieldChange]
     members: MemberChanges
     connections: ConnectionChanges
-    impacted_artifacts: list[str]
+    impacted_artifacts: list[ArtifactType] = Field(
+        json_schema_extra={"uniqueItems": True},
+        description="Exactly the artifact types whose payload for the new revision differs from the base's, sorted; "
+        "possibly empty (interfaces.md §3, DEP-001 §6). The others are reused unchanged.",
+    )
     warnings: list[PreviewWarning]
 
 

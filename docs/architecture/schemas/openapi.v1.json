@@ -2441,11 +2441,19 @@
             "type": "string"
           },
           "impacted_artifacts": {
+            "description": "Exactly the artifact types whose payload for the new revision differs from the base's, sorted; possibly empty (interfaces.md §3, DEP-001 §6). The others are reused unchanged.",
             "items": {
+              "enum": [
+                "plan2d",
+                "mesh3d",
+                "timber_schedule",
+                "preliminary_estimate"
+              ],
               "type": "string"
             },
             "title": "Impacted Artifacts",
-            "type": "array"
+            "type": "array",
+            "uniqueItems": true
           },
           "is_noop": {
             "title": "Is Noop",

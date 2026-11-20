@@ -20,7 +20,7 @@ from unittest.mock import patch
 from homedesign.model.canonical import fingerprint, snapshot_fingerprint
 from homedesign.project import MemoryStore, ProjectService
 
-from integration.invariants import RevisionView, assert_unchanged, check_revision, check_transition, project_state
+from integration.invariants import RevisionView, assert_unchanged, check_impact, check_revision, check_transition, project_state
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 GOLDEN_PATH = REPO_ROOT / "tests" / "vectors" / "scenarios" / "reference-house-001.json"
@@ -57,6 +57,7 @@ class Scenario:
         self.views: dict[str, RevisionView] = {}
         self.commands: dict[str, dict[str, Any]] = {}  # committed commands by step name, for an exact retry
         self.head_view: RevisionView | None = None
+        self.impacts: list[tuple[str, str, list[str]]] = []  # (base, new revision, impacted_artifacts) per previewed commit
 
     # --- plumbing -------------------------------------------------------------------------------
 
@@ -72,16 +73,22 @@ class Scenario:
             "args": args,
         }
 
-    def record(self, name: str, response) -> None:
+    def record(self, name: str, response, impacted: list[str] | None = None) -> None:
         body = response.json()
-        self.steps.append({"step": name, "status": response.status_code, "code": body.get("error", {}).get("code"), "replayed": body.get("replayed", False)})
+        step = {"step": name, "status": response.status_code, "code": body.get("error", {}).get("code"), "replayed": body.get("replayed", False)}
+        if impacted is not None:
+            step["impacted_artifacts"] = impacted  # from the step's preview (DEP-001 §10)
+        self.steps.append(step)
 
-    def accepted(self, name: str, response, *, preserve_ids: bool = True) -> RevisionView:
+    def accepted(self, name: str, response, impacted: list[str] | None = None, *, preserve_ids: bool = True) -> RevisionView:
         assert response.status_code == 201, (name, response.status_code, response.text)
-        self.record(name, response)
+        self.record(name, response, impacted)
         view = check_revision(self.api, self.pid, response.json()["revision_id"])
         if self.head_view is not None:
             check_transition(self.head_view, view, preserve_ids=preserve_ids)
+            if impacted is not None:
+                check_impact(self.head_view, view, impacted)  # AC2-04
+                self.impacts.append((self.head_view.revision_id, view.revision_id, impacted))
         self.views[view.revision_id] = self.head_view = view
         return view
 
@@ -90,11 +97,15 @@ class Scenario:
         command = self.commands[name] = self.command(name, type_, args)
         preview = self.api.preview(self.pid, command)
         assert preview.status_code == 200 and preview.json()["confirmation_required"], (name, preview.text)
-        return self.accepted(name, self.api.commit(self.pid, command, preview.json()["preview_token"]), **kw)
+        impacted = preview.json()["impacted_artifacts"]
+        return self.accepted(name, self.api.commit(self.pid, command, preview.json()["preview_token"]), impacted, **kw)
 
     def routine(self, name: str, type_: str, args: dict[str, Any]) -> RevisionView:
         self.tick()
-        return self.accepted(name, self.api.commit(self.pid, self.command(name, type_, args)))  # no preview (dependencies §4.1)
+        command = self.command(name, type_, args)
+        preview = self.api.preview(self.pid, command)  # previewed for its impact; committed without a token (dependencies §4.1)
+        assert preview.status_code == 200 and not preview.json()["confirmation_required"], (name, preview.text)
+        return self.accepted(name, self.api.commit(self.pid, command), preview.json()["impacted_artifacts"])
 
     def rejected(self, name: str, type_: str, args: dict[str, Any], code: str) -> None:
         self.tick()
@@ -121,7 +132,7 @@ class Scenario:
         put = api.put(f"/api/v1/projects/{pid}/price-book", BOOK)
         assert put.status_code == 201
         self.record("price-book", put)
-        view = check_revision(api, pid, self.head_view.revision_id)
+        view = self.views[view.revision_id] = self.head_view = check_revision(api, pid, self.head_view.revision_id)  # the base of step 2
         assert view.envelopes["preliminary_estimate"]["payload"]["coverage"] == "complete"
 
         # 2. Width 40'.
@@ -167,6 +178,9 @@ class Scenario:
         view = self.consequential("undo-to-2", "UndoToRevision", {"target_revision_id": rev2_target}, preserve_ids=False)
         target = self.views[rev2_target].snapshot
         assert (view.snapshot["building"], view.snapshot["entities"]) == (target["building"], target["entities"])
+        # Every payload of the target is reused, with its fingerprint (DEP-001 §7.2).
+        for kind, envelope in view.envelopes.items():
+            assert envelope["input_fingerprint"] == self.views[rev2_target].envelopes[kind]["input_fingerprint"], kind
 
         # 10. Replaying the operation log in a fresh store reproduces every revision (AC-09).
         self.replay()
@@ -208,12 +222,26 @@ class Scenario:
                     for kind, env in view.envelopes.items()
                 },
             })
+        check_recorded_impact(revisions, self.impacts)
         return {
             "_note": "Generated by `uv run python tests/integration/golden.py` (TEST-001 §6). Do not edit by hand; regenerate and review the diff.",
             "project_id": self.pid,
             "steps": self.steps,
             "revisions": revisions,
         }
+
+
+def check_recorded_impact(revisions: list[dict[str, Any]], impacts: list[tuple[str, str, list[str]]]) -> None:
+    """AC2-04 on the record itself: between a step's base and its new revision, exactly the impacted
+    artifacts change status or payload fingerprint, and only they change input fingerprint."""
+    by_id = {r["revision_id"]: r["artifacts"] for r in revisions}
+    assert len(impacts) == len(revisions) - 1  # every revision after the first comes from a previewed commit
+    for base, new, impacted in impacts:
+        for kind, after in by_id[new].items():
+            before = by_id[base][kind]
+            changed = (before["status"], before["payload_fingerprint"]) != (after["status"], after["payload_fingerprint"])
+            assert changed == (kind in impacted), (new, kind, impacted)
+            assert (before["input_fingerprint"] != after["input_fingerprint"]) == (kind in impacted), (new, kind, impacted)
 
 
 def api_revisions(api, pid: str) -> list[dict[str, Any]]:

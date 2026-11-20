@@ -160,6 +160,15 @@ describe("edit flow pieces", () => {
     expect(screen.getByRole("button", { name: "Confirm" })).toBeEnabled();
   });
 
+  it("lists exactly the impacted artifacts, or says none change (DEP-001 §9.2)", () => {
+    const { rerender } = render(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: fixture.width_preview }} units="imperial" snapshot={fixture.snapshot} onConfirm={() => {}} onCancel={() => {}} />);
+    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(`Regenerated: ${fixture.width_preview.impacted_artifacts.join(", ")}.`);
+    const none = { ...fixture.width_preview, impacted_artifacts: [] };  // e.g. a connection type for a class with no connections
+    rerender(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: none }} units="imperial" snapshot={fixture.snapshot} onConfirm={() => {}} onCancel={() => {}} />);
+    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^No derived views or reports change\.$/);
+    expect(screen.getByRole("button", { name: "Confirm" })).toBeEnabled();  // still consequential
+  });
+
   it("offers no confirmation for a no-op", () => {
     const noop = { ...fixture.width_preview, is_noop: true, revision_id: null, changes: [], confirmation_required: false };
     render(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: noop }} units="imperial" onConfirm={() => {}} onCancel={() => {}} />);

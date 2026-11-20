@@ -85,6 +85,9 @@ class StoreTx(Protocol):
     def set_head(self, project_id: str, revision_id: str, sequence: int) -> None: ...
     def get_artifacts(self, revision_id: str, artifact_type: str) -> list[ArtifactRow]: ...
     def put_artifact(self, row: ArtifactRow) -> None: ...  # keeps an existing row with the same key
+    # DEP-001 §7: a CURRENT or UNAVAILABLE row of this project, of any revision, with this type, fingerprint,
+    # and generator version; the earliest by generated_at, then revision_id. Never another project's row.
+    def find_reusable_artifact(self, project_id: str, artifact_type: str, input_fingerprint: str, generator_version: str) -> ArtifactRow | None: ...
     def delete_artifacts(self, revision_id: str) -> None: ...  # derived data may be discarded
     def get_price_book(self, project_id: str) -> dict | None: ...  # latest version, or None
     def insert_price_book(self, row: dict) -> None: ...  # append-only versions
@@ -175,6 +178,14 @@ class _MemoryTx:
 
     def put_artifact(self, row):
         self.artifacts.setdefault((row.revision_id, row.artifact_type, row.input_fingerprint), copy.deepcopy(row))
+
+    def find_reusable_artifact(self, project_id, artifact_type, input_fingerprint, generator_version):
+        matches = [
+            r for r in self.artifacts.values()
+            if (r.project_id, r.artifact_type, r.input_fingerprint, r.generator_version) == (project_id, artifact_type, input_fingerprint, generator_version)
+            and r.status in ("CURRENT", "UNAVAILABLE")
+        ]
+        return copy.deepcopy(min(matches, key=lambda r: (r.generated_at, r.revision_id))) if matches else None
 
     def delete_artifacts(self, revision_id):
         self.artifacts = {k: v for k, v in self.artifacts.items() if k[0] != revision_id}

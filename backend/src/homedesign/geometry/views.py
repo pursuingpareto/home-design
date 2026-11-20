@@ -1,8 +1,10 @@
-"""`plan2d` and `mesh3d` builders (GEOM-001; ART-002 §4–5).
+"""`plan2d` and `mesh3d` selectors and builders (GEOM-001; ART-002 §4–5; DEP-001 §4).
 
-Pure functions of the stored snapshot (geometry.md "Member source"). All values are IEEE-754
-doubles evaluated exactly as written; only values derived from tan(pitch) may differ across
-implementations, within 1e-12 m (geometry.md "Numeric evaluation"). Roof planes follow D048.
+Each builder reads only its selection (D061 item 9), which its selector extracts from the stored
+snapshot: exactly the values the builder reads, after the projections it applies (DEP-001 §4.1).
+All values are IEEE-754 doubles evaluated exactly as written; only values derived from tan(pitch)
+may differ across implementations, within 1e-12 m (geometry.md "Numeric evaluation"). Roof planes
+follow D048.
 """
 
 from __future__ import annotations
@@ -19,26 +21,83 @@ def _utf16(text: str) -> bytes:
     return text.encode("utf-16-be")
 
 
-class _Model:
-    """Records the views read, resolved from a snapshot that passed validation."""
+class _Records:
+    """The records the selectors resolve, from a snapshot that passed validation."""
 
     def __init__(self, snapshot: Snapshot) -> None:
         by_id: dict[str, Any] = {e.id: e for e in snapshot.entities}
         building = snapshot.building
+        self.by_id = by_id
         self.footprint = by_id[building.footprint_id]
         self.level0, self.level1 = (by_id[i] for i in building.level_ids)
         self.roof = by_id[building.roof_id]
-        self.sections = {e.id: e for e in snapshot.entities if e.kind == "Section"}
         self.members = sorted((e for e in snapshot.entities if e.kind == "TimberMember"), key=lambda m: _utf16(m.generation_key))
         self.connections = sorted((e for e in snapshot.entities if e.kind == "Connection"), key=lambda c: _utf16(c.generation_key))
-        fp = self.footprint
-        self.x0, self.y0 = fp.origin_m
-        self.x1 = self.x0 + fp.width_m
-        self.y1 = self.y0 + fp.depth_m
-        self.z_eave = self.level1.elevation_m + self.level1.story_height_m
-        self.y_ridge = self.y0 + fp.depth_m / 2
-        self.y_south = self.y0 - self.roof.eave_overhang_m
-        self.y_north = self.y0 + fp.depth_m + self.roof.eave_overhang_m
+
+
+def select_plan2d(snapshot: Snapshot) -> dict[str, Any]:
+    """DEP-001 §4.2: plan positions in x, y, plane heights, level IDs, and the overhang."""
+    r = _Records(snapshot)
+    fp = r.footprint
+    members = []
+    for m in r.members:  # generation_key order
+        item: dict[str, Any] = {"id": m.id, "generation_key": m.generation_key, "role": m.member_role, "start_xy_m": list(m.start_m[:2])}
+        if m.member_role != "POST":  # the plan reads only a post's start point
+            item["end_xy_m"] = list(m.end_m[:2])
+        members.append(item)
+    return {
+        "footprint": {"origin_m": list(fp.origin_m), "width_m": fp.width_m, "depth_m": fp.depth_m, "rotation_rad": fp.rotation_rad},
+        "levels": [
+            {"id": r.level0.id, "elevation_m": r.level0.elevation_m},
+            {"id": r.level1.id, "elevation_m": r.level1.elevation_m, "story_height_m": r.level1.story_height_m},
+        ],
+        "roof": {"eave_overhang_m": r.roof.eave_overhang_m},
+        "members": members,
+        "connections": [
+            {"id": c.id, "generation_key": c.generation_key, "junction_class": c.junction_class, "connection_type": c.connection_type,
+             "xy_m": list(c.location_m[:2]), "entering_member_id": c.member_ids[1]}
+            for c in r.connections
+        ],
+    }
+
+
+def select_mesh3d(snapshot: Snapshot) -> dict[str, Any]:
+    """DEP-001 §4.2: 3D axes, section dimensions (not section IDs), connection locations, the roof."""
+    r = _Records(snapshot)
+    fp = r.footprint
+    members = []
+    for m in r.members:
+        section = r.by_id[m.section_id]
+        members.append({"id": m.id, "generation_key": m.generation_key, "role": m.member_role, "start_m": list(m.start_m), "end_m": list(m.end_m),
+                        "actual_width_m": section.actual_width_m, "actual_depth_m": section.actual_depth_m})
+    return {
+        "footprint": {"origin_m": list(fp.origin_m), "width_m": fp.width_m, "depth_m": fp.depth_m},
+        "levels": [{"elevation_m": r.level0.elevation_m}, {"elevation_m": r.level1.elevation_m, "story_height_m": r.level1.story_height_m}],
+        "roof": {"ridge_axis": r.roof.ridge_axis, "pitch_rad": r.roof.pitch_rad, "eave_overhang_m": r.roof.eave_overhang_m},
+        "members": members,
+        "connections": [
+            {"id": c.id, "generation_key": c.generation_key, "junction_class": c.junction_class, "connection_type": c.connection_type,
+             "location_m": list(c.location_m)}
+            for c in r.connections
+        ],
+    }
+
+
+class _Frame:
+    """Envelope coordinates both views compute from a selection."""
+
+    def __init__(self, selection: dict[str, Any]) -> None:
+        fp = selection["footprint"]
+        self.width_m, self.depth_m = fp["width_m"], fp["depth_m"]
+        self.x0, self.y0 = fp["origin_m"]
+        self.x1 = self.x0 + fp["width_m"]
+        self.y1 = self.y0 + fp["depth_m"]
+        level1 = selection["levels"][1]
+        self.z_eave = level1["elevation_m"] + level1["story_height_m"]
+        overhang = selection["roof"]["eave_overhang_m"]
+        self.y_ridge = self.y0 + fp["depth_m"] / 2
+        self.y_south = self.y0 - overhang
+        self.y_north = self.y0 + fp["depth_m"] + overhang
 
     def ring(self) -> list[list[float]]:
         """Wall rectangle, counterclockwise from the origin (artifacts.md §5)."""
@@ -72,41 +131,43 @@ def plan_slot(role: str, generation_key: str) -> tuple[str, str]:
     raise ValueError(f"member {role} {generation_key!r} matches no plan plane")
 
 
-def build_plan2d(snapshot: Snapshot) -> dict[str, Any]:
-    m = _Model(snapshot)
-    fp = m.footprint
-    heights = {"level-0": (m.level0.id, m.level0.elevation_m), "level-1": (m.level1.id, m.level1.elevation_m),
+def build_plan2d(selection: dict[str, Any]) -> dict[str, Any]:
+    """The `plan2d` payload from `select_plan2d`'s selection (its only model input, D061)."""
+    m = _Frame(selection)
+    fp = selection["footprint"]
+    level0, level1 = selection["levels"]
+    heights = {"level-0": (level0["id"], level0["elevation_m"]), "level-1": (level1["id"], level1["elevation_m"]),
                "eave": (None, m.z_eave), "roof": (None, m.z_eave)}  # the roof framing bears on the plate line (D058, D060)
     planes = {
         plane: {"plane_id": plane, "level_id": level_id, "z_m": z, **{array: [] for array in ARRAYS}, "connections": []}
         for plane, (level_id, z) in heights.items()
     }
     plane_of_member: dict[str, str] = {}
-    for member in m.members:  # already in generation_key order
-        plane, array = plan_slot(member.member_role, member.generation_key)
-        plane_of_member[member.id] = plane
-        item: dict[str, Any] = {"member_id": member.id, "generation_key": member.generation_key}
+    for member in selection["members"]:  # already in generation_key order
+        plane, array = plan_slot(member["role"], member["generation_key"])
+        plane_of_member[member["id"]] = plane
+        item: dict[str, Any] = {"member_id": member["id"], "generation_key": member["generation_key"]}
         if array == "posts":
-            item["xy_m"] = member.start_m[:2]
+            item["xy_m"] = member["start_xy_m"]
         else:
-            item["start_xy_m"], item["end_xy_m"] = member.start_m[:2], member.end_m[:2]
+            item["start_xy_m"], item["end_xy_m"] = member["start_xy_m"], member["end_xy_m"]
         planes[plane][array].append(item)
-    for connection in m.connections:  # already in generation_key order
-        planes[plane_of_member[connection.member_ids[1]]]["connections"].append({  # the entering member's plane
-            "connection_id": connection.id,
-            "generation_key": connection.generation_key,
-            "junction_class": connection.junction_class,
-            "connection_type": connection.connection_type,
-            "xy_m": connection.location_m[:2],
+    for connection in selection["connections"]:  # already in generation_key order
+        planes[plane_of_member[connection["entering_member_id"]]]["connections"].append({  # the entering member's plane
+            "connection_id": connection["id"],
+            "generation_key": connection["generation_key"],
+            "junction_class": connection["junction_class"],
+            "connection_type": connection["connection_type"],
+            "xy_m": connection["xy_m"],
         })
     payload = {
         "units": "m",
         "planes": [planes[p] for p in PLANES],
         "footprint": {
             "origin_m": [m.x0, m.y0],
-            "width_m": fp.width_m,
-            "depth_m": fp.depth_m,
-            "rotation_rad": fp.rotation_rad,
+            "width_m": fp["width_m"],
+            "depth_m": fp["depth_m"],
+            "rotation_rad": fp["rotation_rad"],
             "ring_m": m.ring(),
         },
         "roof_plan": {
@@ -116,54 +177,56 @@ def build_plan2d(snapshot: Snapshot) -> dict[str, Any]:
         },
         "dimensions": [
             # value_m is copied from the footprint, never measured (AC-01).
-            {"id": "footprint-width", "start_m": [m.x0, m.y0], "end_m": [m.x1, m.y0], "value_m": fp.width_m},
-            {"id": "footprint-depth", "start_m": [m.x0, m.y0], "end_m": [m.x0, m.y1], "value_m": fp.depth_m},
+            {"id": "footprint-width", "start_m": [m.x0, m.y0], "end_m": [m.x1, m.y0], "value_m": fp["width_m"]},
+            {"id": "footprint-depth", "start_m": [m.x0, m.y0], "end_m": [m.x0, m.y1], "value_m": fp["depth_m"]},
         ],
     }
     return Plan2dPayload.model_validate(payload).model_dump(mode="json")
 
 
-def build_mesh3d(snapshot: Snapshot) -> dict[str, Any]:
-    m = _Model(snapshot)
-    roof = m.roof
-    t = math.tan(roof.pitch_rad)
-    z_ridge = m.z_eave + (m.footprint.depth_m / 2) * t
-    z_edge = m.z_eave - roof.eave_overhang_m * t  # D048: plane continues below z_eave over the overhang
-    members = []
-    for member in m.members:
-        section = m.sections[member.section_id]
-        members.append({
-            "member_id": member.id,
-            "generation_key": member.generation_key,
-            "role": member.member_role,
+def build_mesh3d(selection: dict[str, Any]) -> dict[str, Any]:
+    """The `mesh3d` payload from `select_mesh3d`'s selection (its only model input, D061)."""
+    m = _Frame(selection)
+    roof = selection["roof"]
+    t = math.tan(roof["pitch_rad"])
+    z_ridge = m.z_eave + (m.depth_m / 2) * t
+    z_edge = m.z_eave - roof["eave_overhang_m"] * t  # D048: plane continues below z_eave over the overhang
+    members = [
+        {
+            "member_id": member["id"],
+            "generation_key": member["generation_key"],
+            "role": member["role"],
             "primitive": "oriented_box",
-            "axis_start_m": list(member.start_m),
-            "axis_end_m": list(member.end_m),
-            "section_width_m": section.actual_width_m,
-            "section_depth_m": section.actual_depth_m,
-        })
+            "axis_start_m": list(member["start_m"]),
+            "axis_end_m": list(member["end_m"]),
+            "section_width_m": member["actual_width_m"],
+            "section_depth_m": member["actual_depth_m"],
+        }
+        for member in selection["members"]
+    ]
     connections = [
         {
-            "connection_id": c.id,
-            "generation_key": c.generation_key,
-            "junction_class": c.junction_class,
-            "connection_type": c.connection_type,
-            "location_m": list(c.location_m),  # the record's, copied exactly
+            "connection_id": c["id"],
+            "generation_key": c["generation_key"],
+            "junction_class": c["junction_class"],
+            "connection_type": c["connection_type"],
+            "location_m": list(c["location_m"]),  # the record's, copied exactly
         }
-        for c in m.connections
+        for c in selection["connections"]
     ]
+    level0, level1 = selection["levels"]
     payload = {
         "units": "m",
         "members": members,
         "connections": connections,
         "envelope": {
             "footprint_ring_m": m.ring(),
-            "level_z_m": [m.level0.elevation_m, m.level1.elevation_m],
+            "level_z_m": [level0["elevation_m"], level1["elevation_m"]],
             "z_eave_m": m.z_eave,
             "roof": {
                 "kind": "gable",
-                "ridge_axis": roof.ridge_axis,
-                "pitch_rad": roof.pitch_rad,
+                "ridge_axis": roof["ridge_axis"],
+                "pitch_rad": roof["pitch_rad"],
                 "ridge_start_m": [m.x0, m.y_ridge, z_ridge],
                 "ridge_end_m": [m.x1, m.y_ridge, z_ridge],
                 "surfaces": [

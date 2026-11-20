@@ -43,6 +43,12 @@ def _operation(row: dict) -> OperationRow:
     )
 
 
+def _artifact(r: dict) -> ArtifactRow:
+    return ArtifactRow(_s(r["project_id"]), _s(r["revision_id"]), r["artifact_type"], r["input_fingerprint"],
+                       r["generator_id"], r["generator_version"], r["status"], r["payload"], r["error"],
+                       r["warnings"], r["generated_at"])
+
+
 class _PostgresTx:
     def __init__(self, conn: psycopg.Connection) -> None:
         self.conn = conn
@@ -142,12 +148,16 @@ class _PostgresTx:
             "SELECT * FROM artifacts WHERE revision_id = %s AND artifact_type = %s ORDER BY generated_at, input_fingerprint",
             (revision_id, artifact_type),
         ).fetchall()
-        return [
-            ArtifactRow(_s(r["project_id"]), _s(r["revision_id"]), r["artifact_type"], r["input_fingerprint"],
-                        r["generator_id"], r["generator_version"], r["status"], r["payload"], r["error"],
-                        r["warnings"], r["generated_at"])
-            for r in rows
-        ]
+        return [_artifact(r) for r in rows]
+
+    def find_reusable_artifact(self, project_id, artifact_type, input_fingerprint, generator_version):
+        row = self._one(  # artifacts_reuse_idx (migration 0005)
+            "SELECT * FROM artifacts WHERE project_id = %s AND artifact_type = %s AND input_fingerprint = %s"
+            " AND generator_version = %s AND status IN ('CURRENT', 'UNAVAILABLE')"
+            " ORDER BY generated_at, revision_id LIMIT 1",
+            (project_id, artifact_type, input_fingerprint, generator_version),
+        )
+        return _artifact(row) if row else None
 
     def put_artifact(self, row):
         self.conn.execute(

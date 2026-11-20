@@ -503,10 +503,9 @@ def test_preview_dict_shape():
     preview = run("SetFootprintDimensions", {"width_m": 12.192, "depth_m": FP.depth_m}).change.to_preview_dict()
     assert set(preview) == {
         "base_revision_id", "revision_id", "command_hash", "classification", "classification_version",
-        "confirmation_required", "is_noop", "changes", "members", "connections", "impacted_artifacts", "warnings",
-    }
+        "confirmation_required", "is_noop", "changes", "members", "connections", "warnings",
+    }  # impacted_artifacts is computed by the service, which knows the derivations (DEP-001 §6)
     assert preview["classification_version"] == CLASSIFICATION_VERSION
-    assert preview["impacted_artifacts"] == ["mesh3d", "plan2d", "preliminary_estimate", "timber_schedule"]
     assert preview["warnings"][0]["code"] == "PRELIMINARY_UNVERIFIED"
     assert preview["command_hash"].startswith("sha256:")
     json.dumps(preview, allow_nan=False)

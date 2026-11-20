@@ -366,7 +366,7 @@ def _stub(kind, status="CURRENT", fail=False):
             raise ValueError("boom")
         return Outcome(status, {"kind": kind}, ({"code": "STUB", "message": "stub"},) if status == "UNAVAILABLE" else ())
 
-    return Derivation(kind, f"{kind}-stub", "1", derive)
+    return Derivation(kind, f"{kind}-stub", "1", lambda snapshot: {}, derive)
 
 
 def test_artifact_statuses(store):

@@ -2,6 +2,10 @@
 
 Arguments are drawn inside and just outside the D032/D034 bounds, so both acceptance and rejection
 are exercised. Accepted commands must keep every invariant; rejected ones must change nothing.
+Every accepted step also checks AC2-04: the preview's `impacted_artifacts` lists exactly the artifacts
+whose outcome changes (DEP-001 §10). The draw includes the edits whose impact is narrow: pitch-only and
+overhang-only roof edits, joist-spacing-only frame edits, sections with an existing section's
+dimensions, and grid lines re-identified at the same fraction.
 Profiles (conftest.py): `ci` (default, derandomized, 40 sequences) and `thorough` (500).
 """
 
@@ -18,7 +22,7 @@ from hypothesis import strategies as st
 from api_support import make_api
 from homedesign.model.connections import CONNECTION_TYPES, JUNCTION_CLASSES
 from homedesign.project import MemoryStore
-from integration.invariants import RevisionView, assert_unchanged, check_revision, check_transition, project_state
+from integration.invariants import RevisionView, assert_unchanged, check_impact, check_revision, check_transition, project_state
 
 FT = 0.3048
 PROJECT_ID = "3e1d2c4b-5a69-4f78-8b9a-0c1d2e3f4a5b"
@@ -31,7 +35,10 @@ def _grid_lines(view: RevisionView, axis: str) -> list[dict[str, Any]]:
 
 
 def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) -> tuple[str, dict[str, Any]]:
-    kind = data.draw(st.sampled_from(["footprint", "stories", "roof", "grid", "frame", "add_section", "member_section", "connection_type", "undo"]), label="kind")
+    kind = data.draw(st.sampled_from([
+        "footprint", "stories", "roof", "roof_pitch", "roof_overhang", "grid", "frame", "joist_spacing", "add_section", "member_section",
+        "connection_type", "undo",
+    ]), label="kind")
     length = lambda lo, hi: data.draw(st.floats(lo, hi, allow_nan=False, allow_infinity=False))  # noqa: E731
     if kind == "footprint":
         if data.draw(st.booleans(), label="inside"):  # half within what a 3 × 2 bay grid supports
@@ -41,6 +48,13 @@ def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) ->
         return "SetStoryHeights", {"story_heights_m": [length(7 * FT, 15 * FT), length(7 * FT, 15 * FT)]}
     if kind == "roof":
         return "SetGableRoofParameters", {"pitch_rad": length(math.atan(2 / 12), math.atan(13 / 12)), "eave_overhang_m": length(0.0, 3.5 * FT)}
+    roof = view.one("GableRoof")
+    if kind == "roof_pitch":  # leaves the plan unchanged (DEP-001 §8)
+        return "SetGableRoofParameters", {"pitch_rad": length(math.atan(2 / 12), math.atan(13 / 12)), "eave_overhang_m": roof["eave_overhang_m"]}
+    if kind == "roof_overhang":  # leaves the schedule and the estimate unchanged
+        return "SetGableRoofParameters", {"pitch_rad": roof["pitch_rad"], "eave_overhang_m": length(0.0, 3.5 * FT)}
+    if kind == "joist_spacing":  # may keep the joist count, and then the schedule
+        return "SetFrameParameters", {**view.one("FrameSystem")["parameters"], "joist_spacing_m": length(10 / 12 * FT, 50 / 12 * FT)}
     if kind == "frame":  # MODEL-005 §5, §7.1: drawn inside and just outside the bounds
         return "SetFrameParameters", {
             "joist_spacing_m": length(10 / 12 * FT, 50 / 12 * FT),
@@ -52,7 +66,7 @@ def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) ->
     if kind == "grid":
         axis = data.draw(st.sampled_from(["x", "y"]))
         lines = _grid_lines(view, axis)
-        op = data.draw(st.sampled_from(["equal", "move", "remove", "add"]))
+        op = data.draw(st.sampled_from(["equal", "move", "remove", "add", "reidentify"]))
         if op == "equal":
             bays = data.draw(st.integers(1, 7))  # 7 bays = 8 stations: unsupported
             interior = [line["id"] for line in lines[1:-1]]
@@ -62,6 +76,9 @@ def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) ->
             k = data.draw(st.integers(1, len(lines) - 2))
             lines[k]["fraction"] = data.draw(st.floats(0.01, 0.99))
             lines.sort(key=lambda line: line["fraction"])  # may still collide; the server decides
+        elif op == "reidentify" and len(lines) > 2:  # a new line ID at the same fraction: may leave the estimate
+            k = data.draw(st.integers(1, len(lines) - 2))
+            lines[k] = {"fraction": lines[k]["fraction"]}
         elif op == "remove" and len(lines) > 2:
             del lines[data.draw(st.integers(1, len(lines) - 2))]
         else:
@@ -70,6 +87,10 @@ def draw_command(data: st.DataObject, view: RevisionView, history: list[str]) ->
         other = "y" if axis == "x" else "x"
         return "SetTimberGrid", {f"{axis}_lines": lines, f"{other}_lines": _grid_lines(view, other)}
     if kind == "add_section":
+        if data.draw(st.booleans(), label="same dimensions"):  # a later swap to it leaves the mesh unchanged
+            existing = data.draw(st.sampled_from(sorted(view.entities("Section"), key=lambda s: s["id"])))
+            label = data.draw(st.sampled_from(LABELS)) + data.draw(st.sampled_from(["", "b", "c"]))
+            return "AddSection", {"nominal_label": label, "actual_width_m": existing["actual_width_m"], "actual_depth_m": existing["actual_depth_m"]}
         return "AddSection", {"nominal_label": data.draw(st.sampled_from(LABELS)), "actual_width_m": length(0.0, 0.4), "actual_depth_m": length(0.0, 0.4)}
     if kind == "member_section":
         sections = [s["id"] for s in sorted(view.entities("Section"), key=lambda s: (s["nominal_label"], s["actual_width_m"], s["actual_depth_m"]))]
@@ -107,9 +128,13 @@ def test_random_command_sequences_keep_every_invariant(data, steps):
         body = commit.json()
         event(f"{type_}: {'no-op' if body['is_noop'] else 'accepted'}")
         if body["is_noop"]:
+            assert preview.json()["impacted_artifacts"] == []  # D045: equal snapshots, equal fingerprints
             assert_unchanged(before, project_state(api, pid))
             continue
         after = check_revision(api, pid, body["revision_id"])
         check_transition(view, after, preserve_ids=type_ != "UndoToRevision")
+        impacted = preview.json()["impacted_artifacts"]
+        check_impact(view, after, impacted)  # AC2-04, DEP-001 §10
+        event(f"{type_}: impacts {len(impacted)}")
         view = after
         history.append(view.revision_id)

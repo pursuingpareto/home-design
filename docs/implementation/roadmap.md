@@ -2,20 +2,19 @@
 
 The single status document for the project ([AGENTS.md](../../AGENTS.md), "Documentation maintenance"). Update it whenever a task's status changes. Decisions are in the [decision register](../product/decisions/README.md); each task file holds its own implementation notes.
 
-**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), its connections (312, D059) with `SetConnectionType`, and the version 2 payloads that present them (ART-002, D060) are done. Dependency selectors (DEP-001, specified and approved), browser support, and traceability remain.
+**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), its connections (312, D059) with `SetConnectionType`, the version 2 payloads that present them (ART-002, D060), and dependency selectors with exact `impacted_artifacts` and reuse across revisions (DEP-001, D061) are done. Browser support and traceability remain.
 
 ## Next steps
 
-1. Implement [DEP-001](tasks/DEP-001.md) in a fresh session. Its §13 proposals are approved; items 8–10 are [D061](../product/decisions/D061-vs02-selector-contents.md). Its §8 table lists the measured impact per command, and is the first test to write.
-2. Then `UI-003` and `TEST-002`, in the order of [vs-02.md](acceptance-tests/vs-02.md) §12.2.
-3. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
+1. Draft `UI-003`, then `TEST-002`, each in a fresh session, in the order of [vs-02.md](acceptance-tests/vs-02.md) §12.2. `UI-003` can now show exact impact ([DEP-001](tasks/DEP-001.md) §9.2 left friendly names and connection counts in the dialog to it). `TEST-002` traces the if-and-only-if impact property that DEP-001 delivered (D061).
+2. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
 
 **Status:** provisional sequencing; the vertical-slice strategy is confirmed.
 
 - **VS-01:** Reference building, parametric frame, 2D/3D, persistence, preliminary schedule. *Complete (2026-11-19): all acceptance criteria traced and passing ([TEST-001](tasks/TEST-001.md)).*
-- **VS-02:** Complete timber frame, connections, and dependency selectors ([D051](../product/decisions/D051-vs02-slice-boundary.md)). *In progress: [scope and acceptance criteria](acceptance-tests/vs-02.md); MODEL-005, TIMBER-002, CONN-001, and ART-002 done.*
+- **VS-02:** Complete timber frame, connections, and dependency selectors ([D051](../product/decisions/D051-vs02-slice-boundary.md)). *In progress: [scope and acceptance criteria](acceptance-tests/vs-02.md); MODEL-005, TIMBER-002, CONN-001, ART-002, and DEP-001 done.*
 - **VS-02b:** Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame.
 - **VS-03:** Natural-language AI proposals and human approval workflow.
 - **VS-04:** Bounded engineering checks, cost and environmental estimates, alternatives.
@@ -45,15 +44,15 @@ The [task index](tasks/README.md) describes what a task file contains.
 | [TIMBER-002](tasks/TIMBER-002.md) | VS-02: `vs02-frame-1` (sills, joists, principal rafters, purlins, knee braces), Reference House 001 v2 fixture, ECMAScript oracle | Done (2026-11-19), with MODEL-005 |
 | [CONN-001](tasks/CONN-001.md) | VS-02: connection generation per junction class (312 connections for Reference House 001 v2), preview connection diff, `SetConnectionType` | Done (2026-11-20; [D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md)) |
 | [ART-002](tasks/ART-002.md) | VS-02: version 2 plan, mesh, schedule, and estimate payloads; "each" price-book rows | Done (2026-11-20; [D060](../product/decisions/D060-vs02-artifact-payloads.md)) |
-| [DEP-001](tasks/DEP-001.md) | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Approved, not started (2026-11-20; [D061](../product/decisions/D061-vs02-selector-contents.md)) — **next** |
+| [DEP-001](tasks/DEP-001.md) | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Done (2026-11-20; [D061](../product/decisions/D061-vs02-selector-contents.md)) |
 | UI-003 | VS-02: browser support for the complete frame and connections | Not drafted |
-| TEST-002 | VS-02: traceability, golden scenario, and the impact property for AC2-01 to AC2-09 | Not drafted |
+| TEST-002 | VS-02: traceability and the golden scenario's new commands for AC2-01 to AC2-09 (the if-and-only-if impact property shipped with DEP-001, D061) | Not drafted |
 
 ## Current limitations (until the remaining VS-02 tasks)
 
 - The payloads carry connection markers, counts, and "each" estimate lines, but the browser draws no markers, has no connection table or type editor, and shows no connection counts in the confirmation dialog (`UI-003`).
 - The browser has no Frame tab; new roles render in one neutral color in 2D and 3D (`UI-003`).
-- Every committing command marks all four artifacts stale (`DEP-001`).
+- The confirmation dialog lists impacted artifacts by their type keys, without friendly names or connection counts (`UI-003`).
 
 ## Open items
 

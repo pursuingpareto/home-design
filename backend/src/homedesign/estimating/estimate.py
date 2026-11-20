@@ -7,6 +7,7 @@ connection type in use (D054). Both use one exact rounding rule, which is exact 
 from __future__ import annotations
 
 from decimal import ROUND_HALF_EVEN, Decimal
+from collections.abc import Mapping
 from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -86,7 +87,8 @@ def _utf16(text: str) -> bytes:
 
 
 def build_estimate(schedule: dict[str, Any], price_book: dict[str, Any] | None) -> tuple[str, dict[str, Any], tuple[dict, ...]]:
-    """(status, payload, warnings) from a CURRENT schedule payload and the project's book row."""
+    """(status, payload, warnings) from a CURRENT schedule's `aggregates`, `connection_aggregates`, and
+    `assumptions` (its selection, or the whole schedule payload) and the project's book row."""
     prices = {}
     if price_book is not None:
         prices = {row["key"]: row["unit_price_minor"] for row in price_book["book"]["rows"]}
@@ -176,10 +178,26 @@ def _external(tx, project_id: str) -> dict[str, Any]:
     }
 
 
+SCHEDULE_LISTS = ("aggregates", "connection_aggregates", "assumptions")  # what build_estimate reads (DEP-001 §4.2)
+
+
+def select_estimate(upstream: Mapping[str, Outcome]) -> dict[str, Any]:
+    """DEP-001 §4.2: the schedule's three lists, or null when the schedule is not CURRENT.
+
+    Not the schedule's fingerprint: re-identifying a grid line changes schedule rows but not these
+    lists, and then the estimate's payload does not change either.
+    """
+    schedule = upstream.get("timber_schedule")
+    if schedule is None or schedule.status != "CURRENT" or schedule.payload is None:
+        return {"timber_schedule": None}
+    return {"timber_schedule": {key: schedule.payload[key] for key in SCHEDULE_LISTS}}
+
+
 def _derive(context: DerivationContext) -> Outcome:
-    schedule = context.upstream["timber_schedule"].payload
-    status, payload, warnings = build_estimate(schedule, context.external.get("_book"))
+    status, payload, warnings = build_estimate(context.selection["timber_schedule"], context.external.get("_book"))
     return Outcome(status, payload, warnings)
 
 
-ESTIMATE = Derivation("preliminary_estimate", "estimate-vs01", "2", _derive, depends_on=("timber_schedule",), external_inputs=_external)
+ESTIMATE = Derivation(
+    "preliminary_estimate", "estimate-vs01", "2", select_estimate, _derive, depends_on=("timber_schedule",), external_inputs=_external
+)

@@ -1,4 +1,4 @@
-"""`timber_schedule` payload and builder (artifacts.md §7; EST-001 §3; ART-002 §6).
+"""`timber_schedule` payload, selector, and builder (artifacts.md §7; EST-001 §3; ART-002 §6; DEP-001 §4.2).
 
 One row per stored member; lengths are reference-axis lengths computed as
 sqrt(dx*dx + dy*dy + dz*dz) exactly as written (artifacts.md §7); one aggregate per
@@ -113,46 +113,68 @@ def reference_length(start: list[float], end: list[float]) -> float:
     return math.sqrt(dx * dx + dy * dy + dz * dz)
 
 
-def build_schedule(snapshot: Snapshot) -> dict[str, Any]:
+def select_schedule(snapshot: Snapshot) -> dict[str, Any]:
+    """DEP-001 §4.2: per member its length (not its axis), section and material; per connection its members."""
     by_id = {e.id: e for e in snapshot.entities}
-    members = sorted((e for e in snapshot.entities if e.kind == "TimberMember"), key=lambda m: _utf16(m.generation_key))
-    rows = []
-    totals: dict[tuple[str, str], list] = {}
-    for member in members:
+    members = []
+    for member in sorted((e for e in snapshot.entities if e.kind == "TimberMember"), key=lambda m: _utf16(m.generation_key)):
         section, material = by_id[member.section_id], by_id[member.material_id]
-        length = reference_length(member.start_m, member.end_m)
-        rows.append({
-            "member_id": member.id,
+        members.append({
+            "id": member.id,
             "generation_key": member.generation_key,
             "role": member.member_role,
-            "nominal_section": section.nominal_label,
+            "length_m": reference_length(member.start_m, member.end_m),
             "section_id": section.id,
+            "nominal_label": section.nominal_label,
             "material_id": material.id,
             "species": material.species,
             "grade": material.grade,
+        })
+    connections = [
+        {"id": c.id, "generation_key": c.generation_key, "junction_class": c.junction_class, "connection_type": c.connection_type,
+         "member_ids": list(c.member_ids)}
+        for c in sorted((e for e in snapshot.entities if e.kind == "Connection"), key=lambda c: _utf16(c.generation_key))
+    ]
+    return {"members": members, "connections": connections}
+
+
+def build_schedule(selection: dict[str, Any]) -> dict[str, Any]:
+    """The `timber_schedule` payload from `select_schedule`'s selection (its only model input, D061)."""
+    rows = []
+    totals: dict[tuple[str, str], list] = {}
+    for member in selection["members"]:  # already in generation_key order
+        length = member["length_m"]
+        rows.append({
+            "member_id": member["id"],
+            "generation_key": member["generation_key"],
+            "role": member["role"],
+            "nominal_section": member["nominal_label"],
+            "section_id": member["section_id"],
+            "material_id": member["material_id"],
+            "species": member["species"],
+            "grade": member["grade"],
             "length_m": length,
             "quantity": 1,
         })
-        entry = totals.setdefault((member.member_role, section.nominal_label), [0, 0.0])
+        entry = totals.setdefault((member["role"], member["nominal_label"]), [0, 0.0])
         entry[0] += 1
         entry[1] += length  # summed in generation_key order (C6)
     aggregates = [
         {"role": role, "nominal_section": label, "count": count, "total_length_m": total}
         for (role, label), (count, total) in sorted(totals.items(), key=lambda kv: (_utf16(kv[0][0]), _utf16(kv[0][1])))
     ]
-    connections = sorted((e for e in snapshot.entities if e.kind == "Connection"), key=lambda c: _utf16(c.generation_key))
     connection_rows = []
     counts: dict[tuple[str, str], int] = {}
-    for connection in connections:
+    for connection in selection["connections"]:  # already in generation_key order
         connection_rows.append({
-            "connection_id": connection.id,
-            "generation_key": connection.generation_key,
-            "junction_class": connection.junction_class,
-            "connection_type": connection.connection_type,
-            "member_ids": list(connection.member_ids),
+            "connection_id": connection["id"],
+            "generation_key": connection["generation_key"],
+            "junction_class": connection["junction_class"],
+            "connection_type": connection["connection_type"],
+            "member_ids": list(connection["member_ids"]),
             "quantity": 1,
         })
-        pair = (connection.junction_class, connection.connection_type)
+        pair = (connection["junction_class"], connection["connection_type"])
         counts[pair] = counts.get(pair, 0) + 1
     connection_aggregates = [  # zero rows never arise: only pairs in use are counted (ART-002 §6.2)
         {"junction_class": cls, "connection_type": type_, "count": count}
@@ -174,7 +196,7 @@ def build_schedule(snapshot: Snapshot) -> dict[str, Any]:
 
 
 def _derive(context: DerivationContext) -> Outcome:
-    return Outcome("CURRENT", build_schedule(context.snapshot))
+    return Outcome("CURRENT", build_schedule(context.selection))
 
 
-SCHEDULE = Derivation("timber_schedule", "schedule-vs01", "2", _derive)
+SCHEDULE = Derivation("timber_schedule", "schedule-vs01", "2", select_schedule, _derive)

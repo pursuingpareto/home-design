@@ -118,7 +118,10 @@ Request: command envelope. Response (illustrative; result contract approved from
   - `updated` lists IDs of members whose geometry, section, or material changed, sorted by ID.
   - Added IDs are exactly the IDs the commit will create ([D041](../product/decisions/D041-deterministic-id-minting.md)).
 - **`connections`** ([CONN-001](../implementation/tasks/CONN-001.md) §7.2) lists connections with the same shape and ordering as `members`: `added` and `removed` are `{id, generation_key}` entries sorted by `generation_key`, and `updated` lists the IDs of surviving connections whose record changed, sorted by ID. Connection records are not listed in `changes`; the frame's `connection_ids` and `connection_defaults` are. A no-op has empty lists.
-- **`impacted_artifacts`** lists all four VS-01 artifact types, in lexicographic order, for every committing command. Each artifact's fingerprint covers the whole canonical snapshot ([artifacts.md](artifacts.md) §2.3), so any change makes all four stale. Narrower lists wait on per-artifact input selectors. **VS-02 amendment ([D056](../product/decisions/D056-dependency-selectors.md), not yet implemented):** `impacted_artifacts` will list exactly the artifacts whose selector-based input fingerprints differ between base and candidate. The list may be empty.
+- **`impacted_artifacts`** ([D056](../product/decisions/D056-dependency-selectors.md), [DEP-001](../implementation/tasks/DEP-001.md) §6, §9.1) lists **exactly** the artifact types whose input fingerprints differ between base and candidate, which are exactly the types whose payload for the new revision will differ (AC2-04). The others are reused unchanged for the new revision.
+  - Items are artifact type keys (`plan2d`, `mesh3d`, `timber_schedule`, `preliminary_estimate`), unique and sorted in code-unit order. The list may be empty: a no-op impacts nothing, and so do, on Reference House 001 v2, `AddSection` and `SetConnectionType` for a junction class with no connections (which still need confirmation).
+  - The example above is a width change, which impacts all four.
+  - Fingerprints hash each artifact's selection ([artifacts.md §2.3](artifacts.md#23-fingerprint)). Both sides use the project's current external inputs, so a price book never makes an artifact impacted.
 - **`is_noop`** is `true` when the candidate's `building` and `entities` equal the base's (canonical comparison). In that case `changes` and the `members` and `connections` lists are empty, `revision_id` is `null`, and committing creates no revision ([D045](../product/decisions/D045-no-op-commits.md)).
 - **`warnings`** are `{code, message}` objects and always include `PRELIMINARY_UNVERIFIED`.
 - **`classification`** comes from the versioned table in [dependencies.md §4.1](dependencies.md#41-classification-table-vs02-change-classes-1), and `classification_version` names that table.
@@ -202,8 +205,10 @@ class TimberGenerator(Protocol):
     def generate(self, snapshot: BuildingSnapshot) -> tuple[GeneratedMember, ...]: ...
 
 class DependencyService(Protocol):
-    def impacts(self, changed_keys: set[str]) -> ImpactReport: ...
-    def invalidate(self, revision_id: UUID, impacted: ImpactReport) -> None: ...
+    # DEP-001 §6: the artifact types whose selection fingerprints differ, sorted; possibly empty.
+    def impact(self, base: BuildingSnapshot, candidate: BuildingSnapshot) -> list[ArtifactType]: ...
+    # DEP-001 §7: reuse unchanged artifacts from any revision of the project; derive the rest.
+    def derive_revision(self, revision_id: UUID) -> dict[ArtifactType, ArtifactStatus]: ...
 
 class GeometryAdapter(Protocol):
     def derive_plan(self, snapshot: BuildingSnapshot) -> Artifact: ...
