@@ -410,20 +410,20 @@ Items 6–8 are approved and recorded as **[D063](../../product/decisions/D063-v
 - After them, all four seeds reach every outcome, and so does the derandomized run.
 
 *Run time:*
-- The 40 sequences took 4 min 5 s to 4 min 58 s alone while the draws were being tuned. With the final draws they took 6 min 55 s with four other runs sharing the machine; the whole backend suite took 7 min 22 s in `scripts/check.sh`.
+- The 40 sequences took 4 min 5 s to 4 min 58 s alone while the draws were being tuned. With the final draws they took 6 min 55 s with four other runs sharing the machine; the whole backend suite took 7 min 16 s in `scripts/check.sh`.
 - The run has more invalid cases than before (23, against 4–8), because the targeted edits draw more data.
 
-*Budgets*: the local values are from `scripts/check.sh` on the development machine (the browser values were taken while another test run shared it). The CI values are from run CI_RUN.
+*Budgets*: the local values are from `scripts/check.sh` on the development machine. The CI values are from run CI_RUN.
 
 | Check | Ceiling | Local | CI |
 |---|---|---|---|
 | Largest payload, reference house (`timber_schedule`) | 262,144 B | 173,680 B (66%) | the same (deterministic) |
 | Largest payload, largest case (`timber_schedule`) | 2,000,000 B | 1,135,194 B (57%) | the same |
-| Preview, reference house, width edit | 1 s | 122 ms (12%) | CI_PREVIEW_REF |
-| Preview, largest case, width edit | 5 s | 885 ms (18%) | CI_PREVIEW_LARGE |
-| Commit with all four artifacts derived, largest case | 5 s | 1,089 ms (22%) | CI_COMMIT |
-| Browser: Create until views and schedule | 10 s | 2,531 ms | CI_CREATE |
-| Browser: Preview until the dialog | 3 s | 453 ms | CI_DIALOG |
+| Preview, reference house, width edit | 1 s | 123 ms (12%) | CI_PREVIEW_REF |
+| Preview, largest case, width edit | 5 s | 876 ms (18%) | CI_PREVIEW_LARGE |
+| Commit with all four artifacts derived, largest case | 5 s | 1,078 ms (22%) | CI_COMMIT |
+| Browser: Create until views and schedule | 10 s | 1,320 ms (13%) | CI_CREATE |
+| Browser: Preview until the dialog | 3 s | 256 ms (9%) | CI_DIALOG |
 
 The estimate is 2,786 B with a book pricing every line and 2,588 B with none. The other payloads match ART-002 §17 exactly.
 
