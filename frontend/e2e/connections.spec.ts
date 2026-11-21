@@ -158,7 +158,7 @@ test("a grid bay too short for the braces points to the Frame tab", async ({ pag
 // build). Each is the median of 5 runs with no retries, printed with its runs. They catch order-of-magnitude
 // regressions, not user-facing targets; a CI value over half its ceiling is reported, not raised (D063).
 const RUNS = 5;
-const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)] ?? Number.NaN;
 function report(what: string, ceilingMs: number, times: number[]) {
   const m = median(times);
   console.log(`[TEST-002 budget] ${what}: median ${m} ms of ${RUNS} (${times.join(", ")} ms), ${Math.round((100 * m) / ceilingMs)}% of the ${ceilingMs / 1000} s ceiling`);

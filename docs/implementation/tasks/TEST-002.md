@@ -1,6 +1,6 @@
 # TEST-002 — VS-02 traceability, the golden scenario's new commands, and budgets
 
-**Status:** Approved (2026-11-20); implementation in progress. All nine §12 proposals are approved: items 6–8 are recorded as [D063](../../product/decisions/D063-vs02-traceability-and-budgets.md), and item 9 confirmed UI-003's four choices.  
+**Status:** Done (2026-11-20). All nine §12 proposals were approved: items 6–8 are recorded as [D063](../../product/decisions/D063-vs02-traceability-and-budgets.md), and item 9 confirmed UI-003's four choices. Implementation notes are in §17.  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes.  
 **Slice:** VS-02  
 **Depends on:** `MODEL-005`, `TIMBER-002`, `CONN-001`, `ART-002`, `DEP-001`, and `UI-003` (all done; `main` at `e632578`). Merges on its own, with CI passing ([vs-02.md](../acceptance-tests/vs-02.md) §12.2).  
@@ -359,3 +359,82 @@ Items 6–8 are approved and recorded as **[D063](../../product/decisions/D063-v
 - The judgment items are recorded in D063, and item 9's outcome in UI-003 §17. The §11 documents are updated.
 - VS-02 is complete by its own acceptance criteria. The roadmap says so, and lists what remains open: the `main` ruleset, hosting and identity (open question 8), and any at-risk rows in either matrix.
 - Changed files, tests, measurements, limitations, and next steps are summarized (AGENTS.md).
+
+## 17. Implementation notes (2026-11-20)
+
+**Delivered** (test-only; no product code changes):
+- `docs/implementation/acceptance-tests/vs-02-traceability.md` (new): 24 rows, 17 for the §12.1 criterion bullets and 7 for the contract checks (D063). It starts from the §5.4 draft. AC2-08's rows cite `it` and `test` titles (§9). AC2-08.2 also notes the disabled untouched Connections rows, which item 9 confirmed. AC2-09 cites the new traceability tests, the outcome gate, and the size budgets.
+- `backend/tests/test_traceability.py`:
+  - `test_every_vs02_item_is_traced`: derives the 24 IDs from the three sources, with a count guard. It compares each row's criterion with its source after normalizing whitespace, bold markers, and links to their text, and applies TEST-001's reference checks.
+  - `test_vs02_check_rejects_reworded_missing_and_untested_rows`: rewording, whitespace, a missing row, an untested row, and a renamed reference.
+  - `reference_exists` is tightened for both matrices (§5.3). A title must occur once in its file, as the first argument of `it(`, `test(`, or `describe(`. A pytest function must be at module level with no `skip`, `skipif`, or `xfail` mark, on itself or in `pytestmark`, unless the matrix quarantines it; it is found with `ast`. A mark on one parametrized case does not count. `test_reference_checks_reject_missing_tests` gains cases for each rule, in temporary files. The VS-01 matrix passed unchanged.
+- `integration/scenario.py`: steps 7a–7e (§6.1), with the counts after 7b (238 members, 382 connections), the Joist hanger line after 7c (144 each, unpriced, no amount; coverage `partial`, grand total `null`), the impact lists of 7a–7c, and each rejection's detail code and path.
+- **Golden record regenerated** (D055). Revisions 1–8 are byte-identical. There are 18 steps and 12 revisions, and 12 of 44 post-creation artifacts are reused: 7a's schedule and estimate, plus the 10 before. The undo revision moves from sequence 9 to 12. Its artifact fingerprints equal revision 2's, as before. Its `snapshot_fingerprint` changes because its `parent_revision_id` is now revision 11, which is expected. Nothing else changed.
+- `integration/test_sequences.py` (§7):
+  - **the §7 draws:** half the joist-spacing draws stay within 10% above the stored spacing, and half the section swaps pick a section with the role's current dimensions;
+  - **an outcome gate:** a module-scoped fixture checks it under the `ci` profile, and skips it when the run already failed. `test_outcome_gate_names_every_missing_outcome` checks the gate's rules.
+  - **additions beyond §7** (see the findings):
+    - the step right after an `AddSection` swaps a role to a same-dimension section when one exists;
+    - half the connection-type draws pick the class's other allowed type;
+    - half the `frame` draws put one parameter just outside its bounds;
+    - a `grid_reidentify` kind re-identifies one line;
+    - half of all steps are a targeted edit (`draw_targeted`), one for each outcome the gate requires.
+- `backend/tests/test_budgets.py` (new, D063). The size check covers each payload, and the estimate both with a book pricing every line and with none. The time checks are the median of 5 runs through the service, in-process, with the in-memory store, after one untimed warm-up preview: the reference-house preview, the largest-case preview, and the largest-case commit with all four artifacts derived. The largest case is inserted into the store as its head revision, with a complete book and its artifacts derived, rather than reached through a series of grid, footprint, and frame commands. Each check prints its measurement, also without `-s`.
+- `frontend/e2e/connections.spec.ts`: one budgets case. It takes 5 creations, from Create pressed until the paired views, 193 3D glyphs, and the schedule are shown, and 5 joist-spacing previews, from Preview pressed until the dialog's impact line shows, then Cancel. It prints the medians.
+- `backend/tests/conftest.py`: `with_frame_parameters`, `grid_doc`, and `largest_doc`, moved from `test_connections.py` and `test_timber.py` (§15), and used by them, by `test_estimating.py`, and by the budgets. The Hypothesis `ci` and `thorough` profiles now set `deadline=None`. `test_robustness.py::test_random_fixture_mutations_never_raise` failed once in `check.sh` under load with a `FlakyFailure` (`DeadlineExceeded`: 261 ms on the first call, 29 ms on the second), and a flaky test is a bug (TEST-001 §8).
+- **Documents:**
+  - vs-02.md: its status block names the matrix, and the §12.2 `TEST-002` row is updated (§11);
+  - artifacts.md §10 and dependencies.md §8: their notes point to the matrix rows;
+  - `tests/README.md` (the golden record) and `backend/README.md` (statistics, budgets, the gate);
+  - D063 is marked implemented, and the register's range now reads D001–D063;
+  - this file and the roadmap.
+
+**Measured:**
+
+*The `ci` sequences* (`--hypothesis-show-statistics`): 40 passing and 23 invalid cases. Each cell is the share of the 63 generated cases in which the outcome occurs:
+
+| Command | Accepted | Rejected | No-op | Impact sizes reached |
+|---|---|---|---|---|
+| `SetFrameParameters` | 22.2% | 9.5% | — | 2 (11.1%), 4 |
+| `SetConnectionType` | 11.1% | 9.5% | 3.2% | 4 |
+| `SetGableRoofParameters` | 30.2% | 22.2% | — | 2 (19.0%), 3 (22.2%) |
+| `SetMemberSection` | 20.6% | — | — | 2 (17.5%), 3 |
+| `SetTimberGrid` | 11.1% | 31.7% | — | 3 (3.2%), 4 |
+| `AddSection` | 17.5% | 12.7% | — | 0 |
+| `SetFootprintDimensions` | 14.3% | 52.4% | 1.6% | 4 |
+| `SetStoryHeights` | 12.7% | 14.3% | — | 4 |
+| `UndoToRevision` | 9.5% | — | 7.9% | 2, 3, 4 |
+
+*Seed robustness:*
+- Before the targeted edits, four random seeds (`--hypothesis-seed` 1–4, 40 examples) each missed one or two required outcomes.
+- After them, all four seeds reach every outcome, and so does the derandomized run.
+
+*Run time:*
+- The 40 sequences took 4 min 5 s to 4 min 58 s alone while the draws were being tuned. With the final draws they took 6 min 55 s with four other runs sharing the machine; the whole backend suite took 7 min 22 s in `scripts/check.sh`.
+- The run has more invalid cases than before (23, against 4–8), because the targeted edits draw more data.
+
+*Budgets*: the local values are from `scripts/check.sh` on the development machine (the browser values were taken while another test run shared it). The CI values are from run CI_RUN.
+
+| Check | Ceiling | Local | CI |
+|---|---|---|---|
+| Largest payload, reference house (`timber_schedule`) | 262,144 B | 173,680 B (66%) | the same (deterministic) |
+| Largest payload, largest case (`timber_schedule`) | 2,000,000 B | 1,135,194 B (57%) | the same |
+| Preview, reference house, width edit | 1 s | 122 ms (12%) | CI_PREVIEW_REF |
+| Preview, largest case, width edit | 5 s | 885 ms (18%) | CI_PREVIEW_LARGE |
+| Commit with all four artifacts derived, largest case | 5 s | 1,089 ms (22%) | CI_COMMIT |
+| Browser: Create until views and schedule | 10 s | 2,531 ms | CI_CREATE |
+| Browser: Preview until the dialog | 3 s | 453 ms | CI_DIALOG |
+
+The estimate is 2,786 B with a book pricing every line and 2,588 B with none. The other payloads match ART-002 §17 exactly.
+
+**Findings:**
+- **§7's two draw changes were not enough to reach the outcomes the gate requires**:
+  - The fixture has no two sections with the same dimensions, so a same-dimension swap first needs a same-dimension `AddSection`, which takes two draws in a row.
+  - A run has about 120 steps, because Hypothesis favors short sequences, and most `frame` draws stay inside the bounds.
+  - Hypothesis derives the derandomized seed from the test function's source. So every edit to the test body reshuffles all 40 sequences: adding the gate's fixture argument alone lost `SetTimberGrid` impact 3.
+  - With only the §7 changes, each of five attempts missed one to three outcomes, and four random seeds each missed one or two.
+  - With the targeted edits, the derandomized run and all four random seeds tried reach every required outcome. The sequences still draw every command at random in the other half of the steps.
+
+**Limitations:**
+- The time ceilings describe the in-process service and the e2e dev-server setup, not a production build or the HTTP layer (D063).
+- The gate checks reach only under the `ci` profile. `thorough` runs it as before, without the gate.

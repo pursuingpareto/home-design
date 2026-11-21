@@ -2,11 +2,11 @@
 
 The single status document for the project ([AGENTS.md](../../AGENTS.md), "Documentation maintenance"). Update it whenever a task's status changes. Decisions are in the [decision register](../product/decisions/README.md); each task file holds its own implementation notes.
 
-**As of 2026-11-20:** VS-01 is complete. VS-02 is in progress: model schema version 2, the complete Reference House 001 v2 frame (193 members), its connections (312, D059) with `SetConnectionType`, the version 2 payloads that present them (ART-002, D060), dependency selectors with exact `impacted_artifacts` and reuse across revisions (DEP-001, D061), and browser support for all of it (UI-003, D062) are done. Traceability (TEST-002) is approved and being implemented.
+**As of 2026-11-20:** VS-01 and VS-02 are complete. VS-02 delivered model schema version 2, the complete Reference House 001 v2 frame (193 members), its connections (312, D059) with `SetConnectionType`, the version 2 payloads that present them (ART-002, D060), dependency selectors with exact `impacted_artifacts` and reuse across revisions (DEP-001, D061), browser support for all of it (UI-003, D062), and traceability with payload size and time budgets (TEST-002, D063).
 
 ## Next steps
 
-1. Finish implementing [TEST-002](tasks/TEST-002.md). All nine §12 proposals were approved (2026-11-20): items 6–8 are recorded as [D063](../product/decisions/D063-vs02-traceability-and-budgets.md), and item 9 confirmed UI-003's four flagged choices. VS-02 is complete when it merges.
+1. Draft VS-02b (modular assemblies: straw bale and stud infill first, with walls and openings as needed, on the VS-02 frame): its scope and acceptance criteria, as vs-02.md did for VS-02.
 2. Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes (a GitHub repository setting for the owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
@@ -14,7 +14,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 **Status:** provisional sequencing; the vertical-slice strategy is confirmed.
 
 - **VS-01:** Reference building, parametric frame, 2D/3D, persistence, preliminary schedule. *Complete (2026-11-19): all acceptance criteria traced and passing ([TEST-001](tasks/TEST-001.md)).*
-- **VS-02:** Complete timber frame, connections, and dependency selectors ([D051](../product/decisions/D051-vs02-slice-boundary.md)). *In progress: [scope and acceptance criteria](acceptance-tests/vs-02.md); MODEL-005, TIMBER-002, CONN-001, ART-002, DEP-001, and UI-003 done; TEST-002 approved, being implemented.*
+- **VS-02:** Complete timber frame, connections, and dependency selectors ([D051](../product/decisions/D051-vs02-slice-boundary.md)). *Complete (2026-11-20): all acceptance criteria traced and passing ([vs-02-traceability.md](acceptance-tests/vs-02-traceability.md), [TEST-002](tasks/TEST-002.md)); [scope and acceptance criteria](acceptance-tests/vs-02.md).*
 - **VS-02b:** Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame.
 - **VS-03:** Natural-language AI proposals and human approval workflow.
 - **VS-04:** Bounded engineering checks, cost and environmental estimates, alternatives.
@@ -46,11 +46,12 @@ The [task index](tasks/README.md) describes what a task file contains.
 | [ART-002](tasks/ART-002.md) | VS-02: version 2 plan, mesh, schedule, and estimate payloads; "each" price-book rows | Done (2026-11-20; [D060](../product/decisions/D060-vs02-artifact-payloads.md)) |
 | [DEP-001](tasks/DEP-001.md) | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Done (2026-11-20; [D061](../product/decisions/D061-vs02-selector-contents.md)) |
 | [UI-003](tasks/UI-003.md) | VS-02: browser support for the complete frame and connections (roles and markers in 2D and 3D, the Frame tab, connection types, schedule tables, the confirmation dialog) | Done (2026-11-20; [D062](../product/decisions/D062-vs02-browser-connections.md)) |
-| [TEST-002](tasks/TEST-002.md) | VS-02: traceability and the golden scenario's new commands for AC2-01 to AC2-09 (the if-and-only-if impact property shipped with DEP-001, D061), the sequences' reach, and budgets | Approved (2026-11-20; [D063](../product/decisions/D063-vs02-traceability-and-budgets.md)); implementation in progress — **next** |
+| [TEST-002](tasks/TEST-002.md) | VS-02: traceability and the golden scenario's new commands for AC2-01 to AC2-09 (the if-and-only-if impact property shipped with DEP-001, D061), the sequences' reach, and budgets | Done (2026-11-20; [D063](../product/decisions/D063-vs02-traceability-and-budgets.md)) |
 
-## Current limitations (until the remaining VS-02 tasks)
+## Current limitations
 
-- AC2-01 to AC2-09 are not yet traced in a traceability matrix, the golden scenario has no `SetFrameParameters` or `SetConnectionType` step, the `ci` sequences reach no narrow impact for those two commands or for `SetMemberSection`, and no payload size, render time, or preview time budget is set (`TEST-002`).
+- The time budgets (D063) are regression ceilings for the in-process service and the e2e dev-server setup, not user-facing targets; no product performance target exists yet.
+- Neither traceability matrix has an at-risk or quarantined row.
 
 ## Open items
 
