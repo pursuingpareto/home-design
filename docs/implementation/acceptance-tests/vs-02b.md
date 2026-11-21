@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). Proposal 3 has the product owner's direction (studs and girts generated, visible, and counted; §8.1), and its sub-questions are under discussion. Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -75,7 +75,7 @@ Proposals 2–9 build on Option 1.
 |---|---|---|---|
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
-| 3 | Infill framing: studs and girts as layer quantities or as members | **Your judgment** | §8 |
+| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); sub-questions 3a–3e under discussion | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
@@ -123,22 +123,46 @@ Proposals 2–9 build on Option 1.
 - **User-placed walls** (an `AddWall` command): needed eventually for interior walls and off-grid walls. Hand placement needs its own identity and validation story, as D054 said of connections.
 - **Gable-end walls now:** completes the end walls, but needs triangular panels in 2D, 3D, and quantities.
 
-## 8. Proposal 3: infill framing (Your judgment)
+## 8. Proposal 3: infill framing (Your judgment, under discussion)
 
 D052 deferred "girts and studs (with walls, in VS-02b)". This proposal decides whether VS-02b generates them.
 
-**Recommendation: layer quantities, no new member roles.**
+### 8.1 Product owner direction (2026-11-21)
 
-- Stud framing is a **layer** of the stud-infill definition. The layer records its section and spacing as data, and is quantified by wall area like the other layers (proposal 7). Straw bale walls have no framing layer.
-- No `STUD` or `GIRT` role, no new junction classes, and no connection catalog change. The timber schedule and its 193 members and 312 connections are unchanged.
-- An assumption line says framing is quantified by area, and that stud counts, bale counts, and opening framing are not.
+The first recommendation (stud framing as an area-quantified layer, with no stud or girt members) was **not adopted**. The product owner's direction:
 
-**Why:** individual studs add a member per stud (at 16" on center, roughly 9 per bay, about 180 on the reference house), each needing a key, conformance, and joints with a junction class. D059 already decided that a new class needs a new catalog version, with a traditional and an engineered type. A layer gives the homeowner comparison and an area takeoff without any of that.
+- the walls stay a **separate layer that can be toggled on and off**;
+- the user and the builder **see every stud and girt**;
+- stud and girt **counts are available to the builder**.
 
-**Alternatives:**
+So VS-02b generates studs and girts as individual pieces. The direction leaves the questions in §8.2 open. They are discussed one at a time, as 3a–3e, and recorded together as one decision when all are settled.
 
-- **Generated studs and girts** (new roles in a new rule version): a per-piece builder takeoff and studs visible in 3D. It is the largest option, and it changes the frame rule, its oracle, the connection catalog, and both views.
-- **Girts as members, studs as a layer:** girts are the heavy-timber part, for example a mid-height girt that carries bales or cladding. It still needs new junction classes (girt to post).
+### 8.2 Open sub-questions
+
+**3a. Where studs and girts live, and what the wall layer toggles.**
+
+- **Recommendation:** studs and girts are `TimberMember` records with two new roles, `STUD` and `GIRT`:
+  - they appear in `plan2d`, `mesh3d`, and the timber schedule with the rest of the frame, so the builder's counts and lengths come from the one member inventory (one aggregate per role and section, artifacts.md §7);
+  - their sections and materials come from `member_defaults`, one entry per role (D039), so `SetMemberSection` works for them (D040);
+  - the **wall layer** is the walls' layer build-ups (plaster, bales, sheathing, insulation, and so on). A **"Walls" switch** in both views turns that layer off to expose the studs and girts behind it, as D062's Connections switch hides markers. It is on by default and remembered per browser. It changes display only; schedules are unaffected.
+- **Alternative:** a separate infill-framing record kind owned by each wall, listed in the assembly schedule rather than the timber schedule, and hidden together with the walls. It keeps dimensional lumber out of the heavy-timber schedule, but gives the builder two framing lists.
+
+**3b. Where girts go.** Which walls get girts (every perimeter wall, or stud infill walls only), how many per story, at what height, and whether straw bale walls get them. In-plane bale infill is usually laid without intermediate girts, because a girt interrupts the courses. Recommendation to follow once 3a is settled.
+
+**3c. Stud layout.** Which walls get studs (stud infill walls only, recommended), the spacing and where it is measured from (for example from each bay's start post, as joists are measured from each bay's west beam line), and whether studs run from sill or beam to beam or stop at girts. For scale: at 24" on center measured from the start post, a 12' bay holds 5 studs, so 100 on the reference house's 20 walls before openings; at 16", 8 per bay and 160.
+
+**3d. Framing at openings.** Whether doors and windows get generated framing (king and jack studs, headers, rough sills, cripples), so that the stud count is complete, or the count excludes it with an assumption line. "See all of the studs" suggests generated framing, which makes stud positions depend on openings.
+
+**3e. Joints.** Whether studs and girts get `Connection` records. A girt-to-post joint is traditional joinery, and a new junction class needs a new catalog version with a traditional and an engineered type (D059). Stud ends are nailed, which the catalog has no type for. The alternative is no records for infill framing, with an assumption line, as D059 did for post splices.
+
+### 8.3 Knock-on effects to revisit
+
+- **Proposal 6 (openings):** if 3d generates opening framing, opening commands regenerate members, so the recommendation that they are routine is revisited (dependencies.md §4).
+- **Proposal 5 (assembly choice):** switching the wall assembly then adds or removes every stud, which is already consequential.
+- **Proposal 7 (quantities):** stud and girt counts and lengths come from the timber schedule; the assembly schedule keeps areas and the non-framing layers.
+- **Proposal 9 (design intent):** girt positions and sections, stud spacing and section, and opening framing sizes need values for Reference House 001 v3.
+- **§4, §15, §16:** members are no longer unchanged at 193. The member generation rule, its ECMAScript oracle, conformance, and the member count change. The task breakdown and AC2b-03 are revised once 3a–3e are settled.
+- **Proposal 15 (budgets):** more members enlarge `plan2d`, `mesh3d`, and the schedule.
 
 ## 9. Proposal 4: assembly definitions (Your judgment)
 

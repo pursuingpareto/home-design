@@ -6,7 +6,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 ## Next steps
 
-1. **In progress:** approve VS-02b's scope and acceptance criteria ([vs-02b.md](acceptance-tests/vs-02b.md), drafted 2026-11-21). Its proposals are under review: the judgment items one at a time, and the routine items together. Decided: proposal 1, perimeter infill walls with openings ([D064](../product/decisions/D064-vs02b-slice-boundary.md)), and proposal 2, generated in-plane walls in every perimeter bay ([D065](../product/decisions/D065-vs02b-wall-placement.md)). Proposal 3, infill framing, is next. No task files are drafted until the scope is approved.
+1. **In progress:** approve VS-02b's scope and acceptance criteria ([vs-02b.md](acceptance-tests/vs-02b.md), drafted 2026-11-21). Its proposals are under review: the judgment items one at a time, and the routine items together. Decided: proposal 1, perimeter infill walls with openings ([D064](../product/decisions/D064-vs02b-slice-boundary.md)), and proposal 2, generated in-plane walls in every perimeter bay ([D065](../product/decisions/D065-vs02b-wall-placement.md)). Proposal 3, infill framing, is under discussion: studs and girts are to be generated, visible, and counted for the builder, and its sub-questions 3a–3e are taken one at a time. No task files are drafted until the scope is approved.
 2. ~~Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes.~~ **Done** (2026-11-21, by the product owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
