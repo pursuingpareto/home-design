@@ -1,6 +1,6 @@
 # D063 — VS-02 traceability form, payload size budgets, and time budgets
 
-**Status:** Confirmed; to be implemented by [TEST-002](../../implementation/tasks/TEST-002.md) (VS-02)  
+**Status:** Confirmed; implemented ([TEST-002](../../implementation/tasks/TEST-002.md), VS-02)  
 **Date:** 2026-11-20  
 **Scope:** How VS-02's acceptance criteria are traced and kept in step with their source, and the first size and time budgets. Approved from [TEST-002](../../implementation/tasks/TEST-002.md) §12, items 6–8. The routine items 1–5 are specified in the task file. Item 9, UI-003's four flagged choices, is decided separately.  
 **Builds on:** [TEST-001](../../implementation/tasks/TEST-001.md) §4 (the VS-01 matrix, its reference forms, and the flake policy), and [D061](D061-vs02-selector-contents.md) (the impact property ships with DEP-001; `TEST-002` traces it).

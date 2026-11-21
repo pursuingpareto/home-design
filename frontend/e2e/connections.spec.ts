@@ -153,3 +153,50 @@ test("a grid bay too short for the braces points to the Frame tab", async ({ pag
   await error.getByRole("button", { name: "Close" }).click();
   await expect(page.getByTestId("history").locator("li")).toHaveCount(1);
 });
+
+// TEST-002 §8.2 and D063: time budgets in the e2e setup (the Vite dev server, unbundled; not a production
+// build). Each is the median of 5 runs with no retries, printed with its runs. They catch order-of-magnitude
+// regressions, not user-facing targets; a CI value over half its ceiling is reported, not raised (D063).
+const RUNS = 5;
+const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+function report(what: string, ceilingMs: number, times: number[]) {
+  const m = median(times);
+  console.log(`[TEST-002 budget] ${what}: median ${m} ms of ${RUNS} (${times.join(", ")} ms), ${Math.round((100 * m) / ceilingMs)}% of the ${ceilingMs / 1000} s ceiling`);
+  expect(m, `${what}: median ${m} ms is over the ${ceilingMs} ms budget (TEST-002 §8.2)`).toBeLessThanOrEqual(ceilingMs);
+}
+
+test("budgets: the created house shows its views and schedule within 10 s, and a preview's dialog within 3 s", async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.goto("/#/projects");
+  await page.getByLabel("Development token").fill(TOKENS.a);
+  await page.getByRole("button", { name: "Sign in" }).click();
+
+  const created: number[] = [];
+  for (let i = 0; i < RUNS; i++) {
+    await page.goto("/#/projects");
+    const create = page.getByRole("button", { name: "Create Reference House 001" });
+    await expect(create).toBeEnabled();
+    const start = Date.now();
+    await create.click();
+    await expect(page.getByTestId("views-paired")).toBeVisible();
+    await expect(page.locator(".mesh3d")).toHaveAttribute("data-glyph-count", "193");
+    await expect(page.getByTestId("schedule-connections")).toBeVisible();
+    created.push(Date.now() - start);
+  }
+
+  const previewed: number[] = [];
+  await tab(page, "Frame");
+  for (let i = 0; i < RUNS; i++) {
+    await page.getByRole("textbox", { name: "Joist spacing" }).fill(`${0.62 + i / 100} m`);
+    const start = Date.now();
+    await preview(page);
+    await expect(dialog(page).getByTestId("impact-artifacts")).toBeVisible();
+    previewed.push(Date.now() - start);
+    await dialog(page).getByRole("button", { name: "Cancel" }).click();
+    await expect(dialog(page)).toHaveCount(0);
+  }
+
+  report("browser: Create pressed until 2D, 3D (193 glyphs), and the schedule are shown", 10_000, created);
+  report("browser: Preview pressed until the confirmation dialog shows", 3_000, previewed);
+  await expect(page.getByTestId("history").locator("li")).toHaveCount(1); // nothing was committed
+});

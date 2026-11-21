@@ -19,7 +19,7 @@ from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 from api_support import make_api
-from conftest import FIXTURE, VECTORS_PATH, entities_of, fresh_fixture, regenerate
+from conftest import FIXTURE, VECTORS_PATH, entities_of, fresh_fixture, grid_doc, largest_doc, regenerate, with_frame_parameters
 from homedesign.model import canonical_json, codes, validate_value
 from homedesign.model.commands import CLASSIFICATION, mint, propose, propose_create
 from homedesign.model.connections import ALTERNATIVES, CONNECTION_TYPES, DEFAULTS, JUNCTION_CLASSES
@@ -63,26 +63,10 @@ def _frame(doc):
     return entities_of(doc, "FrameSystem")[0]
 
 
-def _with(doc=None, **parameters):
-    doc = doc or fresh_fixture()
-    _frame(doc)["parameters"].update(parameters)
-    return regenerate(doc)
 
 
-def _grid_doc(nx: int, ny: int, bay_ft: float = 12) -> dict:
-    doc = fresh_fixture()
-    footprint = entities_of(doc, "Footprint")[0]
-    footprint["width_m"] = (nx - 1) * bay_ft * FT
-    footprint["depth_m"] = (ny - 1) * bay_ft * FT
-    grid = entities_of(doc, "TimberGrid")[0]
-    grid["x_lines"] = [{"id": f"x{i}", "fraction": i / (nx - 1)} for i in range(nx)]
-    grid["y_lines"] = [{"id": f"y{j}", "fraction": j / (ny - 1)} for j in range(ny)]
-    return regenerate(doc)
 
 
-def _largest_doc() -> dict:
-    """TIMBER-002 §5.3: 7 × 7 stations over 80' × 80', 12" joists, 4 purlins, both brace planes."""
-    return _with(_grid_doc(7, 7, bay_ft=80 / 6), joist_spacing_m=0.3048, purlins_per_slope=4)
 
 
 def _expected_counts(doc) -> Counter:
@@ -204,7 +188,7 @@ def test_junction_rules_hold_for_the_fixture():
 @pytest.mark.parametrize("nx", range(2, 8))
 @pytest.mark.parametrize("ny", range(2, 8))
 def test_counts_for_every_supported_grid(nx, ny):
-    doc = _grid_doc(nx, ny)
+    doc = grid_doc(nx, ny)
     assert validate_value(doc).valid
     connections = _check_junctions(doc)
     assert Counter(c.junction_class for c in connections) == _expected_counts(doc)
@@ -227,14 +211,14 @@ def test_counts_for_every_supported_grid(nx, ny):
     ],
 )
 def test_counts_at_parameter_bounds(parameters):
-    doc = _with(**parameters)
+    doc = with_frame_parameters(**parameters)
     assert validate_value(doc).valid
     assert Counter(c.junction_class for c in _check_junctions(doc)) == _expected_counts(doc)
 
 
 def test_largest_supported_case():
     """§6: 7 × 7 stations, 12" joists, 4 purlins, both brace planes: 2,110 connections."""
-    doc = _largest_doc()
+    doc = largest_doc()
     assert validate_value(doc).valid
     connections = _check_junctions(doc)
     assert len(RULE.generate(_snapshot(doc))) == 1216
@@ -246,7 +230,7 @@ def test_largest_supported_case():
 
 def test_largest_case_propose_time(capsys):
     """§12 test 3: the `propose` time for 2,110 connections is reported; TEST-002 sets any budget."""
-    base = _snapshot(_largest_doc())
+    base = _snapshot(largest_doc())
     current = base.model_dump(mode="json")
     footprint = next(e for e in current["entities"] if e["kind"] == "Footprint")
     # One foot narrower: every connection is regenerated and most move.
@@ -265,7 +249,7 @@ def test_largest_case_propose_time(capsys):
 
 
 def test_keys_split_back_into_member_keys():
-    for doc in (FIXTURE, _largest_doc()):
+    for doc in (FIXTURE, largest_doc()):
         snapshot = _snapshot(doc)
         member_keys = {m.generation_key for m in RULE.generate(snapshot)}
         assert all(k.startswith("frame/") and "/frame/" not in k for k in member_keys)
@@ -491,7 +475,7 @@ def test_connections_match_independent_ecmascript_implementation():
 
 
 def test_zero_cases_generate_no_connections_of_those_classes():
-    doc = _with(purlins_per_slope=0, knee_braces_level_1=False, knee_braces_eave=False, joist_spacing_m=1.2192)
+    doc = with_frame_parameters(purlins_per_slope=0, knee_braces_level_1=False, knee_braces_eave=False, joist_spacing_m=1.2192)
     grid = entities_of(doc, "TimberGrid")[0]
     width = entities_of(doc, "Footprint")[0]["width_m"]
     x = {line["id"]: line for line in grid["x_lines"]}

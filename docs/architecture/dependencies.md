@@ -113,7 +113,7 @@ An approval records the reviewed revision, signer identity/authorization, review
 | Remove grid bay | Retire removed generated member keys, preserve surviving member IDs, regenerate inventory (stable line IDs make this hold for interior bays, [D042](../product/decisions/D042-stable-grid-line-ids.md)) |
 | Missing unit prices | Estimate `UNAVAILABLE` or partial with clear coverage; never $0 total by default ([artifacts.md](artifacts.md) §8) |
 
-VS-02 examples ([DEP-001](../implementation/tasks/DEP-001.md) §8, measured on Reference House 001 v2; listed here rather than as table rows, because the VS-01 traceability matrix counts the rows above):
+VS-02 examples ([DEP-001](../implementation/tasks/DEP-001.md) §8, measured on Reference House 001 v2; listed here rather than as table rows, because the VS-01 traceability matrix counts the rows above; traced as `DEP2-1` to `DEP2-4` in [vs-02-traceability.md](../implementation/acceptance-tests/vs-02-traceability.md)):
 
 - **`AddSection`:** new revision; nothing is impacted, and all four artifacts are reused for it, payloads and fingerprints unchanged.
 - **A pitch-only roof edit:** `mesh3d`, `timber_schedule`, and `preliminary_estimate` are impacted; `plan2d` is reused, because rafters and purlins move only in `z`.

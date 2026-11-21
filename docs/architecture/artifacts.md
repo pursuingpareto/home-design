@@ -544,7 +544,7 @@ These hold against Reference House 001 v2 (AC2-05), with its counts:
 7. Every `CURRENT` envelope has `suitability: "preliminary"` and `claims.structurally_verified === false`.
 8. Estimate `line_items` quantities match schedule aggregates for the same revision: timber lines the role and section totals, connection lines the per-type sums of `connection_aggregates`.
 
-Version 2 reconciliation ([ART-002](../implementation/tasks/ART-002.md) §13; checked after every step of the integration suite). These are VS-02 checks, traced by `TEST-002`, not rows of the VS-01 matrix:
+Version 2 reconciliation ([ART-002](../implementation/tasks/ART-002.md) §13; checked after every step of the integration suite). These are VS-02 checks, traced as `ART2-1` to `ART2-3` in [vs-02-traceability.md](../implementation/acceptance-tests/vs-02-traceability.md) (TEST-002), not rows of the VS-01 matrix:
 
 - Plan markers, mesh markers, and schedule connection rows are exactly the snapshot's 312 connections, with their IDs, keys, classes, and types. Mesh `location_m` is bit-identical to the record's, plan `xy_m` is its projection, and each plan marker is on its entering member's plane.
 - `connection_aggregates` counts sum to the number of connection rows and of `Connection` records, and each class's count equals CONN-001 §6's formula.

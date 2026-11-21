@@ -107,7 +107,7 @@ class Scenario:
         assert preview.status_code == 200 and not preview.json()["confirmation_required"], (name, preview.text)
         return self.accepted(name, self.api.commit(self.pid, command), preview.json()["impacted_artifacts"])
 
-    def rejected(self, name: str, type_: str, args: dict[str, Any], code: str) -> None:
+    def rejected(self, name: str, type_: str, args: dict[str, Any], code: str) -> dict[str, Any]:
         self.tick()
         before = project_state(self.api, self.pid)
         command = self.command(name, type_, args)
@@ -117,6 +117,7 @@ class Scenario:
             assert (response.status_code, response.json()["error"]["code"]) == (422, code), (name, response.text)
         self.record(name, commit)
         assert_unchanged(before, project_state(self.api, self.pid))
+        return commit.json()["error"]
 
     # --- the scenario -----------------------------------------------------------------------------
 
@@ -163,6 +164,33 @@ class Scenario:
         estimate = view.envelopes["preliminary_estimate"]
         assert estimate["payload"]["coverage"] == "partial"
         assert "PRICE_ROWS_UNUSED" in [w["code"] for w in estimate["warnings"]]
+
+        # 7a. Joist spacing 0.62 m keeps the joist count at these 19' bays: member and connection IDs are
+        # kept, and the schedule and the estimate are reused (DEP-001 §8, TEST-002 §6).
+        all_four = sorted(view.envelopes)
+        parameters = view.one("FrameSystem")["parameters"]
+        view = self.consequential("frame-joists-0.62", "SetFrameParameters", {**parameters, "joist_spacing_m": 0.62})
+        assert sorted(self.impacts[-1][2]) == ["mesh3d", "plan2d"]
+
+        # 7b. Eave braces off: their members and connections are retired; survivors keep their IDs (check_transition).
+        view = self.consequential("frame-eave-braces-off", "SetFrameParameters", {**parameters, "joist_spacing_m": 0.62, "knee_braces_eave": False})
+        assert sorted(self.impacts[-1][2]) == all_four
+        assert (len(view.members()), len(view.connections())) == (238, 382)
+
+        # 7c. Joist hangers on the joist-beam class: a new, unpriced line, so the estimate stays partial with no total, never 0 (AC2-06).
+        view = self.consequential("joist-beam-hanger", "SetConnectionType", {"junction_class": "joist-beam", "connection_type": "JOIST_HANGER"})
+        assert sorted(self.impacts[-1][2]) == all_four
+        estimate = view.envelopes["preliminary_estimate"]["payload"]
+        hanger = next(line for line in estimate["line_items"] if line["key"] == "connection.JOIST_HANGER")
+        assert (hanger["quantity_value"], hanger["quantity_unit"], hanger["priced"], hanger["amount_minor"]) == (144, "each", False, None)
+        assert estimate["coverage"] == "partial" and estimate["totals"]["grand_total_minor"] is None
+
+        # 7d–7e. A disallowed connection type and an out-of-range frame parameter change nothing (AC2-03, AC-06).
+        error = self.rejected("joist-beam-bridle", "SetConnectionType", {"junction_class": "joist-beam", "connection_type": "BRIDLE"}, "UNSUPPORTED_CONFIGURATION")
+        assert [(d["code"], d["path"].endswith('.connection_defaults["joist-beam"]')) for d in error["details"]] == [("UNSUPPORTED_VALUE", True)], error
+        frame = {**view.one("FrameSystem")["parameters"], "purlins_per_slope": -1}
+        error = self.rejected("frame-purlins-minus-1", "SetFrameParameters", frame, "VALIDATION_FAILED")
+        assert [(d["code"], d["path"].endswith(".parameters.purlins_per_slope")) for d in error["details"]] == [("OUT_OF_RANGE", True)], error
 
         # 8. A retry is replayed; a stale base conflicts. Neither changes anything (interfaces §9 tests 4–5).
         before = project_state(api, pid)

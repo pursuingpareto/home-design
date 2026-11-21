@@ -262,6 +262,102 @@
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
+          "input_fingerprint": "sha256:d432f5b82432c05f8a5a84bdcecc05f7a4bdabdc5bb5958a12c381ec8ba61552",
+          "payload_fingerprint": "sha256:43fdf84277976efdb7e5c26bea3a2a531b1d01fdd209014baa8e7e667a95d50c",
+          "status": "CURRENT"
+        },
+        "plan2d": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:961be0a10ab8a77df4b5b781c88a0ef29d6040f1031b267210cabe8bd303c1e6",
+          "payload_fingerprint": "sha256:ed4f562b9767041faf49d289b088b660e9e3d028ec7fb651969edf3b0ab932f6",
+          "status": "CURRENT"
+        },
+        "preliminary_estimate": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:e333e0ced6b870f37d45c670c60817d2a2e21217dcd3716517226fa62855a1f8",
+          "payload_fingerprint": "sha256:bd84c105a6f884ed7d4caf49b89c2f777c601e4504dc6a248ae441901bff87b3",
+          "status": "CURRENT"
+        },
+        "timber_schedule": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:ace45f26c9a265add875310f32be432374ed00d5f63c16a2e064edb7558c0e21",
+          "payload_fingerprint": "sha256:fac45468da97e4646f2147914c210c63bbc5302f04abe0f6d84f1820a30f39c8",
+          "status": "CURRENT"
+        }
+      },
+      "command_type": "SetFrameParameters",
+      "revision_id": "f981087c-cc2c-5e54-9023-6ee1439ef9f5",
+      "sequence": 9,
+      "snapshot_fingerprint": "sha256:0e0e0cd9aac69c4284d4715d8ff00581c509457532636f1ba37e8e3024b63234"
+    },
+    {
+      "artifacts": {
+        "mesh3d": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:a8ffeed86dbd3b9e83babd343bdfa4d60e6d8c2e55cb6608281152bdd388edb6",
+          "payload_fingerprint": "sha256:4f29e7413b02715afcf748b3b496069b26f2a86b11bae3d7df6571633bd0daf7",
+          "status": "CURRENT"
+        },
+        "plan2d": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:49aff2ad4258eba2d4574b0fd36aa8aa61cbb8a41b6809f6479cff28d1dd74ca",
+          "payload_fingerprint": "sha256:8c2fdd8032ec0bc185b9f0bd47ac14a1a2941e00122bcd04a8f21b3a88c2f574",
+          "status": "CURRENT"
+        },
+        "preliminary_estimate": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:ee58b64daf76273342b76e94f69fee24d51cd30004d837e1642c0c4197f45052",
+          "payload_fingerprint": "sha256:77a165bd4ecfc84d7d1ffd6b9c6a07465e9bcbdfea22fddde07ba7bb8d872a29",
+          "status": "CURRENT"
+        },
+        "timber_schedule": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:9a7a000ed3bc708429b6a7947e4842eb476d6e28a1867732cd81fa1aaf7a5c2b",
+          "payload_fingerprint": "sha256:ef022a2839ec1a83e2b145b4629bc3c3fb974cf4f2cf3f77b595b71f84bbb3a7",
+          "status": "CURRENT"
+        }
+      },
+      "command_type": "SetFrameParameters",
+      "revision_id": "bdd8cc42-af9d-5109-91b1-97c5318fb967",
+      "sequence": 10,
+      "snapshot_fingerprint": "sha256:1ff0381ce5ebc116482d8f8232b14132d0d780d9f9075aabf0bac200a20e155e"
+    },
+    {
+      "artifacts": {
+        "mesh3d": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:79c224e1d46e5320be214ebfe7f6613705152abbce8e14a0cf05f6e933af75b2",
+          "payload_fingerprint": "sha256:28b2b4eda7e9e744da751015636f8b36bb09f3b84c6d05f4e8ddab9f5272af75",
+          "status": "CURRENT"
+        },
+        "plan2d": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:875299577ba321425517f070ad7aa4387bc1ccd863970672e6f37fdf22ed68a9",
+          "payload_fingerprint": "sha256:9bc49f2d8a82c5e9b4ba4d7ce073dc65e43c6577e4cdc060bb5b30782cce28b7",
+          "status": "CURRENT"
+        },
+        "preliminary_estimate": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:9f65ea03e11855e3bf57a8dfcd036f224f589aa6af4c8bea9894ab210e2c2e09",
+          "payload_fingerprint": "sha256:68ee8c4d5160e64165b3823c5f54bb8c41e9724038d9a7122da8ef84a45c5e10",
+          "status": "CURRENT"
+        },
+        "timber_schedule": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:ca54777b2f3f4b0f80370b5bfea1beafa289c62292cf26603c0785d78d2d3fd2",
+          "payload_fingerprint": "sha256:e7bf213a3149bfcc4739686c26b268fa742573571e2854ae0773fa36cf6147eb",
+          "status": "CURRENT"
+        }
+      },
+      "command_type": "SetConnectionType",
+      "revision_id": "d971cdc7-5369-5637-8eb1-82cd2375443f",
+      "sequence": 11,
+      "snapshot_fingerprint": "sha256:de67204eb576f8a93c71d12d3fce150f03a6e92d75b29884f2b9a05c0a3f80df"
+    },
+    {
+      "artifacts": {
+        "mesh3d": {
+          "generator_version": "2",
           "input_fingerprint": "sha256:a8339b2923dc2f1956e89ee2be3d502be550c6773d15041632e4aa0b22b606a7",
           "payload_fingerprint": "sha256:06ec8e9f06d5304f7556504ad0fc6587d456b0ad0a18da111069247d3e995600",
           "status": "CURRENT"
@@ -287,8 +383,8 @@
       },
       "command_type": "UndoToRevision",
       "revision_id": "63ba73f4-7973-58aa-8c36-bfd9bf4a5f7f",
-      "sequence": 9,
-      "snapshot_fingerprint": "sha256:8024ef4a38009944ac52d46ef79c5a81b1f964f5bf5b361a10d954e667f846c2"
+      "sequence": 12,
+      "snapshot_fingerprint": "sha256:c9e8f804d23bb3a785dd9c4cf13130e607103863018ab7a0ab14d7acb25917ac"
     }
   ],
   "steps": [
@@ -386,6 +482,52 @@
       "replayed": false,
       "status": 201,
       "step": "beam-10x12"
+    },
+    {
+      "code": null,
+      "impacted_artifacts": [
+        "mesh3d",
+        "plan2d"
+      ],
+      "replayed": false,
+      "status": 201,
+      "step": "frame-joists-0.62"
+    },
+    {
+      "code": null,
+      "impacted_artifacts": [
+        "mesh3d",
+        "plan2d",
+        "preliminary_estimate",
+        "timber_schedule"
+      ],
+      "replayed": false,
+      "status": 201,
+      "step": "frame-eave-braces-off"
+    },
+    {
+      "code": null,
+      "impacted_artifacts": [
+        "mesh3d",
+        "plan2d",
+        "preliminary_estimate",
+        "timber_schedule"
+      ],
+      "replayed": false,
+      "status": 201,
+      "step": "joist-beam-hanger"
+    },
+    {
+      "code": "UNSUPPORTED_CONFIGURATION",
+      "replayed": false,
+      "status": 422,
+      "step": "joist-beam-bridle"
+    },
+    {
+      "code": "VALIDATION_FAILED",
+      "replayed": false,
+      "status": 422,
+      "step": "frame-purlins-minus-1"
     },
     {
       "code": null,

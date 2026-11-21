@@ -12,7 +12,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from conftest import FIXTURE, VECTORS_PATH, entities_of, fresh_fixture, regenerate
+from conftest import FIXTURE, VECTORS_PATH, entities_of, fresh_fixture, grid_doc, largest_doc, regenerate, with_frame_parameters
 from homedesign.model import canonical_json, validate_value
 from homedesign.model.connections import JUNCTION_CLASSES
 from homedesign.model.schema import Snapshot
@@ -41,10 +41,6 @@ def _frame(doc):
     return entities_of(doc, "FrameSystem")[0]
 
 
-def _with(doc=None, **parameters):
-    doc = doc or fresh_fixture()
-    _frame(doc)["parameters"].update(parameters)
-    return regenerate(doc)
 
 
 # --- registry and fixture --------------------------------------------------------------
@@ -152,15 +148,6 @@ def _expected_counts(doc) -> Counter:
     return +counts  # drop zero counts
 
 
-def _grid_doc(nx: int, ny: int, bay_ft: float = 12) -> dict:
-    doc = fresh_fixture()
-    footprint = entities_of(doc, "Footprint")[0]
-    footprint["width_m"] = (nx - 1) * bay_ft * FT
-    footprint["depth_m"] = (ny - 1) * bay_ft * FT
-    grid = entities_of(doc, "TimberGrid")[0]
-    grid["x_lines"] = [{"id": f"x{i}", "fraction": i / (nx - 1)} for i in range(nx)]
-    grid["y_lines"] = [{"id": f"y{j}", "fraction": j / (ny - 1)} for j in range(ny)]
-    return regenerate(doc)
 
 
 def _check_counts(doc):
@@ -178,7 +165,7 @@ def _check_counts(doc):
 @pytest.mark.parametrize("nx", range(2, 8))
 @pytest.mark.parametrize("ny", range(2, 8))
 def test_member_counts_for_every_supported_grid(nx, ny):
-    _check_counts(_grid_doc(nx, ny))
+    _check_counts(grid_doc(nx, ny))
 
 
 @pytest.mark.parametrize(
@@ -195,13 +182,12 @@ def test_member_counts_for_every_supported_grid(nx, ny):
     ],
 )
 def test_member_counts_at_parameter_bounds(parameters):
-    _check_counts(_with(**parameters))
+    _check_counts(with_frame_parameters(**parameters))
 
 
 def test_largest_supported_inventory():
     """TIMBER-002 §5.3: 7 × 7 stations over 80' × 80', 12" joists, 4 purlins, both brace planes."""
-    doc = _grid_doc(7, 7, bay_ft=80 / 6)
-    doc = _with(doc, joist_spacing_m=0.3048, purlins_per_slope=4)
+    doc = largest_doc()
     _check_counts(doc)
     members = _generate(doc)
     assert len(members) == 1216 and sum(m.member_role == "FLOOR_JOIST" for m in members) == 468
@@ -241,16 +227,16 @@ def test_removing_an_interior_line_retires_exactly_its_members():
 
 def test_spacing_change_keeps_lower_ordinals():
     base = _keys(FIXTURE)
-    tighter = _keys(_with(joist_spacing_m=16 * FT / 12))  # 16": 8 joists per 12' bay
+    tighter = _keys(with_frame_parameters(joist_spacing_m=16 * FT / 12))  # 16": 8 joists per 12' bay
     assert {k for k in base if "/joist" in k} < {k for k in tighter if "/joist" in k}
     assert sum("/x0-x1/j" in k and "/y0-y1/" in k for k in tighter) == 8
-    wider = _keys(_with(joist_spacing_m=0.9144))  # 36": 3 joists per bay
+    wider = _keys(with_frame_parameters(joist_spacing_m=0.9144))  # 36": 3 joists per bay
     assert {k for k in wider if "/joist" in k} == {k for k in base if re.search(r"/j[123]/", k)}
 
 
 def test_purlin_count_change_keeps_lower_ordinals():
     base = _generate(FIXTURE)
-    three = {m.generation_key: m for m in _generate(_with(purlins_per_slope=3))}
+    three = {m.generation_key: m for m in _generate(with_frame_parameters(purlins_per_slope=3))}
     base_purlins = {m.generation_key: m for m in base if m.member_role == "PURLIN"}
     assert set(base_purlins) < set(three)
     moved = three["frame/roof/x0-x1/south/p1/purlin"].start_m[2] != base_purlins["frame/roof/x0-x1/south/p1/purlin"].start_m[2]
@@ -304,7 +290,7 @@ def test_axes_meet_on_datums():
 
 
 def test_zero_cases_generate_nothing_of_that_kind_and_validate():
-    doc = _with(purlins_per_slope=0, knee_braces_level_1=False, knee_braces_eave=False, joist_spacing_m=1.2192)
+    doc = with_frame_parameters(purlins_per_slope=0, knee_braces_level_1=False, knee_braces_eave=False, joist_spacing_m=1.2192)
     # A 4'-0" bay with 48" spacing has no joists.
     grid = entities_of(doc, "TimberGrid")[0]
     width = entities_of(doc, "Footprint")[0]["width_m"]
@@ -374,7 +360,7 @@ def test_random_parameters_never_raise(spacing, purlins, leg, level_1, eave, pit
     """TIMBER-002 §10 test 11: the rule is defined for every supported parameter set."""
     doc = fresh_fixture()
     entities_of(doc, "GableRoof")[0]["pitch_rad"] = pitch
-    doc = _with(doc, joist_spacing_m=spacing, purlins_per_slope=purlins, knee_brace_leg_m=leg, knee_braces_level_1=level_1, knee_braces_eave=eave)
+    doc = with_frame_parameters(doc, joist_spacing_m=spacing, purlins_per_slope=purlins, knee_brace_leg_m=leg, knee_braces_level_1=level_1, knee_braces_eave=eave)
     result = validate_value(doc)
     assert result.valid, result.to_dict()
     assert Counter(m.member_role for m in RULE.generate(result.snapshot)) == _expected_counts(doc)

@@ -11,9 +11,11 @@ import pytest
 from hypothesis import settings as hypothesis_settings
 
 # TEST-001 §7: deterministic by default (no flakes in CI); `HYPOTHESIS_PROFILE=thorough` for long runs.
-# Tests that set max_examples explicitly keep their own counts.
-hypothesis_settings.register_profile("ci", derandomize=True, max_examples=40, print_blob=True)
-hypothesis_settings.register_profile("thorough", derandomize=False, max_examples=500, print_blob=True)
+# Tests that set max_examples explicitly keep their own counts. No per-example deadline: wall-clock time
+# under load is not a property of the code, and a first call can take several times longer than a second,
+# which Hypothesis reports as a flaky DeadlineExceeded (TEST-002, seen in test_robustness.py).
+hypothesis_settings.register_profile("ci", derandomize=True, max_examples=40, print_blob=True, deadline=None)
+hypothesis_settings.register_profile("thorough", derandomize=False, max_examples=500, print_blob=True, deadline=None)
 hypothesis_settings.load_profile(os.environ.get("HYPOTHESIS_PROFILE", "ci"))
 
 from homedesign.model.limits import RECORD_SCHEMA_VERSIONS
@@ -132,3 +134,33 @@ def regenerate(doc: dict[str, Any]) -> dict[str, Any]:
     frame["member_ids"] = [m["id"] for m in members]
     frame["connection_ids"] = [c["id"] for c in connections]
     return doc
+
+
+# --- frames built from the fixture (shared by test_timber, test_connections, test_budgets) ------
+
+FT = 0.3048
+
+
+def with_frame_parameters(doc: dict[str, Any] | None = None, **parameters: Any) -> dict[str, Any]:
+    """The doc (by default the fixture) with these frame parameters, regenerated."""
+    doc = doc or fresh_fixture()
+    entities_of(doc, "FrameSystem")[0]["parameters"].update(parameters)
+    return regenerate(doc)
+
+
+def grid_doc(nx: int, ny: int, bay_ft: float = 12) -> dict[str, Any]:
+    """The fixture on an nx × ny station grid of equal bays, regenerated."""
+    doc = fresh_fixture()
+    footprint = entities_of(doc, "Footprint")[0]
+    footprint["width_m"] = (nx - 1) * bay_ft * FT
+    footprint["depth_m"] = (ny - 1) * bay_ft * FT
+    grid = entities_of(doc, "TimberGrid")[0]
+    grid["x_lines"] = [{"id": f"x{i}", "fraction": i / (nx - 1)} for i in range(nx)]
+    grid["y_lines"] = [{"id": f"y{j}", "fraction": j / (ny - 1)} for j in range(ny)]
+    return regenerate(doc)
+
+
+def largest_doc() -> dict[str, Any]:
+    """TIMBER-002 §5.3: 7 × 7 stations over 80' × 80', 12" joists, 4 purlins, both brace planes
+    (1,216 members, 2,110 connections)."""
+    return with_frame_parameters(grid_doc(7, 7, bay_ft=80 / 6), joist_spacing_m=0.3048, purlins_per_slope=4)

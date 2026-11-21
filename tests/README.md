@@ -13,3 +13,8 @@ node tests/vectors/jcs/generate.mjs   # from the repository root; Node is needed
 ```
 
 A change to the Reference House 001 fingerprint means the fixture or the canonicalization changed, and requires a decision.
+
+## `vectors/scenarios/` — the golden scenario record (TEST-001 §6)
+
+- `reference-house-001.json` — fingerprints per revision, and each step's status, error code, and `impacted_artifacts`, for the Reference House 001 scenario in `backend/tests/integration/scenario.py`: every command over HTTP, rejections, a retry, a conflict, undo, and a replay. Since TEST-002 §6 it includes a joist spacing that keeps the joist count (plan and mesh only), eave braces off, `joist-beam` to Joist hanger (an unpriced line, no total), and a rejection of each new command: 18 steps and 12 revisions.
+- Regenerate with `uv run python tests/integration/golden.py` from `backend/`, and review the diff (D055). Do not edit it by hand.
