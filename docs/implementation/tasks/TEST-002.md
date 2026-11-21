@@ -413,17 +413,17 @@ Items 6–8 are approved and recorded as **[D063](../../product/decisions/D063-v
 - The 40 sequences took 4 min 5 s to 4 min 58 s alone while the draws were being tuned. With the final draws they took 6 min 55 s with four other runs sharing the machine; the whole backend suite took 7 min 16 s in `scripts/check.sh`.
 - The run has more invalid cases than before (23, against 4–8), because the targeted edits draw more data.
 
-*Budgets*: the local values are from `scripts/check.sh` on the development machine. The CI values are from run CI_RUN.
+*Budgets*: the local values are from `scripts/check.sh` on the development machine. The CI values are from [run 44863521724](https://github.com/pursuingpareto/home-design/actions/runs/44863521724) of the pull request, where all four jobs passed. Every CI value is under half its ceiling (D063). The closest is the largest-case commit, at 44%: shared runners are about twice as slow as the development machine for the backend, so that check is the one most likely to cross half first.
 
 | Check | Ceiling | Local | CI |
 |---|---|---|---|
 | Largest payload, reference house (`timber_schedule`) | 262,144 B | 173,680 B (66%) | the same (deterministic) |
 | Largest payload, largest case (`timber_schedule`) | 2,000,000 B | 1,135,194 B (57%) | the same |
-| Preview, reference house, width edit | 1 s | 123 ms (12%) | CI_PREVIEW_REF |
-| Preview, largest case, width edit | 5 s | 876 ms (18%) | CI_PREVIEW_LARGE |
-| Commit with all four artifacts derived, largest case | 5 s | 1,078 ms (22%) | CI_COMMIT |
-| Browser: Create until views and schedule | 10 s | 1,320 ms (13%) | CI_CREATE |
-| Browser: Preview until the dialog | 3 s | 256 ms (9%) | CI_DIALOG |
+| Preview, reference house, width edit | 1 s | 123 ms (12%) | 253 ms (25%) |
+| Preview, largest case, width edit | 5 s | 876 ms (18%) | 1,790 ms (36%) |
+| Commit with all four artifacts derived, largest case | 5 s | 1,078 ms (22%) | 2,211 ms (44%) |
+| Browser: Create until views and schedule | 10 s | 1,320 ms (13%) | 1,298 ms (13%) |
+| Browser: Preview until the dialog | 3 s | 256 ms (9%) | 510 ms (17%) |
 
 The estimate is 2,786 B with a book pricing every line and 2,588 B with none. The other payloads match ART-002 §17 exactly.
 
