@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, awaiting approval (2026-11-21). Nothing here is decided. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Proposal 1, the slice boundary, is decided: Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -38,9 +38,9 @@ The roadmap names assemblies, with walls and openings "as needed". These are the
 
 Infill framing (studs, girts) belongs to themes A and B: it can be a layer of the stud-infill definition, or generated members (§8).
 
-## 3. Scope options (proposal 1)
+## 3. Scope options (proposal 1, decided as D064)
 
-**Option 1: "Perimeter infill walls with openings"** (recommended): themes A–E for walls only.
+**Option 1: "Perimeter infill walls with openings"**, **chosen ([D064](../../product/decisions/D064-vs02b-slice-boundary.md), 2026-11-21)**: themes A–E for walls only.
 
 - Two wall definitions, walls in every perimeter bay of both stories, user-placed doors and windows, net-area quantities, per-layer estimate lines, and declared thermal and moisture values.
 - Roof, floor, and ceiling assemblies (also FR-05) wait for a later slice.
@@ -57,7 +57,7 @@ Infill framing (studs, girts) belongs to themes A and B: it can be a layer of th
 - Completes FR-05's list and allows whole-envelope figures.
 - Much larger: roof assemblies need decisions about what spans the purlins (decking, common rafters, or panels), and floor assemblies about the joists and the foundation, which is not modeled.
 
-Proposals 2–9 assume Option 1. If another option is chosen, they are revisited before they are discussed.
+Proposals 2–9 build on Option 1.
 
 ## 4. Cross-cutting concerns (any option)
 
@@ -73,7 +73,7 @@ Proposals 2–9 assume Option 1. If another option is chosen, they are revisited
 
 | # | Proposal | Mark | Section |
 |---|---|---|---|
-| 1 | Slice boundary: Option 1, 2, or 3 | **Your judgment** | §3 |
+| 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | Where walls go, and how they relate to the frame | **Your judgment** | §7 |
 | 3 | Infill framing: studs and girts as layer quantities or as members | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
@@ -89,7 +89,7 @@ Proposals 2–9 assume Option 1. If another option is chosen, they are revisited
 | 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
 | 15 | Traceability and budgets in D063's form | Routine | §6 |
 
-**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together once 1 is settled. Approved judgment items are recorded as decisions, starting at D064.
+**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1.
 
 ## 6. Routine items (10–15)
 
@@ -265,7 +265,7 @@ This item comes last because its content depends on proposals 2–8.
 
 ## 15. Draft acceptance criteria (pending approval)
 
-These assume Option 1 and the recommendations of proposals 2–15. They change with the decisions, and are confirmed only when the product owner approves them.
+These follow Option 1 (D064) and assume the recommendations of proposals 2–15. They change with the decisions, and are confirmed only when the product owner approves them.
 
 - **AC2b-01: version 3 only.** New projects are Reference House 001 v3 (version 3). Version 2 snapshots are rejected with `UNSUPPORTED_SCHEMA_VERSION` (D055).
 - **AC2b-02: assembly definitions.**
