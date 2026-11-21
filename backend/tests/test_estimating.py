@@ -12,7 +12,7 @@ import pytest
 from collections import Counter
 
 from api_support import unit_for
-from conftest import FIXTURE, REPO_ROOT, VECTORS_PATH
+from conftest import FIXTURE, REPO_ROOT, VECTORS_PATH, grid_doc, with_frame_parameters
 from homedesign.estimating import amount_minor, build_estimate, validate_price_book
 from homedesign.model import codes
 from homedesign.model.connections import CONNECTION_TYPES, DESCRIPTIONS, FAMILIES
@@ -21,7 +21,7 @@ from homedesign.model.schema import Snapshot
 from homedesign.project import CommandRejected, NotFound, ProjectService
 from homedesign.project.postgres import PostgresStore
 from homedesign.timber.schedule import build_schedule, select_schedule, reference_length
-from test_connections import _expected_counts, _grid_doc, _with
+from test_connections import _expected_counts
 from test_project import ACTOR, KEY, T0, at, cid, create, envelope, preview_commit, width_cmd
 
 SCHEMA = json.loads((REPO_ROOT / "docs/architecture/schemas/artifacts.v1.schema.json").read_text())
@@ -150,7 +150,7 @@ def _class_counts(doc) -> Counter:
 @pytest.mark.parametrize("nx", range(2, 8))
 @pytest.mark.parametrize("ny", range(2, 8))
 def test_schedule_counts_follow_the_formula_for_every_grid(nx, ny):
-    doc = _grid_doc(nx, ny)
+    doc = grid_doc(nx, ny)
     assert _class_counts(doc) == _expected_counts(doc)
 
 
@@ -160,13 +160,13 @@ def test_schedule_counts_follow_the_formula_for_every_grid(nx, ny):
      {"knee_brace_leg_m": 0.4572}, {"knee_brace_leg_m": 1.2192}, {"knee_braces_level_1": False}],
 )
 def test_schedule_counts_at_parameter_bounds(parameters):
-    doc = _with(**parameters)
+    doc = with_frame_parameters(**parameters)
     assert _class_counts(doc) == _expected_counts(doc)
 
 
 def test_zero_cases_omit_their_rows():
     """§13 test 10: both brace planes off and zero purlins leave no brace or purlin-rafter rows."""
-    schedule = build_schedule(select_schedule(Snapshot.model_validate(_with(purlins_per_slope=0, knee_braces_level_1=False, knee_braces_eave=False))))
+    schedule = build_schedule(select_schedule(Snapshot.model_validate(with_frame_parameters(purlins_per_slope=0, knee_braces_level_1=False, knee_braces_eave=False))))
     classes = {a["junction_class"] for a in schedule["connection_aggregates"]}
     assert classes == {"joist-beam", "post-beam", "post-sill", "rafter-foot", "rafter-peak"}
     validate_against("TimberSchedulePayload", schedule)
