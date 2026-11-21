@@ -75,7 +75,7 @@ Proposals 2–9 build on Option 1.
 |---|---|---|---|
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
-| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); sub-questions 3a–3e under discussion | **Your judgment** | §8 |
+| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a settled (separate wall framing), 3a′ and 3b–3e under discussion | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
@@ -139,13 +139,18 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 ### 8.2 Open sub-questions
 
-**3a. Where studs and girts live, and what the wall layer toggles.**
+**3a. Where studs and girts live.** **Settled (2026-11-21): separate wall framing.**
 
-- **Recommendation:** studs and girts are `TimberMember` records with two new roles, `STUD` and `GIRT`:
-  - they appear in `plan2d`, `mesh3d`, and the timber schedule with the rest of the frame, so the builder's counts and lengths come from the one member inventory (one aggregate per role and section, artifacts.md §7);
-  - their sections and materials come from `member_defaults`, one entry per role (D039), so `SetMemberSection` works for them (D040);
-  - the **wall layer** is the walls' layer build-ups (plaster, bales, sheathing, insulation, and so on). A **"Walls" switch** in both views turns that layer off to expose the studs and girts behind it, as D062's Connections switch hides markers. It is on by default and remembered per browser. It changes display only; schedules are unaffected.
-- **Alternative:** a separate infill-framing record kind owned by each wall, listed in the assembly schedule rather than the timber schedule, and hidden together with the walls. It keeps dimensional lumber out of the heavy-timber schedule, but gives the builder two framing lists.
+- **Chosen:** studs and girts are a **separate wall-framing record kind owned by each wall**, not `TimberMember` records. They are generated with their wall, listed in the assembly schedule (counts and lengths for the builder) rather than the timber schedule, and drawn with the walls.
+- **Why:** dimensional infill framing stays out of the heavy-timber schedule, its member rule, and its connection catalog.
+- **Consequences:**
+  - the frame is unchanged: 193 members and 312 connections, the `vs02-frame-1` rule, and its oracle;
+  - each piece's section and spacing come from its wall's assembly definition (the framing layer, proposal 4), not from `member_defaults`, so `SetMemberSection` does not apply to them;
+  - stud and girt counts and lengths are in the assembly schedule (proposal 7), so the builder has two framing lists: heavy timber in the timber schedule, wall framing in the assembly schedule;
+  - `Connection` joins two `TimberMember` records (D054), so wall framing gets no connection records unless 3e decides otherwise.
+- **Not adopted:** `STUD` and `GIRT` member roles in the timber frame, with a single "Walls" switch over the build-ups only.
+
+**3a′. Seeing the framing inside a wall.** Because wall framing is drawn with the walls, the build-up layers (plaster, bales, sheathing, insulation) would cover it. *Recommendation:* the wall layer has **two display switches** in both views: **"Wall layers"** (the build-ups) and **"Wall framing"** (studs and girts). Turning wall layers off shows the framing; turning both off shows the bare timber frame. Both are on by default, remembered per browser, and display only: schedules are unaffected (as D062's Connections switch). *Alternative:* one "Walls" switch over both, with the build-ups drawn translucent so the framing shows through.
 
 **3b. Where girts go.** Which walls get girts (every perimeter wall, or stud infill walls only), how many per story, at what height, and whether straw bale walls get them. In-plane bale infill is usually laid without intermediate girts, because a girt interrupts the courses. Recommendation to follow once 3a is settled.
 
@@ -159,10 +164,10 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 - **Proposal 6 (openings):** if 3d generates opening framing, opening commands regenerate members, so the recommendation that they are routine is revisited (dependencies.md §4).
 - **Proposal 5 (assembly choice):** switching the wall assembly then adds or removes every stud, which is already consequential.
-- **Proposal 7 (quantities):** stud and girt counts and lengths come from the timber schedule; the assembly schedule keeps areas and the non-framing layers.
+- **Proposal 7 (quantities):** stud and girt counts and lengths are in the assembly schedule (3a), beside the wall areas and the non-framing layers.
 - **Proposal 9 (design intent):** girt positions and sections, stud spacing and section, and opening framing sizes need values for Reference House 001 v3.
-- **§4, §15, §16:** members are no longer unchanged at 193. The member generation rule, its ECMAScript oracle, conformance, and the member count change. The task breakdown and AC2b-03 are revised once 3a–3e are settled.
-- **Proposal 15 (budgets):** more members enlarge `plan2d`, `mesh3d`, and the schedule.
+- **§15, §16:** the timber frame stays at 193 members and 312 connections (3a), but walls gain generated framing, with its own keys, conformance, and oracle coverage. The task breakdown and AC2b-03 are revised once 3a–3e are settled.
+- **Proposal 15 (budgets):** wall framing enlarges `plan2d`, `mesh3d`, and the assembly schedule.
 
 ## 9. Proposal 4: assembly definitions (Your judgment)
 
