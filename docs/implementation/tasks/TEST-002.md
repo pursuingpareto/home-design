@@ -1,6 +1,6 @@
 # TEST-002 — VS-02 traceability, the golden scenario's new commands, and budgets
 
-**Status:** Drafted, awaiting approval (2026-11-20). Proposals are in §12; items 6–8 are approved and recorded as [D063](../../product/decisions/D063-vs02-traceability-and-budgets.md), and item 9 is settled (all four choices confirmed). The routine items 1–5 await approval.  
+**Status:** Approved (2026-11-20); implementation in progress. All nine §12 proposals are approved: items 6–8 are recorded as [D063](../../product/decisions/D063-vs02-traceability-and-budgets.md), and item 9 confirmed UI-003's four choices.  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes.  
 **Slice:** VS-02  
 **Depends on:** `MODEL-005`, `TIMBER-002`, `CONN-001`, `ART-002`, `DEP-001`, and `UI-003` (all done; `main` at `e632578`). Merges on its own, with CI passing ([vs-02.md](../acceptance-tests/vs-02.md) §12.2).  
@@ -308,7 +308,7 @@ Any change that is not a confirmation is a small UI change of its own, outside t
 
 ## 12. Proposals for approval
 
-**Routine** (they follow from TEST-001 §4–8, D055, D061, and vs-02.md §12.2):
+**Routine** (they follow from TEST-001 §4–8, D055, D061, and vs-02.md §12.2). **All five approved together (2026-11-20).**
 
 1. **Golden scenario** (§6): steps 7a–7e after the beam section change and before the retry: joist spacing 0.62 m (plan and mesh only), eave braces off (members and connections retired), `joist-beam` → Joist hanger (unpriced, never 0), and two rejections; revisions 1–8 unchanged; the record regenerated and reviewed as an additive diff.
 2. **Sequences** (§7): draws biased toward the joist spacing that keeps the count and the same-dimension section, and a deterministic outcome gate under the `ci` profile; still 40 sequences.
