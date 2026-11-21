@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D063. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D065. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -63,6 +63,8 @@
 - D061: [VS-02 selector contents](D061-vs02-selector-contents.md) — selections hold exactly what each builder reads, after its projections (AC2-04 governs over D056 item 4's lists); builders take their selection as their only model input; DEP-001 carries the if-and-only-if impact property; refines D056 (implemented, DEP-001).
 - D062: [VS-02 browser connections](D062-vs02-browser-connections.md) — one marker glyph per shared point; 3D markers drawn over members, with one Connections switch; connection types in a new Connections tab; the editor's catalog generated from the backend; resolves D060's coincident-marker point (implemented, UI-003).
 - D063: [VS-02 traceability and budgets](D063-vs02-traceability-and-budgets.md) — a separate VS-02 matrix with one row per criterion bullet and the VS-02 contract checks, checked against vs-02.md's IDs and wording; payload size ceilings of 256 KiB (reference house) and 2 MB (largest supported case); time ceilings gated in CI at about 5–10× today (implemented, TEST-002).
+- D064: [VS-02b slice boundary](D064-vs02b-slice-boundary.md) — perimeter infill walls with openings: straw bale and stud infill definitions, walls, openings, net-area quantities and estimate lines, declared thermal and moisture values; roof, floor, and ceiling assemblies wait for a later slice.
+- D065: [VS-02b wall placement](D065-vs02b-wall-placement.md) — generated walls in every perimeter bay of each story, in-plane infill on the grid line (20 for Reference House 001); no gable ends, interior walls, or user-placed walls in VS-02b.
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 
