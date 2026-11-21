@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Proposal 1, the slice boundary, is decided: Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -74,7 +74,7 @@ Proposals 2–9 build on Option 1.
 | # | Proposal | Mark | Section |
 |---|---|---|---|
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
-| 2 | Where walls go, and how they relate to the frame | **Your judgment** | §7 |
+| 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
 | 3 | Infill framing: studs and girts as layer quantities or as members | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
@@ -89,7 +89,7 @@ Proposals 2–9 build on Option 1.
 | 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
 | 15 | Traceability and budgets in D063's form | Routine | §6 |
 
-**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1.
+**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2.
 
 ## 6. Routine items (10–15)
 
@@ -100,11 +100,11 @@ Proposals 2–9 build on Option 1.
 14. **Browser.** Walls and openings are drawn in 2D and 3D, and their commands use the existing preview and apply flows: consequential commands through the confirmation dialog, routine ones applied with undo (UI-002, UI-003). Tabs, colors, and labels are set in the UI task file.
 15. **Traceability and budgets.** A separate `vs-02b-traceability.md`, one row per criterion bullet, checked against this file's IDs and wording, as D063 set for VS-02. The VS-01 and VS-02 matrices stay enforced. D063's per-payload ceilings (256 KiB for the reference house, 2 MB for the largest supported case) apply to every payload, new ones included, and D063's stop-and-report rule applies if a measurement passes half a ceiling.
 
-## 7. Proposal 2: where walls go (Your judgment)
+## 7. Proposal 2: where walls go (decided as D065)
 
 **Question:** which surfaces get walls, how a wall relates to the frame, and whether walls are generated or placed.
 
-**Recommendation:**
+**Recommendation**, **approved as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md), 2026-11-21)**:
 
 - **Where:** one wall in every **perimeter bay of each story**: between two adjacent grid stations on a perimeter grid line, from the story's lower datum to its upper one (Level 0: `z0` to `z1`; Level 1: `z1` to `z_eave`). The count is `2 · ((nx − 1) + (ny − 1))` per story. Reference House 001: 10 per story, **20 walls**, with reference areas of 1,200 sf on Level 0 and 1,080 sf on Level 1 (2,280 sf, 211.8189312 m²; from the D025 dimensions).
 - **Relation to the frame: in-plane infill.** The wall fills the bay between posts, and its reference plane is the grid line, as member axes are (D058). The definition's layers are placed symmetrically about it unless proposal 9's build-ups say otherwise. "Infill" is the word D008, the vision, and the roadmap use.
