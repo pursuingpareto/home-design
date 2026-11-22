@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D071. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D072. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -71,6 +71,7 @@
 - D069: [VS-02b openings](D069-vs02b-openings.md) — user-placed doors and windows with rough-opening dimensions; fit over the framed opening (inside the wall, clear of braces, no overlap); changes that break fit are rejected; removed with their wall and listed; routine commands.
 - D070: [VS-02b quantities and outputs](D070-vs02b-quantities-and-outputs.md) — reference wall areas net of rough openings; a new `assembly_schedule` artifact with walls, openings, and wall framing per piece; walls and framing in both views; layers priced per m², framing per meter; openings unpriced; amends D027 when implemented.
 - D071: [VS-02b thermal and moisture values](D071-vs02b-thermal-moisture-values.md) — nullable declared layer values with provenance; framing layer with framing material and fill; per-wall framing fraction from the generated framing and a parallel-path U-value (`parallel-path-1`) beside the center-of-cavity value; opaque walls only; gated on known values; moisture recorded only; extends D067.
+- D072: [Reference House 001 v3 design intent](D072-reference-house-001-v3-design-intent.md) — illustrative straw bale (default) and stud infill build-ups and framing (2×6 at 24", one mid-height girt, 2×8 headers, 4'-0" jack threshold, 1½" × 18" bucks); 1 door and 19 windows (2 with jacks); 2,016 sf net; property values `null`; extends D025 and D053.
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 
