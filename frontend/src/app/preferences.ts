@@ -38,3 +38,30 @@ export function writeShowConnections(show: boolean): void {
     // ignore: the preference is a convenience only
   }
 }
+
+/** A display switch remembered per browser: on unless stored "off" (D062, D066). */
+function readSwitch(key: string): boolean {
+  try {
+    return localStorage.getItem(key) !== "off";
+  } catch {
+    return true;
+  }
+}
+
+function writeSwitch(key: string, show: boolean): void {
+  try {
+    localStorage.setItem(key, show ? "on" : "off");
+  } catch {
+    // ignore: the preference is a convenience only
+  }
+}
+
+export const WALL_LAYERS_KEY = "homedesign.wallLayers";
+export const WALL_FRAMING_KEY = "homedesign.wallFraming";
+
+/** The "Wall layers" switch for both views (D066, UI-004 §6): on by default. */
+export const readShowWallLayers = () => readSwitch(WALL_LAYERS_KEY);
+export const writeShowWallLayers = (show: boolean) => writeSwitch(WALL_LAYERS_KEY, show);
+/** The "Wall framing" switch for both views (D066, UI-004 §6): on by default. */
+export const readShowWallFraming = () => readSwitch(WALL_FRAMING_KEY);
+export const writeShowWallFraming = (show: boolean) => writeSwitch(WALL_FRAMING_KEY, show);

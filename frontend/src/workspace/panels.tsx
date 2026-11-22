@@ -12,6 +12,7 @@ import type { Highlight, Pick } from "../views/highlight";
 import { Mesh3dView } from "../views/Mesh3dView";
 import { pairViews, type ViewState } from "../views/pairing";
 import { Plan2dView } from "../views/Plan2dView";
+import type { WallDetails } from "../views/walls";
 import { lineLabel, lineQuantity, type ConnectionCatalog } from "./lineItems";
 import { statusOf, type RevisionData } from "./useRevisionData";
 
@@ -67,13 +68,29 @@ function stateText(state: ViewState): string {
   }
 }
 
-function ConnectionsSwitch({ show, onChange }: { show: boolean; onChange: (show: boolean) => void }) {
+/** The display switches for both views (D062, D066): display only, remembered per browser. */
+export interface ViewSwitches {
+  connections: boolean;
+  wallLayers: boolean;
+  wallFraming: boolean;
+}
+
+function Switches({ show, onChange }: { show: ViewSwitches; onChange: (patch: Partial<ViewSwitches>) => void }) {
   return (
     <div className="view-options">
       <label>
-        <input type="checkbox" role="switch" checked={show} onChange={(e) => onChange(e.target.checked)} /> Connections
+        <input type="checkbox" role="switch" checked={show.connections} onChange={(e) => onChange({ connections: e.target.checked })} /> Connections
       </label>
-      <span className="hint">Markers are symbols of fixed size; they show no joint size or capacity.</span>
+      <label>
+        <input type="checkbox" role="switch" checked={show.wallLayers} onChange={(e) => onChange({ wallLayers: e.target.checked })} /> Wall layers
+      </label>
+      <label>
+        <input type="checkbox" role="switch" checked={show.wallFraming} onChange={(e) => onChange({ wallFraming: e.target.checked })} /> Wall framing
+      </label>
+      <span className="hint">
+        Markers are symbols of fixed size; they show no joint size or capacity. Wall layers are drawn opaque. Turn them off to see the framing; turn both off to see the timber
+        frame.
+      </span>
     </div>
   );
 }
@@ -82,15 +99,18 @@ export function ViewsPanel({
   data,
   units,
   highlight,
-  showConnections,
-  onShowConnections,
+  show,
+  onShow,
+  details,
   onSelect,
 }: {
   data: RevisionData;
   units: UnitSystem;
   highlight: Highlight;
-  showConnections: boolean;
-  onShowConnections: (show: boolean) => void;
+  show: ViewSwitches;
+  onShow: (patch: Partial<ViewSwitches>) => void;
+  /** Joins from the same revision's assembly schedule (D086). */
+  details: WallDetails;
   onSelect: OnSelect;
 }) {
   const pairing = pairViews(data.plan, data.mesh);
@@ -98,7 +118,7 @@ export function ViewsPanel({
   if (pairing.kind === "unpaired") {
     return (
       <section className="views" aria-label="Plan and 3D views" data-testid="views-unpaired">
-        <ConnectionsSwitch show={showConnections} onChange={onShowConnections} />
+        <Switches show={show} onChange={onShow} />
         <div className="view-placeholder" data-testid="plan-state">
           2D plan: {pairing.mismatch ? "Waiting for matching revisions…" : stateText(pairing.plan)}
         </div>
@@ -110,9 +130,27 @@ export function ViewsPanel({
   }
   return (
     <section className="views" aria-label="Plan and 3D views" data-testid="views-paired" data-source-revision-id={pairing.revisionId}>
-      <ConnectionsSwitch show={showConnections} onChange={onShowConnections} />
-      <Plan2dView plan={pairing.plan} units={units} highlight={highlight} showConnections={showConnections} onSelect={toggle} />
-      <Mesh3dView mesh={pairing.mesh} units={units} highlight={highlight} showConnections={showConnections} onSelect={toggle} />
+      <Switches show={show} onChange={onShow} />
+      <Plan2dView
+        plan={pairing.plan}
+        units={units}
+        highlight={highlight}
+        showConnections={show.connections}
+        showWallLayers={show.wallLayers}
+        showWallFraming={show.wallFraming}
+        details={details}
+        onSelect={toggle}
+      />
+      <Mesh3dView
+        mesh={pairing.mesh}
+        units={units}
+        highlight={highlight}
+        showConnections={show.connections}
+        showWallLayers={show.wallLayers}
+        showWallFraming={show.wallFraming}
+        details={details}
+        onSelect={toggle}
+      />
       <p className="source">
         Both views: revision <code>{shortId(pairing.revisionId)}</code>
         {pairing.head ? " (head)" : " (historical)"}

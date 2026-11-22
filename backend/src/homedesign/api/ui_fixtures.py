@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
+from homedesign.assemblies.schedule import build_assembly_schedule, select_assembly_schedule
 from homedesign.dependencies.registry import ARTIFACT_TYPES
 from homedesign.model.canonical import canonical_snapshot
 from homedesign.project import MemoryStore, ProjectService
@@ -46,10 +47,44 @@ BOOK = {
 }
 
 
-def build() -> dict[str, Any]:
-    svc = ProjectService(MemoryStore(), token_key=KEY, project_id_factory=lambda: PROJECT_ID)
+# UI-004 §14: test-only declared values, so the browser's thermal display is tested on figures the backend's
+# own builder computes. Nothing in a project or the template changes; no value here describes a real material.
+TEST_ONLY = {"source": "TEST ONLY: UI-004 fixture value", "date": "2026-11-22", "note": "Not a property of any material."}
+TEST_DECLARED = {
+    # layer name: (conductivity W/(m·K), resistance m²·K/W, vapor permeance kg/(Pa·s·m²)); one of the first two
+    "lime-plaster": (0.7, None, 1.5e-10),
+    "bales": (0.06, None, 5.0e-10),
+    "clay-plaster": (None, 0.03, 2.0e-10),
+}
+TEST_FRAMING_CONDUCTIVITY = 0.12
+
+
+def _declared(value: float | None) -> dict[str, Any] | None:
+    return None if value is None else {"value": value} | TEST_ONLY
+
+
+def declared_schedule(snapshot: Any) -> dict[str, Any]:
+    """The created house's assembly schedule with test-only declared values on every layer and framing material."""
+    selection = select_assembly_schedule(snapshot)
+    for definition in selection["definitions"]:
+        for layer in definition["layers"]:
+            k, r, permeance = TEST_DECLARED[layer["name"]]
+            layer["thermal_conductivity_w_m_k"] = _declared(k)
+            layer["thermal_resistance_m2_k_w"] = _declared(r)
+            layer["vapor_permeance_kg_pa_s_m2"] = _declared(permeance)
+            if layer["framing"] is not None:
+                layer["framing"]["framing_thermal_conductivity_w_m_k"] = _declared(TEST_FRAMING_CONDUCTIVITY)
+    return build_assembly_schedule(selection)
+
+
+def _created(project_id: str = PROJECT_ID) -> tuple[ProjectService, str]:
+    svc = ProjectService(MemoryStore(), token_key=KEY, project_id_factory=lambda: project_id)
     created = svc.create_project({"command_id": "00000000-0000-4000-8000-0000000000c1", "type": "CreateReferenceProject", "args": {}}, actor_id=ACTOR_ID, now=NOW)
-    head = created.revision_id
+    return svc, created.revision_id
+
+
+def build() -> dict[str, Any]:
+    svc, head = _created()
     art = lambda kind: svc.artifacts.get_artifact(PROJECT_ID, kind, now=NOW)  # noqa: E731
     envelopes = {kind: art(kind) for kind in ARTIFACT_TYPES}
     snapshot = json.loads(canonical_snapshot(svc.get_revision(PROJECT_ID, head)))
@@ -71,6 +106,30 @@ def build() -> dict[str, Any]:
         "type": "SetConnectionType", "args": {"junction_class": "joist-beam", "connection_type": "JOIST_HANGER"},
     }
     type_preview = svc.preview(PROJECT_ID, type_command, actor_id=ACTOR_ID, now=NOW).body
+    # UI-004 §14: SetWallAssembly to stud infill, and re-identifying y1 (removed, then a new line at 0.5).
+    systems = [e for e in snapshot["entities"] if e["kind"] == "WallSystem"]
+    stud = next(e for e in snapshot["entities"] if e["kind"] == "AssemblyDefinition" and e["family"] == "STUD_INFILL")
+    assert systems and systems[0]["default_assembly_definition_id"] != stud["id"]
+    assembly_command = {
+        "command_id": "00000000-0000-4000-8000-0000000000c5", "project_id": PROJECT_ID, "base_revision_id": head,
+        "type": "SetWallAssembly", "args": {"assembly_definition_id": stud["id"]},
+    }
+    assembly_preview = svc.preview(PROJECT_ID, assembly_command, actor_id=ACTOR_ID, now=NOW).body
+    grid = next(e for e in snapshot["entities"] if e["kind"] == "TimberGrid")
+    y_first, y_last = grid["y_lines"][0], grid["y_lines"][-1]
+    reidentify_command = {
+        "command_id": "00000000-0000-4000-8000-0000000000c6", "project_id": PROJECT_ID, "base_revision_id": head,
+        "type": "SetTimberGrid",
+        "args": {"x_lines": grid["x_lines"], "y_lines": [y_first, {"fraction": 0.5}, y_last]},
+    }
+    reidentify_preview = svc.preview(PROJECT_ID, reidentify_command, actor_id=ACTOR_ID, now=NOW).body
+    declared = declared_schedule(svc.get_revision(PROJECT_ID, head))
+    # The stud infill envelopes come from a second, identical project, so this one's head and history stay as captured.
+    studs, studs_head = _created()
+    token = studs.preview(PROJECT_ID, assembly_command, actor_id=ACTOR_ID, now=NOW).body["preview_token"]
+    studs.commit(PROJECT_ID, assembly_command, token, actor_id=ACTOR_ID, now=NOW)
+    assert studs_head == head
+    stud_infill_envelopes = {kind: studs.artifacts.get_artifact(PROJECT_ID, kind, now=NOW) for kind in ARTIFACT_TYPES}
     manifest = svc.artifacts.manifest(PROJECT_ID)
     with patch("homedesign.project.service.uuid.uuid4", return_value=uuid.UUID(PRICE_BOOK_ID)):  # random in production
         svc.set_price_book(PROJECT_ID, BOOK, actor_id=ACTOR_ID, now=NOW)
@@ -89,6 +148,16 @@ def build() -> dict[str, Any]:
         "frame_preview": frame_preview,
         "type_command": type_command,
         "type_preview": type_preview,
+        "assembly_command": assembly_command,
+        "assembly_preview": assembly_preview,
+        "stud_infill_envelopes": stud_infill_envelopes,
+        "reidentify_command": reidentify_command,
+        "reidentify_preview": reidentify_preview,
+        "assembly_schedule_declared": {
+            "_note": "TEST ONLY (UI-004 §14): the created house's assembly schedule payload, built by the backend's builder with "
+                     "test-only declared values on every layer and framing material. No project or template carries these values.",
+            "payload": declared,
+        },
     }
 
 

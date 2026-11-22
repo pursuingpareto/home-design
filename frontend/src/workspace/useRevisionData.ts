@@ -29,7 +29,7 @@ export interface RevisionData {
   plan: PlanEnvelope | null;
   mesh: MeshEnvelope | null;
   schedule: ScheduleEnvelope | null;
-  assemblies: AssemblyScheduleEnvelope | null; // read for its status only until UI-004 (D085)
+  assemblies: AssemblyScheduleEnvelope | null; // the assembly schedule panel, and the views' joins (UI-004 §7, §10; D086)
   estimate: EstimateEnvelope | null;
   snapshot: Snapshot | null; // head only: current parameter values for editing
   error: unknown;

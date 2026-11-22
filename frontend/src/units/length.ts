@@ -127,3 +127,12 @@ export function formatPitch(radians: number): string {
   const degrees = (radians * 180) / Math.PI;
   return `${rise}/12 (${degrees.toFixed(2)}°)`;
 }
+
+export const CUBIC_METERS_PER_CUBIC_FOOT = 0.028316846592; // 0.3048³, exact (D026)
+
+/** Display a volume: cubic feet to 0.1 ft³, or cubic meters to 0.01 m³. Display only (UI-004 §10). */
+export function formatVolume(cubicMeters: number, system: UnitSystem): string {
+  const value = system === "metric" ? cubicMeters : cubicMeters / CUBIC_METERS_PER_CUBIC_FOOT;
+  const [whole = "0", frac = "0"] = value.toFixed(system === "metric" ? 2 : 1).split(".");
+  return `${whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}.${frac} ${system === "metric" ? "m³" : "ft³"}`;
+}

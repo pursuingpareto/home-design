@@ -1,9 +1,44 @@
-/** A view's legend (UI-003 §4, §5.1): the roles and connection types present, read from the payload. */
+/**
+ * A view's legend (UI-003 §4, §5.1; UI-004 §6): the roles, connection types, wall layers (or "Walls" in
+ * the plan), and framing groups present, read from the payload. What a switch hides is omitted.
+ */
 
-import { CONNECTION_TYPE_LABEL, familyOf, ROLE_LABEL, ROLES, type ConnectionType, type Role } from "../display/labels";
-import { css, MIXED_COLOR, ROLE_COLOR, TYPE_COLOR } from "../display/palette";
+import {
+  CONNECTION_TYPE_LABEL,
+  familyOf,
+  FRAMING_GROUP_LABEL,
+  FRAMING_GROUPS,
+  LAYER_FUNCTION_LABEL,
+  LAYER_FUNCTIONS,
+  ROLE_LABEL,
+  ROLES,
+  type ConnectionType,
+  type FramingGroup,
+  type LayerFunction,
+  type Role,
+} from "../display/labels";
+import { css, FRAMING_COLOR, LAYER_COLOR, MIXED_COLOR, ROLE_COLOR, TYPE_COLOR, WALL_BAND_COLOR } from "../display/palette";
 
-export function Legend({ testId, roles, types, mixed }: { testId: string; roles: ReadonlySet<Role>; types: readonly ConnectionType[]; mixed: boolean }) {
+export function Legend({
+  testId,
+  roles,
+  types,
+  mixed,
+  walls = false,
+  layers = new Set(),
+  framing = new Set(),
+}: {
+  testId: string;
+  roles: ReadonlySet<Role>;
+  types: readonly ConnectionType[];
+  mixed: boolean;
+  /** The plan's wall bands are shown. */
+  walls?: boolean;
+  /** The 3D view's layer functions shown. */
+  layers?: ReadonlySet<LayerFunction>;
+  /** The framing groups shown. */
+  framing?: ReadonlySet<FramingGroup>;
+}) {
   return (
     <ul className="legend" data-testid={testId} aria-label="Legend">
       {ROLES.filter((r) => roles.has(r)).map((role) => (
@@ -24,6 +59,24 @@ export function Legend({ testId, roles, types, mixed }: { testId: string; roles:
           Several types at one point
         </li>
       )}
+      {walls && (
+        <li data-wall-legend="walls">
+          <span className="swatch" style={{ background: css(WALL_BAND_COLOR) }} aria-hidden="true" />
+          Walls
+        </li>
+      )}
+      {LAYER_FUNCTIONS.filter((f) => layers.has(f)).map((f) => (
+        <li key={f} data-layer-function={f}>
+          <span className="swatch" style={{ background: css(LAYER_COLOR[f]) }} aria-hidden="true" />
+          {LAYER_FUNCTION_LABEL[f]}
+        </li>
+      ))}
+      {FRAMING_GROUPS.filter((g) => framing.has(g)).map((g) => (
+        <li key={g} data-framing-group={g}>
+          <span className="swatch" style={{ background: css(FRAMING_COLOR[g]) }} aria-hidden="true" />
+          {FRAMING_GROUP_LABEL[g]}
+        </li>
+      ))}
     </ul>
   );
 }

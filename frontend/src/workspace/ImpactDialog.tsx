@@ -7,15 +7,22 @@ import { ErrorNotice } from "../app/ErrorNotice";
 import { formatLength, type UnitSystem } from "../units/length";
 import { ARTIFACT_TYPES, type PreviewResponse, type Snapshot } from "../api/types";
 import { ARTIFACT_LABEL, typeLabel } from "../display/labels";
-import { describeDetail } from "./commands";
+import { DetailLine } from "./DetailLine";
 import { otherTabs, TAB_LABEL, TAB_OF_COMMAND } from "./editors/model";
 import type { FlowState } from "./useCommandFlow";
+import { recordLabel, snapshotLabels, type SnapshotLabels } from "./wallLabels";
 
 type Change = PreviewResponse["changes"][number];
 
-function displayValue(field: string, value: unknown, units: UnitSystem): string {
+function displayValue(field: string, value: unknown, units: UnitSystem, labels: SnapshotLabels): string {
   if (typeof value === "number" && field.endsWith("_m")) return formatLength(value, units);
   if (typeof value === "string" && field.startsWith("connection_defaults[")) return typeLabel(value);
+  // UI-004 §9.1: the definitions' family labels, and an added or removed opening's label.
+  if (typeof value === "string" && field === "default_assembly_definition_id") return labels.definition(value) ?? value;
+  if (field === "") {
+    const label = recordLabel(value, labels, units);
+    if (label) return label;
+  }
   if (value === null || value === undefined) return "—";
   const text = JSON.stringify(value);
   return text.length > 80 ? `${text.slice(0, 77)}…` : text;
@@ -48,6 +55,42 @@ export function artifactsText(impacted: readonly string[]): string {
   return `Updates: ${updates.join(", ")}.${unchanged.length > 0 ? ` Unchanged: ${unchanged.join(", ")}.` : ""}`;
 }
 
+/** The openings a preview removes (`changes` entries of kind Opening with `after: null`), in served order. */
+export function removedOpenings(preview: PreviewResponse): Change[] {
+  return preview.changes.filter((c) => c.entity_kind === "Opening" && c.field === "" && c.after === null);
+}
+
+/**
+ * D088: the openings an edit removes, by name and size, above Confirm. When every one goes with its wall
+ * (a grid edit), the text says so; otherwise (for example undoing an added opening) it says only that
+ * they are removed.
+ */
+function RemovedOpenings({ preview, labels, units }: { preview: PreviewResponse; labels: SnapshotLabels; units: UnitSystem }) {
+  const removed = removedOpenings(preview);
+  if (removed.length === 0) return null;
+  const goneWalls = new Set(preview.walls.removed.map((w) => w.id));
+  const withWalls = removed.every((c) => {
+    const wallId = (c.before as { wall_id?: string } | null)?.wall_id;
+    return wallId !== undefined && goneWalls.has(wallId);
+  });
+  const one = removed.length === 1;
+  const head = one
+    ? `This opening will be removed${withWalls ? " with its wall" : ""}. Undo restores it.`
+    : `These ${removed.length} openings will be removed${withWalls ? " with their walls" : ""}. Undo restores them.`;
+  return (
+    <div className="removed-openings" role="alert" data-testid="removed-openings">
+      <p>{head}</p>
+      <ul>
+        {removed.map((c) => (
+          <li key={c.entity_id} data-opening-id={c.entity_id}>
+            {labels.opening(c.entity_id) ?? recordLabel(c.before, labels, units) ?? c.entity_id}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function ImpactDialog({
   state,
   units,
@@ -63,6 +106,7 @@ export function ImpactDialog({
 }) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => heading.current?.focus(), [state.step]);
+  const labels = snapshotLabels(snapshot ?? null, units);
   if (state.step === "idle") return null;
 
   if (state.step === "applying") {
@@ -97,7 +141,7 @@ export function ImpactDialog({
           <ul data-testid="dialog-details">
             {details.map((d, i) => (
               <li key={i}>
-                <code>{d.path || "(document)"}</code>: {describeDetail(d)}
+                <DetailLine detail={d} labels={labels} />
               </li>
             ))}
           </ul>
@@ -144,8 +188,8 @@ export function ImpactDialog({
                 <tr key={c.key}>
                   <td>{c.kind}</td>
                   <td>{c.field || "(record)"}</td>
-                  <td>{displayValue(c.field, c.before, units)}</td>
-                  <td>{displayValue(c.field, c.after, units)}</td>
+                  <td>{displayValue(c.field, c.before, units, labels)}</td>
+                  <td>{displayValue(c.field, c.after, units, labels)}</td>
                 </tr>
               ))}
             </tbody>
@@ -156,6 +200,12 @@ export function ImpactDialog({
           <p data-testid="impact-connections">
             Connections: {preview.connections.added.length} added, {preview.connections.removed.length} removed, {preview.connections.updated.length} updated.
           </p>
+          <p data-testid="impact-walls">
+            Walls: {preview.walls.added.length} added, {preview.walls.removed.length} removed, {preview.walls.updated.length} updated.
+          </p>
+          <p data-testid="impact-wall-framing">
+            Wall framing: {preview.wall_framing.added.length} added, {preview.wall_framing.removed.length} removed, {preview.wall_framing.updated.length} updated.
+          </p>
           {/* DEP-001 §9.2: exactly the artifacts whose payload changes; the others are reused unchanged. */}
           <p data-testid="impact-artifacts">{artifactsText(preview.impacted_artifacts)}</p>
         </>
@@ -165,6 +215,7 @@ export function ImpactDialog({
           <li key={w.code}>{w.message}</li>
         ))}
       </ul>
+      {!preview.is_noop && <RemovedOpenings preview={preview} labels={labels} units={units} />}
       <div className="actions">
         {!preview.is_noop && (
           <button type="button" onClick={onConfirm} disabled={committing}>

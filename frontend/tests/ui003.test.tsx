@@ -271,10 +271,11 @@ function renderEditors(state?: ReturnType<typeof editorProps>["flow"]["state"]) 
 }
 
 describe("5. the Frame tab (§7.1)", () => {
-  it("lists the seven tabs in order", () => {
+  it("lists the tabs in order", () => {
+    // Eight since UI-004 added Walls (D087); this title is traced in vs-02-traceability.md (AC2-08.2).
     renderEditors();
-    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Footprint", "Stories", "Roof", "Grid", "Frame", "Sections", "Connections"]);
-    expect(Object.values(TAB_LABEL)).toEqual(["Footprint", "Stories", "Roof", "Grid", "Frame", "Sections", "Connections"]);
+    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Footprint", "Stories", "Roof", "Grid", "Frame", "Sections", "Connections", "Walls"]);
+    expect(Object.values(TAB_LABEL)).toEqual(["Footprint", "Stories", "Roof", "Grid", "Frame", "Sections", "Connections", "Walls"]);
   });
 
   it("shows the stored values and sends them exactly when untouched", async () => {

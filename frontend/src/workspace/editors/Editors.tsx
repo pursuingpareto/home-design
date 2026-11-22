@@ -3,18 +3,20 @@
  * conflict reloads; a tab is rebuilt from the stored values after its own command commits.
  */
 
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 
 import type { Command } from "../../api/types";
+import type { Selection } from "../selection";
 import { ConnectionsEditor } from "./ConnectionsEditor";
 import { FootprintEditor } from "./FootprintEditor";
 import { FrameEditor } from "./FrameEditor";
 import { GridEditor } from "./GridEditor";
-import { TAB_LABEL, TAB_OF_COMMAND, type TabId } from "./model";
+import { newOpeningOn, TAB_LABEL, TAB_OF_COMMAND, type TabId } from "./model";
 import { RoofEditor } from "./RoofEditor";
 import { SectionsEditor } from "./SectionsEditor";
 import type { EditorProps } from "./shared";
 import { StoriesEditor } from "./StoriesEditor";
+import { WallsEditor, type WallsFocus } from "./WallsEditor";
 
 const TABS = Object.keys(TAB_LABEL) as TabId[];
 
@@ -22,6 +24,8 @@ export interface EditorsProps extends EditorProps {
   /** Bumped per tab by the workspace after that tab's command commits. */
   versions: Partial<Record<TabId, number>>;
   onOpenPrices: (() => void) | null;
+  /** The workspace's selection: the Walls tab follows opening and wall picks (D087). */
+  selection?: Selection;
 }
 
 export function tabForCommand(command: Command): TabId | undefined {
@@ -30,6 +34,21 @@ export function tabForCommand(command: Command): TabId | undefined {
 
 export function Editors(props: EditorsProps) {
   const [active, setActive] = useState<TabId>("footprint");
+  // The Walls tab's current opening, kept here so it survives the tab's rebuild after a commit.
+  const [wallsFocus, setWallsFocus] = useState<WallsFocus>({ opening: null, wall: null });
+  const { selection, snapshot } = props;
+  useEffect(() => {
+    // A pick makes an opening current, or a wall the wall for a new opening; the active tab stays (D087).
+    if (selection?.kind === "opening") setWallsFocus({ opening: selection.id, wall: null });
+    else if (selection?.kind === "wall") setWallsFocus({ opening: null, wall: selection.id });
+  }, [selection]);
+  useEffect(() => {
+    // After an add commits and the head reloads, the new opening becomes current (UI-004 §8.2).
+    const pending = wallsFocus.pendingAdd;
+    if (!pending || !snapshot) return;
+    const added = newOpeningOn(snapshot, pending.wall, pending.before);
+    if (added) setWallsFocus({ opening: added, wall: null });
+  }, [snapshot, wallsFocus.pendingAdd]);
 
   function onKey(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
@@ -67,6 +86,7 @@ export function Editors(props: EditorsProps) {
           {tab === "frame" && <FrameEditor key={props.versions.frame ?? 0} {...props} />}
           {tab === "sections" && <SectionsEditor key={props.versions.sections ?? 0} {...props} />}
           {tab === "connections" && <ConnectionsEditor key={props.versions.connections ?? 0} {...props} />}
+          {tab === "walls" && <WallsEditor key={props.versions.walls ?? 0} {...props} focus={wallsFocus} onFocus={setWallsFocus} />}
         </div>
       ))}
     </section>

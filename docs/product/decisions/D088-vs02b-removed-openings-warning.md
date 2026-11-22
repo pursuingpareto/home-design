@@ -1,6 +1,6 @@
 # D088 — VS-02b browser: openings removed with their walls are listed above Confirm
 
-**Status:** Confirmed; not yet implemented ([UI-004](../../implementation/tasks/UI-004.md))  
+**Status:** Confirmed; implemented in VS-02b by [UI-004](../../implementation/tasks/UI-004.md) (2026-11-22)  
 **Date:** 2026-11-22  
 **Scope:** How the confirmation dialog shows the openings that a consequential edit removes with their walls. Approved as [UI-004](../../implementation/tasks/UI-004.md) §15 item 2.  
 **Applies:** [D069](D069-vs02b-openings.md)'s "a grid edit that removes the wall removes its openings and their framing, and the preview lists them", and AC2b-04's "Openings removed with their wall are listed in the preview".

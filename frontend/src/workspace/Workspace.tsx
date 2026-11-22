@@ -6,28 +6,38 @@ import { ApiError } from "../api/client";
 import type { CommitResponse, EstimatePayload } from "../api/types";
 import { useApp } from "../app/context";
 import { ErrorNotice } from "../app/ErrorNotice";
-import { readShowConnections, writeShowConnections } from "../app/preferences";
+import { readShowConnections, readShowWallFraming, readShowWallLayers, writeShowConnections, writeShowWallFraming, writeShowWallLayers } from "../app/preferences";
 import { href, navigate } from "../app/routing";
 import { undoCommand } from "./commands";
 import { Editors, tabForCommand } from "./editors/Editors";
 import type { TabId } from "./editors/model";
 import { ImpactDialog } from "./ImpactDialog";
-import { EstimatePanel, HistoryPanel, PreliminaryBanner, RevisionBar, SchedulePanel, ViewsPanel } from "./panels";
+import { AssemblySchedulePanel } from "./AssemblySchedulePanel";
+import { EstimatePanel, HistoryPanel, PreliminaryBanner, RevisionBar, SchedulePanel, ViewsPanel, type ViewSwitches } from "./panels";
 import { PriceBookForm } from "./PriceBookForm";
 import { useCommandFlow } from "./useCommandFlow";
 import { useRevisionData } from "./useRevisionData";
 import { highlightOf, sameSelection, type Selection } from "./selection";
+import { wallDetails } from "./wallLabels";
 
 export function Workspace({ projectId, revisionId }: { projectId: string; revisionId: string | null }) {
   const { api, units, signOut } = useApp();
   // One member or a set of connections (UI-003 §6).
   const [selection, setSelection] = useState<Selection>(null);
   const select = useCallback((next: Selection, toggle = true) => setSelection((current) => (toggle && sameSelection(current, next) ? null : next)), []);
-  // The "Connections" switch for both views, remembered per browser (D062).
-  const [showConnections, setShowConnectionsState] = useState(() => readShowConnections());
-  const setShowConnections = useCallback((show: boolean) => {
-    writeShowConnections(show);
-    setShowConnectionsState(show);
+  // The "Connections", "Wall layers", and "Wall framing" switches for both views, remembered per
+  // browser (D062, D066). Turning one off clears a selection of what it hides (UI-004 §6).
+  const [show, setShowState] = useState<ViewSwitches>(() => ({ connections: readShowConnections(), wallLayers: readShowWallLayers(), wallFraming: readShowWallFraming() }));
+  const setShow = useCallback((patch: Partial<ViewSwitches>) => {
+    if (patch.connections !== undefined) writeShowConnections(patch.connections);
+    if (patch.wallLayers !== undefined) writeShowWallLayers(patch.wallLayers);
+    if (patch.wallFraming !== undefined) writeShowWallFraming(patch.wallFraming);
+    setShowState((s) => ({ ...s, ...patch }));
+    setSelection((current) => {
+      if (patch.wallLayers === false && (current?.kind === "wall" || current?.kind === "opening")) return null;
+      if (patch.wallFraming === false && current?.kind === "pieces") return null;
+      return current;
+    });
   }, []);
   // The line items the price-book form was opened with; kept while the estimate is re-read after a save.
   const [priceItems, setPriceItems] = useState<EstimatePayload | null>(null);
@@ -48,7 +58,8 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
   // Connection descriptions come from the same revision's schedule (ART-002 §6.3, §9).
   const catalog = data.schedule?.status === "CURRENT" ? (data.schedule.payload?.connection_catalog ?? null) : null;
   const viewsRevision = data.plan?.source_revision_id ?? null;
-  const highlight = useMemo(() => highlightOf(selection, data.schedule, viewsRevision), [selection, data.schedule, viewsRevision]);
+  const highlight = useMemo(() => highlightOf(selection, data.schedule, viewsRevision, data.assemblies), [selection, data.schedule, viewsRevision, data.assemblies]);
+  const details = useMemo(() => wallDetails(data.assemblies, viewsRevision, units), [data.assemblies, viewsRevision, units]);
 
   const flow = useCommandFlow({
     api,
@@ -95,7 +106,7 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
       )}
       <ErrorNotice error={data.error instanceof ApiError && data.error.status === 404 ? null : data.error} />
       <div className="workspace-grid">
-        <ViewsPanel data={data} units={units} highlight={highlight} showConnections={showConnections} onShowConnections={setShowConnections} onSelect={select} />
+        <ViewsPanel data={data} units={units} highlight={highlight} show={show} onShow={setShow} details={details} onSelect={select} />
         <aside className="side">
           {/* Shown for the head route even while reloading, so typed input survives a conflict reload. */}
           {applied && (
@@ -126,6 +137,7 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
               units={units}
               flow={flow}
               versions={versions}
+              selection={selection}
               onApplied={(result, summary, base) => setApplied({ result, summary, base })}
               onOpenPrices={data.isHead && data.estimate?.payload && !priceItems ? () => setPriceItems(data.estimate?.payload ?? null) : null}
             />
@@ -158,6 +170,7 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
         </aside>
       </div>
       <SchedulePanel schedule={data.schedule} units={units} highlight={highlight} onSelect={select} />
+      <AssemblySchedulePanel assemblies={data.assemblies} units={units} highlight={highlight} onSelect={select} />
       <ImpactDialog state={flow.state} units={units} snapshot={data.snapshot} onConfirm={() => void flow.confirm()} onCancel={flow.cancel} />
     </main>
   );

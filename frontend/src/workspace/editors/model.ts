@@ -23,9 +23,9 @@ export function envelope<T extends string, A>(projectId: string, baseRevisionId:
 
 // --- tabs -------------------------------------------------------------------------------------------
 
-export type TabId = "footprint" | "stories" | "roof" | "grid" | "frame" | "sections" | "connections";
+export type TabId = "footprint" | "stories" | "roof" | "grid" | "frame" | "sections" | "connections" | "walls";
 
-/** The tabs, in order (UI-003 §7; D062: a Connections tab). */
+/** The tabs, in order (UI-003 §7; D062: a Connections tab; D087: a Walls tab). */
 export const TAB_LABEL: Record<TabId, string> = {
   footprint: "Footprint",
   stories: "Stories",
@@ -34,6 +34,7 @@ export const TAB_LABEL: Record<TabId, string> = {
   frame: "Frame",
   sections: "Sections",
   connections: "Connections",
+  walls: "Walls",
 };
 
 export const TAB_OF_COMMAND: Record<string, TabId | undefined> = {
@@ -45,6 +46,10 @@ export const TAB_OF_COMMAND: Record<string, TabId | undefined> = {
   AddSection: "sections",
   SetMemberSection: "sections",
   SetConnectionType: "connections",
+  SetWallAssembly: "walls",
+  AddOpening: "walls",
+  SetOpening: "walls",
+  RemoveOpening: "walls",
 };
 
 const TAB_OF_KIND: Partial<Record<Entity["kind"], TabId>> = {
@@ -54,6 +59,12 @@ const TAB_OF_KIND: Partial<Record<Entity["kind"], TabId>> = {
   GableRoof: "roof",
   Section: "sections",
   FrameSystem: "sections",
+  // UI-004 §8.3: wall records point to the Walls tab.
+  Opening: "walls",
+  WallSystem: "walls",
+  AssemblyDefinition: "walls",
+  Wall: "walls",
+  WallFramingPiece: "walls",
 };
 
 /** A `FrameSystem` path maps to a tab by its field (UI-003 §7.3); anything else stays on Sections. */
@@ -213,4 +224,54 @@ export function connectionCounts(snapshot: Snapshot): Record<string, number> {
   const counts: Record<string, number> = {};
   for (const c of entitiesOf(snapshot, "Connection")) counts[c.junction_class] = (counts[c.junction_class] ?? 0) + 1;
   return counts;
+}
+
+// --- walls (UI-004 §8) --------------------------------------------------------------------------------
+
+type Opening = Of<"Opening">;
+type Wall = Of<"Wall">;
+
+/** Walls in key order (code-unit order, D030), each with its openings by offset, then ID. */
+export function openingsByWall(snapshot: Snapshot): { wall: Wall; openings: Opening[] }[] {
+  const walls = entitiesOf(snapshot, "Wall").sort((a, b) => (a.generation_key < b.generation_key ? -1 : a.generation_key > b.generation_key ? 1 : 0));
+  const openings = entitiesOf(snapshot, "Opening");
+  return walls.map((wall) => ({
+    wall,
+    openings: openings.filter((o) => o.wall_id === wall.id).sort((a, b) => a.offset_m - b.offset_m || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)),
+  }));
+}
+
+/** A wall's length between its post axes, from the snapshot's `start_m` and `end_m`. */
+export function wallLength(wall: Wall): number {
+  return Math.hypot((wall.end_m[0] ?? 0) - (wall.start_m[0] ?? 0), (wall.end_m[1] ?? 0) - (wall.start_m[1] ?? 0));
+}
+
+/** "Center in wall" (UI-004 §8.2): an input helper, sent as computed and checked by the server. */
+export function centeredOffset(wallLengthM: number, widthM: number): number {
+  return (wallLengthM - widthM) / 2;
+}
+
+/** The post an offset is measured from (D080): a wall along X starts at its west post, along Y at its south post. */
+export function offsetOrigin(generationKey: string): "west" | "south" {
+  return generationKey.startsWith("wall/axis-y/") ? "south" : "west";
+}
+
+export interface OpeningValues {
+  width_m: number;
+  height_m: number;
+  sill_height_m: number;
+  offset_m: number;
+}
+
+export function setOpeningArgs(openingId: string, v: OpeningValues) {
+  return { opening_id: openingId, width_m: v.width_m, height_m: v.height_m, sill_height_m: v.sill_height_m, offset_m: v.offset_m };
+}
+
+export function addOpeningArgs(wallId: string, kind: Opening["opening_kind"], v: OpeningValues) {
+  return { wall_id: wallId, opening_kind: kind, width_m: v.width_m, height_m: v.height_m, sill_height_m: kind === "DOOR" ? 0 : v.sill_height_m, offset_m: v.offset_m };
+}
+
+/** The opening on `wallId` that is new since `before` (after an add commits, it becomes current). */
+export function newOpeningOn(snapshot: Snapshot, wallId: string, before: ReadonlySet<string>): string | null {
+  return entitiesOf(snapshot, "Opening").find((o) => o.wall_id === wallId && !before.has(o.id))?.id ?? null;
 }

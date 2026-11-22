@@ -1,6 +1,6 @@
 # D087 — VS-02b browser: a Walls tab, and openings chosen from the views
 
-**Status:** Confirmed; not yet implemented ([UI-004](../../implementation/tasks/UI-004.md))  
+**Status:** Confirmed; implemented in VS-02b by [UI-004](../../implementation/tasks/UI-004.md) (2026-11-22)  
 **Date:** 2026-11-22  
 **Scope:** Where the browser's wall controls live, and how an opening is chosen for editing. Approved as [UI-004](../../implementation/tasks/UI-004.md) §15 item 1, following [D062](D062-vs02-browser-connections.md)'s precedent of a new tab for new commands.
 

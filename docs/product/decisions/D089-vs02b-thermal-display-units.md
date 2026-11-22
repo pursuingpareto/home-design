@@ -1,6 +1,6 @@
 # D089 — VS-02b browser: thermal figures follow the units switch
 
-**Status:** Confirmed; not yet implemented ([UI-004](../../implementation/tasks/UI-004.md))  
+**Status:** Confirmed; implemented in VS-02b by [UI-004](../../implementation/tasks/UI-004.md) (2026-11-22)  
 **Date:** 2026-11-22  
 **Scope:** The units the browser uses to show the assembly schedule's thermal figures and declared thermal values. Approved as [UI-004](../../implementation/tasks/UI-004.md) §15 item 3.  
 **Applies:** [D071](D071-vs02b-thermal-moisture-values.md)'s figures, served in SI ([D026](D026-canonical-units-identity-persistence.md)); the per-browser units preference ([UI-001](../../implementation/tasks/UI-001.md) §7).

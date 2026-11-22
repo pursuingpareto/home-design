@@ -55,6 +55,11 @@ export const DETAIL_TEXT: Readonly<Record<string, string>> = {
   DUPLICATE_PRICE_KEY: "Duplicate price row",
   DANGLING_REFERENCE: "Refers to something that does not exist",
   UNSUPPORTED_VALUE: "Not supported",
+  // UI-004 §8.3: the opening fit and the girt fit (MODEL-006 §5.2).
+  OPENING_OUTSIDE_WALL: "The opening's framing does not fit inside the wall",
+  OPENING_CROSSES_BRACE: "The opening's framing meets a knee brace",
+  OPENINGS_OVERLAP: "The opening's framing overlaps another opening's",
+  GIRT_CROSSES_BRACE: "A girt would cross a knee brace",
 };
 
 /** A short human label for a detail code; the code itself stays visible for support. */

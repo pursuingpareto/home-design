@@ -70,6 +70,16 @@ figcaption { color: var(--muted); font-size: 0.85rem; display: flex; gap: 12px; 
 .plan2d .connection-glyph circle { stroke-width: 0.025; }
 .plan2d .connection-glyph.selected circle { stroke-width: 0.06; }
 .plan2d .connection-glyph text { font-weight: 600; pointer-events: none; }
+/* UI-004 §4: wall bands under the members, opening marks in their gaps, framing marks as symbols. */
+.plan2d .wall-band { cursor: pointer; stroke: #b6ab95; stroke-width: 0.015; }
+.plan2d .wall-band.selected { fill-opacity: 0.45; }
+.plan2d .opening-mark { cursor: pointer; }
+.plan2d .opening-mark polygon { stroke-width: 0.03; }
+.plan2d .opening-mark .glazing { stroke-width: 0.025; }
+.plan2d .opening-mark.selected polygon { stroke-width: 0.07; }
+.plan2d .framing-mark { cursor: pointer; }
+.plan2d .framing-mark line { stroke-width: 0.05; }
+.plan2d .framing-mark.selected line, .plan2d .framing-mark.related line { stroke-width: 0.09; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; list-style: none; padding: 0; margin: 6px 0; font-size: 0.8rem; color: var(--muted); }
 .legend li { display: flex; align-items: center; gap: 4px; }
 .swatch { display: inline-block; width: 14px; height: 6px; border-radius: 1px; }
@@ -125,3 +135,15 @@ figcaption { color: var(--muted); font-size: 0.85rem; display: flex; gap: 12px; 
 .saving { position: fixed; bottom: 16px; right: 16px; background: var(--fg); color: white; padding: 6px 12px; border-radius: 4px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .workspace-grid { grid-template-columns: minmax(0, 1fr) 400px; }
+
+/* UI-004 §8, §10: the Walls tab and the assembly schedule. */
+.walls-editor .buildup { margin: 4px 0 8px; }
+.walls-editor .opening-list { max-height: 240px; overflow: auto; border: 1px solid var(--line); padding: 4px 8px; }
+.walls-editor .opening-list h4 { margin: 6px 0 2px; font-size: 0.85rem; }
+.walls-editor .opening-list ul { list-style: none; margin: 0; padding: 0; }
+.walls-editor .opening-list button[aria-pressed="true"] { font-weight: 600; }
+.assembly-schedule .declared { color: var(--muted); font-size: 0.8rem; }
+.assembly-schedule tr.selected { background: #dbe9ff; }
+.assembly-schedule tr.related { background: #ffe3ee; }
+.assembly-schedule tr { cursor: pointer; }
+.removed-openings { border: 1px solid #e8590c; background: #fff4e6; padding: 6px 10px; }

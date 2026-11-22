@@ -4,7 +4,7 @@
  * cool or grey tones. Values are display choices only; a test keeps them pairwise distinct.
  */
 
-import type { ConnectionType, Role } from "./labels";
+import type { ConnectionType, FramingGroup, LayerFunction, Role } from "./labels";
 
 export const ROLE_COLOR: Record<Role, number> = {
   POST: 0x8a5a2b,
@@ -34,3 +34,24 @@ export const css = (hex: number) => `#${hex.toString(16).padStart(6, "0")}`;
 
 export type GlyphStyle = ConnectionType | "mixed";
 export const glyphColor = (style: GlyphStyle) => (style === "mixed" ? MIXED_COLOR : TYPE_COLOR[style]);
+
+// --- VS-02b walls (UI-004 §12, item 15): display choices, kept distinct from the colors above by a test.
+
+/** 3D wall layers, by function. */
+export const LAYER_COLOR: Record<LayerFunction, number> = {
+  FINISH: 0xe6dfd0,
+  SHEATHING: 0xb39b7d,
+  INSULATION: 0xf1e3a6,
+  FRAMING: 0xd6c08a,
+};
+
+/** Wall framing marks (plan) and boxes (3D), by group. */
+export const FRAMING_COLOR: Record<FramingGroup, number> = {
+  layout: 0x5c940d,
+  opening: 0x0b7285,
+  buck: 0xe03131,
+};
+
+/** The plan's wall bands, and the outline of an opening (plan and 3D). */
+export const WALL_BAND_COLOR = 0xddd5c4;
+export const OPENING_COLOR = 0x495057;
