@@ -179,21 +179,26 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 **3d. Framing at openings.** Whether doors and windows get generated framing, so that the stud and girt counts are complete.
 
-- **Recommendation: generated opening framing,** as wall-framing pieces of the opening's wall, regenerated whenever the wall or the opening changes:
+**Product owner direction (2026-11-21):** the framing must be **realistically buildable**, so **king and jack studs are included where required**. Eventually, "where required" is to **depend on the local building code**. The first recommendation (one edge stud per side, no jacks, no section offsets) is not adopted.
+
+- **Revised recommendation:** generated opening framing, as wall-framing pieces of the opening's wall, regenerated whenever the wall or the opening changes.
+  - **The opening's size is its rough opening:** `Opening` width and height (proposal 6) are rough-opening dimensions, the clear space the framing leaves. Unit sizes are not modeled.
   - **Stud infill walls:**
-    - **an edge stud on each side,** on the opening's side edge, continuous from the lower to the upper plane like any stud (3c), stopping at braces;
-    - **a header** across the opening at its head height, between the edge studs;
-    - **a rough sill** across the opening at its sill height, for windows only;
-    - **cripples:** a layout stud (3c) that falls inside the opening's width is replaced by a piece above the header and, for windows, a piece below the sill. A layout stud within 1e-6 m of an edge stud is dropped;
-    - **girts are cut at openings:** a girt that crosses an opening stops at its edge studs, so it becomes one piece on each side.
-  - **Straw bale walls:** a **buck** for each opening: two jambs on its side edges, a head, and, for windows, a sill, as wall-framing pieces.
-  - **Axes on datums, no sections:** every piece lies on the opening's edges in the wall's reference plane. **Jack studs, doubled studs, and header depths are not represented,** because two pieces side by side need an offset by the stud section, which D058 keeps out of geometry. An assumption line says so.
-  - **Example:** a 3'-0" window centered in a 12' stud infill bay at 24" (edges at 4'-6" and 7'-6") keeps the layout studs at 2', 4', 8', and 10', replaces the one at 6' with two cripples, and adds two edge studs, a header, and a rough sill. The mid-height girt becomes two pieces.
+    - **a jack stud on each side,** from the wall's lower plane to the underside of the header, its inner face on the rough-opening edge;
+    - **a king stud on each side,** outside the jack, continuous from the lower to the upper plane like any stud (3c), stopping at braces;
+    - **a header** across the opening between the kings, bearing on the jacks, its underside at the rough-opening head;
+    - **a rough sill** for windows, between the jacks at the rough-opening sill;
+    - **cripples:** a layout stud (3c) that falls between the kings is replaced by a piece from the header to the upper plane and, for windows, a piece from the lower plane to the rough sill. A layout stud that would overlap a king is dropped;
+    - **girts are cut at openings:** a girt that crosses an opening stops at its kings.
+  - **"Where required" in VS-02b:** every opening in a stud infill wall gets **one king and one jack on each side**. This is a **declared framing rule, versioned and named in the outputs, and not derived from any code**. It is the kind of rule that a jurisdiction-specific rule replaces later (for example more jacks for wider headers), once code editions and applicability are decided (open question 5) and versioned by location (overview.md, "Safety, reliability, and data requirements"). Outputs say the rule is not code-derived, and make no compliance claim (AC-08).
+  - **Sections now position wall framing:** a jack's axis is half a stud thickness outside the rough-opening edge, and a king's one and a half thicknesses; the header's depth sets the cripples' lower end. These offsets use the definition's stud and header sections (3a). This is a deliberate **exception to D058 for wall framing only**: D058 still holds for the timber frame, whose axes stay on datums. A change to the stud or header section therefore moves opening framing.
+  - **Header section:** a header has its own section in the definition's framing layer (design intent, proposal 9). It is one piece of that section; plies of a built-up header are not counted separately.
+  - **Straw bale walls:** a **buck** for each opening: two jambs, a head, and, for windows, a sill, on the rough-opening edges. No kings or jacks.
+  - **Example:** a 3'-0" window centered in a 12' stud infill bay at 24", with 1½"-thick studs, has its rough-opening edges at 4'-6" and 7'-6". Jacks are at 4'-5¼" and 7'-6¾", kings at 4'-3¾" and 7'-8¼". The layout studs at 2', 4', 8', and 10' stay, the one at 6' becomes two cripples, and the mid-height girt becomes two pieces.
 - **Alternatives:**
-  - **edge studs, header, and sill only,** with layout studs inside the opening simply removed: fewer pieces, but cripples are part of every real takeoff;
-  - **no opening framing,** with an assumption line: openings then change no framing, but the counts are incomplete, which §8.1's direction rules out;
-  - **king and jack pairs:** closer to practice, but needs section offsets (D058).
-- **Knock-on:** opening commands now regenerate wall framing, so proposal 6's recommendation that they are routine is revisited when proposal 6 is discussed. A girt is no longer an obstacle to an opening.
+  - **jacks only where a declared width threshold is exceeded** (a value in the definition): closer to "where required", but the threshold would be an invented number until a code module supplies it;
+  - **edge studs only, on datums** (the first recommendation): keeps D058 for wall framing, but is not buildable as drawn.
+- **Knock-on:** opening commands regenerate wall framing, so proposal 6's recommendation that they are routine is revisited. Proposal 6 also takes the rough-opening meaning of `Opening` dimensions, and its fit rule must leave room for kings and jacks inside the bay.
 
 **3e. Joints.** Whether studs and girts get `Connection` records. A girt-to-post joint is traditional joinery, and a new junction class needs a new catalog version with a traditional and an engineered type (D059). Stud ends are nailed, which the catalog has no type for. The alternative is no records for infill framing, with an assumption line, as D059 did for post splices.
 
