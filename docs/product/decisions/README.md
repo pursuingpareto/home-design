@@ -75,6 +75,7 @@
 - D073: [VS-02b wall system record](D073-vs02b-wall-system-record.md) — a new `WallSystem` record, referenced from `Building.wall_system_id`, holds the wall rule version, the project-wide default assembly (D068), and the lists of walls and openings; the frame record and rule are untouched (not yet implemented, MODEL-006).
 - D074: [VS-02b embedded layers](D074-vs02b-embedded-layers.md) — an assembly definition's layers are an ordered list of objects inside it, each with a slug `name` unique within the definition (the estimate key's `<layer>` token); no separate `Layer` record kind (not yet implemented, MODEL-006).
 - D075: [VS-02b declared property values](D075-vs02b-declared-property-values.md) — three nullable fields per layer (conductivity, resistance, vapor permeance), each `{value, source, date, note}` in SI; at most one thermal field per layer; the framing layer declares conductivities only; unknown is `null`, never 0 (not yet implemented, MODEL-006).
+- D076: [VS-02b framed-opening geometry](D076-vs02b-framed-opening-geometry.md) — the framed rectangle must not meet a brace axis or lie above it (kings may stop on a brace above the header); a stud-infill window's rough sill is part of it; kings, jacks, cripples, and rough sills take the stud section, with the header's depth vertical; refines D069 (not yet implemented, MODEL-006).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 

@@ -1,6 +1,6 @@
 # MODEL-006 — Model schema version 3: assemblies, walls, wall framing, and openings
 
-**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are discussed one at a time (item 1 approved as [D073](../../product/decisions/D073-vs02b-wall-system-record.md), item 2 as [D074](../../product/decisions/D074-vs02b-embedded-layers.md), item 3 as [D075](../../product/decisions/D075-vs02b-declared-property-values.md)), and routine items 6–13 can be approved together.  
+**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are discussed one at a time (item 1 approved as [D073](../../product/decisions/D073-vs02b-wall-system-record.md), item 2 as [D074](../../product/decisions/D074-vs02b-embedded-layers.md), item 3 as [D075](../../product/decisions/D075-vs02b-declared-property-values.md), item 4 as [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md)), and routine items 6–13 can be approved together.  
 **Owner module:** `model` (schema, validation, commands); `assemblies` (new package: the wall-rule registry and its interface, §7); `project` for the stored-data guard (§9.3)  
 **Slice:** VS-02b ([vs-02b.md](../acceptance-tests/vs-02b.md), agreed 2026-11-21)  
 **Depends on:** VS-02 (complete). Specified before `ASM-001`, but **merged together with it** on one branch (§10), as MODEL-005 and TIMBER-002 were.  
@@ -65,7 +65,7 @@ Since the two merge together (§10), MODEL-006's tests may use a stub rule until
 
 ## 4. Version 3 records
 
-`WallSystem` ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)), embedded layers ([D074](../../product/decisions/D074-vs02b-embedded-layers.md)), and the property-value fields ([D075](../../product/decisions/D075-vs02b-declared-property-values.md)) are decided. The framing fields assume the recommendations of judgment items 4–5 (§13). If an item is decided otherwise, this section changes with it.
+`WallSystem` ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)), embedded layers ([D074](../../product/decisions/D074-vs02b-embedded-layers.md)), and the property-value fields ([D075](../../product/decisions/D075-vs02b-declared-property-values.md)) are decided. The framing sections follow [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md); the supported ranges assume judgment item 5 (§13). If an item is decided otherwise, this section changes with it.
 
 ### 4.1 Changes at a glance
 
@@ -159,7 +159,7 @@ Since the two merge together (§10), MODEL-006's tests may use a stub rule until
 | `STUD` | `framing_material_id`, `framing_thermal_conductivity_w_m_k`, `stud_section_id`, `stud_spacing_m`, `girt_count`, `girt_section_id` (`null` when `girt_count` is 0), `header_section_id`, `jack_threshold_width_m` | `STUD_INFILL` |
 | `BUCK` | `framing_material_id`, `framing_thermal_conductivity_w_m_k`, `buck_section_id`, `girt_count` (always 0 in VS-02b, D066) | `STRAW_BALE` |
 
-- **Sections and materials** are ordinary `Section` and `Material` records. Kings, jacks, cripples, and rough sills take the stud section, and bucks the buck section (item 4c). Section labels stay unique (D049), which `ART-003`'s `wallframing.<kind>.<section label>` key relies on.
+- **Sections and materials** are ordinary `Section` and `Material` records. Kings, jacks, cripples, and rough sills take the stud section, and bucks the buck section ([D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md)). Section labels stay unique (D049), which `ART-003`'s `wallframing.<kind>.<section label>` key relies on.
 - **Catalog record:** a definition may be unreferenced (D038). VS-02b's template has exactly two, and no command edits them (D067).
 
 ### 4.4 `Wall` (generated)
@@ -232,11 +232,11 @@ For an opening with rough opening `[o, o + w] × [s, s + h]`, the **framed openi
 
 | Definition | `u0`, `u1` | `v1` | `v0` |
 |---|---|---|---|
-| Stud infill, width at most the jack threshold (+ε) | `o − t`, `o + w + t` (kings) | `s + h + d` (header) | `s − t` for a window (rough sill, item 4b, settled); `s` for a door |
+| Stud infill, width at most the jack threshold (+ε) | `o − t`, `o + w + t` (kings) | `s + h + d` (header) | `s − t` for a window (rough sill, [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md)); `s` for a door |
 | Stud infill, width above the threshold | `o − 2t`, `o + w + 2t` (jacks and kings) | `s + h + d` | as above |
 | Straw bale | `o − b`, `o + w + b` (buck jambs) | `s + h + b` (buck head) | `s − b` for a window (buck sill), `s` for a door |
 
-`t` is the stud section's in-plane thickness, `d` the header section's in-plane depth, and `b` the buck section's in-plane thickness (item 4c). A door has `s = 0` and no rough or buck sill.
+`t` is the stud section's in-plane thickness, `d` the header section's in-plane depth, and `b` the buck section's in-plane thickness ([D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md)). A door has `s = 0` and no rough or buck sill.
 
 Reference House 001 v3: a 3'-0" window centered in a 12' bay spans `u` from 4'-4½" to 7'-7½" in either family, and `v` up to 7'-7¼" (stud infill) or 7'-1½" (straw bale). A 5'-0" stud infill window, with jacks, spans 3'-3" to 8'-9".
 
@@ -245,7 +245,7 @@ Reference House 001 v3: a 3'-0" window centered in a 12' bay spans `u` from 4'-4
 | Check | Fails when | Code (stage 4) | `path`; `related_paths` |
 |---|---|---|---|
 | Inside the wall | `u0 < −ε`, `u1 > W + ε`, `v0 < −ε`, or `v1 > H + ε` | **`OPENING_OUTSIDE_WALL`** | The opening's `offset_m` (start side), `width_m` (end side), `height_m` (top), or `sill_height_m` (bottom); the footprint dimension and grid axis that set `W`, or the level fields that set `H`; the framing sections used; `WallSystem.default_assembly_definition_id` |
-| Clear of the braces | With the wall's brace plane on, the framed rectangle meets a knee-brace axis in its wall, or lies in the triangle above it (item 4a, settled: the rectangle rule) | **`OPENING_CROSSES_BRACE`** | The opening's `offset_m` (start brace) or `width_m` (end brace); `parameters.knee_brace_leg_m` and the plane's flag; as above for `W`, `H`, and the definition |
+| Clear of the braces | With the wall's brace plane on, the framed rectangle meets a knee-brace axis in its wall, or lies in the triangle above it ([D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md): the rectangle rule) | **`OPENING_CROSSES_BRACE`** | The opening's `offset_m` (start brace) or `width_m` (end brace); `parameters.knee_brace_leg_m` and the plane's flag; as above for `W`, `H`, and the definition |
 | No overlap | Two framed openings in one wall overlap by more than ε in both `u` and `v` | **`OPENINGS_OVERLAP`** | The later opening's `offset_m` (by ID order); the earlier opening's `offset_m` |
 | Girts below the braces | With the wall's brace plane on and `girt_count = n > 0`, the top girt `H · n / (n + 1)` is not below the brace feet `H − L` by more than ε | **`GIRT_CROSSES_BRACE`** | The definition's `layers[k].framing.girt_count`; the level's story height, `parameters.knee_brace_leg_m`, the plane's flag, and `WallSystem.default_assembly_definition_id`. Reported once per definition and level, not per wall |
 
@@ -425,7 +425,7 @@ Retiring version 2 breaks every existing test until walls are generated (vs-02b.
 | Browser | No new controls. A frame edit rejected for an opening shows its error in the editor that sent it, through the argument path; an `Opening` or `Wall` path falls back to the current tab | `UI-004` |
 | Release note | `scripts/dev.sh --reset` | — |
 
-**The golden scenario's grid step** (four 10' bays along X, after the width becomes 40') keeps the walls `x0-x1` and `x1-x2` on both long sides, with their windows still 4'-6" (3'-0" windows) or 3'-6" (5'-0" windows) from their start posts. It stays accepted under the rectangle rule (§13, item 4a, settled); the alternative would have rejected it.
+**The golden scenario's grid step** (four 10' bays along X, after the width becomes 40') keeps the walls `x0-x1` and `x1-x2` on both long sides, with their windows still 4'-6" (3'-0" windows) or 3'-6" (5'-0" windows) from their start posts. It stays accepted under the rectangle rule ([D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md)); the alternative would have rejected it.
 
 ## 11. Acceptance criteria and automated tests
 
@@ -464,10 +464,10 @@ Run on the merged branch, against the v3 fixture from `ASM-001`:
 1. ~~**Where walls and the wall default live** (§4.2): a new `WallSystem` record, referenced from `Building.wall_system_id`, holding the wall rule's version, D068's default, and the lists of walls and openings.~~ **Approved: [D073](../../product/decisions/D073-vs02b-wall-system-record.md)** (2026-11-21), as recommended. *Not adopted:* the same fields on `FrameSystem` or on `Building`.
 2. ~~**Layers inside their definition** (§4.3): `layers` is a list of objects inside `AssemblyDefinition`, each with a `name` unique within the definition.~~ **Approved: [D074](../../product/decisions/D074-vs02b-embedded-layers.md)** (2026-11-21), as recommended. *Not adopted:* `Layer` as its own record kind.
 3. ~~**Declared property values** (§4.3): three nullable fields per layer (`thermal_conductivity_w_m_k`, `thermal_resistance_m2_k_w`, `vapor_permeance_kg_pa_s_m2`), each a `DeclaredValue` `{value, source, date, note}`; at most one thermal field; conductivities only on the framing layer.~~ **Approved: [D075](../../product/decisions/D075-vs02b-declared-property-values.md)** (2026-11-21), as recommended. *Not adopted:* conductivity only; one provenance per layer.
-4. **Framed-opening geometry** (§5.1–5.2). D069 checks the framed opening against the brace axes, but D066 makes kings full-height studs that stop at braces, so "clear of the brace axes" has two readings. Three parts, settled one at a time and recorded together as one decision (D076) once all three are settled:
+4. **Framed-opening geometry** (§5.1–5.2). D069 checks the framed opening against the brace axes, but D066 makes kings full-height studs that stop at braces, so "clear of the brace axes" has two readings. Three parts, settled one at a time. **All three settled as recommended and recorded as [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md)** (2026-11-21):
    - **4a. Clearance to braces.** **Settled (2026-11-21): the rectangle rule, as recommended.** *Recommendation:* the framed opening is the rectangle from its bottom (`v0`) to the header top (`v1`), between the kings' outer faces, and must not meet either brace axis, including the triangle above it. Kings above the header may stop on a brace, like any stud (D066). This accepts windows under the braces when they are low enough. With the reference house's windows at their offsets, a bay can shrink to 8'-9" with the straw bale default (9'-4¼" with stud infill), so the golden scenario's 10' bays stay valid. *Alternative:* no part of a framed opening within a brace leg of either post, so every king is full height. Simpler to explain, but the same windows then need bays of at least 10'-7½" (the 3'-0" windows) and 11'-7½" (the 5'-0" windows), and the golden scenario's grid step (four 10' bays) is rejected.
    - **4b. The rough sill is part of a window's framed opening** in stud infill walls, as the buck sill is in straw bale walls. **Settled (2026-11-21): included, as recommended.** *Recommendation:* yes, so a window's sill must leave room for its rough sill (`s ≥ t`), and no rough sill is generated below the lower datum. D069 as written leaves it out. *Alternative:* D069 as written, with windows whose sill is under 1½" generating a rough sill below the floor datum.
-   - **4c. Sections and in-plane dimensions.** D066 and D067 name only stud, girt, header, and buck sections. *Recommendation:* kings, jacks, cripples, and rough sills take the stud section. A piece's in-plane dimension is its section's `actual_width_m` (studs, kings, jacks, cripples, rough sills, girts, and bucks, all 1½" on the reference house), except a header's, which is its `actual_depth_m` (7¼", vertical, as D066's "the header's depth sets the cripples' lower end" requires). *Alternative:* separate sections in the framing layer for kings, jacks, and rough sills, which D067 does not list.
+   - **4c. Sections and in-plane dimensions.** D066 and D067 name only stud, girt, header, and buck sections. **Settled (2026-11-21), as recommended.** *Recommendation:* kings, jacks, cripples, and rough sills take the stud section. A piece's in-plane dimension is its section's `actual_width_m` (studs, kings, jacks, cripples, rough sills, girts, and bucks, all 1½" on the reference house), except a header's, which is its `actual_depth_m` (7¼", vertical, as D066's "the header's depth sets the cripples' lower end" requires). *Alternative:* separate sections in the framing layer for kings, jacks, and rough sills, which D067 does not list.
 5. **Supported ranges for definition values** (§6.4). No document sets bounds for stud spacing or girt count, and no command can change definitions in VS-02b (D067). *Recommendation:* borrow the frame's analogous approved ranges, so that every generator input has a supported range, as D032 and MODEL-005 §5 did: stud spacing 12"–48" (the joist spacing range) and girt count 0–4 (the purlins-per-slope range). Thicknesses, sections, and the jack threshold get physical checks only. Openings get no size bounds beyond > 0 and the fit. *Alternative:* no supported ranges until definitions become editable. Simpler, but a hand-built snapshot could ask the rule for any number of studs.
 
 **Routine** (they follow from D041, D042, D046, D055, D065–D070, routine items 10–15 of vs-02b.md §6, and the MODEL-005 and CONN-001 patterns; they can be approved together, with record shapes following items 1–3):
