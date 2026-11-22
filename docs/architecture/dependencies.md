@@ -17,6 +17,10 @@ footprint, levels, overhang, member plan positions, connection plan positions ->
 footprint, levels, roof, member axes and section dimensions, connection locations -> mesh3d
 member lengths, sections, and materials, connection members -> timber_schedule
 timber_schedule (aggregates, connection aggregates, assumptions) + optional project price book -> preliminary_estimate
+wall plan positions and extents, opening gaps, wall framing plan positions -> plan2d (VS-02b, not yet implemented)
+wall geometry and layers, openings, wall framing axes and section dimensions -> mesh3d (VS-02b, not yet implemented)
+wall lengths, heights, and framing face areas, openings, wall framing lengths and sections, definitions in use -> assembly_schedule (VS-02b, not yet implemented)
+assembly_schedule (layer aggregates, framing aggregates, assumptions) -> preliminary_estimate (VS-02b, not yet implemented)
 ModelRevision + analysis inputs -> AnalysisResult (future)
 AnalysisResult + reviewed inputs -> ProfessionalApproval (future)
 ```
@@ -61,7 +65,7 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7, as
 
 `SetConnectionType` was added in VS-02 ([D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md), [CONN-001](../implementation/tasks/CONN-001.md)) within version `vs02-change-classes-1`, as D057 anticipated.
 
-VS-02b's `vs02b-change-classes-1` keeps every row of `vs02-change-classes-1` and adds the four wall commands. Until `ART-003`, the three opening commands and `SetWallAssembly` impact no artifact, which is exact: no payload reads walls, framing, or openings yet (MODEL-006 §10).
+VS-02b's `vs02b-change-classes-1` keeps every row of `vs02-change-classes-1` and adds the four wall commands. Until `ART-003`, the three opening commands and `SetWallAssembly` impact no artifact, which is exact: no payload reads walls, framing, or openings yet (MODEL-006 §10). With ART-003 (approved 2026-11-22, not yet implemented) they impact exactly the artifacts whose payloads they change; no wall edit impacts `timber_schedule`.
 
 - **Routine** commands may be committed without a preview, and the commit still validates fully. **Consequential** commands require a preview and a confirmation bound to it (§5).
 - A no-op never requires confirmation ([D045](../product/decisions/D045-no-op-commits.md)).
@@ -125,6 +129,8 @@ VS-02 examples ([DEP-001](../implementation/tasks/DEP-001.md) §8, measured on R
 - **A pitch-only roof edit:** `mesh3d`, `timber_schedule`, and `preliminary_estimate` are impacted; `plan2d` is reused, because rafters and purlins move only in `z`.
 - **An overhang-only roof edit:** `plan2d` and `mesh3d` only; no member moves.
 - **A price-book change:** no revision; only the head's estimate reads `STALE` and is recomputed on read.
+
+VS-02b examples ([ART-003](../implementation/tasks/ART-003.md) §8.3; approved 2026-11-22, not yet implemented; predicted from the selections and measured by the implementation, on Reference House 001 v3 with straw bale). An opening added, removed, or resized impacts `plan2d`, `mesh3d`, `assembly_schedule`, and `preliminary_estimate`. Moving an opening along its wall impacts only the two views, and changing only its sill height only `mesh3d`, because the schedule has no positions and the buck lengths are unchanged. `SetWallAssembly` impacts every artifact but `timber_schedule`. No wall edit impacts `timber_schedule`.
 
 ## 9. Observability
 
