@@ -1,6 +1,6 @@
 # MODEL-006 — Model schema version 3: assemblies, walls, wall framing, and openings
 
-**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are to be discussed one at a time, and routine items 6–13 can be approved together.  
+**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are discussed one at a time (item 1 approved as [D073](../../product/decisions/D073-vs02b-wall-system-record.md)), and routine items 6–13 can be approved together.  
 **Owner module:** `model` (schema, validation, commands); `assemblies` (new package: the wall-rule registry and its interface, §7); `project` for the stored-data guard (§9.3)  
 **Slice:** VS-02b ([vs-02b.md](../acceptance-tests/vs-02b.md), agreed 2026-11-21)  
 **Depends on:** VS-02 (complete). Specified before `ASM-001`, but **merged together with it** on one branch (§10), as MODEL-005 and TIMBER-002 were.  
@@ -65,7 +65,7 @@ Since the two merge together (§10), MODEL-006's tests may use a stub rule until
 
 ## 4. Version 3 records
 
-The shapes below assume the recommendations of judgment items 1–3 (§13). If an item is decided otherwise, this section changes with it.
+`WallSystem` is decided ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)). The other shapes assume the recommendations of judgment items 2–3 (§13). If an item is decided otherwise, this section changes with it.
 
 ### 4.1 Changes at a glance
 
@@ -73,7 +73,7 @@ The shapes below assume the recommendations of judgment items 1–3 (§13). If a
 |---|---|---|
 | Snapshot | `model_schema_version` becomes **3** | — |
 | `Building` | Adds `wall_system_id` (§4.2) | **2** |
-| `WallSystem` | New kind: the wall rule version, the project-wide default definition, and the lists of walls and openings (§4.2; item 1) | **1** |
+| `WallSystem` | New kind: the wall rule version, the project-wide default definition, and the lists of walls and openings (§4.2; [D073](../../product/decisions/D073-vs02b-wall-system-record.md)) | **1** |
 | `AssemblyDefinition` | New kind, a catalog record, with its `layers` (§4.3; items 2–3) | **1** |
 | `Wall` | New generated kind (§4.4) | **1** |
 | `WallFramingPiece` | New generated kind, one record per piece (§4.5) | **1** |
@@ -101,7 +101,7 @@ The shapes below assume the recommendations of judgment items 1–3 (§13). If a
 - **`default_assembly_definition_id`** is D068's project-wide default. Every wall takes it, as members take `member_defaults` (D039).
 - **`wall_ids`** lists every `Wall`, ascending by `generation_key` (D030), as `member_ids` lists members.
 - **`opening_ids`** lists every `Opening`, ascending by ID. Openings have no generation key, and ID order keeps the stage 2 check independent of geometry, so two openings at one offset are reported by the fit (§5), not as an order error.
-- **Why a new record** (item 1): the frame rule and `FrameSystem` stay untouched (D066), the wall rule gets a home for its version, and `ART-003`'s selectors have one record of wall inputs to read.
+- **Why a new record** ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)): the frame rule and `FrameSystem` stay untouched (D066), the wall rule gets a home for its version, and `ART-003`'s selectors have one record of wall inputs to read.
 
 ### 4.3 `AssemblyDefinition` and `Layer`
 
@@ -461,7 +461,7 @@ Run on the merged branch, against the v3 fixture from `ASM-001`:
 
 **Your judgment** (one at a time, in this order):
 
-1. **Where walls and the wall default live** (§4.2). *Recommendation:* a new `WallSystem` record, referenced from `Building.wall_system_id`, holding the wall rule's version, D068's default, and the lists of walls and openings. The frame and `vs02-frame-1` stay untouched (D066), and wall inputs sit in one record. *Alternatives:* (a) the same fields on `FrameSystem`, which avoids a new kind but changes the frame record that D066 left alone and mixes two rules' inputs; (b) fields on `Building`, which puts generated-record lists on the root record.
+1. ~~**Where walls and the wall default live** (§4.2): a new `WallSystem` record, referenced from `Building.wall_system_id`, holding the wall rule's version, D068's default, and the lists of walls and openings.~~ **Approved: [D073](../../product/decisions/D073-vs02b-wall-system-record.md)** (2026-11-21), as recommended. *Not adopted:* the same fields on `FrameSystem` or on `Building`.
 2. **Layers inside their definition** (§4.3). *Recommendation:* `layers` is a list of objects inside `AssemblyDefinition`, each with a `name` unique within the definition, as grid lines live inside `TimberGrid` with stable IDs. Definitions are fixed (D067), so a layer has no life apart from its definition, and the estimate key is `assembly.<label>.<name>`. *Alternative:* `Layer` as its own record kind (reserved in building-model.md §3.2), referenced by `layer_ids`. It gives each layer an ID for future editing commands, but needs ownership rules (each layer in exactly one definition) and adds 7 records to the template for no VS-02b use.
 3. **Declared property values** (§4.3). D071 says "a declared thermal conductivity or thermal resistance, and a vapor permeance, each nullable and each with provenance (source, date, and a note)". *Recommendation:* three nullable fields per layer, `thermal_conductivity_w_m_k`, `thermal_resistance_m2_k_w`, and `vapor_permeance_kg_pa_s_m2`, each a `DeclaredValue` `{value, source, date, note}` or `null`; at most one of the two thermal fields; the framing layer uses conductivities only (its fill on the layer, its framing material in `framing`). A resistance serves products rated as a whole, such as a bale rated per thickness. *Alternatives:* (a) conductivity only, which is simpler but cannot record a product's rated resistance; (b) one provenance per layer for all its values, which is shorter but cannot say that two values came from different sources.
 4. **Framed-opening geometry** (§5.1–5.2). D069 checks the framed opening against the brace axes, but D066 makes kings full-height studs that stop at braces, so "clear of the brace axes" has two readings. Three parts:
