@@ -1,6 +1,7 @@
 # D070 — VS-02b quantities and outputs: reference areas, an assembly schedule, framing per piece
 
 **Status:** Confirmed  
+**Refined by:** [D082](D082-vs02b-framing-layer-fill-quantity.md): the framing layer's fill is quantified net of framing and priced per m².  
 **Date:** 2026-11-21  
 **Scope:** How VS-02b measures wall quantities, which artifact reports them, how the views show walls, and how the estimate prices them. Approved as proposal 7 of the [VS-02b scope proposal](../../implementation/acceptance-tests/vs-02b.md) (§12), as revised for [D066](D066-vs02b-wall-framing.md) and [D069](D069-vs02b-openings.md).  
 **Amends, when implemented:** [D027](D027-vs01-artifact-dtos.md) and artifacts.md §1 and §3 (a fifth artifact type; the manifest's "all four" becomes five), and artifacts.md §8.2 (price-book units gain `m2`).
