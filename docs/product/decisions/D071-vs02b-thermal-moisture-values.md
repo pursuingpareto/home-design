@@ -3,6 +3,7 @@
 **Status:** Confirmed  
 **Date:** 2026-11-21  
 **Scope:** What property data VS-02b assembly layers record, and what is computed from it. Approved as proposal 8 of the [VS-02b scope proposal](../../implementation/acceptance-tests/vs-02b.md) (§13), as revised to the product owner's direction.  
+**Refined by:** [D084](D084-vs02b-no-surface-air-films.md): `parallel-path-1` adds no surface air films.  
 **Extends:** [D067](D067-vs02b-assembly-definitions.md) (the framing layer gets two materials).
 
 ## Product owner direction
