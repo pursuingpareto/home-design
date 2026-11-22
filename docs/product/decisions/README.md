@@ -74,6 +74,7 @@
 - D072: [Reference House 001 v3 design intent](D072-reference-house-001-v3-design-intent.md) — illustrative straw bale (default) and stud infill build-ups and framing (2×6 at 24", one mid-height girt, 2×8 headers, 4'-0" jack threshold, 1½" × 18" bucks); 1 door and 19 windows (2 with jacks); 2,016 sf net; property values `null`; extends D025 and D053.
 - D073: [VS-02b wall system record](D073-vs02b-wall-system-record.md) — a new `WallSystem` record, referenced from `Building.wall_system_id`, holds the wall rule version, the project-wide default assembly (D068), and the lists of walls and openings; the frame record and rule are untouched (not yet implemented, MODEL-006).
 - D074: [VS-02b embedded layers](D074-vs02b-embedded-layers.md) — an assembly definition's layers are an ordered list of objects inside it, each with a slug `name` unique within the definition (the estimate key's `<layer>` token); no separate `Layer` record kind (not yet implemented, MODEL-006).
+- D075: [VS-02b declared property values](D075-vs02b-declared-property-values.md) — three nullable fields per layer (conductivity, resistance, vapor permeance), each `{value, source, date, note}` in SI; at most one thermal field per layer; the framing layer declares conductivities only; unknown is `null`, never 0 (not yet implemented, MODEL-006).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 

@@ -1,6 +1,6 @@
 # MODEL-006 — Model schema version 3: assemblies, walls, wall framing, and openings
 
-**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are discussed one at a time (item 1 approved as [D073](../../product/decisions/D073-vs02b-wall-system-record.md), item 2 as [D074](../../product/decisions/D074-vs02b-embedded-layers.md)), and routine items 6–13 can be approved together.  
+**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are discussed one at a time (item 1 approved as [D073](../../product/decisions/D073-vs02b-wall-system-record.md), item 2 as [D074](../../product/decisions/D074-vs02b-embedded-layers.md), item 3 as [D075](../../product/decisions/D075-vs02b-declared-property-values.md)), and routine items 6–13 can be approved together.  
 **Owner module:** `model` (schema, validation, commands); `assemblies` (new package: the wall-rule registry and its interface, §7); `project` for the stored-data guard (§9.3)  
 **Slice:** VS-02b ([vs-02b.md](../acceptance-tests/vs-02b.md), agreed 2026-11-21)  
 **Depends on:** VS-02 (complete). Specified before `ASM-001`, but **merged together with it** on one branch (§10), as MODEL-005 and TIMBER-002 were.  
@@ -65,7 +65,7 @@ Since the two merge together (§10), MODEL-006's tests may use a stub rule until
 
 ## 4. Version 3 records
 
-`WallSystem` ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)) and embedded layers ([D074](../../product/decisions/D074-vs02b-embedded-layers.md)) are decided. The property-value fields assume the recommendation of judgment item 3 (§13). If an item is decided otherwise, this section changes with it.
+`WallSystem` ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)), embedded layers ([D074](../../product/decisions/D074-vs02b-embedded-layers.md)), and the property-value fields ([D075](../../product/decisions/D075-vs02b-declared-property-values.md)) are decided. The framing fields assume the recommendations of judgment items 4–5 (§13). If an item is decided otherwise, this section changes with it.
 
 ### 4.1 Changes at a glance
 
@@ -74,7 +74,7 @@ Since the two merge together (§10), MODEL-006's tests may use a stub rule until
 | Snapshot | `model_schema_version` becomes **3** | — |
 | `Building` | Adds `wall_system_id` (§4.2) | **2** |
 | `WallSystem` | New kind: the wall rule version, the project-wide default definition, and the lists of walls and openings (§4.2; [D073](../../product/decisions/D073-vs02b-wall-system-record.md)) | **1** |
-| `AssemblyDefinition` | New kind, a catalog record, with its `layers` inside it (§4.3; [D074](../../product/decisions/D074-vs02b-embedded-layers.md), item 3) | **1** |
+| `AssemblyDefinition` | New kind, a catalog record, with its `layers` inside it (§4.3; [D074](../../product/decisions/D074-vs02b-embedded-layers.md), [D075](../../product/decisions/D075-vs02b-declared-property-values.md)) | **1** |
 | `Wall` | New generated kind (§4.4) | **1** |
 | `WallFramingPiece` | New generated kind, one record per piece (§4.5) | **1** |
 | `Opening` | New user-authored kind (§4.6) | **1** |
@@ -147,10 +147,10 @@ Since the two merge together (§10), MODEL-006's tests may use a stub rule until
 | `function` | `FINISH` \| `SHEATHING` \| `INSULATION` \| `FRAMING` | D067's examples. Exactly one layer is `FRAMING`, and only it has `framing` |
 | `material_id` | UUID of a `Material` | The layer's material. For the framing layer, the **fill** (D071): cellulose between studs, or the bales themselves |
 | `thickness_m` | number | Through the wall |
-| `thermal_conductivity_w_m_k`, `thermal_resistance_m2_k_w`, `vapor_permeance_kg_pa_s_m2` | `DeclaredValue` or `null` | D071; shape is item 3 |
+| `thermal_conductivity_w_m_k`, `thermal_resistance_m2_k_w`, `vapor_permeance_kg_pa_s_m2` | `DeclaredValue` or `null` | D071; shape is [D075](../../product/decisions/D075-vs02b-declared-property-values.md) |
 | `framing` | `StudFraming`, `BuckFraming`, or `null` | Non-null exactly on the `FRAMING` layer |
 
-**`DeclaredValue`** (item 3): `{"value": number, "source": string, "date": "YYYY-MM-DD", "note": string | null}`. The unit is fixed by the field name, in SI (D026): W/(m·K), m²·K/W, and kg/(Pa·s·m²). Unknown is `null`, never 0 (D071). A layer declares a conductivity **or** a resistance, not both. The framing layer declares conductivities only, because its two paths are computed from the fill's and the framing material's conductivities over the layer's thickness (D071).
+**`DeclaredValue`** ([D075](../../product/decisions/D075-vs02b-declared-property-values.md)): `{"value": number, "source": string, "date": "YYYY-MM-DD", "note": string | null}`. The unit is fixed by the field name, in SI (D026): W/(m·K), m²·K/W, and kg/(Pa·s·m²). Unknown is `null`, never 0 (D071). A layer declares a conductivity **or** a resistance, not both. The framing layer declares conductivities only, because its two paths are computed from the fill's and the framing material's conductivities over the layer's thickness (D071).
 
 **Framing** (D066, D067, D071):
 
@@ -463,7 +463,7 @@ Run on the merged branch, against the v3 fixture from `ASM-001`:
 
 1. ~~**Where walls and the wall default live** (§4.2): a new `WallSystem` record, referenced from `Building.wall_system_id`, holding the wall rule's version, D068's default, and the lists of walls and openings.~~ **Approved: [D073](../../product/decisions/D073-vs02b-wall-system-record.md)** (2026-11-21), as recommended. *Not adopted:* the same fields on `FrameSystem` or on `Building`.
 2. ~~**Layers inside their definition** (§4.3): `layers` is a list of objects inside `AssemblyDefinition`, each with a `name` unique within the definition.~~ **Approved: [D074](../../product/decisions/D074-vs02b-embedded-layers.md)** (2026-11-21), as recommended. *Not adopted:* `Layer` as its own record kind.
-3. **Declared property values** (§4.3). D071 says "a declared thermal conductivity or thermal resistance, and a vapor permeance, each nullable and each with provenance (source, date, and a note)". *Recommendation:* three nullable fields per layer, `thermal_conductivity_w_m_k`, `thermal_resistance_m2_k_w`, and `vapor_permeance_kg_pa_s_m2`, each a `DeclaredValue` `{value, source, date, note}` or `null`; at most one of the two thermal fields; the framing layer uses conductivities only (its fill on the layer, its framing material in `framing`). A resistance serves products rated as a whole, such as a bale rated per thickness. *Alternatives:* (a) conductivity only, which is simpler but cannot record a product's rated resistance; (b) one provenance per layer for all its values, which is shorter but cannot say that two values came from different sources.
+3. ~~**Declared property values** (§4.3): three nullable fields per layer (`thermal_conductivity_w_m_k`, `thermal_resistance_m2_k_w`, `vapor_permeance_kg_pa_s_m2`), each a `DeclaredValue` `{value, source, date, note}`; at most one thermal field; conductivities only on the framing layer.~~ **Approved: [D075](../../product/decisions/D075-vs02b-declared-property-values.md)** (2026-11-21), as recommended. *Not adopted:* conductivity only; one provenance per layer.
 4. **Framed-opening geometry** (§5.1–5.2). D069 checks the framed opening against the brace axes, but D066 makes kings full-height studs that stop at braces, so "clear of the brace axes" has two readings. Three parts:
    - **4a. Clearance to braces.** *Recommendation:* the framed opening is the rectangle from its bottom (`v0`) to the header top (`v1`), between the kings' outer faces, and must not meet either brace axis, including the triangle above it. Kings above the header may stop on a brace, like any stud (D066). This accepts windows under the braces when they are low enough. With the reference house's windows at their offsets, a bay can shrink to 8'-9" with the straw bale default (9'-4¼" with stud infill), so the golden scenario's 10' bays stay valid. *Alternative:* no part of a framed opening within a brace leg of either post, so every king is full height. Simpler to explain, but the same windows then need bays of at least 10'-7½" (the 3'-0" windows) and 11'-7½" (the 5'-0" windows), and the golden scenario's grid step (four 10' bays) is rejected.
    - **4b. The rough sill is part of a window's framed opening** in stud infill walls, as the buck sill is in straw bale walls. *Recommendation:* yes, so a window's sill must leave room for its rough sill (`s ≥ t`), and no rough sill is generated below the lower datum. D069 as written leaves it out. *Alternative:* D069 as written, with windows whose sill is under 1½" generating a rough sill below the floor datum.
