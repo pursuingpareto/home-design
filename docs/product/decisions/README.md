@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D080. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D081. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -80,6 +80,7 @@
 - D078: [VS-02b opening framing details](D078-vs02b-opening-framing-details.md) — opening pieces meet at faces and meet the frame at datums or brace axes; layout studs at an opening follow the band rule (dropped where they overlap a king, lower cripples dropped where they overlap a jack); girts are cut by band overlap with the framed height; 246 stud-infill pieces on Reference House 001 v3; refines D066 (not yet implemented, ASM-001).
 - D079: [VS-02b no stacked openings](D079-vs02b-no-stacked-openings.md) — framed openings in one wall must not overlap along the wall, in either family, because kings run full height; `OPENINGS_OVERLAP` keeps its code and paths; amends MODEL-006 §5.2 and refines D069 and D076 (not yet implemented, MODEL-006, ASM-001).
 - D080: [VS-02b wall key formats](D080-vs02b-wall-key-formats.md) — walls `wall/axis-{x|y}/{line}/{a}-{b}/level-{i}`; framing under its wall's key: `stud/s{k}`, girt pieces named by what they start from (`start`, `after/{opening id}`), and opening framing `opening/{opening id}/{piece}` (not yet implemented, ASM-001).
+- D081: [Reference House 001 v3 template text](D081-reference-house-001-v3-template-text.md) — illustrative installation notes and five unverified climate details for each of the `straw-bale` and `stud-infill` definitions; no claim; extends D072 (not yet implemented, ASM-001).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 

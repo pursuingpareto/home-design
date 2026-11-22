@@ -2,6 +2,7 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-21  
+**Extended by:** [D081](D081-reference-house-001-v3-template-text.md): the two definitions' installation notes and unverified climate details.  
 **Scope:** The values the VS-02b fixture needs: wall definitions, their framing, the default assembly, and openings. Approved as proposal 9 of the [VS-02b scope proposal](../../implementation/acceptance-tests/vs-02b.md) (§14), as revised for [D066](D066-vs02b-wall-framing.md)–[D071](D071-vs02b-thermal-moisture-values.md). Extends [D025](D025-reference-house-001-vs01-fixture.md) and [D053](D053-reference-house-001-v2-design-intent.md); every value there is unchanged.
 
 ## Decision
