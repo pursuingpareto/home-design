@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)); proposal 6, openings, as revised ([D069](../../product/decisions/D069-vs02b-openings.md)); proposal 7, quantities and outputs, as revised ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)); proposal 6, openings, as revised ([D069](../../product/decisions/D069-vs02b-openings.md)); proposal 7, quantities and outputs, as revised ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)); proposal 8, thermal and moisture values with a framing-corrected figure, as revised ([D071](../../product/decisions/D071-vs02b-thermal-moisture-values.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -80,7 +80,7 @@ Proposals 2–9 build on Option 1.
 | 5 | ~~Choosing a wall's assembly: granularity, command, classification~~ **Decided as recommended** ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)) | **Your judgment** | §10 |
 | 6 | ~~Openings: records, commands, fit, survival, classification~~ **Decided as revised** ([D069](../../product/decisions/D069-vs02b-openings.md)) | **Your judgment** | §11 |
 | 7 | ~~Quantities and outputs: quantity basis, a new artifact, estimate lines~~ **Decided as revised** ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)) | **Your judgment** | §12 |
-| 8 | Thermal and moisture values: what is recorded, and what is computed. **Direction given: a framing-corrected figure** (§13) | **Your judgment** | §13 |
+| 8 | ~~Thermal and moisture values: what is recorded, and what is computed~~ **Decided as revised: declared values and a framing-corrected figure** ([D071](../../product/decisions/D071-vs02b-thermal-moisture-values.md)) | **Your judgment** | §13 |
 | 9 | Reference House 001 v3 design intent | **Your judgment** | §14 |
 | 10 | Schema version 3 replaces version 2 | Routine | §6 |
 | 11 | Walls follow the frame's identity and conformance rules | Routine | §6 |
@@ -89,7 +89,7 @@ Proposals 2–9 build on Option 1.
 | 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
 | 15 | Traceability and budgets in D063's form | Routine | §6 |
 
-**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4, D068 proposal 5, D069 proposal 6, D070 proposal 7.
+**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4, D068 proposal 5, D069 proposal 6, D070 proposal 7, D071 proposal 8.
 
 ## 6. Routine items (10–15)
 
@@ -330,7 +330,9 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 - **Wall framing priced per piece** (`each`, by kind and section): matches how studs are bought, but a precut length per piece is not known (lengths are reference-axis lengths), so a per-piece price would hide length differences.
 - **Price per definition** (one line per square meter of assembly, framing included): simpler for a homeowner; a builder can't price layers or framing.
 
-## 13. Proposal 8: thermal and moisture values (Your judgment)
+## 13. Proposal 8: thermal and moisture values (decided as D071)
+
+**Decided as revised** ([D071](../../product/decisions/D071-vs02b-thermal-moisture-values.md), 2026-11-21).
 
 **Question:** what property data a layer records, and what, if anything, is computed from it.
 
@@ -366,20 +368,28 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 **Question:** the values the v3 fixture needs, supplied or approved by the product owner and recorded in a decision, as D053 was. They are **illustrative values for a test house, not a specification**. Nothing about them is checked or claimed (AC-08). Every D025 and D053 value is unchanged.
 
+*Revised for D066–D071:* the definitions now need framing values (D066, D067), the framing layer needs a framing material and a fill (D071), and the openings should exercise both sides of the jack threshold.
+
 To be supplied, changed, or approved:
 
 | Item | Strawman, for the product owner to change |
 |---|---|
-| Default wall assembly | Straw bale (the D008 story); stud infill as the alternative |
-| Straw bale build-up, exterior to interior | Lime plaster 1½"; straw bales laid flat 18"; clay plaster 1" |
-| Stud infill build-up, exterior to interior | Wood siding ¾"; sheathing ½"; 2×6 studs at 24" on center with dense-pack cellulose 5½"; gypsum board ½" |
-| Materials | One `Material` per layer, with properties `null` unless supplied |
-| Property values | `null`, unless the product owner supplies values with a source (proposal 8) |
-| Openings | One 3'-0" × 6'-8" door, centered in the middle Level 0 bay of the south wall; one 3'-0" × 4'-0" window, sill at 3'-0", centered in each of the other 19 walls |
+| Default wall assembly | Straw bale (the D008 story); stud infill as the alternative (D068) |
+| Straw bale build-up, exterior to interior | Lime plaster 1½"; straw bales laid flat 18" (the fill); clay plaster 1" |
+| Straw bale framing | Girts: 0 (D066). Bucks: 1½" × 18" (the bale depth), spruce-pine-fir |
+| Stud infill build-up, exterior to interior | Wood siding ¾"; sheathing ½"; framing layer 5½" (2×6 studs, dense-pack cellulose fill); gypsum board ½" |
+| Stud infill framing | Studs 2×6 (1½" × 5½" actual), 24" on center, spruce-pine-fir. Girts: 1 per wall, at mid-height, 2×6. Headers: 2×8 (1½" × 7¼"), one piece. Jack threshold width: 4'-0" |
+| Materials | One `Material` per layer and framing material (lime plaster, straw, clay plaster, siding, sheathing, spruce-pine-fir, cellulose, gypsum board), with properties `null` unless supplied |
+| Property values | `null`, unless the product owner supplies values with a source (D071). With all `null`, the reference house shows framing fractions and no U-values |
+| Openings | One 3'-0" × 6'-8" door, centered in the middle Level 0 bay of the south wall. One 5'-0" × 4'-0" window, sill at 3'-0", centered in each outer Level 0 bay of the south wall (wider than the threshold, so with jacks). One 3'-0" × 4'-0" window, sill at 3'-0", centered in each of the other 17 walls (no jacks) |
 
-With the strawman openings, every opening fits the proposal 6 rules: a centered 3' opening is 4'-6" from each post, clear of the 3' brace legs. The reference house would then have 20 walls, 1 door, and 19 windows, and 2,032 sf (188.77897728 m²) of net reference wall area.
+**Checks on the strawman:**
 
-This item comes last because its content depends on proposals 2–8.
+- **Fit (D069):** a 3'-0" opening's kings have their outer faces 4'-4½" from each post, and a 5'-0" window's kings (with jacks) 3'-3", both clear of the 3' brace legs. Window heads at 7'-0" with 2×8 headers stay below the upper planes (10'-0" and 9'-0" above each story's floor). Mid-height girts (5'-0" and 4'-6") are below the brace feet (7'-0" and 6'-0"); the door and every window cross their girt, which is cut at the kings (D066).
+- **Totals:** 20 walls, 1 door, and 19 windows (2 of them with jacks). Rough openings total 264 sf (24.52640256 m²), leaving **2,016 sf (187.29252864 m²)** of net reference wall area.
+- **Wall framing:** with the straw bale default, 79 buck pieces (3 for the door, 4 for each window). With stud infill, about 250 pieces (studs, cripples, kings, jacks, headers, rough sills, and cut girts). Exact counts follow from the approved values and are reconciled in tests.
+
+This item comes last because its content depends on proposals 2–8. Approved values are recorded in a decision, as D053 was.
 
 ## 15. Draft acceptance criteria (pending approval)
 

@@ -2,6 +2,7 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-21  
+**Extended by:** [D071](D071-vs02b-thermal-moisture-values.md): the framing layer has a framing material and a fill, each with its own nullable conductivity.  
 **Scope:** What a VS-02b assembly definition records, and where definitions live. Approved as proposal 4 of the [VS-02b scope proposal](../../implementation/acceptance-tests/vs-02b.md) (§9), within [D064](D064-vs02b-slice-boundary.md), with the framing layer of [D066](D066-vs02b-wall-framing.md).
 
 ## Decision
