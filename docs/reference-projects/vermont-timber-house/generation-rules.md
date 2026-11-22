@@ -110,4 +110,4 @@ A connection is generated for each member end that lands on another member's axi
 
 ## Out of scope for this rule version
 
-Splice and sill-joint connections (D059), girts and studs (VS-02b), ridge beams, collar ties, rafter tails, dormers, hips, valleys, ceiling joists, floor openings, machining, walls, and any structural adequacy check.
+Splice and sill-joint connections (D059), ridge beams, collar ties, rafter tails, dormers, hips, valleys, ceiling joists, floor openings, machining, and any structural adequacy check. Walls and wall framing (girts, studs, and opening framing) are a separate rule, [`vs02b-walls-1`](wall-rules.md) (approved, not yet implemented).

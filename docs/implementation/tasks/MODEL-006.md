@@ -335,7 +335,7 @@ class WallRule:
 ```
 
 - **Shared comparison:** `assemblies/inventory.py` compares expected and actual walls and pieces and emits the §6.5 codes, as `timber/inventory.py` does for members and connections.
-- **`ASM-001`** registers `vs02b-walls-1` and makes `framed_openings` agree with the pieces it generates: every piece that frames an opening lies inside that opening's framed rectangle (an `ASM-001` test).
+- **`ASM-001`** registers `vs02b-walls-1` and makes `framed_openings` agree with the pieces it generates: every piece that frames an opening lies within that opening's framed range along the wall, and the rectangle is the bounding box of the pieces that close it (an `ASM-001` test; restated by [ASM-001](ASM-001.md) §5.7, item 7, because kings run full height and cripples lie above and below the rectangle).
 
 ## 8. Commands and classification
 
