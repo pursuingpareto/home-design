@@ -3,7 +3,8 @@
 **Status:** Confirmed  
 **Date:** 2026-11-19  
 **Scope:** What VS-02 delivers, and what moves to the next slice. Chosen as Option 1 of the [VS-02 scope proposal](../../implementation/acceptance-tests/vs-02.md) §3.  
-**Amends:** the [roadmap](../../implementation/roadmap.md) VS-02 line. Assemblies move to a new slice, VS-02b, which follows VS-02.
+**Amends:** the [roadmap](../../implementation/roadmap.md) VS-02 line. Assemblies move to a new slice, VS-02b, which follows VS-02.  
+**Refined by:** [D064](D064-vs02b-slice-boundary.md) (VS-02b's boundary: perimeter infill walls with openings; roof, floor, and ceiling assemblies wait).
 
 ## Decision
 

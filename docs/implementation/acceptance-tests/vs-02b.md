@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)); proposal 6, openings, as revised ([D069](../../product/decisions/D069-vs02b-openings.md)); proposal 7, quantities and outputs, as revised ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)); proposal 8, thermal and moisture values with a framing-corrected figure, as revised ([D071](../../product/decisions/D071-vs02b-thermal-moisture-values.md)); proposal 9, the Reference House 001 v3 design intent, as revised ([D072](../../product/decisions/D072-reference-house-001-v3-design-intent.md)). The routine items 10–15 are approved (2026-11-21). The acceptance criteria and task breakdown (§15–16) await approval. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Agreed (2026-11-21). The judgment proposals are recorded as [D064](../../product/decisions/D064-vs02b-slice-boundary.md)–[D072](../../product/decisions/D072-reference-house-001-v3-design-intent.md), and the routine items 10–15 were approved together (§6). The acceptance criteria are §15 and the tasks are §16. Sections 2–14 keep the reasoning behind each decision, including the recommendations the product owner did not adopt.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -395,9 +395,9 @@ To be supplied, changed, or approved:
 
 This item comes last because its content depends on proposals 2–8. Approved values are recorded in a decision, as D053 was.
 
-## 15. Draft acceptance criteria (pending approval)
+## 15. Acceptance criteria (approved)
 
-Revised for D064–D072 (2026-11-21). They build on the routine items 10–15 (approved), and are confirmed only when the product owner approves them.
+Revised for D064–D072 and approved by the product owner (2026-11-21). They build on the routine items 10–15.
 
 - **AC2b-01: version 3 only.** New projects are Reference House 001 v3 (version 3, D072). Version 2 snapshots are rejected with `UNSUPPORTED_SCHEMA_VERSION` (D055).
 - **AC2b-02: assembly definitions.**
@@ -428,7 +428,7 @@ Revised for D064–D072 (2026-11-21). They build on the routine items 10–15 (a
   - The price-book form handles square-meter rows.
 - **AC2b-11: traceability.** A traceability matrix covers AC2b-01 to AC2b-10. The golden record, property-based sequences (including the if-and-only-if impact check), budgets, and CI run them.
 
-## 16. Draft task breakdown (pending approval)
+## 16. Task breakdown (approved)
 
 | Task | Delivers | Depends on |
 |---|---|---|
@@ -440,4 +440,4 @@ Revised for D064–D072 (2026-11-21). They build on the routine items 10–15 (a
 
 **Keeping `main` green:** retiring version 2 (MODEL-006) breaks every existing test until walls are generated. MODEL-006 and ASM-001 are therefore specified separately but **merged together**, as MODEL-005 and TIMBER-002 were. Every later task merges on its own, with CI passing.
 
-**Drafting order:** once this scope is approved, the task files are drafted and approved one at a time, starting with MODEL-006, each in its own session.
+**Drafting order:** the task files are drafted and approved one at a time, starting with MODEL-006, each in its own session (AGENTS.md).
