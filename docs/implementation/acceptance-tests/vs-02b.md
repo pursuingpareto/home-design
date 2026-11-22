@@ -75,7 +75,7 @@ Proposals 2–9 build on Option 1.
 |---|---|---|---|
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
-| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a, 3a′, 3b, and 3c settled (separate wall framing; two display switches; girts declared by the definition; continuous studs with girts let in), 3d–3e under discussion | **Your judgment** | §8 |
+| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a–3d settled (separate wall framing; two display switches; girts declared by the definition; continuous studs with girts let in; opening framing with a jack width threshold), 3e under discussion | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
@@ -177,7 +177,15 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
   - **For scale:** with the strawman (24", 1 girt), every stud infill wall has 5 studs and 1 girt before openings: 100 studs and 20 girts on the reference house's 20 walls if all are stud infill.
 - **Not adopted:** studs stopping at girts (`n + 1` pieces per position); girts cut into blocks between studs; layout from the building corner; generated plates.
 
-**3d. Framing at openings.** Whether doors and windows get generated framing, so that the stud and girt counts are complete.
+**3d. Framing at openings.** **Settled (2026-11-21): the revised recommendation, with jacks set by a width threshold.** Whether doors and windows get generated framing, so that the stud and girt counts are complete.
+
+- **Chosen:** the revised recommendation below, except that **"where required" is a width threshold** in place of "every opening":
+  - the stud infill definition's framing layer declares a **jack threshold width**. An opening whose rough-opening width **exceeds** it (by more than 1e-6 m) gets **a king and a jack on each side**, with the header bearing on the jacks;
+  - an opening no wider than the threshold gets **a king on each side** and no jacks, with the header framed between the kings;
+  - the threshold is design intent for Reference House 001 v3 (proposal 9). It is a declared value, **not derived from any code**, and the outputs say so;
+  - the rest stands: rough-opening dimensions, cripples, girts cut at the kings, header sections, straw bale bucks, and section offsets for wall framing as an exception to D058 (wall framing only);
+  - a jurisdiction-specific rule (for example more jacks for wider headers, from the local code) replaces the threshold later (open question 5).
+- *Reading to confirm with the product owner when proposal 3 is recorded:* below the threshold, kings and a header remain; one threshold, so at most one jack per side in VS-02b.
 
 **Product owner direction (2026-11-21):** the framing must be **realistically buildable**, so **king and jack studs are included where required**. Eventually, "where required" is to **depend on the local building code**. The first recommendation (one edge stud per side, no jacks, no section offsets) is not adopted.
 
@@ -200,7 +208,15 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
   - **edge studs only, on datums** (the first recommendation): keeps D058 for wall framing, but is not buildable as drawn.
 - **Knock-on:** opening commands regenerate wall framing, so proposal 6's recommendation that they are routine is revisited. Proposal 6 also takes the rough-opening meaning of `Opening` dimensions, and its fit rule must leave room for kings and jacks inside the bay.
 
-**3e. Joints.** Whether studs and girts get `Connection` records. A girt-to-post joint is traditional joinery, and a new junction class needs a new catalog version with a traditional and an engineered type (D059). Stud ends are nailed, which the catalog has no type for. The alternative is no records for infill framing, with an assumption line, as D059 did for post splices.
+**3e. Joints.** Whether studs, girts, and opening framing get joint records.
+
+- **Recommendation: no joint records for wall framing.**
+  - `Connection` joins two `TimberMember` records (D054), and wall framing is a separate kind (3a), so it gets no `Connection` records. The connection catalog (`vs02-connections-1`), the 312 connections, and the timber schedule's connection tables are unchanged.
+  - Wall framing is nailed or screwed, and the catalog has no fastening types. Girts let into studs and attached to posts (3c) are fastened the same way.
+  - An assumption line in the assembly schedule says: wall framing fastenings and attachments (stud ends, girt to post, headers, and opening framing) are not modeled or counted. D059 did the same for post splices and sill joints.
+- **Alternatives:**
+  - **counted joints between wall framing pieces,** with a small fastening catalog (for example nailed, screwed, bracket): a fuller takeoff, but every type and count rule would be invented until fastening is specified (FR-04's fabrication information);
+  - **girt-to-post joints only,** as a new junction class: the one joint with heavy-timber character. D059 requires a new catalog version with a traditional and an engineered type, and `Connection` would have to join a wall-framing piece to a member.
 
 ### 8.3 Knock-on effects to revisit
 
