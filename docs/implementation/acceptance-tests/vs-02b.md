@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -76,7 +76,7 @@ Proposals 2–9 build on Option 1.
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
 | 3 | ~~Infill framing: studs and girts~~ **Decided: generated wall framing owned by each wall, with kings and jacks by a width threshold** ([D066](../../product/decisions/D066-vs02b-wall-framing.md)) | **Your judgment** | §8 |
-| 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
+| 4 | ~~Assembly definitions: what they record, and where they live~~ **Decided as recommended** ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)) | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
 | 7 | Quantities and outputs: quantity basis, a new artifact, estimate lines | **Your judgment** | §12 |
@@ -89,7 +89,7 @@ Proposals 2–9 build on Option 1.
 | 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
 | 15 | Traceability and budgets in D063's form | Routine | §6 |
 
-**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3.
+**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4.
 
 ## 6. Routine items (10–15)
 
@@ -229,11 +229,11 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 - **§15, §16:** the timber frame stays at 193 members and 312 connections (3a), but walls gain generated framing, with its own keys, conformance, and oracle coverage. The task breakdown and AC2b-03 are revised once 3a–3e are settled.
 - **Proposal 15 (budgets):** wall framing enlarges `plan2d`, `mesh3d`, and the assembly schedule.
 
-## 9. Proposal 4: assembly definitions (Your judgment)
+## 9. Proposal 4: assembly definitions (decided as D067)
 
 **Question:** what an assembly definition records, and where definitions live.
 
-**Recommendation:**
+**Recommendation**, **approved as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md), 2026-11-21)**:
 
 - **Content:** an `AssemblyDefinition` has a family (`STRAW_BALE` or `STUD_INFILL`), a unique label, an ordered list of layers from exterior to interior, a short installation note (text, not checked), and a list of climate-specific details to flag as unverified (FR-05). Each `Layer` has a material, a thickness, a function (for example finish, sheathing, insulation, framing), and nullable property values, each with provenance (proposal 8). The **framing layer** of the stud infill definition adds the stud section and spacing, the girt count and section, the header section, and the jack threshold width; the straw bale definition's framing is its girt count (0) and its buck section ([D066](../../product/decisions/D066-vs02b-wall-framing.md)).
 - **Snapshot records,** copied from the template into each project, like `Section` and `Material`: catalog records that may be unreferenced (D038). The model stays the single source (principle 4), and every output names the revision whose definitions it used (principle 6).
@@ -253,7 +253,7 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 - **One project-wide wall default:** a new field holds the default definition, and every generated wall takes it, as members take `member_defaults` (D039).
 - **One command,** `SetWallAssembly {assembly_definition_id}` (working name), which switches every wall. A definition not in the project is `DANGLING_REFERENCE`, and the current value is a no-op (D045).
-- **Consequential:** it changes every wall and the estimate at once, which dependencies.md §4 classes as consequential, as `SetConnectionType` is (D059).
+- **Consequential:** it changes every wall, its wall framing (studs, girts, and opening framing become bucks, or the reverse; D066), and the estimate at once, which dependencies.md §4 classes as consequential, as `SetConnectionType` is (D059).
 
 **Why:** it delivers the whole-house straw bale versus stud comparison (D008, D014) with one command, and no override needs to survive regeneration. D040 deferred per-member overrides for the same reason.
 
