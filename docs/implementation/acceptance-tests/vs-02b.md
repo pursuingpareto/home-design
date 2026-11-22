@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)); proposal 6, openings, as revised ([D069](../../product/decisions/D069-vs02b-openings.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -78,7 +78,7 @@ Proposals 2–9 build on Option 1.
 | 3 | ~~Infill framing: studs and girts~~ **Decided: generated wall framing owned by each wall, with kings and jacks by a width threshold** ([D066](../../product/decisions/D066-vs02b-wall-framing.md)) | **Your judgment** | §8 |
 | 4 | ~~Assembly definitions: what they record, and where they live~~ **Decided as recommended** ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)) | **Your judgment** | §9 |
 | 5 | ~~Choosing a wall's assembly: granularity, command, classification~~ **Decided as recommended** ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)) | **Your judgment** | §10 |
-| 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
+| 6 | ~~Openings: records, commands, fit, survival, classification~~ **Decided as revised** ([D069](../../product/decisions/D069-vs02b-openings.md)) | **Your judgment** | §11 |
 | 7 | Quantities and outputs: quantity basis, a new artifact, estimate lines | **Your judgment** | §12 |
 | 8 | Thermal and moisture values: what is recorded, and what is computed | **Your judgment** | §13 |
 | 9 | Reference House 001 v3 design intent | **Your judgment** | §14 |
@@ -89,7 +89,7 @@ Proposals 2–9 build on Option 1.
 | 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
 | 15 | Traceability and budgets in D063's form | Routine | §6 |
 
-**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4, D068 proposal 5.
+**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4, D068 proposal 5, D069 proposal 6.
 
 ## 6. Routine items (10–15)
 
@@ -262,7 +262,9 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 - **Per elevation and story** (south, north, east, west, times two): allows a stud south wall with more glass and straw bale elsewhere. A fixed set of eight defaults, still no overrides.
 - **Per wall:** a default plus overrides keyed by the wall's generation key. The most flexible, and the natural next step. It needs a rule for overrides whose wall disappears.
 
-## 11. Proposal 6: openings (Your judgment)
+## 11. Proposal 6: openings (decided as D069)
+
+**Decided as revised** ([D069](../../product/decisions/D069-vs02b-openings.md), 2026-11-21).
 
 **Question:** what an opening is, how it is placed and edited, what "fits" means, what happens to it when its wall changes, and how its commands are classified.
 
@@ -296,27 +298,35 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 **Question:** how wall quantities are measured, which artifact reports them, and how the estimate prices them.
 
+*Revised for [D066](../../product/decisions/D066-vs02b-wall-framing.md) and [D069](../../product/decisions/D069-vs02b-openings.md):* wall framing is counted piece by piece in the assembly schedule, and openings are rough openings.
+
 **Recommendation:**
 
-- **Reference area:** a wall's gross area is its bay length between grid stations times its story height between datums. Opening areas are subtracted to give its net area. This is a **reference area, not an installed area**, as member lengths are reference-axis lengths: member faces, braces, and opening framing are not deducted. The output says so.
-- **Layer quantities:** each layer's area is the wall's net area, and its volume is that area times the layer's thickness.
+- **Reference area:** a wall's gross area is its bay length between grid stations times its story height between datums. Rough-opening areas are subtracted to give its net area. This is a **reference area, not an installed area**, as member lengths are reference-axis lengths: member faces, braces, and the framing around openings are not deducted. The output says so.
+- **Layer quantities:** each non-framing layer's area is the wall's net area, and its volume is that area times the layer's thickness. The framing layer is quantified by its pieces, not by area.
+- **Wall framing quantities:** one row per piece (D066): its key, wall, kind (stud, girt, king, jack, header, rough sill, cripple, buck jamb, buck head, buck sill), section, and reference-axis length. Aggregates give the **count and total length per kind and section**, the builder's framing takeoff.
 - **A new artifact, `assembly_schedule`,** owned by the `assemblies` module (overview.md):
   - one row per wall: its key, story, elevation side, definition, and gross, opening, and net areas;
-  - one row per opening: its kind, size, and wall;
-  - aggregates: area per definition, area and volume per definition and layer, and opening counts per kind;
-  - its assumptions, and the property figures of proposal 8.
+  - one row per opening: its kind, rough-opening size, wall, and whether it has jacks;
+  - one row per wall framing piece, as above;
+  - aggregates: area per definition; area and volume per definition and non-framing layer; framing count and length per kind and section; opening counts per kind;
+  - its assumptions (D066, D069, and the lines below), and the property figures of proposal 8.
 
-  The timber schedule stays about timber. The manifest lists five types, which amends artifacts.md §1 and §3 ("all four").
-- **Views:** `plan2d` shows each wall as an outline of its total thickness on its story's plane, with gaps at openings. `mesh3d` shows walls as boxes with rectangular voids. New payload fields and a new generator version.
-- **Estimate:** one line per definition and layer, key `assembly.<label>.<layer>`, priced per square meter of net area (unit `m2`). The price book's units extend from `m` and `each` to `m2`, with `PRICE_UNIT_MISMATCH` for an `assembly.` key without `m2`. Unpriced lines stay unpriced, never 0 (artifacts.md §8.1).
+  The timber schedule stays about the heavy-timber frame. The manifest lists five types, which amends artifacts.md §1 and §3 ("all four").
+- **Views:** `plan2d` shows each wall as an outline of its total thickness on its story's plane, with gaps at openings, and wall framing in plan. `mesh3d` shows the wall layers as boxes with rectangular voids, and each wall framing piece as a box of its section. Both tag wall layers and wall framing separately, for the two switches (D066). New payload fields and a new generator version.
+- **Estimate:**
+  - **layers:** one line per definition and non-framing layer, key `assembly.<label>.<layer>`, priced per square meter of net area (unit `m2`);
+  - **wall framing:** one line per framing kind and section, key `wallframing.<kind>.<section label>`, priced per meter of reference-axis length (unit `m`), like timber lines. Counts are shown beside the lengths;
+  - the price book's units gain `m2`, with `PRICE_UNIT_MISMATCH` for an `assembly.` key without `m2` or a `wallframing.` key without `m`. Unpriced lines stay unpriced, never 0 (artifacts.md §8.1).
 - **Openings are not priced** in VS-02b. Windows and doors are products, and no product data exists. An assumption line says the estimate excludes them.
+- **Not counted:** bale counts, which need course rules; plates; let-in notches; and fastenings (D066). Assumption lines say so.
 
 **Alternatives:**
 
 - **Clear area between member faces:** closer to what is installed, but areas then depend on post and beam sections, so a section change would change every wall quantity.
-- **Walls in `timber_schedule`:** no new artifact type, but it mixes two modules' outputs, and every wall edit would impact the timber schedule.
-- **Price per definition** (one line per square meter of assembly): simpler for a homeowner; a builder can't price layers.
-- **Bale and stud counts** (`each`): need layout rules (courses, spacing from a datum, opening framing), which proposal 3 defers.
+- **Walls and wall framing in `timber_schedule`:** no new artifact type, but D066 kept wall framing out of the timber schedule, and every wall edit would impact it.
+- **Wall framing priced per piece** (`each`, by kind and section): matches how studs are bought, but a precut length per piece is not known (lengths are reference-axis lengths), so a per-piece price would hide length differences.
+- **Price per definition** (one line per square meter of assembly, framing included): simpler for a homeowner; a builder can't price layers or framing.
 
 ## 13. Proposal 8: thermal and moisture values (Your judgment)
 

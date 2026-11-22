@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D068. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D069. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -68,6 +68,7 @@
 - D066: [VS-02b wall framing](D066-vs02b-wall-framing.md) — studs, girts, and opening framing generated as a separate kind owned by each wall and counted in the assembly schedule; continuous studs with girts let in; kings, and jacks above a declared (not code-derived) width threshold; Wall layers and Wall framing switches; no joint records; amends D058 for wall framing only; resolves D052's girt and stud deferral.
 - D067: [VS-02b assembly definitions](D067-vs02b-assembly-definitions.md) — layered `AssemblyDefinition` records (family, label, ordered layers with material, thickness, function, nullable properties with provenance, and the D066 framing layer) copied from the template into each project; fixed in VS-02b, no user authoring.
 - D068: [VS-02b wall assembly choice](D068-vs02b-wall-assembly-choice.md) — one project-wide wall default; `SetWallAssembly` switches every wall and its framing; consequential.
+- D069: [VS-02b openings](D069-vs02b-openings.md) — user-placed doors and windows with rough-opening dimensions; fit over the framed opening (inside the wall, clear of braces, no overlap); changes that break fit are rejected; removed with their wall and listed; routine commands.
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 
