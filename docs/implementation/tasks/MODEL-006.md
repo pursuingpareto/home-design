@@ -1,6 +1,7 @@
 # MODEL-006 — Model schema version 3: assemblies, walls, wall framing, and openings
 
 **Status:** Approved, not started (2026-11-21). All five judgment items were approved as recommended ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)–[D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)), and routine items 6–13 together (§13). The approved contracts are recorded in building-model.md §3.4, §6, §6.1, and §8, interfaces.md §2–3, and dependencies.md §4.1, each marked "not yet implemented".  
+**Refined by:** [D079](../../product/decisions/D079-vs02b-no-stacked-openings.md) (2026-11-22, from [ASM-001](ASM-001.md) §13 item 2): `OPENINGS_OVERLAP` compares framed ranges along the wall only (§5.2).  
 **Owner module:** `model` (schema, validation, commands); `assemblies` (new package: the wall-rule registry and its interface, §7); `project` for the stored-data guard (§9.3)  
 **Slice:** VS-02b ([vs-02b.md](../acceptance-tests/vs-02b.md), agreed 2026-11-21)  
 **Depends on:** VS-02 (complete). Specified before `ASM-001`, but **merged together with it** on one branch (§10), as MODEL-005 and TIMBER-002 were.  
@@ -246,7 +247,7 @@ Reference House 001 v3: a 3'-0" window centered in a 12' bay spans `u` from 4'-4
 |---|---|---|---|
 | Inside the wall | `u0 < −ε`, `u1 > W + ε`, `v0 < −ε`, or `v1 > H + ε` | **`OPENING_OUTSIDE_WALL`** | The opening's `offset_m` (start side), `width_m` (end side), `height_m` (top), or `sill_height_m` (bottom); the footprint dimension and grid axis that set `W`, or the level fields that set `H`; the framing sections used; `WallSystem.default_assembly_definition_id` |
 | Clear of the braces | With the wall's brace plane on, the framed rectangle meets a knee-brace axis in its wall, or lies in the triangle above it ([D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md): the rectangle rule) | **`OPENING_CROSSES_BRACE`** | The opening's `offset_m` (start brace) or `width_m` (end brace); `parameters.knee_brace_leg_m` and the plane's flag; as above for `W`, `H`, and the definition |
-| No overlap | Two framed openings in one wall overlap by more than ε in both `u` and `v` | **`OPENINGS_OVERLAP`** | The later opening's `offset_m` (by ID order); the earlier opening's `offset_m` |
+| No overlap | Two framed openings in one wall overlap by more than ε along the wall (`u`), whatever their heights ([D079](../../product/decisions/D079-vs02b-no-stacked-openings.md), amending the approved "in both `u` and `v`") | **`OPENINGS_OVERLAP`** | The later opening's `offset_m` (by ID order); the earlier opening's `offset_m` |
 | Girts below the braces | With the wall's brace plane on and `girt_count = n > 0`, the top girt `H · n / (n + 1)` is not below the brace feet `H − L` by more than ε | **`GIRT_CROSSES_BRACE`** | The definition's `layers[k].framing.girt_count`; the level's story height, `parameters.knee_brace_leg_m`, the plane's flag, and `WallSystem.default_assembly_definition_id`. Reported once per definition and level, not per wall |
 
 - **Which brace plane:** Level 0 walls lie under the `plane-L1` braces (`knee_braces_level_1`), and Level 1 walls under the `plane-eave` braces (`knee_braces_eave`). Each wall has one brace at each top corner, from `(0, H − L)` to `(L, H)` and from `(W, H − L)` to `(W − L, H)`.

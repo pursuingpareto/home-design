@@ -102,7 +102,7 @@ Approved as [MODEL-006](../implementation/tasks/MODEL-006.md) §13 (2026-11-21),
 - **`WallFramingPiece`** (generated, one record per piece; D066): `generation_key`, `piece_kind` (`STUD`, `GIRT`, `KING`, `JACK`, `HEADER`, `ROUGH_SILL`, `CRIPPLE`, `BUCK_JAMB`, `BUCK_HEAD`, `BUCK_SILL`), `opening_id?`, `start_m`, `end_m`, `section_id`, `material_id`. Listed by exactly one wall; no connection records.
 - **`Opening`** (user-authored; [D069](../product/decisions/D069-vs02b-openings.md)): `opening_kind` (`WINDOW` | `DOOR`), `wall_id`, rough-opening `width_m` and `height_m`, `sill_height_m` (0 for a door), and `offset_m` from the wall's start post axis. No generation key; the ID is minted from the command (D041).
 - **Generation keys** are unique across members, connections, walls, and wall framing together; wall and framing IDs are minted from `"generation/" + generation_key` (D041). Key formats are set by `ASM-001`.
-- **Fit** (stage 4; MODEL-006 §5, D076): every framed opening lies inside its wall's reference rectangle, does not meet or lie above a knee-brace axis in its wall, and does not overlap another; with stud infill, girts lie below the brace feet. Checked on the full candidate snapshot.
+- **Fit** (stage 4; MODEL-006 §5, D076): every framed opening lies inside its wall's reference rectangle, does not meet or lie above a knee-brace axis in its wall, and does not overlap another along the wall ([D079](../product/decisions/D079-vs02b-no-stacked-openings.md)); with stud infill, girts lie below the brace feet. Checked on the full candidate snapshot.
 - **`AssemblyInstance`** stays reserved and unused.
 - **Schema file:** `schemas/snapshot.v3.schema.json` replaces `snapshot.v2.schema.json`.
 

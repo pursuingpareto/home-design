@@ -2,7 +2,7 @@
 
 **Status:** Confirmed  
 **Date:** 2026-11-21  
-**Refined by:** [D076](D076-vs02b-framed-opening-geometry.md): the framed opening's exact rectangle, the rectangle rule for brace clearance, and the rough sill included in a stud-infill window's framed opening.  
+**Refined by:** [D076](D076-vs02b-framed-opening-geometry.md): the framed opening's exact rectangle, the rectangle rule for brace clearance, and the rough sill included in a stud-infill window's framed opening. [D079](D079-vs02b-no-stacked-openings.md): framed openings in one wall must not overlap along the wall.  
 **Scope:** What a VS-02b opening is, how it is placed and edited, what "fits" means, what happens to it when its wall or assembly changes, and how its commands are classified. Approved as proposal 6 of the [VS-02b scope proposal](../../implementation/acceptance-tests/vs-02b.md) (§11), as revised for [D066](D066-vs02b-wall-framing.md).
 
 ## Decision
