@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -77,7 +77,7 @@ Proposals 2–9 build on Option 1.
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
 | 3 | ~~Infill framing: studs and girts~~ **Decided: generated wall framing owned by each wall, with kings and jacks by a width threshold** ([D066](../../product/decisions/D066-vs02b-wall-framing.md)) | **Your judgment** | §8 |
 | 4 | ~~Assembly definitions: what they record, and where they live~~ **Decided as recommended** ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)) | **Your judgment** | §9 |
-| 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
+| 5 | ~~Choosing a wall's assembly: granularity, command, classification~~ **Decided as recommended** ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)) | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
 | 7 | Quantities and outputs: quantity basis, a new artifact, estimate lines | **Your judgment** | §12 |
 | 8 | Thermal and moisture values: what is recorded, and what is computed | **Your judgment** | §13 |
@@ -89,7 +89,7 @@ Proposals 2–9 build on Option 1.
 | 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
 | 15 | Traceability and budgets in D063's form | Routine | §6 |
 
-**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4.
+**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4, D068 proposal 5.
 
 ## 6. Routine items (10–15)
 
@@ -245,11 +245,11 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 - **A global versioned catalog,** like the connection catalog (`vs02-connections-1`), referenced by key. That suits keys that are representational only. Definitions carry quantities and property values that users will later edit, which belong in the model.
 - **User-authored definitions now** (commands to add and edit layers): FR-05's full intent, but it needs validation rules for build-ups and doubles the command surface.
 
-## 10. Proposal 5: choosing a wall's assembly (Your judgment)
+## 10. Proposal 5: choosing a wall's assembly (decided as D068)
 
 **Question:** at what granularity a wall's assembly is chosen, by which command, and how the command is classified.
 
-**Recommendation:**
+**Recommendation**, **approved as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md), 2026-11-21)**:
 
 - **One project-wide wall default:** a new field holds the default definition, and every generated wall takes it, as members take `member_defaults` (D039).
 - **One command,** `SetWallAssembly {assembly_definition_id}` (working name), which switches every wall. A definition not in the project is `DANGLING_REFERENCE`, and the current value is a no-op (D045).
@@ -266,27 +266,29 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 **Question:** what an opening is, how it is placed and edited, what "fits" means, what happens to it when its wall changes, and how its commands are classified.
 
+*Revised for [D066](../../product/decisions/D066-vs02b-wall-framing.md):* opening dimensions are rough-opening dimensions, openings now generate wall framing, and the fit rule must leave room for that framing.
+
 **Recommendation:**
 
-- **Record:** an `Opening` has a kind (`WINDOW` or `DOOR`), its wall's ID, a width, a height, a sill height above the wall's lower datum (0 for a door), and an offset along the wall from its start. It is a rectangle in the wall's reference plane. Doors and windows are voids, not products: no frame, glazing, or hardware data.
-- **User-placed:** the first user-authored records. They have no generation key. IDs are minted from the command (D041), and `UndoToRevision` restores them (D044).
+- **Record:** an `Opening` has a kind (`WINDOW` or `DOOR`), its wall's ID, a **rough-opening** width and height, a sill height above the wall's lower datum (0 for a door), and an offset of its rough opening along the wall from the wall's start. It is a rectangle in the wall's reference plane. Doors and windows are voids, not products: no unit size, frame, glazing, or hardware data.
+- **User-placed:** the first user-authored records. They have no generation key. IDs are minted from the command (D041), and `UndoToRevision` restores them (D044). Their framing is generated from them (D066), keyed by the opening's ID.
 - **Commands:** `AddOpening`, `SetOpening` (replaces one opening's dimensions and position), and `RemoveOpening` (working names).
-- **Fit,** checked on the full candidate snapshot, as the brace fit is (building-model.md §3.3):
-  - the rectangle lies inside the wall's reference rectangle;
+- **Fit,** checked on the full candidate snapshot, as the brace fit is (building-model.md §3.3). The **framed opening** is the rough opening plus its framing (D066): in stud infill walls, the kings (and jacks above the threshold) on each side and the header above; in straw bale walls, the buck. Then:
+  - the framed opening lies inside the wall's reference rectangle (axis to axis, datum to datum);
   - it stays clear of the knee-brace axes in that wall;
-  - openings in one wall do not overlap.
+  - framed openings in one wall do not overlap.
 
-  Fit uses reference datums and axes, with no allowance for member sections (D058), so it does not promise a buildable rough opening. An assumption line says so. Exact rules and codes are set in the task file.
-- **When the wall changes:**
-  - a frame edit that keeps the wall's key keeps the opening, at the same offset and size;
-  - a frame edit after which an opening no longer fits is **rejected**, naming the opening and the edited field (AC-06's contradictory constraints). Nothing moves or shrinks an opening silently (principle 3);
-  - a grid edit that removes the wall removes its openings, and the preview lists them. Such edits are already consequential.
-- **Routine:** the three opening commands change no framing (proposal 3) and are applied with undo, like VS-01's routine edits.
-- **Opening framing** (headers, bucks, rough-opening studs) is not generated or counted. An assumption line says so.
+  Post, sill, and beam sections are not deducted, because the frame's axes stay on datums (D058). An assumption line says the fit does not check clearance to member faces. Exact rules and codes are set in the task file.
+- **When the wall or its assembly changes:**
+  - a frame edit that keeps the wall's key keeps the opening, at the same offset and size, and regenerates its framing;
+  - a change after which an opening no longer fits is **rejected**, naming the opening and the edited field (AC-06's contradictory constraints). That includes a frame edit and a `SetWallAssembly` whose framing would not fit. Nothing moves or shrinks an opening silently (principle 3);
+  - a grid edit that removes the wall removes its openings and their framing, and the preview lists them. Such edits are already consequential.
+- **Routine:** the three opening commands regenerate only their own wall's framing (D066). They change no timber member, no connection, and no other wall, so they are applied with undo, like VS-01's routine edits. The commit still validates fully, and a preview is available.
+- **Strawman check:** a 3'-0" window centered in a 12' bay with 3' brace legs keeps its kings' outer faces at 4'-3" and 7'-9" from the start post, clear of the braces (proposal 9).
 
 **Alternatives:**
 
-- **Openings as consequential:** every window edit goes through the confirmation dialog. More conservative, and slower for the most frequent edit a homeowner makes.
+- **Openings as consequential:** every window edit goes through the confirmation dialog, because it regenerates framing. More conservative, and slower for the most frequent edit a homeowner makes.
 - **Reject any grid edit that would remove a wall with openings:** nothing user-authored is ever removed as a side effect, but the user must first remove the openings.
 - **Generated openings** (for example one window per bay from a parameter): no user-authored records yet, but not how anyone places windows.
 
