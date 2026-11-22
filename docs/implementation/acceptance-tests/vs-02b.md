@@ -75,7 +75,7 @@ Proposals 2–9 build on Option 1.
 |---|---|---|---|
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
-| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a, 3a′, and 3b settled (separate wall framing; two display switches; girts declared by the definition), 3c–3e under discussion | **Your judgment** | §8 |
+| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a, 3a′, 3b, and 3c settled (separate wall framing; two display switches; girts declared by the definition; continuous studs with girts let in), 3d–3e under discussion | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
@@ -165,23 +165,35 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
   - **girts at a fixed height** (for example the window head height), rather than divided: aligns with openings, but couples framing to a value that stories of different heights share;
   - **no girts in VS-02b:** simplest, but D052 deferred girts to VS-02b, and the direction in §8.1 asks to see them.
 
-**3c. Stud layout.** Which walls get studs, the spacing and where it is measured from, and how studs meet girts and braces.
+**3c. Stud layout.** **Settled (2026-11-21): continuous studs, with girts let in across them.** Which walls get studs, the spacing and where it is measured from, and how studs meet girts and braces.
 
-- **Recommendation:**
+- **Chosen** (the recommendation, with continuous studs in place of studs that stop at girts):
   - **Which walls:** only walls whose definition has a stud framing layer (stud infill). Straw bale walls have none.
   - **Spacing** comes from the definition's framing layer (3a; strawman 24" on center, proposal 9). It is measured **from the wall's start post axis** (the lower grid station: west for walls along X, south for walls along Y), as joists are measured from each bay's west beam line: positions `k · s` for `k = 1, 2, …` while short of the end post by more than 1e-6 m. No stud lies on a post axis, and a wall no wider than the spacing has no studs.
-  - **Studs stop at girts:** at each position, one stud piece per span between horizontal datums: the wall's lower plane (sill or Level 1 beam), each girt, and its upper plane. With `n` girts that is `n + 1` pieces per position.
-  - **Studs stop at braces:** a piece that meets a knee-brace axis ends on it, so studs within the brace leg of a post are shorter. With 3' legs and 24" spacing, the stud 2' from each post ends 1' below the beam.
+  - **Continuous studs:** one stud per position, from the wall's lower plane (sill or Level 1 beam) to its upper plane. Girts stay one piece from post to post (3b) and are **let in across the studs**: studs and girts cross in the wall's plane, and neither is cut at the crossing. An assumption line says the let-in notches are not modeled.
+  - **Studs stop at braces:** a stud that meets a knee-brace axis ends on it, so studs within the brace leg of a post are shorter. With 3' legs and 24" spacing, the stud 2' from each post ends 1' below the beam.
   - **Axes on datums,** as D058 set for members: studs lie in the wall's reference plane, vertical, and lengths are reference-axis lengths, not cut lengths.
-  - **No plates:** the sill, beams, and girts are the datums studs end on. Bottom and top plates are not generated, and an assumption line says so.
-  - **For scale:** with the strawman (24", 1 girt), every stud infill wall has 5 positions and 10 stud pieces before openings: 200 on the reference house's 20 walls if all are stud infill.
-- **Alternatives:**
-  - **continuous studs from lower to upper plane,** with girts let in across them: one piece per position, but studs and girts then cross in the same plane;
-  - **girts cut into blocks between studs,** with continuous studs: the stud count is simpler and the girt count grows;
-  - **layout measured from the building corner,** continuous across bays (for sheathing modules): studs then land at different offsets in each bay, and the keys depend on more than the bay;
-  - **plates generated:** a fuller takeoff, with two more pieces per span.
+  - **No plates:** the sill and beams are the datums studs end on. Bottom and top plates are not generated, and an assumption line says so.
+  - **For scale:** with the strawman (24", 1 girt), every stud infill wall has 5 studs and 1 girt before openings: 100 studs and 20 girts on the reference house's 20 walls if all are stud infill.
+- **Not adopted:** studs stopping at girts (`n + 1` pieces per position); girts cut into blocks between studs; layout from the building corner; generated plates.
 
-**3d. Framing at openings.** Whether doors and windows get generated framing (king and jack studs, headers, rough sills, cripples), so that the stud count is complete, or the count excludes it with an assumption line. "See all of the studs" suggests generated framing, which makes stud positions depend on openings.
+**3d. Framing at openings.** Whether doors and windows get generated framing, so that the stud and girt counts are complete.
+
+- **Recommendation: generated opening framing,** as wall-framing pieces of the opening's wall, regenerated whenever the wall or the opening changes:
+  - **Stud infill walls:**
+    - **an edge stud on each side,** on the opening's side edge, continuous from the lower to the upper plane like any stud (3c), stopping at braces;
+    - **a header** across the opening at its head height, between the edge studs;
+    - **a rough sill** across the opening at its sill height, for windows only;
+    - **cripples:** a layout stud (3c) that falls inside the opening's width is replaced by a piece above the header and, for windows, a piece below the sill. A layout stud within 1e-6 m of an edge stud is dropped;
+    - **girts are cut at openings:** a girt that crosses an opening stops at its edge studs, so it becomes one piece on each side.
+  - **Straw bale walls:** a **buck** for each opening: two jambs on its side edges, a head, and, for windows, a sill, as wall-framing pieces.
+  - **Axes on datums, no sections:** every piece lies on the opening's edges in the wall's reference plane. **Jack studs, doubled studs, and header depths are not represented,** because two pieces side by side need an offset by the stud section, which D058 keeps out of geometry. An assumption line says so.
+  - **Example:** a 3'-0" window centered in a 12' stud infill bay at 24" (edges at 4'-6" and 7'-6") keeps the layout studs at 2', 4', 8', and 10', replaces the one at 6' with two cripples, and adds two edge studs, a header, and a rough sill. The mid-height girt becomes two pieces.
+- **Alternatives:**
+  - **edge studs, header, and sill only,** with layout studs inside the opening simply removed: fewer pieces, but cripples are part of every real takeoff;
+  - **no opening framing,** with an assumption line: openings then change no framing, but the counts are incomplete, which §8.1's direction rules out;
+  - **king and jack pairs:** closer to practice, but needs section offsets (D058).
+- **Knock-on:** opening commands now regenerate wall framing, so proposal 6's recommendation that they are routine is revisited when proposal 6 is discussed. A girt is no longer an obstacle to an opening.
 
 **3e. Joints.** Whether studs and girts get `Connection` records. A girt-to-post joint is traditional joinery, and a new junction class needs a new catalog version with a traditional and an engineered type (D059). Stud ends are nailed, which the catalog has no type for. The alternative is no records for infill framing, with an assumption line, as D059 did for post splices.
 
