@@ -284,7 +284,7 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
   - a change after which an opening no longer fits is **rejected**, naming the opening and the edited field (AC-06's contradictory constraints). That includes a frame edit and a `SetWallAssembly` whose framing would not fit. Nothing moves or shrinks an opening silently (principle 3);
   - a grid edit that removes the wall removes its openings and their framing, and the preview lists them. Such edits are already consequential.
 - **Routine:** the three opening commands regenerate only their own wall's framing (D066). They change no timber member, no connection, and no other wall, so they are applied with undo, like VS-01's routine edits. The commit still validates fully, and a preview is available.
-- **Strawman check:** a 3'-0" window centered in a 12' bay with 3' brace legs keeps its kings' outer faces at 4'-3" and 7'-9" from the start post, clear of the braces (proposal 9).
+- **Strawman check:** a 3'-0" window centered in a 12' bay with 3' brace legs and 1½" studs keeps its kings' outer faces at 4'-3" and 7'-9" from the start post with jacks (4'-4½" and 7'-7½" without), clear of the braces (proposal 9).
 
 **Alternatives:**
 
