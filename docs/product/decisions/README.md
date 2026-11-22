@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D087. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D088. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -87,6 +87,7 @@
 - D085: [VS-02b browser interim](D085-vs02b-browser-interim.md) — ART-003 ships the estimate table's wall lines, `m2` price-book rows, and the fifth artifact type in the workspace; walls are drawn in `UI-004`; moves AC2b-10's price-book bullet to ART-003 (implemented in ART-003, 2026-11-22).
 - D086: [VS-02b wall framing IDs in the views](D086-vs02b-wall-framing-ids-in-views.md) — wall framing entries in `plan2d` and `mesh3d` carry `piece_id` and no key, and mesh boxes no `primitive` field, keeping the stud infill mesh at about 87% of D063's ceiling; walls keep their keys (implemented in ART-003, 2026-11-22).
 - D087: [VS-02b browser Walls tab](D087-vs02b-browser-walls-tab.md) — an eighth editor tab holds `SetWallAssembly` and the opening editor; picking an opening or a wall in a view or the schedule makes it current there, and the active tab never changes by itself (approved from UI-004 item 1, 2026-11-22; not yet implemented).
+- D088: [VS-02b removed-openings warning](D088-vs02b-removed-openings-warning.md) — the confirmation dialog lists every opening an edit removes with its walls, by name and size, in a warning block above Confirm, with no extra acknowledgment (approved from UI-004 item 2, 2026-11-22; not yet implemented).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 
