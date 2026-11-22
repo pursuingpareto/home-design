@@ -75,7 +75,7 @@ Proposals 2–9 build on Option 1.
 |---|---|---|---|
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
-| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a settled (separate wall framing), 3a′ and 3b–3e under discussion | **Your judgment** | §8 |
+| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a and 3a′ settled (separate wall framing; Wall layers and Wall framing switches), 3b–3e under discussion | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
@@ -150,9 +150,20 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
   - `Connection` joins two `TimberMember` records (D054), so wall framing gets no connection records unless 3e decides otherwise.
 - **Not adopted:** `STUD` and `GIRT` member roles in the timber frame, with a single "Walls" switch over the build-ups only.
 
-**3a′. Seeing the framing inside a wall.** Because wall framing is drawn with the walls, the build-up layers (plaster, bales, sheathing, insulation) would cover it. *Recommendation:* the wall layer has **two display switches** in both views: **"Wall layers"** (the build-ups) and **"Wall framing"** (studs and girts). Turning wall layers off shows the framing; turning both off shows the bare timber frame. Both are on by default, remembered per browser, and display only: schedules are unaffected (as D062's Connections switch). *Alternative:* one "Walls" switch over both, with the build-ups drawn translucent so the framing shows through.
+**3a′. Seeing the framing inside a wall.** **Settled (2026-11-21) as recommended: two switches.** Because wall framing is drawn with the walls, the build-up layers (plaster, bales, sheathing, insulation) would cover it. *Recommendation:* the wall layer has **two display switches** in both views: **"Wall layers"** (the build-ups) and **"Wall framing"** (studs and girts). Turning wall layers off shows the framing; turning both off shows the bare timber frame. Both are on by default, remembered per browser, and display only: schedules are unaffected (as D062's Connections switch). *Alternative:* one "Walls" switch over both, with the build-ups drawn translucent so the framing shows through.
 
-**3b. Where girts go.** Which walls get girts (every perimeter wall, or stud infill walls only), how many per story, at what height, and whether straw bale walls get them. In-plane bale infill is usually laid without intermediate girts, because a girt interrupts the courses. Recommendation to follow once 3a is settled.
+**3b. Where girts go.** Which walls get girts, how many, at what height, and whether straw bale walls get them.
+
+- **Recommendation:** girts are **declared by the assembly definition**, as part of its framing layer:
+  - a girt count per wall, `n` (an integer, 0 or more), at evenly divided heights `i / (n + 1)` of the wall's datum-to-datum height, as purlins divide the rafter slope (D052);
+  - each girt runs horizontally in the wall's reference plane from post axis to post axis, one piece per wall, not continuous across posts;
+  - every wall that uses the definition gets them; the section comes from the definition (3a);
+  - the **straw bale** definition declares **0** girts, because in-plane bales are laid in courses from sill to beam and a girt would interrupt them. The **stud infill** count is design intent (proposal 9; strawman: 1, at mid-height);
+  - **fit:** with a brace plane on, every girt must lie below the brace feet in its wall (`z − L` on the wall's upper plane), checked on the full candidate as the brace fit is. A frame or definition change that would put a girt across a brace is rejected. On the reference house a mid-height girt is at 5'-0" on Level 0 (brace feet at 7'-0") and 4'-6" on Level 1 (brace feet at 6'-0"). How girts meet openings is 3d.
+- **Alternatives:**
+  - **girts in every perimeter wall, whatever its assembly** (nailers for cladding as part of the frame): straw bale walls then carry girts through their courses;
+  - **girts at a fixed height** (for example the window head height), rather than divided: aligns with openings, but couples framing to a value that stories of different heights share;
+  - **no girts in VS-02b:** simplest, but D052 deferred girts to VS-02b, and the direction in §8.1 asks to see them.
 
 **3c. Stud layout.** Which walls get studs (stud infill walls only, recommended), the spacing and where it is measured from (for example from each bay's start post, as joists are measured from each bay's west beam line), and whether studs run from sill or beam to beam or stop at girts. For scale: at 24" on center measured from the start post, a 12' bay holds 5 studs, so 100 on the reference house's 20 walls before openings; at 16", 8 per bay and 160.
 
