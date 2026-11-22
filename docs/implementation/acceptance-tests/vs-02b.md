@@ -75,7 +75,7 @@ Proposals 2–9 build on Option 1.
 |---|---|---|---|
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
-| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a and 3a′ settled (separate wall framing; Wall layers and Wall framing switches), 3b–3e under discussion | **Your judgment** | §8 |
+| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a, 3a′, and 3b settled (separate wall framing; two display switches; girts declared by the definition), 3c–3e under discussion | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
@@ -152,7 +152,7 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 **3a′. Seeing the framing inside a wall.** **Settled (2026-11-21) as recommended: two switches.** Because wall framing is drawn with the walls, the build-up layers (plaster, bales, sheathing, insulation) would cover it. *Recommendation:* the wall layer has **two display switches** in both views: **"Wall layers"** (the build-ups) and **"Wall framing"** (studs and girts). Turning wall layers off shows the framing; turning both off shows the bare timber frame. Both are on by default, remembered per browser, and display only: schedules are unaffected (as D062's Connections switch). *Alternative:* one "Walls" switch over both, with the build-ups drawn translucent so the framing shows through.
 
-**3b. Where girts go.** Which walls get girts, how many, at what height, and whether straw bale walls get them.
+**3b. Where girts go.** **Settled (2026-11-21) as recommended.** Which walls get girts, how many, at what height, and whether straw bale walls get them.
 
 - **Recommendation:** girts are **declared by the assembly definition**, as part of its framing layer:
   - a girt count per wall, `n` (an integer, 0 or more), at evenly divided heights `i / (n + 1)` of the wall's datum-to-datum height, as purlins divide the rafter slope (D052);
@@ -165,7 +165,21 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
   - **girts at a fixed height** (for example the window head height), rather than divided: aligns with openings, but couples framing to a value that stories of different heights share;
   - **no girts in VS-02b:** simplest, but D052 deferred girts to VS-02b, and the direction in §8.1 asks to see them.
 
-**3c. Stud layout.** Which walls get studs (stud infill walls only, recommended), the spacing and where it is measured from (for example from each bay's start post, as joists are measured from each bay's west beam line), and whether studs run from sill or beam to beam or stop at girts. For scale: at 24" on center measured from the start post, a 12' bay holds 5 studs, so 100 on the reference house's 20 walls before openings; at 16", 8 per bay and 160.
+**3c. Stud layout.** Which walls get studs, the spacing and where it is measured from, and how studs meet girts and braces.
+
+- **Recommendation:**
+  - **Which walls:** only walls whose definition has a stud framing layer (stud infill). Straw bale walls have none.
+  - **Spacing** comes from the definition's framing layer (3a; strawman 24" on center, proposal 9). It is measured **from the wall's start post axis** (the lower grid station: west for walls along X, south for walls along Y), as joists are measured from each bay's west beam line: positions `k · s` for `k = 1, 2, …` while short of the end post by more than 1e-6 m. No stud lies on a post axis, and a wall no wider than the spacing has no studs.
+  - **Studs stop at girts:** at each position, one stud piece per span between horizontal datums: the wall's lower plane (sill or Level 1 beam), each girt, and its upper plane. With `n` girts that is `n + 1` pieces per position.
+  - **Studs stop at braces:** a piece that meets a knee-brace axis ends on it, so studs within the brace leg of a post are shorter. With 3' legs and 24" spacing, the stud 2' from each post ends 1' below the beam.
+  - **Axes on datums,** as D058 set for members: studs lie in the wall's reference plane, vertical, and lengths are reference-axis lengths, not cut lengths.
+  - **No plates:** the sill, beams, and girts are the datums studs end on. Bottom and top plates are not generated, and an assumption line says so.
+  - **For scale:** with the strawman (24", 1 girt), every stud infill wall has 5 positions and 10 stud pieces before openings: 200 on the reference house's 20 walls if all are stud infill.
+- **Alternatives:**
+  - **continuous studs from lower to upper plane,** with girts let in across them: one piece per position, but studs and girts then cross in the same plane;
+  - **girts cut into blocks between studs,** with continuous studs: the stud count is simpler and the girt count grows;
+  - **layout measured from the building corner,** continuous across bays (for sheathing modules): studs then land at different offsets in each bay, and the keys depend on more than the bay;
+  - **plates generated:** a fuller takeoff, with two more pieces per span.
 
 **3d. Framing at openings.** Whether doors and windows get generated framing (king and jack studs, headers, rough sills, cripples), so that the stud count is complete, or the count excludes it with an assumption line. "See all of the studs" suggests generated framing, which makes stud positions depend on openings.
 
