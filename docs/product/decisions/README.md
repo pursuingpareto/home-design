@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D084. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D085. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -84,6 +84,7 @@
 - D082: [VS-02b framing-layer fill quantity](D082-vs02b-framing-layer-fill-quantity.md) — the framing layer's fill (bales, cellulose) is quantified as each wall's net area less its framing face area, with volume over the layer's thickness, and priced per m² under `assembly.<label>.<layer>`, labeled by material; refines D070 (to be implemented in ART-003).
 - D083: [VS-02b layer placement](D083-vs02b-layer-placement.md) — the framing layer is centered on the wall's reference plane, with exterior layers stacked outward and interior layers inward, so every framing piece lies inside its layer; settles D065's "symmetrically … unless the build-ups say otherwise" (to be implemented in ART-003).
 - D084: [VS-02b no surface air films](D084-vs02b-no-surface-air-films.md) — `parallel-path-1` sums layer resistances only, with the note "Surface air films are not included"; a later method version may add sourced film values; refines D071 (to be implemented in ART-003).
+- D085: [VS-02b browser interim](D085-vs02b-browser-interim.md) — ART-003 ships the estimate table's wall lines, `m2` price-book rows, and the fifth artifact type in the workspace; walls are drawn in `UI-004`; moves AC2b-10's price-book bullet to ART-003 (to be implemented in ART-003).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 
