@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)); proposal 6, openings, as revised ([D069](../../product/decisions/D069-vs02b-openings.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)); proposal 6, openings, as revised ([D069](../../product/decisions/D069-vs02b-openings.md)); proposal 7, quantities and outputs, as revised ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -79,7 +79,7 @@ Proposals 2–9 build on Option 1.
 | 4 | ~~Assembly definitions: what they record, and where they live~~ **Decided as recommended** ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)) | **Your judgment** | §9 |
 | 5 | ~~Choosing a wall's assembly: granularity, command, classification~~ **Decided as recommended** ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)) | **Your judgment** | §10 |
 | 6 | ~~Openings: records, commands, fit, survival, classification~~ **Decided as revised** ([D069](../../product/decisions/D069-vs02b-openings.md)) | **Your judgment** | §11 |
-| 7 | Quantities and outputs: quantity basis, a new artifact, estimate lines | **Your judgment** | §12 |
+| 7 | ~~Quantities and outputs: quantity basis, a new artifact, estimate lines~~ **Decided as revised** ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)) | **Your judgment** | §12 |
 | 8 | Thermal and moisture values: what is recorded, and what is computed | **Your judgment** | §13 |
 | 9 | Reference House 001 v3 design intent | **Your judgment** | §14 |
 | 10 | Schema version 3 replaces version 2 | Routine | §6 |
@@ -89,7 +89,7 @@ Proposals 2–9 build on Option 1.
 | 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
 | 15 | Traceability and budgets in D063's form | Routine | §6 |
 
-**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4, D068 proposal 5, D069 proposal 6.
+**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4, D068 proposal 5, D069 proposal 6, D070 proposal 7.
 
 ## 6. Routine items (10–15)
 
@@ -294,7 +294,9 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 - **Reject any grid edit that would remove a wall with openings:** nothing user-authored is ever removed as a side effect, but the user must first remove the openings.
 - **Generated openings** (for example one window per bay from a parameter): no user-authored records yet, but not how anyone places windows.
 
-## 12. Proposal 7: quantities and outputs (Your judgment)
+## 12. Proposal 7: quantities and outputs (decided as D070)
+
+**Decided as revised** ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md), 2026-11-21).
 
 **Question:** how wall quantities are measured, which artifact reports them, and how the estimate prices them.
 
@@ -343,7 +345,7 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 **Alternatives:**
 
 - **Record values, compute nothing:** the safest, but the comfort comparison then needs the reader to do arithmetic.
-- **A framing-corrected value** (parallel-path through the studs): closer to real performance for stud walls, but it needs a framing fraction, which needs the stud layout that proposal 3 defers.
+- **A framing-corrected value** (parallel paths through the studs and through the cavity): closer to real performance for stud walls. Since D066 generates every stud, the framing fraction is known, but the figure also needs the framing material's value, which is `null` unless supplied, and a stated method. It could follow once values exist.
 
 ## 14. Proposal 9: Reference House 001 v3 design intent (Your judgment)
 
