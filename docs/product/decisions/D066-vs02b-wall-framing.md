@@ -4,6 +4,7 @@
 **Date:** 2026-11-21  
 **Scope:** Whether and how VS-02b generates infill framing (studs, girts, and framing at openings), how it is shown, and whether it gets joint records. Settled as proposal 3 of the [VS-02b scope proposal](../../implementation/acceptance-tests/vs-02b.md) (§8, sub-questions 3a–3e), within [D064](D064-vs02b-slice-boundary.md) and [D065](D065-vs02b-wall-placement.md).  
 **Resolves:** D052's deferral of "girts and studs (with walls, in VS-02b)".  
+**Refined by:** [D078](D078-vs02b-opening-framing-details.md): where opening pieces end, layout studs at an opening, and when a girt is cut.  
 **Amends:** [D058](D058-datum-reference-axes.md), for wall framing only (below). D058 is unchanged for the timber frame.
 
 ## Product owner direction
