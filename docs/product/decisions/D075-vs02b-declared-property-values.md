@@ -1,6 +1,6 @@
 # D075 — VS-02b declared property values: three nullable fields per layer, each with its own provenance
 
-**Status:** Confirmed (not yet implemented; [MODEL-006](../../implementation/tasks/MODEL-006.md))  
+**Status:** Confirmed (implemented in VS-02b; [MODEL-006](../../implementation/tasks/MODEL-006.md) with [ASM-001](../../implementation/tasks/ASM-001.md))  
 **Date:** 2026-11-21  
 **Scope:** How a version 3 layer records the declared thermal and vapor values of [D071](D071-vs02b-thermal-moisture-values.md). Approved as [MODEL-006](../../implementation/tasks/MODEL-006.md) §13 item 3, within D071 and [D074](D074-vs02b-embedded-layers.md).  
 **Settles:** the field shapes that D071 left to MODEL-006 and ART-003 ("field names, payload shapes, and numeric rules").

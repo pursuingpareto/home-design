@@ -1,6 +1,6 @@
 # D073 — VS-02b wall system: a `WallSystem` record holds the wall rule, the default assembly, and the lists of walls and openings
 
-**Status:** Confirmed (not yet implemented; [MODEL-006](../../implementation/tasks/MODEL-006.md))  
+**Status:** Confirmed (implemented in VS-02b; [MODEL-006](../../implementation/tasks/MODEL-006.md) with [ASM-001](../../implementation/tasks/ASM-001.md))  
 **Date:** 2026-11-21  
 **Scope:** Where the version 3 model keeps generated walls, user-placed openings, the project-wide wall assembly, and the wall rule's version. Approved as [MODEL-006](../../implementation/tasks/MODEL-006.md) §13 item 1, within [D065](D065-vs02b-wall-placement.md)–[D069](D069-vs02b-openings.md).  
 **Settles:** the field location that [D068](D068-vs02b-wall-assembly-choice.md) left to MODEL-006 ("a new field holds the default definition").

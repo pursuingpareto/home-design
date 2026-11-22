@@ -25,7 +25,7 @@ from homedesign.timber import get_rule
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FIXTURE_PATH = REPO_ROOT / "docs" / "reference-projects" / "vermont-timber-house" / "fixture.snapshot.json"
 VECTORS_PATH = REPO_ROOT / "tests" / "vectors" / "jcs" / "vectors.json"
-SCHEMA_PATH = REPO_ROOT / "docs" / "architecture" / "schemas" / "snapshot.v2.schema.json"
+SCHEMA_PATH = REPO_ROOT / "docs" / "architecture" / "schemas" / "snapshot.v3.schema.json"
 BUILDING_MODEL_DOC = REPO_ROOT / "docs" / "architecture" / "building-model.md"
 
 FIXTURE_BYTES = FIXTURE_PATH.read_bytes()
@@ -101,38 +101,60 @@ def store(request):
     return PostgresStore(request.getfixturevalue("pg_url"))
 
 
-def regenerate(doc: dict[str, Any]) -> dict[str, Any]:
-    """Test helper: replace members and connections with the rule's output for the doc.
+GENERATED_KINDS = ("TimberMember", "Connection", "Wall", "WallFramingPiece")
 
-    Keeps a record's ID when its key survives and gives new keys a test-only UUIDv5.
+
+def regenerate(doc: dict[str, Any]) -> dict[str, Any]:
+    """Test helper: replace members, connections, walls, and wall framing with the rules' output.
+
+    Keeps a record's ID when its key survives and gives new keys a test-only UUIDv5. Openings
+    whose wall is retired are removed, as the pipeline does (MODEL-006 §8.5).
     (Production ID assignment is MODEL-003's job, D041; CONN-001 §5.2.)
     """
+    from homedesign.assemblies import get_wall_rule
+
     snapshot = Snapshot.model_validate(doc)
     grid = next(e for e in snapshot.entities if e.kind == "TimberGrid")
+    system = next(e for e in snapshot.entities if e.kind == "WallSystem")
     rule = get_rule(grid.generation_rule_version)
-    existing = {e["generation_key"]: e["id"] for e in doc["entities"] if e["kind"] in ("TimberMember", "Connection")}
+    wall_rule = get_wall_rule(system.generation_rule_version)
+    existing = {e["generation_key"]: e["id"] for e in doc["entities"] if e["kind"] in GENERATED_KINDS}
 
     def record_id(key: str) -> str:
         return existing.get(key) or str(uuid.uuid5(_TEST_ID_NAMESPACE, key))
 
-    members = [
-        {"id": record_id(m.generation_key), "kind": "TimberMember", "schema_version": RECORD_SCHEMA_VERSIONS["TimberMember"], **m.to_json()}
-        for m in rule.generate(snapshot)
-    ]
+    def record(kind: str, key: str, fields: dict[str, Any]) -> dict[str, Any]:
+        return {"id": record_id(key), "kind": kind, "schema_version": RECORD_SCHEMA_VERSIONS[kind], **fields}
+
+    members = [record("TimberMember", m.generation_key, m.to_json()) for m in rule.generate(snapshot)]
     member_ids = {m["generation_key"]: m["id"] for m in members}
-    connections = [
-        {
-            "id": record_id(c.generation_key),
-            "kind": "Connection",
-            "schema_version": RECORD_SCHEMA_VERSIONS["Connection"],
-            **c.to_json([member_ids[k] for k in c.member_keys]),
-        }
-        for c in rule.generate_connections(snapshot)
+    connections = [record("Connection", c.generation_key, c.to_json([member_ids[k] for k in c.member_keys])) for c in rule.generate_connections(snapshot)]
+    inventory = wall_rule.build(snapshot)
+    pieces = [record("WallFramingPiece", p.generation_key, p.to_json()) for p in inventory.framing]
+    walls = [
+        record("Wall", w.generation_key, w.to_json([piece["id"] for p, piece in zip(inventory.framing, pieces) if p.wall_key == w.generation_key]))
+        for w in inventory.walls
     ]
-    doc["entities"] = [e for e in doc["entities"] if e["kind"] not in ("TimberMember", "Connection")] + members + connections
+    wall_ids = {w["id"] for w in walls}
+    retired = {e["id"] for e in doc["entities"] if e["kind"] == "Opening" and e["wall_id"] not in wall_ids}
+    doc["entities"] = [e for e in doc["entities"] if e["kind"] not in GENERATED_KINDS and e["id"] not in retired] + members + connections + walls + pieces
     frame = next(e for e in doc["entities"] if e["kind"] == "FrameSystem")
     frame["member_ids"] = [m["id"] for m in members]
     frame["connection_ids"] = [c["id"] for c in connections]
+    wall_system = next(e for e in doc["entities"] if e["kind"] == "WallSystem")
+    wall_system["wall_ids"] = [w["id"] for w in walls]
+    wall_system["opening_ids"] = [i for i in wall_system["opening_ids"] if i not in retired]
+    return doc
+
+
+def remove_openings(doc: dict[str, Any]) -> dict[str, Any]:
+    """The doc with no openings and no opening framing (for frame-only tests whose edits no D072
+    window would fit). Layout studs and girts are left as they are: regenerate for conformance."""
+    gone = {e["id"] for e in doc["entities"] if e["kind"] == "Opening" or (e["kind"] == "WallFramingPiece" and e["opening_id"] is not None)}
+    doc["entities"] = [e for e in doc["entities"] if e["id"] not in gone]
+    for wall in (e for e in doc["entities"] if e["kind"] == "Wall"):
+        wall["framing_ids"] = [i for i in wall["framing_ids"] if i not in gone]
+    next(e for e in doc["entities"] if e["kind"] == "WallSystem")["opening_ids"] = []
     return doc
 
 

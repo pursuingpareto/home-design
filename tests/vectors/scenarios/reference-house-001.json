@@ -6,25 +6,25 @@
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:12fb319bcb4030a1dd0371785772752d3eef657909621539b23ab0c892ff5598",
+          "input_fingerprint": "sha256:d65d586b5e8597720b5ca0f840de92a3c5ca8b536bfc027c26599cfc5e4364f5",
           "payload_fingerprint": "sha256:8878e20e6d5f9424463ff5fa89e0373421950fec4c90368abfd01c4bd7bd6c23",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:2a36e24c5bfbc3544abca216ab6a8397c5bc183e3ffe3b8c218231d343fa71db",
+          "input_fingerprint": "sha256:97a4b7eaf464d7895fd834a7ca495731233cf3d3df9c18b36ed6fc6b010edd5c",
           "payload_fingerprint": "sha256:49b3082f5a7e74e8bc43db8e4c50c156f674e9981aac42e0b017ce8c497ee091",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:328579493362e2166ab0ec65fb63d431b847a62067ac7df67a660782f14ea986",
+          "input_fingerprint": "sha256:b4a27b81d3dd2ab1377f8895458b81a0d8a7925f90dc6b874a83cf9eb3baf0fb",
           "payload_fingerprint": "sha256:3917dac5db5d6e7f0ac485ad0a2da3cabf68998a42024f7b191de54fefe13e0e",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:fc9acdd0c4a212c777d6e7897592733921fdbf003a82fffeff2d9c67401e7118",
+          "input_fingerprint": "sha256:85ceeb79d6aaf86b284e0c81fb85cdc2a593682abf6db7ccd069486a8d044ddb",
           "payload_fingerprint": "sha256:d2e9fcdab3e9e86c466b6db58c243fda57063048415e88ec7b4f067844eb5d1f",
           "status": "CURRENT"
         }
@@ -32,31 +32,31 @@
       "command_type": "CreateReferenceProject",
       "revision_id": "62d9533d-467a-5369-9b03-e43ea6739572",
       "sequence": 1,
-      "snapshot_fingerprint": "sha256:c66e23df45fbfad0dcafec10339f46f067120d232f990a0c14c2be55726b8db5"
+      "snapshot_fingerprint": "sha256:b79ea484bebb7df9db99ca0d809c441bd7ced9fd7433745a1efca6fbf5f9e242"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:a8339b2923dc2f1956e89ee2be3d502be550c6773d15041632e4aa0b22b606a7",
+          "input_fingerprint": "sha256:e8d7828af7855aa274b2292e7686bc380395eab3ee687a486698c6599a4e6aaf",
           "payload_fingerprint": "sha256:06ec8e9f06d5304f7556504ad0fc6587d456b0ad0a18da111069247d3e995600",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:9ae15ec772d6e65aeed3364b6d803c4f115ad0ea615fa0a6387f6dd498dbbe9d",
+          "input_fingerprint": "sha256:c3102777e08855cdb504201c2f31f9c11074a67a02f8f165526e61b210df349f",
           "payload_fingerprint": "sha256:0c6f1ed7772ca51ad69da4f1f82c91642e7b9bf82a153faa39efd3a2f96c1d49",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:3787593753dc7a67b2d46c5708f7cb6d5b23ec9c22de5d2bfae3f5813d4dd967",
+          "input_fingerprint": "sha256:cf8dc3b9ead43535a8f9b3b37b66e57ec5a01aa095f7531e32bb8ce5bd756b9b",
           "payload_fingerprint": "sha256:3605500961dfc34f81dd65f858ad93eae3ce98e9c555db25349f9c6eda4f1d9f",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:3f892f46fc7d6cde1894dd54c3c0562b7afbb8a2769f1b7446665f3574c64b63",
+          "input_fingerprint": "sha256:a54b269d0a0db7729daa2b453b95bc5d53999df441a5534e816825bb514a50a2",
           "payload_fingerprint": "sha256:a18f53a456a105defb99527900560cb5dc9d0fc3fb3994a357fee4c722005982",
           "status": "CURRENT"
         }
@@ -64,31 +64,31 @@
       "command_type": "SetFootprintDimensions",
       "revision_id": "082354fc-c3ad-5845-b0d0-b23ce18324a9",
       "sequence": 2,
-      "snapshot_fingerprint": "sha256:da058281cd977df9d1206f73fa50e57082f2cb3e5048944aff1998cce5ec559b"
+      "snapshot_fingerprint": "sha256:bd122ea18f200fae015c8476c7b7cd650b95d73f7363612d641a882de77738f8"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:fafcb24a709ed29003babd6f6165c82febe38b0185920426b54c11cbddd75a87",
+          "input_fingerprint": "sha256:4acc3725a88b995b5c63beb481edffdfd519d5e9d2b58be0027b3e455b12c280",
           "payload_fingerprint": "sha256:717a3e317bf6da4ba05aeed415159072a30e22b15122a5cc55cc333a06d12a23",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:ca534339ae81bc83d802586f094c587cd3c42ef5a360b6508d94b121668a24f4",
+          "input_fingerprint": "sha256:0ccfb99a47afb706f7e8c5fbaafc82921c33c06fa9e244fe004586e81e25e0de",
           "payload_fingerprint": "sha256:f895fb7dde626bcea1cc9eb25ad639ccc88b8a8c3f656e5f87a145a399e79348",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:9c82b2bc805b56e913ebef7e563f895b9402edcbde74878a778d8e4d8b189df5",
+          "input_fingerprint": "sha256:aa18a89f20ca0fb3993e51f5e9c410596b4b9fcf4ed7d648fc8a05eabe9b9f25",
           "payload_fingerprint": "sha256:84ab8b8c417cbd149e00e8e5fd68209f3fe440b983766e7a22fa3308dc7f0f20",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:5253c473567ceff1b5fc0b0ee7c077c385378806458d588547e9433aff961f47",
+          "input_fingerprint": "sha256:c03aaa18c98d1425d88b85d0464e2e06d892afba50a6c6280dc626ec2cfc6dec",
           "payload_fingerprint": "sha256:b382a0236393994efeeaa7e339c18de90ecae760c51aca958ec059ec7a983a3a",
           "status": "CURRENT"
         }
@@ -96,31 +96,31 @@
       "command_type": "SetTimberGrid",
       "revision_id": "a335ce0d-24c3-5d8b-b925-443d83f46cc1",
       "sequence": 3,
-      "snapshot_fingerprint": "sha256:e5c61ecb6cc4f1e7adbc6775299d1143da02f4bc093cd2843258cae430d0804a"
+      "snapshot_fingerprint": "sha256:60232bcf4045569cf34f47ccd884f4a903b50537f4a862061381d97c4f3c2854"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:dc521b4de822e4c9c88dfab1f871f141522c93224667eaf6ca33ef3426f28601",
+          "input_fingerprint": "sha256:4f9a00b239f3790878bfe5f7fcf709c25ac3aeb6a77b0dcfb47b863a9d607c0f",
           "payload_fingerprint": "sha256:3e162a6ff13b523843f6edb471099e32390045a896dbb72f79e7e2629cc754bf",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:ea56ed825340631a39b7789a6ac4a830e2f44a1b15064bd2c76631c08f4f3a7c",
+          "input_fingerprint": "sha256:64a58d1f522a5d3b5b76da734a760fb8d59b51897db1b856def3027d08f81d11",
           "payload_fingerprint": "sha256:0ad1b7efbe00fe46c4dbd229b0f8ee7c17d88a8004175b74e781bbcadec4b42e",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:9f22ac706140bbbcbc28d8c392d8398a3edc770e006961053d896b1666e3b537",
+          "input_fingerprint": "sha256:bf5db442319b546f2d753c5817f18d22d058c2932f4a1500362d153e32584b81",
           "payload_fingerprint": "sha256:486b6bc4bdb4acf22849c01051892c96791e67375ecaae591b98c07fbe476bf6",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:987469688b6ff95f54fcf7dfd7aed48034b3ca028cac3f0d73e340527cd9fd84",
+          "input_fingerprint": "sha256:4b3d289901eefd4492fb4516bca26feca12d418236656956efbf751654b06f3f",
           "payload_fingerprint": "sha256:1ef5cfd290d2d96ec2cfeb5f08f362ec105327d2e25a6a1a2c9ca09cde2088bd",
           "status": "CURRENT"
         }
@@ -128,31 +128,31 @@
       "command_type": "SetFootprintDimensions",
       "revision_id": "a3614dd0-b45b-5612-9e89-2aaaae290bf5",
       "sequence": 4,
-      "snapshot_fingerprint": "sha256:d8bd4357b905c849ada747ebd712435880faa9e5052d739a6e0e6d5b98bc3392"
+      "snapshot_fingerprint": "sha256:7c0bef45af960f24ec23d8ff359f068ef71b5a83b172830df51d9ebbcbd7c595"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:5e559b08897b7abc91be7f824514a5fd63222d60c34cc9a029586e8092b496fd",
+          "input_fingerprint": "sha256:228691a539e1f48487869c0fd519deaff506d6253527fd16868cdeaf8ccdffd5",
           "payload_fingerprint": "sha256:4d2e37e1c0d162ce80d558b4714ba2aec82d079b28e427b3715bd13234c54600",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:cc28ecdc28b18b89fdf6c33a8de0914627b8894fd9c3a92925be0a8cdf1c6784",
+          "input_fingerprint": "sha256:40e3ef3f2f540c23892146aea413ced1da86f250958cc4f7b985caaa26379c7c",
           "payload_fingerprint": "sha256:994d5d18a9df1efcf3d51fdf1254c6acded3b4d1464f53977b49caa753c188f0",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:0c3f5ede1d0f0712265cfdb01ae0ad42d5f3deab220fe761a8b06142b078d5ca",
+          "input_fingerprint": "sha256:b4c64c04baba181ff8d5fc48d5f2d514486f354b263524bab9b6874f503c7278",
           "payload_fingerprint": "sha256:ec19f01fa1a6366c1553f873edfc95747f2f309629788849db377a5f979a0797",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:36c85890489dc2af6d818afe528acc0d91ebdc977285b7ff966f61752e245394",
+          "input_fingerprint": "sha256:4c92dc26d649c3b45f51ddf871673ab51b6bff4f08a8e07d176ea1285fadce98",
           "payload_fingerprint": "sha256:cfd9dc5b6a16fd842d3a8efd69b290e18158b1e3dfd70b9feaaabc7b118b1c59",
           "status": "CURRENT"
         }
@@ -160,31 +160,31 @@
       "command_type": "SetStoryHeights",
       "revision_id": "e32528c5-33a3-5a3b-a8d4-555d64ec346a",
       "sequence": 5,
-      "snapshot_fingerprint": "sha256:a2f41c5d28e15fbe80a7d7fbde913f616c9e8405952c22d856224dcb654ecee2"
+      "snapshot_fingerprint": "sha256:f83f086927129440c27e043ca5c2a756b223dcc81a8da0f02bdb4bc5cafdaf71"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:4f3afb1a10aaa1c5c750ead47a74c9a4f577e081c26bb02b852ecfd3956a6692",
+          "input_fingerprint": "sha256:cb09edb33f5f90d5c0ae0f07d06b45fc9af69db5b7efb89071bd14585bd1e70d",
           "payload_fingerprint": "sha256:ed288d44302f7a13ec13be8a2e3dc9d09e9830eded0d5b486faa0c3a14101de0",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:cc28ecdc28b18b89fdf6c33a8de0914627b8894fd9c3a92925be0a8cdf1c6784",
+          "input_fingerprint": "sha256:40e3ef3f2f540c23892146aea413ced1da86f250958cc4f7b985caaa26379c7c",
           "payload_fingerprint": "sha256:994d5d18a9df1efcf3d51fdf1254c6acded3b4d1464f53977b49caa753c188f0",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:378256d15733be9972bd62010dd198bc34e132b492861624fa4cb3f40cf93028",
+          "input_fingerprint": "sha256:95566a56acce0607d4dc2f7a40376b1c246c8396f4e45b0eded45b13c5e062e9",
           "payload_fingerprint": "sha256:a3bab26133d1839cc21b647e997e87a2f74e73fc37f1c29f05864c6b1f52c561",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:2e781f4e22ba5b650737ab2c46aba9410329184ab6eb2ad310ee7f36675c76a3",
+          "input_fingerprint": "sha256:aebede6ffb9413cddac6597830786d000c5df6b395da1d90a7df943e145c7b8f",
           "payload_fingerprint": "sha256:8716ab120b8a42fbf297ee79fc5684c78eb4c3443172c5327496c5bb80ce7336",
           "status": "CURRENT"
         }
@@ -192,31 +192,31 @@
       "command_type": "SetGableRoofParameters",
       "revision_id": "ee26f8c8-56ee-5456-80ca-3a96ea9fe902",
       "sequence": 6,
-      "snapshot_fingerprint": "sha256:90b4f402a61e0006c1ddb7d0a483de7269444f86892229b25c632a83a2e30001"
+      "snapshot_fingerprint": "sha256:a9d232b89e8de87a3685d8307f19f9f9f52bb106a4f9509d432bc026e4b07d92"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:4f3afb1a10aaa1c5c750ead47a74c9a4f577e081c26bb02b852ecfd3956a6692",
+          "input_fingerprint": "sha256:cb09edb33f5f90d5c0ae0f07d06b45fc9af69db5b7efb89071bd14585bd1e70d",
           "payload_fingerprint": "sha256:ed288d44302f7a13ec13be8a2e3dc9d09e9830eded0d5b486faa0c3a14101de0",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:cc28ecdc28b18b89fdf6c33a8de0914627b8894fd9c3a92925be0a8cdf1c6784",
+          "input_fingerprint": "sha256:40e3ef3f2f540c23892146aea413ced1da86f250958cc4f7b985caaa26379c7c",
           "payload_fingerprint": "sha256:994d5d18a9df1efcf3d51fdf1254c6acded3b4d1464f53977b49caa753c188f0",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:378256d15733be9972bd62010dd198bc34e132b492861624fa4cb3f40cf93028",
+          "input_fingerprint": "sha256:95566a56acce0607d4dc2f7a40376b1c246c8396f4e45b0eded45b13c5e062e9",
           "payload_fingerprint": "sha256:a3bab26133d1839cc21b647e997e87a2f74e73fc37f1c29f05864c6b1f52c561",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:2e781f4e22ba5b650737ab2c46aba9410329184ab6eb2ad310ee7f36675c76a3",
+          "input_fingerprint": "sha256:aebede6ffb9413cddac6597830786d000c5df6b395da1d90a7df943e145c7b8f",
           "payload_fingerprint": "sha256:8716ab120b8a42fbf297ee79fc5684c78eb4c3443172c5327496c5bb80ce7336",
           "status": "CURRENT"
         }
@@ -224,31 +224,31 @@
       "command_type": "AddSection",
       "revision_id": "fc1b2dd5-950b-5fec-82ec-447637d1ec0f",
       "sequence": 7,
-      "snapshot_fingerprint": "sha256:cf3a84ee90d9f20c7ba5390d4c3914a83e0f20e220f317b0ac03adf548567611"
+      "snapshot_fingerprint": "sha256:b218f3573dc3a4759677a0eb7e56d2c85bf8e4df65dd3cb6a9fa010c704409a0"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:5c2e9e820de7a831658003249211fdcf5a00b9e177be8c7578f408e4bbfad03c",
+          "input_fingerprint": "sha256:00c146f2ac1137e7a21c5717b5b1d4a124a35096f02deb471d650262c72eabae",
           "payload_fingerprint": "sha256:cd5df0f4d49b4ef206b16c6b49733b569855a38e2414aced54e98c4b5aa33d17",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:cc28ecdc28b18b89fdf6c33a8de0914627b8894fd9c3a92925be0a8cdf1c6784",
+          "input_fingerprint": "sha256:40e3ef3f2f540c23892146aea413ced1da86f250958cc4f7b985caaa26379c7c",
           "payload_fingerprint": "sha256:994d5d18a9df1efcf3d51fdf1254c6acded3b4d1464f53977b49caa753c188f0",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:e333e0ced6b870f37d45c670c60817d2a2e21217dcd3716517226fa62855a1f8",
+          "input_fingerprint": "sha256:b4739874c1c01972278ba2e7f71129cbdc1fa7f5df8e53d644e1b22e205f3f0b",
           "payload_fingerprint": "sha256:bd84c105a6f884ed7d4caf49b89c2f777c601e4504dc6a248ae441901bff87b3",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:ace45f26c9a265add875310f32be432374ed00d5f63c16a2e064edb7558c0e21",
+          "input_fingerprint": "sha256:8b71820ee4de11c23372f132e450e87d25f48df1daf0eabc93d719fc5a6b44a8",
           "payload_fingerprint": "sha256:fac45468da97e4646f2147914c210c63bbc5302f04abe0f6d84f1820a30f39c8",
           "status": "CURRENT"
         }
@@ -256,31 +256,31 @@
       "command_type": "SetMemberSection",
       "revision_id": "68d43d11-d351-5311-b244-73361205855c",
       "sequence": 8,
-      "snapshot_fingerprint": "sha256:56272a6ff134b95da707f191123a0b9183a5b870aab35c7f746e6a7f3a14ca5b"
+      "snapshot_fingerprint": "sha256:0289c788582111c013e070ab31bc6dc8b801288bee52c12250eeab5a0e6e20e0"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:d432f5b82432c05f8a5a84bdcecc05f7a4bdabdc5bb5958a12c381ec8ba61552",
+          "input_fingerprint": "sha256:1c21b3577acbe53fd797cddd8f9cd789239a4edd4ff1f49b22b77d73db5b3ba0",
           "payload_fingerprint": "sha256:43fdf84277976efdb7e5c26bea3a2a531b1d01fdd209014baa8e7e667a95d50c",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:961be0a10ab8a77df4b5b781c88a0ef29d6040f1031b267210cabe8bd303c1e6",
+          "input_fingerprint": "sha256:2e27430d8ab8892ae9cfba4f068813006548d91319a377fe96d2c19512ee0626",
           "payload_fingerprint": "sha256:ed4f562b9767041faf49d289b088b660e9e3d028ec7fb651969edf3b0ab932f6",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:e333e0ced6b870f37d45c670c60817d2a2e21217dcd3716517226fa62855a1f8",
+          "input_fingerprint": "sha256:b4739874c1c01972278ba2e7f71129cbdc1fa7f5df8e53d644e1b22e205f3f0b",
           "payload_fingerprint": "sha256:bd84c105a6f884ed7d4caf49b89c2f777c601e4504dc6a248ae441901bff87b3",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:ace45f26c9a265add875310f32be432374ed00d5f63c16a2e064edb7558c0e21",
+          "input_fingerprint": "sha256:8b71820ee4de11c23372f132e450e87d25f48df1daf0eabc93d719fc5a6b44a8",
           "payload_fingerprint": "sha256:fac45468da97e4646f2147914c210c63bbc5302f04abe0f6d84f1820a30f39c8",
           "status": "CURRENT"
         }
@@ -288,31 +288,31 @@
       "command_type": "SetFrameParameters",
       "revision_id": "f981087c-cc2c-5e54-9023-6ee1439ef9f5",
       "sequence": 9,
-      "snapshot_fingerprint": "sha256:0e0e0cd9aac69c4284d4715d8ff00581c509457532636f1ba37e8e3024b63234"
+      "snapshot_fingerprint": "sha256:e28cec17dc8440d8bf78d58da02446b265cd7227726cebbad28d923b86a568c5"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:a8ffeed86dbd3b9e83babd343bdfa4d60e6d8c2e55cb6608281152bdd388edb6",
+          "input_fingerprint": "sha256:3a97dede6b3ce4d456e7eb5d254175b3f34cc57a3e608f5079c844f844bd2bc6",
           "payload_fingerprint": "sha256:4f29e7413b02715afcf748b3b496069b26f2a86b11bae3d7df6571633bd0daf7",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:49aff2ad4258eba2d4574b0fd36aa8aa61cbb8a41b6809f6479cff28d1dd74ca",
+          "input_fingerprint": "sha256:2e0e707717b27562f69578bdbcab6f279d8a0ca4564ff445a169adb91473f397",
           "payload_fingerprint": "sha256:8c2fdd8032ec0bc185b9f0bd47ac14a1a2941e00122bcd04a8f21b3a88c2f574",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:ee58b64daf76273342b76e94f69fee24d51cd30004d837e1642c0c4197f45052",
+          "input_fingerprint": "sha256:edca1e3c2c6b3e5b380a0f4a5ef99650cef005bbb0ad13afbcaf4db3186b174f",
           "payload_fingerprint": "sha256:77a165bd4ecfc84d7d1ffd6b9c6a07465e9bcbdfea22fddde07ba7bb8d872a29",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:9a7a000ed3bc708429b6a7947e4842eb476d6e28a1867732cd81fa1aaf7a5c2b",
+          "input_fingerprint": "sha256:e2b1ce8a7ec97f8954101644eaa1ee4335596bd89da5c16e79723eb2bab80296",
           "payload_fingerprint": "sha256:ef022a2839ec1a83e2b145b4629bc3c3fb974cf4f2cf3f77b595b71f84bbb3a7",
           "status": "CURRENT"
         }
@@ -320,31 +320,31 @@
       "command_type": "SetFrameParameters",
       "revision_id": "bdd8cc42-af9d-5109-91b1-97c5318fb967",
       "sequence": 10,
-      "snapshot_fingerprint": "sha256:1ff0381ce5ebc116482d8f8232b14132d0d780d9f9075aabf0bac200a20e155e"
+      "snapshot_fingerprint": "sha256:c2792d9703117134aa97cc0b098cd958dec195f6fbec8a5ac7eeb568130777d9"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:79c224e1d46e5320be214ebfe7f6613705152abbce8e14a0cf05f6e933af75b2",
+          "input_fingerprint": "sha256:a7008447e21a66e5d9fae77b1a6e96b15c34d4fb6062af44eb101fd72513ab72",
           "payload_fingerprint": "sha256:28b2b4eda7e9e744da751015636f8b36bb09f3b84c6d05f4e8ddab9f5272af75",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:875299577ba321425517f070ad7aa4387bc1ccd863970672e6f37fdf22ed68a9",
+          "input_fingerprint": "sha256:fc869d0e92309bef1891dc6686498cf53e2a232cfa43a53b21a8b47e3b09540f",
           "payload_fingerprint": "sha256:9bc49f2d8a82c5e9b4ba4d7ce073dc65e43c6577e4cdc060bb5b30782cce28b7",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:9f65ea03e11855e3bf57a8dfcd036f224f589aa6af4c8bea9894ab210e2c2e09",
+          "input_fingerprint": "sha256:3012b3201187a8b09ec511edb8ae276430355116a471130c19fcef9bf0db9f48",
           "payload_fingerprint": "sha256:68ee8c4d5160e64165b3823c5f54bb8c41e9724038d9a7122da8ef84a45c5e10",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:ca54777b2f3f4b0f80370b5bfea1beafa289c62292cf26603c0785d78d2d3fd2",
+          "input_fingerprint": "sha256:a11ea274989995903698a6b06266eb215e45a579ccda3e0e8d9c2111262a5318",
           "payload_fingerprint": "sha256:e7bf213a3149bfcc4739686c26b268fa742573571e2854ae0773fa36cf6147eb",
           "status": "CURRENT"
         }
@@ -352,31 +352,31 @@
       "command_type": "SetConnectionType",
       "revision_id": "d971cdc7-5369-5637-8eb1-82cd2375443f",
       "sequence": 11,
-      "snapshot_fingerprint": "sha256:de67204eb576f8a93c71d12d3fce150f03a6e92d75b29884f2b9a05c0a3f80df"
+      "snapshot_fingerprint": "sha256:7559fd3876544cf9fc158c2d47a1fad4e0e7482e631dcb11813c949efed8a05b"
     },
     {
       "artifacts": {
         "mesh3d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:a8339b2923dc2f1956e89ee2be3d502be550c6773d15041632e4aa0b22b606a7",
+          "input_fingerprint": "sha256:e8d7828af7855aa274b2292e7686bc380395eab3ee687a486698c6599a4e6aaf",
           "payload_fingerprint": "sha256:06ec8e9f06d5304f7556504ad0fc6587d456b0ad0a18da111069247d3e995600",
           "status": "CURRENT"
         },
         "plan2d": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:9ae15ec772d6e65aeed3364b6d803c4f115ad0ea615fa0a6387f6dd498dbbe9d",
+          "input_fingerprint": "sha256:c3102777e08855cdb504201c2f31f9c11074a67a02f8f165526e61b210df349f",
           "payload_fingerprint": "sha256:0c6f1ed7772ca51ad69da4f1f82c91642e7b9bf82a153faa39efd3a2f96c1d49",
           "status": "CURRENT"
         },
         "preliminary_estimate": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:3787593753dc7a67b2d46c5708f7cb6d5b23ec9c22de5d2bfae3f5813d4dd967",
+          "input_fingerprint": "sha256:cf8dc3b9ead43535a8f9b3b37b66e57ec5a01aa095f7531e32bb8ce5bd756b9b",
           "payload_fingerprint": "sha256:3605500961dfc34f81dd65f858ad93eae3ce98e9c555db25349f9c6eda4f1d9f",
           "status": "CURRENT"
         },
         "timber_schedule": {
           "generator_version": "2",
-          "input_fingerprint": "sha256:3f892f46fc7d6cde1894dd54c3c0562b7afbb8a2769f1b7446665f3574c64b63",
+          "input_fingerprint": "sha256:a54b269d0a0db7729daa2b453b95bc5d53999df441a5534e816825bb514a50a2",
           "payload_fingerprint": "sha256:a18f53a456a105defb99527900560cb5dc9d0fc3fb3994a357fee4c722005982",
           "status": "CURRENT"
         }
@@ -384,7 +384,7 @@
       "command_type": "UndoToRevision",
       "revision_id": "63ba73f4-7973-58aa-8c36-bfd9bf4a5f7f",
       "sequence": 12,
-      "snapshot_fingerprint": "sha256:c9e8f804d23bb3a785dd9c4cf13130e607103863018ab7a0ab14d7acb25917ac"
+      "snapshot_fingerprint": "sha256:781c3e3acc78f6ccc657ede3251c6f46ca193b0f7a4a37cd317b04ca3f7bf25a"
     }
   ],
   "steps": [

@@ -120,6 +120,32 @@ class ConnectionChanges(_Strict):
     updated: list[str]
 
 
+class WallRef(_Strict):
+    id: str
+    generation_key: str
+
+
+class WallChanges(_Strict):
+    """Generated walls the commit adds, removes, or changes (MODEL-006 §8.6), shaped like `members`."""
+
+    added: list[WallRef]
+    removed: list[WallRef]
+    updated: list[str]
+
+
+class WallFramingRef(_Strict):
+    id: str
+    generation_key: str
+
+
+class WallFramingChanges(_Strict):
+    """Generated wall framing pieces the commit adds, removes, or changes (MODEL-006 §8.6), shaped like `members`."""
+
+    added: list[WallFramingRef]
+    removed: list[WallFramingRef]
+    updated: list[str]
+
+
 class PreviewWarning(_Strict):
     code: str
     message: str
@@ -138,6 +164,8 @@ class PreviewResponse(_Strict):
     changes: list[FieldChange]
     members: MemberChanges
     connections: ConnectionChanges
+    walls: WallChanges
+    wall_framing: WallFramingChanges
     impacted_artifacts: list[ArtifactType] = Field(
         json_schema_extra={"uniqueItems": True},
         description="Exactly the artifact types whose payload for the new revision differs from the base's, sorted; "

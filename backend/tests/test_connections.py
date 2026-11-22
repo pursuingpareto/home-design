@@ -129,7 +129,7 @@ def test_fixture_connections_are_exact_rule_output():
     assert len(generated) == 312 == sum(REFERENCE_COUNTS.values())
     frame = _frame(FIXTURE)
     assert frame["connection_ids"] == [stored[c.generation_key]["id"] for c in generated]
-    assert len(FIXTURE["entities"]) == 518
+    assert len(FIXTURE["entities"]) == 651  # ASM-001 §8.1: v3 adds 133 wall records
 
 
 def test_reference_house_receiving_members():

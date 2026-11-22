@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 
 import pytest
 
-from conftest import FIXTURE, FIXTURE_BYTES, entities_of, epath, fresh_fixture, index_of, regenerate
+from conftest import FIXTURE, FIXTURE_BYTES, entities_of, epath, fresh_fixture, index_of, regenerate, remove_openings
 from homedesign.model import codes, validate_bytes, validate_value
 from homedesign.model.validation import ValidationResult
 
@@ -122,6 +122,52 @@ def _remove_member(member):
         frame["member_ids"].remove(member["id"])
         frame["connection_ids"] = [i for i in frame["connection_ids"] if i not in gone]
     return mutate
+
+
+WALLS = entities_of(FIXTURE, "Wall")
+OPENINGS = entities_of(FIXTURE, "Opening")
+WALL_SYSTEM = entities_of(FIXTURE, "WallSystem")[0]
+STUD_INFILL = next(d for d in entities_of(FIXTURE, "AssemblyDefinition") if d["label"] == "stud-infill")
+
+
+def _opening_on(wall_key):
+    wall = next(w for w in WALLS if w["generation_key"] == wall_key)
+    return next(o for o in OPENINGS if o["wall_id"] == wall["id"])
+
+
+def _second_opening(wall_key):
+    """A copy of a wall's opening at the same offset (D079)."""
+    def mutate(d):
+        d["entities"].append(dict(_find(d, _opening_on(wall_key)["id"]), id=NEW_ID))
+        system = _find(d, WALL_SYSTEM["id"])
+        system["opening_ids"] = sorted([*system["opening_ids"], NEW_ID])
+    return mutate
+
+
+def _stud_girts(count):
+    def mutate(d):
+        _find(d, WALL_SYSTEM["id"])["default_assembly_definition_id"] = STUD_INFILL["id"]
+        _find(d, STUD_INFILL["id"])["layers"][2]["framing"]["girt_count"] = count
+    return mutate
+
+
+def _v3_cases() -> list[Case]:
+    """MODEL-006 §11 item 3: the version 3 codes, from test_walls_model's minimal mutations."""
+    from test_walls_model import CASES as WALL_CASES
+
+    def build_case(fn):
+        def build():
+            doc = fresh_fixture()
+            fn(doc)
+            return validate_value(doc)
+        return build
+
+    cases = []
+    for name, fn in sorted(WALL_CASES.items()):
+        code, path, related = fn(fresh_fixture())
+        top = UC if codes.CATALOG[code] is codes.Stage.DOMAIN else VF
+        cases.append(Case(f"m006-{name}", build_case(fn), top, [Expect(code, path, tuple(sorted(related, key=lambda p: p.encode("utf-16-be"))))]))
+    return cases
 
 
 CONNECTIONS = entities_of(FIXTURE, "Connection")
@@ -265,8 +311,12 @@ CASES: list[Case] = [
     # Parameter-only edits leave members stale; stage 5 (D046) would then fail, so valid
     # cases regenerate members first.
     # 4'-0" bays need short braces: twice the leg must fit the shortest bay (MODEL-005 §5.2).
-    doc_case("29-width-inside-epsilon", lambda d: (_set(FOOTPRINT["id"], "width_m", 3.6576 - 5e-7)(d), _params(knee_brace_leg_m=0.4572)(d), regenerate(d)), None, [], only=True),
-    doc_case("30-width-outside-epsilon", lambda d: (_set(FOOTPRINT["id"], "width_m", 3.6576 - 2e-6)(d), _params(knee_brace_leg_m=0.4572)(d)), UC,
+    # MODEL-006 §10: 4' bays leave no room for any D072 window, so the D032 bound is checked on the
+    # house without its openings; 29b records the v3 house's own (changed) outcome.
+    doc_case("29-width-inside-epsilon", lambda d: (remove_openings(d), _set(FOOTPRINT["id"], "width_m", 3.6576 - 5e-7)(d), _params(knee_brace_leg_m=0.4572)(d), regenerate(d)), None, [], only=True),
+    doc_case("29b-width-inside-epsilon-windows-do-not-fit", lambda d: (_set(FOOTPRINT["id"], "width_m", 3.6576 - 5e-7)(d), _params(knee_brace_leg_m=0.4572)(d), regenerate(d)), UC,
+             [Expect(codes.OPENING_OUTSIDE_WALL, epath(_opening_on("wall/axis-x/y2/x1-x2/level-1"), "width_m"))]),
+    doc_case("30-width-outside-epsilon", lambda d: (remove_openings(d), _set(FOOTPRINT["id"], "width_m", 3.6576 - 2e-6)(d), _params(knee_brace_leg_m=0.4572)(d)), UC,
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FOOTPRINT, "width_m"))], only=True),
     text_case("31-truncated", lambda b: b[: len(b) // 2], VF, [Expect(codes.MALFORMED_JSON, "")], only=True),
     text_case("32a-too-large", lambda b: b + b" " * (4 * 1024 * 1024), VF,
@@ -278,7 +328,7 @@ CASES: list[Case] = [
              [Expect(codes.INVALID_ENUM, epath(ROOF, "ridge_axis"))], only=True),
     doc_case("35-bad-timestamp", lambda d: d.__setitem__("created_at", "yesterday"), VF,
              [Expect(codes.INVALID_TIMESTAMP, "created_at")], only=True),
-    doc_case("36-unknown-kind", _set(SECTION_8X8["id"], "kind", "Wall"), VF,
+    doc_case("36-unknown-kind", _set(SECTION_8X8["id"], "kind", "AssemblyInstance"), VF,
              [Expect(codes.UNKNOWN_KIND, epath(SECTION_8X8, "kind"))], only=True),
     doc_case("37-second-footprint", _second_footprint, VF,
              [Expect(codes.UNREFERENCED_ENTITY, f"entities[{NEW_ID}]")], only=True),
@@ -356,11 +406,12 @@ CASES: list[Case] = [
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FRAME, "parameters", "purlins_per_slope"))], only=True),
     doc_case("m005-brace-leg-too-short", _params(knee_brace_leg_m=0.4572 - 2e-6), UC,
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FRAME, "parameters", "knee_brace_leg_m"))], only=True),
-    doc_case("m005-braces-do-not-fit", _grid_fractions("x_lines", [0.0, 0.5, 0.5 + 5 * 0.3048 / 10.9728, 1.0]), UC,
+    # MODEL-006 §10: a 5' bay fits no D072 window, so the brace-fit cases run without openings.
+    doc_case("m005-braces-do-not-fit", lambda d: (remove_openings(d), _grid_fractions("x_lines", [0.0, 0.5, 0.5 + 5 * 0.3048 / 10.9728, 1.0])(d)), UC,
              [Expect(codes.OUT_OF_SUPPORTED_RANGE, epath(FRAME, "parameters", "knee_brace_leg_m"),
                      tuple(sorted((epath(FOOTPRINT, "width_m"), epath(GRID, "x_lines")), key=lambda s: s.encode("utf-16-be"))))], only=True),
     doc_case("m005-braces-off-need-no-fit",
-             lambda d: (_grid_fractions("x_lines", [0.0, 0.5, 0.5 + 5 * 0.3048 / 10.9728, 1.0])(d),
+             lambda d: (remove_openings(d), _grid_fractions("x_lines", [0.0, 0.5, 0.5 + 5 * 0.3048 / 10.9728, 1.0])(d),
                         _params(knee_braces_level_1=False, knee_braces_eave=False)(d), regenerate(d)), None, [], only=True),
     # MODEL-005 §4.4, §6: connections and connection types (D054)
     doc_case("m005-disallowed-default-type", lambda d: _find(d, FRAME["id"])["connection_defaults"].__setitem__("post-beam", "JOIST_HANGER"), UC,
@@ -406,6 +457,19 @@ CASES: list[Case] = [
              [Expect(codes.UNKNOWN_FIELD, f'entities[{FOOTPRINT["id"]}]["a.b"]')], only=True),
     doc_case("d036-quoted-root-key", lambda d: d.__setitem__("x-y", 1), VF,
              [Expect(codes.UNKNOWN_FIELD, '["x-y"]')], only=True),
+    # MODEL-006 §5: the fit rules
+    doc_case("m006-opening-outside-wall", _set(_opening_on("wall/axis-y/x3/y1-y2/level-1")["id"], "width_m", 6.0), UC,
+             [Expect(codes.OPENING_OUTSIDE_WALL, epath(_opening_on("wall/axis-y/x3/y1-y2/level-1"), "width_m"))]),
+    doc_case("m006-opening-crosses-brace", _set(_opening_on("wall/axis-y/x3/y1-y2/level-1")["id"], "offset_m", 0.3 + 0.0381), UC,
+             [Expect(codes.OPENING_CROSSES_BRACE, epath(_opening_on("wall/axis-y/x3/y1-y2/level-1"), "offset_m"))], only=True),
+    doc_case("m006-openings-overlap", _second_opening("wall/axis-y/x3/y1-y2/level-1"), UC,
+             [Expect(codes.OPENINGS_OVERLAP, f'entities[{max(_opening_on("wall/axis-y/x3/y1-y2/level-1")["id"], NEW_ID)}].offset_m',
+                     (f'entities[{min(_opening_on("wall/axis-y/x3/y1-y2/level-1")["id"], NEW_ID)}].offset_m',))], only=True),
+    doc_case("m006-girt-crosses-brace", _stud_girts(4), UC,
+             [Expect(codes.GIRT_CROSSES_BRACE, epath(STUD_INFILL, "layers", 2, "framing", "girt_count"))]),
+    doc_case("m006-unexpected-wall", lambda d: _find(d, WALL_SYSTEM["wall_ids"][-1]).__setitem__("generation_key", _find(d, WALL_SYSTEM["wall_ids"][-1])["generation_key"] + "x"), VF,
+             [Expect(codes.UNEXPECTED_WALL, f"entities[{WALL_SYSTEM['wall_ids'][-1]}].generation_key")]),
+    *_v3_cases(),
 ]
 
 

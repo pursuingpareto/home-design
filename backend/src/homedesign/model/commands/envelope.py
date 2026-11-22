@@ -15,7 +15,7 @@ from pydantic_core import PydanticCustomError
 from .. import codes
 from ..connections import ConnectionType, JunctionClass
 from ..paths import render
-from ..schema import MemberRole, SafeInt, Uuid
+from ..schema import MemberRole, OpeningKind, SafeInt, Uuid
 from ..validation import Issue, ValidationResult, _Collector, code_for_pydantic_error, message_for
 
 
@@ -100,6 +100,37 @@ class UndoArgs(_Strict):
     target_revision_id: Uuid
 
 
+class WallAssemblyArgs(_Strict):
+    """D068: one project-wide wall assembly (MODEL-006 §8.1)."""
+
+    assembly_definition_id: Uuid
+
+
+class AddOpeningArgs(_Strict):
+    """D069: a rough opening in one wall (MODEL-006 §8.2); all required."""
+
+    wall_id: Uuid
+    opening_kind: OpeningKind
+    width_m: float
+    height_m: float
+    sill_height_m: float
+    offset_m: float
+
+
+class SetOpeningArgs(_Strict):
+    """Replaces one opening's dimensions and position in its own wall; its kind and wall do not change."""
+
+    opening_id: Uuid
+    width_m: float
+    height_m: float
+    sill_height_m: float
+    offset_m: float
+
+
+class RemoveOpeningArgs(_Strict):
+    opening_id: Uuid
+
+
 # --- envelopes ---------------------------------------------------------------
 
 
@@ -162,6 +193,26 @@ class UndoToRevision(_Command):
     args: UndoArgs
 
 
+class SetWallAssembly(_Command):
+    type: Literal["SetWallAssembly"]
+    args: WallAssemblyArgs
+
+
+class AddOpening(_Command):
+    type: Literal["AddOpening"]
+    args: AddOpeningArgs
+
+
+class SetOpening(_Command):
+    type: Literal["SetOpening"]
+    args: SetOpeningArgs
+
+
+class RemoveOpening(_Command):
+    type: Literal["RemoveOpening"]
+    args: RemoveOpeningArgs
+
+
 AnyCommand = Annotated[
     Union[
         CreateReferenceProject,
@@ -174,6 +225,10 @@ AnyCommand = Annotated[
         SetConnectionType,
         AddSection,
         UndoToRevision,
+        SetWallAssembly,
+        AddOpening,
+        SetOpening,
+        RemoveOpening,
     ],
     Field(discriminator="type"),
 ]
@@ -190,6 +245,10 @@ COMMAND_TYPES = frozenset(
         "SetConnectionType",
         "AddSection",
         "UndoToRevision",
+        "SetWallAssembly",
+        "AddOpening",
+        "SetOpening",
+        "RemoveOpening",
     }
 )
 
@@ -234,18 +293,22 @@ def reject(path: str, code: str, message: str, value: Any = None) -> ValidationR
 
 
 __all__ = [
+    "AddOpening",
     "AddSection",
     "COMMAND_ADAPTER",
     "COMMAND_TYPES",
     "CreateReferenceProject",
     "Issue",
+    "RemoveOpening",
     "SetConnectionType",
     "SetFootprintDimensions",
     "SetGableRoofParameters",
     "SetFrameParameters",
     "SetMemberSection",
+    "SetOpening",
     "SetStoryHeights",
     "SetTimberGrid",
+    "SetWallAssembly",
     "UndoToRevision",
     "parse_command",
     "reject",

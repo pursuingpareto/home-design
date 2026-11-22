@@ -13,7 +13,7 @@
       "generator_id": "mesh3d-vs01",
       "generator_version": "2",
       "head": true,
-      "input_fingerprint": "sha256:362aaa123c0d8167d7926b18cba50158eade46a196daf4fdb63b3a30f13fe242",
+      "input_fingerprint": "sha256:c415f2dcac7e8e046220e13bd4a83cea8b75e0857fab8fa597e3e455437ec542",
       "payload": {
         "connections": [
           {
@@ -7043,7 +7043,7 @@
       "generator_id": "plan2d-vs01",
       "generator_version": "2",
       "head": true,
-      "input_fingerprint": "sha256:efbe6baff7ce4944b2ff212ca0074854978d76521d87bd66c811d8ca89958e95",
+      "input_fingerprint": "sha256:303b020e983ff0f5f6b7db5d74d83d1236b3668a7002412048a159470ed82ac4",
       "payload": {
         "dimensions": [
           {
@@ -12562,7 +12562,7 @@
       "generator_id": "estimate-vs01",
       "generator_version": "2",
       "head": true,
-      "input_fingerprint": "sha256:768a2d37dd47fd0c106682c0b3751a4f97aac3c53d41846b7d005fdfec67f7ed",
+      "input_fingerprint": "sha256:5cbd389f7d7001549faaa16a37cadad315d3f02203b2370f7c820735f66f1b72",
       "payload": {
         "assumptions": [
           {
@@ -12724,7 +12724,7 @@
       "generator_id": "schedule-vs01",
       "generator_version": "2",
       "head": true,
-      "input_fingerprint": "sha256:191a7ad4fdd1cbfeeb8d540b9b7ddb4148ca9ed23ad20bfe0ad770ae723dbce8",
+      "input_fingerprint": "sha256:e4984f7004853903aaa304c0e80c460a9663d2207ab68535372ac9c91047c49c",
       "payload": {
         "aggregates": [
           {
@@ -18624,7 +18624,7 @@
     "generator_id": "estimate-vs01",
     "generator_version": "2",
     "head": true,
-    "input_fingerprint": "sha256:60985937a2479e55fc902a2d52a544c0437784a5e5007644f56e306326aa58a6",
+    "input_fingerprint": "sha256:3df21cb1f96a164ec7db2b60a8f38971a1d4bab51a1d3e2db298458778929335",
     "payload": {
       "assumptions": [
         {
@@ -19740,7 +19740,7 @@
       }
     ],
     "classification": "consequential",
-    "classification_version": "vs02-change-classes-1",
+    "classification_version": "vs02b-change-classes-1",
     "command_hash": "sha256:79f19014c919054ea57b5e298c4f89bc975a9697fdac44ed95b60a9e273eef34",
     "confirmation_required": true,
     "connections": {
@@ -20173,6 +20173,16 @@
     },
     "preview_token": "eyJhY3Rvcl9pZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMSIsImJhc2VfcmV2aXNpb25faWQiOiI3ZGIwOTNkNC1kNWI2LTU4ZGEtYTgzMy1mODhmNzllMTFhMTIiLCJjb21tYW5kX2hhc2giOiJzaGEyNTY6NzlmMTkwMTRjOTE5MDU0ZWE1N2I1ZTI5OGM0Zjg5YmM5NzVhOTY5N2ZkYWM0NGVkOTViNjBhOWUyNzNlZWYzNCIsImV4cGlyZXNfYXQiOiIyMDI2LTExLTE5VDEyOjE1OjAwLjAwMDAwMFoiLCJwcm9qZWN0X2lkIjoiNmYxZTJkM2MtNGI1YS00OTg3LThhNmItNWM0ZDNlMmYxYTBiIn0.G_JZTHhA4wbsKJDFB5EX8A-i4JscCz9ESR022663wDA",
     "revision_id": "599892be-98b9-50e5-9cee-a1a767ce2d6f",
+    "wall_framing": {
+      "added": [],
+      "removed": [],
+      "updated": []
+    },
+    "walls": {
+      "added": [],
+      "removed": [],
+      "updated": []
+    },
     "warnings": [
       {
         "code": "PRELIMINARY_UNVERIFIED",
@@ -20185,28 +20195,28 @@
       {
         "artifact_type": "plan2d",
         "generator_version": "2",
-        "input_fingerprint": "sha256:efbe6baff7ce4944b2ff212ca0074854978d76521d87bd66c811d8ca89958e95",
+        "input_fingerprint": "sha256:303b020e983ff0f5f6b7db5d74d83d1236b3668a7002412048a159470ed82ac4",
         "source_revision_id": "7db093d4-d5b6-58da-a833-f88f79e11a12",
         "status": "CURRENT"
       },
       {
         "artifact_type": "mesh3d",
         "generator_version": "2",
-        "input_fingerprint": "sha256:362aaa123c0d8167d7926b18cba50158eade46a196daf4fdb63b3a30f13fe242",
+        "input_fingerprint": "sha256:c415f2dcac7e8e046220e13bd4a83cea8b75e0857fab8fa597e3e455437ec542",
         "source_revision_id": "7db093d4-d5b6-58da-a833-f88f79e11a12",
         "status": "CURRENT"
       },
       {
         "artifact_type": "timber_schedule",
         "generator_version": "2",
-        "input_fingerprint": "sha256:191a7ad4fdd1cbfeeb8d540b9b7ddb4148ca9ed23ad20bfe0ad770ae723dbce8",
+        "input_fingerprint": "sha256:e4984f7004853903aaa304c0e80c460a9663d2207ab68535372ac9c91047c49c",
         "source_revision_id": "7db093d4-d5b6-58da-a833-f88f79e11a12",
         "status": "CURRENT"
       },
       {
         "artifact_type": "preliminary_estimate",
         "generator_version": "2",
-        "input_fingerprint": "sha256:768a2d37dd47fd0c106682c0b3751a4f97aac3c53d41846b7d005fdfec67f7ed",
+        "input_fingerprint": "sha256:5cbd389f7d7001549faaa16a37cadad315d3f02203b2370f7c820735f66f1b72",
         "source_revision_id": "7db093d4-d5b6-58da-a833-f88f79e11a12",
         "status": "UNAVAILABLE"
       }
@@ -20311,7 +20321,8 @@
       ],
       "name": "Reference House 001",
       "roof_id": "65ce3e19-ca3b-560a-a4f2-bc0613ed54db",
-      "schema_version": 1
+      "schema_version": 2,
+      "wall_system_id": "14b4c0ed-dc6d-5da0-b7dc-cb1bb54072e7"
     },
     "created_at": "2026-11-19T12:00:00.000000Z",
     "entities": [
@@ -20365,6 +20376,26 @@
           "3398bcfe-e4ce-59c6-a732-405d9dd1157c"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          10.9728,
+          5.96265,
+          5.2197
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-1/opening/1edca7b4-57b2-5f25-8301-14add07f728b/buck-jamb/end",
+        "id": "0319498c-0c10-5227-a66e-5fcc4e3ef2e6",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "1edca7b4-57b2-5f25-8301-14add07f728b",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          5.96265,
+          3.9243
+        ]
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -20487,6 +20518,26 @@
           0,
           7.3152,
           5.7912
+        ]
+      },
+      {
+        "end_m": [
+          1.35255,
+          7.3152,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-0/opening/f05db32a-7faa-575b-acb7-f914b2514e2f/buck-jamb/start",
+        "id": "066c54c1-6e5e-52fe-92dc-7eec1a6b1851",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "f05db32a-7faa-575b-acb7-f914b2514e2f",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.35255,
+          7.3152,
+          0.8763
         ]
       },
       {
@@ -20647,6 +20698,31 @@
         "schema_version": 1
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          7.315199999999999,
+          7.3152,
+          3.048
+        ],
+        "framing_ids": [
+          "c569c84f-552f-57a8-a31a-fc8b1bcf0384",
+          "9f288a76-8804-59b2-9a4d-8696354fa182",
+          "e01af92e-9980-5c62-86d0-097a2be77d69",
+          "dc217da5-071c-52bd-abc9-01cf204667c8"
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-1",
+        "height_m": 2.7432,
+        "id": "086d0a7c-e5c0-56da-aab8-cf514a82ac4a",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          3.6575999999999995,
+          7.3152,
+          3.048
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/post-sill/frame/axis-y/x2/y0-y1/plane-L0/sill/frame/x2/y0/level-0/post",
         "id": "08a3ebd5-ca01-5612-a875-a0c16eb75dc5",
@@ -20684,6 +20760,26 @@
       },
       {
         "end_m": [
+          2.286,
+          7.3152,
+          2.15265
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-0/opening/f05db32a-7faa-575b-acb7-f914b2514e2f/buck-head",
+        "id": "09671e98-9ca5-5dba-9e8c-b4657819cd0a",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "f05db32a-7faa-575b-acb7-f914b2514e2f",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.3716,
+          7.3152,
+          2.15265
+        ]
+      },
+      {
+        "end_m": [
           10.363199999999999,
           7.3152,
           3.048
@@ -20700,6 +20796,17 @@
           3.6576,
           3.048
         ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "0a1d458e-e899-5105-ae48-be19ffba0e05",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "1ceae121-6856-5823-8836-298476b6ffa9",
+        "width_m": 0.9144
       },
       {
         "end_m": [
@@ -21097,6 +21204,26 @@
       },
       {
         "end_m": [
+          9.620249999999999,
+          7.3152,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-1/opening/625ae519-b58e-5150-800a-627a6cbd234e/buck-jamb/end",
+        "id": "11225d0d-36da-56b3-b74e-94580d4a4e20",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "625ae519-b58e-5150-800a-627a6cbd234e",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          9.620249999999999,
+          7.3152,
+          3.9243
+        ]
+      },
+      {
+        "end_m": [
           1.2192,
           3.6576,
           3.048
@@ -21276,6 +21403,67 @@
         "schema_version": 1
       },
       {
+        "default_assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "generation_rule_version": "vs02b-walls-1",
+        "id": "14b4c0ed-dc6d-5da0-b7dc-cb1bb54072e7",
+        "kind": "WallSystem",
+        "opening_ids": [
+          "0a1d458e-e899-5105-ae48-be19ffba0e05",
+          "1edca7b4-57b2-5f25-8301-14add07f728b",
+          "2360506b-32d4-53a9-8eef-61c0907a8c66",
+          "478b228d-11ce-5cb3-8be4-6e245f7cedc5",
+          "52becff0-b26b-5b57-b5a0-dd048e232ee1",
+          "5954d8fa-dc8f-535d-8828-37d459d19302",
+          "625ae519-b58e-5150-800a-627a6cbd234e",
+          "6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e",
+          "6ee92b6d-6932-5ae1-a2e5-7bca1427c96b",
+          "711176bd-4637-582a-8296-b887f3c9ce2f",
+          "78aaaaf2-66a2-59e0-bb6b-febaaa59c94b",
+          "79cc344e-d3c8-5b29-98cf-a055b6f3bfc1",
+          "8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f",
+          "92682b17-6507-548d-9de8-a1d34b3b06bb",
+          "931811de-abce-581d-99d9-46ab2e2a74d8",
+          "acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b",
+          "d24bd048-8695-5041-87fc-baa5484be781",
+          "d8584be7-18de-5aa0-ac79-90e8f49d02b4",
+          "f05db32a-7faa-575b-acb7-f914b2514e2f",
+          "fc2be3ff-0c80-528e-a852-e929da39b122"
+        ],
+        "schema_version": 1,
+        "wall_ids": [
+          "b3d81008-ed98-5686-932d-ddd361623335",
+          "956b30fb-9878-5a72-8f12-6d59aa0b0806",
+          "1d0100ae-3dc2-57b6-83ac-cff9c3872af3",
+          "1a517791-2308-5196-b268-94d6fdce1813",
+          "1ddf8b32-e08b-52f5-b42e-c4dd503af146",
+          "b72fef04-1d03-5bb0-a471-006864ada5f6",
+          "337b4f12-baa9-5471-a015-c1820542f600",
+          "7410a9c0-3847-5698-83f6-0fe539eeee6e",
+          "b1536422-56a0-5de0-bab7-47cf9931bab9",
+          "086d0a7c-e5c0-56da-aab8-cf514a82ac4a",
+          "77543876-d19e-5592-b61b-7499411de31d",
+          "940db8c6-ed6f-5be8-b32b-d961208d59ec",
+          "39f76269-384d-5282-97e5-6fde3161eefd",
+          "6cd64eac-f93c-5cec-a5bd-42de17cee5d7",
+          "97d86826-34ad-5aed-a567-61fa36c7c4af",
+          "1ceae121-6856-5823-8836-298476b6ffa9",
+          "3e4f8bd2-db8c-5376-951d-d38e5f1c2637",
+          "e3aecce3-dd4c-5b42-b686-32a8ff1d5719",
+          "8cd745d8-e49a-5df7-b206-938f8ea29c86",
+          "3a32ec54-257a-54cd-91b5-d7ddbc065abc"
+        ]
+      },
+      {
+        "density_kg_m3": null,
+        "grade": null,
+        "id": "14c21f0b-2aba-58bd-9bb9-fae9c1b3bc14",
+        "kind": "Material",
+        "name": "Gypsum board",
+        "provenance": null,
+        "schema_version": 1,
+        "species": null
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/x2/y2/level-0/post/frame/axis-x/y2/x2-x3/plane-L1/brace/x2",
         "id": "1564548b-f11e-583b-a394-4b5be05ea13d",
@@ -21433,6 +21621,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          8.667749999999998,
+          0,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-1/opening/d24bd048-8695-5041-87fc-baa5484be781/buck-jamb/start",
+        "id": "1975f3d7-23f5-5e6c-bddb-ccb7b603d809",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "d24bd048-8695-5041-87fc-baa5484be781",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.667749999999998,
+          0,
+          3.9243
+        ]
+      },
+      {
         "connection_type": "HOUSED_DOVETAIL",
         "generation_key": "connection/joist-beam/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j1/y1-y2/plane-L1/joist",
         "id": "19812427-7000-537f-a069-b2b534cf97ed",
@@ -21448,6 +21656,71 @@
           "edb17a58-e47e-5b58-b953-b368c6381110"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          5.96265,
+          0,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-1/opening/acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b/buck-jamb/end",
+        "id": "19b690ec-bf21-57f7-b42a-c949bcf8700c",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.96265,
+          0,
+          3.9243
+        ]
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          7.315199999999999,
+          0,
+          3.048
+        ],
+        "framing_ids": [
+          "a92812c4-8be0-5a67-ad21-2bef2235a3cd",
+          "19b690ec-bf21-57f7-b42a-c949bcf8700c",
+          "ee4b8bf7-9ccd-584a-8950-d01dfb88338d",
+          "4b00a19c-3846-5d5e-a306-0ec7de828757"
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-1",
+        "height_m": 2.7432,
+        "id": "1a517791-2308-5196-b268-94d6fdce1813",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          3.6575999999999995,
+          0,
+          3.048
+        ]
+      },
+      {
+        "end_m": [
+          10.9728,
+          5.9436,
+          0.89535
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-0/opening/2360506b-32d4-53a9-8eef-61c0907a8c66/buck-sill",
+        "id": "1a93b90f-76a7-5099-add1-c6b299db541d",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "2360506b-32d4-53a9-8eef-61c0907a8c66",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          5.0291999999999994,
+          0.89535
+        ]
       },
       {
         "end_m": [
@@ -21543,6 +21816,120 @@
         ]
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          0,
+          7.3152,
+          3.048
+        ],
+        "framing_ids": [
+          "b163656e-d81a-5857-8514-abb9d9c3a82b",
+          "b8e00eb0-808a-57e3-bff1-dc1a0b243f6e",
+          "43a38c7a-418b-59dd-851f-b66decea7741",
+          "e16b5c76-843e-5007-9bcf-8a31a97c2081"
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-1",
+        "height_m": 2.7432,
+        "id": "1ceae121-6856-5823-8836-298476b6ffa9",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          0,
+          3.6576,
+          3.048
+        ]
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          7.315199999999999,
+          0,
+          0
+        ],
+        "framing_ids": [
+          "9d1bfda1-eecb-53fb-bc99-dfcc146fb510",
+          "d7ad59ae-7b7f-502c-b87a-0b07cc88cf09",
+          "46f1586a-4f81-53b4-b833-654b701c7d7d"
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-0",
+        "height_m": 3.048,
+        "id": "1d0100ae-3dc2-57b6-83ac-cff9c3872af3",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          3.6575999999999995,
+          0,
+          0
+        ]
+      },
+      {
+        "end_m": [
+          10.9728,
+          5.010149999999999,
+          2.1717
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-0/opening/2360506b-32d4-53a9-8eef-61c0907a8c66/buck-jamb/start",
+        "id": "1d86a614-3fdf-580e-9540-e959f0caf92c",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "2360506b-32d4-53a9-8eef-61c0907a8c66",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          5.010149999999999,
+          0.8763
+        ]
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          10.9728,
+          0,
+          0
+        ],
+        "framing_ids": [
+          "21927ea6-17ac-5df0-b6cc-1d542e0079b7",
+          "7a99def0-93f7-5a69-9447-7ac93ff55a85",
+          "e0870bb9-03a2-5f08-b356-650cc5208795",
+          "3e2a84df-35b9-5dcd-a067-831df079c596"
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-0",
+        "height_m": 3.048,
+        "id": "1ddf8b32-e08b-52f5-b42e-c4dd503af146",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          7.315199999999999,
+          0,
+          0
+        ]
+      },
+      {
+        "end_m": [
+          0,
+          2.286,
+          3.94335
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-1/opening/fc2be3ff-0c80-528e-a852-e929da39b122/buck-sill",
+        "id": "1defad58-928f-5d00-9809-585f2619d4e4",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "fc2be3ff-0c80-528e-a852-e929da39b122",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          1.3716,
+          3.94335
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/purlin-rafter/frame/roof/x0/north/principal-rafter/frame/roof/x0-x1/north/p2/purlin",
         "id": "1e5c1598-5f62-5410-8c1c-4fe71f5e7ea0",
@@ -21577,6 +21964,37 @@
           3.6576,
           3.048
         ]
+      },
+      {
+        "end_m": [
+          0,
+          5.010149999999999,
+          2.1717
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-0/opening/79cc344e-d3c8-5b29-98cf-a055b6f3bfc1/buck-jamb/start",
+        "id": "1eba075a-0fd3-511e-9987-f03ee2564f34",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "79cc344e-d3c8-5b29-98cf-a055b6f3bfc1",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          5.010149999999999,
+          0.8763
+        ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "1edca7b4-57b2-5f25-8301-14add07f728b",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "3a32ec54-257a-54cd-91b5-d7ddbc065abc",
+        "width_m": 0.9144
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -21649,6 +22067,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          2.286,
+          0,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-1/opening/8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f/buck-head",
+        "id": "2063fe91-710f-555d-8f96-54ade9b2efb6",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.3716,
+          0,
+          5.2006499999999996
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/post-sill/frame/axis-y/x1/y1-y2/plane-L0/sill/frame/x1/y2/level-0/post",
         "id": "21335da9-afb4-571c-a26a-1eb6ae3d4eb5",
@@ -21682,6 +22120,26 @@
           10.9728,
           3.6576,
           0
+        ]
+      },
+      {
+        "end_m": [
+          9.905999999999999,
+          0,
+          2.15265
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-0/opening/78aaaaf2-66a2-59e0-bb6b-febaaa59c94b/buck-head",
+        "id": "21927ea6-17ac-5df0-b6cc-1d542e0079b7",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "78aaaaf2-66a2-59e0-bb6b-febaaa59c94b",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.382,
+          0,
+          2.15265
         ]
       },
       {
@@ -21736,6 +22194,17 @@
           0,
           2.1336
         ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "2360506b-32d4-53a9-8eef-61c0907a8c66",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "8cd745d8-e49a-5df7-b206-938f8ea29c86",
+        "width_m": 0.9144
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -21959,6 +22428,16 @@
         "schema_version": 1
       },
       {
+        "density_kg_m3": null,
+        "grade": null,
+        "id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "kind": "Material",
+        "name": "Spruce-pine-fir",
+        "provenance": null,
+        "schema_version": 1,
+        "species": "spruce-pine-fir"
+      },
+      {
         "end_m": [
           10.9728,
           3.6576,
@@ -22068,6 +22547,26 @@
       },
       {
         "end_m": [
+          10.9728,
+          2.30505,
+          5.2197
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-1/opening/52becff0-b26b-5b57-b5a0-dd048e232ee1/buck-jamb/end",
+        "id": "2db42945-9dac-5f8d-8ab0-c2440dd8ff3d",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "52becff0-b26b-5b57-b5a0-dd048e232ee1",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          2.30505,
+          3.9243
+        ]
+      },
+      {
+        "end_m": [
           3.6575999999999995,
           0,
           5.7912
@@ -22102,6 +22601,26 @@
           0,
           0,
           5.7912
+        ]
+      },
+      {
+        "end_m": [
+          10.9728,
+          5.96265,
+          2.1717
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-0/opening/2360506b-32d4-53a9-8eef-61c0907a8c66/buck-jamb/end",
+        "id": "2f504e24-b0f8-5207-be57-43bdf3f8e75a",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "2360506b-32d4-53a9-8eef-61c0907a8c66",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          5.96265,
+          0.8763
         ]
       },
       {
@@ -22173,6 +22692,26 @@
           "e54a806f-6c38-5198-8c68-d7ecf0430874"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          9.601199999999999,
+          0,
+          3.94335
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-1/opening/d24bd048-8695-5041-87fc-baa5484be781/buck-sill",
+        "id": "323f9c2e-b39e-5f8d-908e-72c78ac62815",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "d24bd048-8695-5041-87fc-baa5484be781",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.686799999999998,
+          0,
+          3.94335
+        ]
       },
       {
         "end_m": [
@@ -22263,6 +22802,31 @@
           7.315199999999999,
           3.6576,
           3.048
+        ]
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          3.6575999999999995,
+          7.3152,
+          0
+        ],
+        "framing_ids": [
+          "09671e98-9ca5-5dba-9e8c-b4657819cd0a",
+          "ea3da701-46bb-5f6e-a9e9-f944130e8829",
+          "066c54c1-6e5e-52fe-92dc-7eec1a6b1851",
+          "4819aba1-90c6-55b3-9e20-5a8e6aa42669"
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-0",
+        "height_m": 3.048,
+        "id": "337b4f12-baa9-5471-a015-c1820542f600",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          0,
+          7.3152,
+          0
         ]
       },
       {
@@ -22497,6 +23061,31 @@
         "schema_version": 1
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          0,
+          3.6576,
+          0
+        ],
+        "framing_ids": [
+          "c570d624-742b-5d69-9df5-244997eec0d3",
+          "9c5718a6-cf59-5d33-93dc-ea1fff22a389",
+          "c66e1f1a-7367-53dc-84ea-11e2d8399f3a",
+          "be768fbb-d648-5f4a-9368-06e131b3b65d"
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-0",
+        "height_m": 3.048,
+        "id": "39f76269-384d-5282-97e5-6fde3161eefd",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
         "end_m": [
           3.6575999999999995,
           6.4008,
@@ -22513,6 +23102,84 @@
           3.6575999999999995,
           7.3152,
           2.1336
+        ]
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          10.9728,
+          7.3152,
+          3.048
+        ],
+        "framing_ids": [
+          "90902ac9-c6b5-56d7-b2a6-3716460c3c60",
+          "0319498c-0c10-5227-a66e-5fcc4e3ef2e6",
+          "652c2488-3334-57b7-b94f-8912fd0788cb",
+          "3e8bf797-62aa-5d14-a1e6-84a1cc5ec886"
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-1",
+        "height_m": 2.7432,
+        "id": "3a32ec54-257a-54cd-91b5-d7ddbc065abc",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          10.9728,
+          3.6576,
+          3.048
+        ]
+      },
+      {
+        "family": "STRAW_BALE",
+        "id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "installation_note": "Straw bales laid flat in courses between the posts, from sill to beam, with a 1½\" × 18\" buck at every opening. Lime plaster outside and clay plaster inside, applied to the bales. Illustrative build-up for a test house, not a specification.",
+        "kind": "AssemblyDefinition",
+        "label": "straw-bale",
+        "layers": [
+          {
+            "framing": null,
+            "function": "FINISH",
+            "material_id": "f7ae7d50-4845-5907-9165-8d582bf69dda",
+            "name": "lime-plaster",
+            "thermal_conductivity_w_m_k": null,
+            "thermal_resistance_m2_k_w": null,
+            "thickness_m": 0.0381,
+            "vapor_permeance_kg_pa_s_m2": null
+          },
+          {
+            "framing": {
+              "buck_section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+              "framing_material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+              "framing_thermal_conductivity_w_m_k": null,
+              "girt_count": 0,
+              "type": "BUCK"
+            },
+            "function": "FRAMING",
+            "material_id": "ecb3931d-f318-59f1-95ac-c3b92dd6aa4a",
+            "name": "bales",
+            "thermal_conductivity_w_m_k": null,
+            "thermal_resistance_m2_k_w": null,
+            "thickness_m": 0.4572,
+            "vapor_permeance_kg_pa_s_m2": null
+          },
+          {
+            "framing": null,
+            "function": "FINISH",
+            "material_id": "9c66b1c2-6f92-5f82-8e09-214746435841",
+            "name": "clay-plaster",
+            "thermal_conductivity_w_m_k": null,
+            "thermal_resistance_m2_k_w": null,
+            "thickness_m": 0.0254,
+            "vapor_permeance_kg_pa_s_m2": null
+          }
+        ],
+        "schema_version": 1,
+        "unverified_climate_details": [
+          "Bale moisture protection at the sill: a raised base and a capillary break below the first course.",
+          "Exterior lime plaster and its rain protection (overhangs, splash zone, or a rain screen) for the site's exposure.",
+          "Plaster junctions at posts, beams, and bucks (cracking and air leakage).",
+          "Flashing and sill pans at window and door bucks.",
+          "Bale moisture content at installation, and drying through both plasters."
         ]
       },
       {
@@ -23113,6 +23780,26 @@
       },
       {
         "end_m": [
+          9.601199999999999,
+          7.3152,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-1/opening/625ae519-b58e-5150-800a-627a6cbd234e/buck-head",
+        "id": "3aea0d43-2a87-54e9-8454-cb8d1cc2a657",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "625ae519-b58e-5150-800a-627a6cbd234e",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.686799999999998,
+          7.3152,
+          5.2006499999999996
+        ]
+      },
+      {
+        "end_m": [
           2.7431999999999994,
           0,
           3.048
@@ -23201,6 +23888,71 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          9.905999999999999,
+          0,
+          0.89535
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-0/opening/78aaaaf2-66a2-59e0-bb6b-febaaa59c94b/buck-sill",
+        "id": "3e2a84df-35b9-5dcd-a067-831df079c596",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "78aaaaf2-66a2-59e0-bb6b-febaaa59c94b",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.382,
+          0,
+          0.89535
+        ]
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          10.9728,
+          3.6576,
+          0
+        ],
+        "framing_ids": [
+          "e474ef4a-e1d2-5246-abf0-9dbc8aa7cba6",
+          "fffa1aa8-691e-5eec-8a4e-77af43a5337f",
+          "a9f11990-66f7-5f15-a2d3-fef5c8627df9",
+          "87d5ff99-001b-5a28-9666-c3e60ba24ff2"
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-0",
+        "height_m": 3.048,
+        "id": "3e4f8bd2-db8c-5376-951d-d38e5f1c2637",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          10.9728,
+          0,
+          0
+        ]
+      },
+      {
+        "end_m": [
+          10.9728,
+          5.9436,
+          3.94335
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-1/opening/1edca7b4-57b2-5f25-8301-14add07f728b/buck-sill",
+        "id": "3e8bf797-62aa-5d14-a1e6-84a1cc5ec886",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "1edca7b4-57b2-5f25-8301-14add07f728b",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          5.0291999999999994,
+          3.94335
+        ]
+      },
+      {
         "connection_type": "HOUSED_DOVETAIL",
         "generation_key": "connection/joist-beam/frame/axis-x/y0/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j1/y0-y1/plane-L1/joist",
         "id": "3eb37ace-e9b4-5f2e-8c9a-e7ed5b9f4e40",
@@ -23286,6 +24038,16 @@
           "ab6eb277-0c9d-59eb-bfc4-c4d26ab5af04"
         ],
         "schema_version": 1
+      },
+      {
+        "density_kg_m3": null,
+        "grade": null,
+        "id": "414fe35f-3e44-5ee1-b7d5-13fc7e8477d3",
+        "kind": "Material",
+        "name": "Sheathing",
+        "provenance": null,
+        "schema_version": 1,
+        "species": null
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -23436,6 +24198,26 @@
       {
         "end_m": [
           0,
+          5.010149999999999,
+          5.2197
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-1/opening/0a1d458e-e899-5105-ae48-be19ffba0e05/buck-jamb/start",
+        "id": "43a38c7a-418b-59dd-851f-b66decea7741",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "0a1d458e-e899-5105-ae48-be19ffba0e05",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          5.010149999999999,
+          3.9243
+        ]
+      },
+      {
+        "end_m": [
+          0,
           7.3152,
           3.048
         ],
@@ -23472,6 +24254,26 @@
         ]
       },
       {
+        "end_m": [
+          2.286,
+          0,
+          3.94335
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-1/opening/8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f/buck-sill",
+        "id": "44e8ec6a-b4f2-5d06-8960-321060904bdf",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.3716,
+          0,
+          3.94335
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/purlin-rafter/frame/roof/x2/north/principal-rafter/frame/roof/x1-x2/north/p2/purlin",
         "id": "45180eba-66ac-569f-9041-ff60216e3da4",
@@ -23505,6 +24307,26 @@
           3.6575999999999995,
           7.3152,
           3.048
+        ]
+      },
+      {
+        "end_m": [
+          0,
+          2.286,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-1/opening/fc2be3ff-0c80-528e-a852-e929da39b122/buck-head",
+        "id": "459cfe09-2cf2-574b-a588-05a7ce39c342",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "fc2be3ff-0c80-528e-a852-e929da39b122",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          1.3716,
+          5.2006499999999996
         ]
       },
       {
@@ -23556,6 +24378,26 @@
       },
       {
         "end_m": [
+          5.010149999999999,
+          0,
+          2.0701
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-0/opening/92682b17-6507-548d-9de8-a1d34b3b06bb/buck-jamb/start",
+        "id": "46f1586a-4f81-53b4-b833-654b701c7d7d",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "92682b17-6507-548d-9de8-a1d34b3b06bb",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.010149999999999,
+          0,
+          0
+        ]
+      },
+      {
+        "end_m": [
           4.571999999999999,
           0,
           3.048
@@ -23571,6 +24413,37 @@
           3.6575999999999995,
           0,
           2.1336
+        ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "478b228d-11ce-5cb3-8be4-6e245f7cedc5",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "086d0a7c-e5c0-56da-aab8-cf514a82ac4a",
+        "width_m": 0.9144
+      },
+      {
+        "end_m": [
+          2.286,
+          7.3152,
+          0.89535
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-0/opening/f05db32a-7faa-575b-acb7-f914b2514e2f/buck-sill",
+        "id": "4819aba1-90c6-55b3-9e20-5a8e6aa42669",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "f05db32a-7faa-575b-acb7-f914b2514e2f",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.3716,
+          7.3152,
+          0.89535
         ]
       },
       {
@@ -23625,6 +24498,66 @@
           "aa51d554-5aa8-5de2-9fac-8f5f82999fa8"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          5.9436,
+          7.3152,
+          2.15265
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-0/opening/5954d8fa-dc8f-535d-8828-37d459d19302/buck-head",
+        "id": "4a15279b-67bd-569c-9fc2-b8bd3ff48e24",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "5954d8fa-dc8f-535d-8828-37d459d19302",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.0291999999999994,
+          7.3152,
+          2.15265
+        ]
+      },
+      {
+        "end_m": [
+          5.9436,
+          0,
+          3.94335
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-1/opening/acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b/buck-sill",
+        "id": "4b00a19c-3846-5d5e-a306-0ec7de828757",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.0291999999999994,
+          0,
+          3.94335
+        ]
+      },
+      {
+        "end_m": [
+          2.30505,
+          0,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-1/opening/8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f/buck-jamb/end",
+        "id": "4b5f4084-385a-5baa-ae5b-56fcd6a84dcb",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          2.30505,
+          0,
+          3.9243
+        ]
       },
       {
         "end_m": [
@@ -23739,6 +24672,26 @@
         "story_height_m": 3.048
       },
       {
+        "end_m": [
+          9.620249999999999,
+          0,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-1/opening/d24bd048-8695-5041-87fc-baa5484be781/buck-jamb/end",
+        "id": "4f33ac74-3c36-5d7a-b5f3-2b9a02231df2",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "d24bd048-8695-5041-87fc-baa5484be781",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          9.620249999999999,
+          0,
+          3.9243
+        ]
+      },
+      {
         "connection_type": "HOUSED_DOVETAIL",
         "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j2/y0-y1/plane-L1/joist",
         "id": "4f7d034e-006a-5ba6-8ed7-790586d6e780",
@@ -23792,6 +24745,15 @@
         ]
       },
       {
+        "actual_depth_m": 0.18415,
+        "actual_width_m": 0.0381,
+        "id": "5195570c-61d4-5423-9f58-6c12ef3afe0c",
+        "kind": "Section",
+        "nominal_label": "2x8",
+        "schema_version": 1,
+        "shape": "rectangular"
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/post-beam/frame/x3/y0/level-0/post/frame/axis-y/x3/y0-y1/plane-L1/beam",
         "id": "5225a5b7-4a06-5472-ab19-3a018f4f8c23",
@@ -23826,6 +24788,17 @@
           0,
           3.048
         ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "52becff0-b26b-5b57-b5a0-dd048e232ee1",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "e3aecce3-dd4c-5b42-b686-32a8ff1d5719",
+        "width_m": 0.9144
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -23864,6 +24837,26 @@
         ]
       },
       {
+        "end_m": [
+          10.9728,
+          1.35255,
+          5.2197
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-1/opening/52becff0-b26b-5b57-b5a0-dd048e232ee1/buck-jamb/start",
+        "id": "53b4ef32-ef29-553a-8ea4-e96db2dd98ef",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "52becff0-b26b-5b57-b5a0-dd048e232ee1",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          1.35255,
+          3.9243
+        ]
+      },
+      {
         "connection_type": "HOUSED_DOVETAIL",
         "generation_key": "connection/joist-beam/frame/axis-x/y1/x0-x1/plane-L1/beam/frame/axis-y/x0-x1/j4/y1-y2/plane-L1/joist",
         "id": "53e83e1c-dd51-56fe-9f93-3af2d3691240",
@@ -23897,6 +24890,26 @@
           0,
           3.6576,
           0
+        ]
+      },
+      {
+        "end_m": [
+          1.04775,
+          0,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-0/opening/d8584be7-18de-5aa0-ac79-90e8f49d02b4/buck-jamb/start",
+        "id": "54844015-29cb-5979-ad0b-3e0bef0a56d4",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "d8584be7-18de-5aa0-ac79-90e8f49d02b4",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.04775,
+          0,
+          0.8763
         ]
       },
       {
@@ -24042,6 +25055,17 @@
           7.3152,
           3.048
         ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "5954d8fa-dc8f-535d-8828-37d459d19302",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "b1536422-56a0-5de0-bab7-47cf9931bab9",
+        "width_m": 0.9144
       },
       {
         "connection_type": "HOUSED_DOVETAIL",
@@ -24290,6 +25314,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          10.9728,
+          5.9436,
+          2.15265
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-0/opening/2360506b-32d4-53a9-8eef-61c0907a8c66/buck-head",
+        "id": "603b6fab-e5c1-5404-9b7a-67de118dc524",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "2360506b-32d4-53a9-8eef-61c0907a8c66",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          5.0291999999999994,
+          2.15265
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/x0/y1/level-0/post/frame/axis-x/y1/x0-x1/plane-L1/brace/x0",
         "id": "6074713d-f576-5a87-892c-eaffcaa99be1",
@@ -24307,6 +25351,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          1.35255,
+          0,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-1/opening/8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f/buck-jamb/start",
+        "id": "6193b5f0-16b4-5658-8599-b0a03aebaee7",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.35255,
+          0,
+          3.9243
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/post-beam/frame/x2/y2/level-1/post/frame/axis-x/y2/x1-x2/plane-eave/beam",
         "id": "61a9e1d4-cdd0-56bb-87a7-87d28cb1bc52",
@@ -24322,6 +25386,16 @@
           "7deecf29-81e8-5f23-99b4-59ca43c7ad81"
         ],
         "schema_version": 1
+      },
+      {
+        "density_kg_m3": null,
+        "grade": null,
+        "id": "62121f13-fa8f-50a1-a0da-91473e0e421b",
+        "kind": "Material",
+        "name": "Wood siding",
+        "provenance": null,
+        "schema_version": 1,
+        "species": null
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -24358,6 +25432,17 @@
         "schema_version": 1
       },
       {
+        "height_m": 1.2192,
+        "id": "625ae519-b58e-5150-800a-627a6cbd234e",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "940db8c6-ed6f-5be8-b32b-d961208d59ec",
+        "width_m": 0.9144
+      },
+      {
         "end_m": [
           7.315199999999999,
           3.6576,
@@ -24374,6 +25459,26 @@
           3.6575999999999995,
           3.6576,
           5.7912
+        ]
+      },
+      {
+        "end_m": [
+          8.667749999999998,
+          7.3152,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-0/opening/6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e/buck-jamb/start",
+        "id": "631768b3-5905-54c5-a19e-77c578bffd44",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.667749999999998,
+          7.3152,
+          0.8763
         ]
       },
       {
@@ -24447,6 +25552,46 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          10.9728,
+          5.010149999999999,
+          5.2197
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-1/opening/1edca7b4-57b2-5f25-8301-14add07f728b/buck-jamb/start",
+        "id": "652c2488-3334-57b7-b94f-8912fd0788cb",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "1edca7b4-57b2-5f25-8301-14add07f728b",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          5.010149999999999,
+          3.9243
+        ]
+      },
+      {
+        "end_m": [
+          5.96265,
+          7.3152,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-0/opening/5954d8fa-dc8f-535d-8828-37d459d19302/buck-jamb/end",
+        "id": "659b6f54-d017-567a-a73c-ff8d9b70d7a8",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "5954d8fa-dc8f-535d-8828-37d459d19302",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.96265,
+          7.3152,
+          0.8763
+        ]
+      },
+      {
         "eave_overhang_m": 0.6096,
         "id": "65ce3e19-ca3b-560a-a4f2-bc0613ed54db",
         "kind": "GableRoof",
@@ -24488,6 +25633,26 @@
           "cc1ba39b-ec3e-54eb-a78c-be3375172779"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          9.601199999999999,
+          7.3152,
+          2.15265
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-0/opening/6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e/buck-head",
+        "id": "6734c4e5-866b-5e6c-b107-7843ae33cf2b",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.686799999999998,
+          7.3152,
+          2.15265
+        ]
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -24668,6 +25833,73 @@
         ]
       },
       {
+        "family": "STUD_INFILL",
+        "id": "6be58429-c70e-568e-b1ab-effc71359512",
+        "installation_note": "2×6 studs at 24\" on center between the posts, one mid-height girt let in across them, and kings and headers at every opening (jacks above 4'-0\"). Dense-pack cellulose between the studs, sheathing and wood siding outside, gypsum board inside. Illustrative build-up for a test house, not a specification.",
+        "kind": "AssemblyDefinition",
+        "label": "stud-infill",
+        "layers": [
+          {
+            "framing": null,
+            "function": "FINISH",
+            "material_id": "62121f13-fa8f-50a1-a0da-91473e0e421b",
+            "name": "siding",
+            "thermal_conductivity_w_m_k": null,
+            "thermal_resistance_m2_k_w": null,
+            "thickness_m": 0.01905,
+            "vapor_permeance_kg_pa_s_m2": null
+          },
+          {
+            "framing": null,
+            "function": "SHEATHING",
+            "material_id": "414fe35f-3e44-5ee1-b7d5-13fc7e8477d3",
+            "name": "sheathing",
+            "thermal_conductivity_w_m_k": null,
+            "thermal_resistance_m2_k_w": null,
+            "thickness_m": 0.0127,
+            "vapor_permeance_kg_pa_s_m2": null
+          },
+          {
+            "framing": {
+              "framing_material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+              "framing_thermal_conductivity_w_m_k": null,
+              "girt_count": 1,
+              "girt_section_id": "bc88d793-12d4-528d-b713-3b904b36dc43",
+              "header_section_id": "5195570c-61d4-5423-9f58-6c12ef3afe0c",
+              "jack_threshold_width_m": 1.2192,
+              "stud_section_id": "bc88d793-12d4-528d-b713-3b904b36dc43",
+              "stud_spacing_m": 0.6096,
+              "type": "STUD"
+            },
+            "function": "FRAMING",
+            "material_id": "cb4f014b-3a16-5572-b077-44ff5f07ee14",
+            "name": "framing",
+            "thermal_conductivity_w_m_k": null,
+            "thermal_resistance_m2_k_w": null,
+            "thickness_m": 0.1397,
+            "vapor_permeance_kg_pa_s_m2": null
+          },
+          {
+            "framing": null,
+            "function": "FINISH",
+            "material_id": "14c21f0b-2aba-58bd-9bb9-fae9c1b3bc14",
+            "name": "gypsum-board",
+            "thermal_conductivity_w_m_k": null,
+            "thermal_resistance_m2_k_w": null,
+            "thickness_m": 0.0127,
+            "vapor_permeance_kg_pa_s_m2": null
+          }
+        ],
+        "schema_version": 1,
+        "unverified_climate_details": [
+          "Water-resistive barrier and rain-screen gap behind the siding.",
+          "Interior vapor control for the climate zone.",
+          "Air barrier continuity where posts and beams interrupt the sheathing.",
+          "Flashing and sill pans at rough openings.",
+          "Dense-pack cellulose density and settling."
+        ]
+      },
+      {
         "end_m": [
           10.058399999999999,
           7.3152,
@@ -24684,6 +25916,31 @@
           10.9728,
           7.3152,
           2.1336
+        ]
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          0,
+          3.6576,
+          3.048
+        ],
+        "framing_ids": [
+          "459cfe09-2cf2-574b-a588-05a7ce39c342",
+          "f6807bda-e1e3-534e-a724-fb03aa5329cd",
+          "fbcba125-824b-5965-9fef-991aac82d523",
+          "1defad58-928f-5d00-9809-585f2619d4e4"
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-1",
+        "height_m": 2.7432,
+        "id": "6cd64eac-f93c-5cec-a5bd-42de17cee5d7",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          0,
+          0,
+          3.048
         ]
       },
       {
@@ -24777,6 +26034,26 @@
       },
       {
         "end_m": [
+          8.667749999999998,
+          7.3152,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-1/opening/625ae519-b58e-5150-800a-627a6cbd234e/buck-jamb/start",
+        "id": "6dfe27ef-2167-5397-8668-58a3c99676a8",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "625ae519-b58e-5150-800a-627a6cbd234e",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.667749999999998,
+          7.3152,
+          3.9243
+        ]
+      },
+      {
+        "end_m": [
           0,
           7.3152,
           5.7912
@@ -24812,6 +26089,28 @@
           3.6576,
           4.8768
         ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "77543876-d19e-5592-b61b-7499411de31d",
+        "width_m": 0.9144
+      },
+      {
+        "height_m": 1.2192,
+        "id": "6ee92b6d-6932-5ae1-a2e5-7bca1427c96b",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "7410a9c0-3847-5698-83f6-0fe539eeee6e",
+        "width_m": 0.9144
       },
       {
         "connection_type": "HOUSED_DOVETAIL",
@@ -24867,6 +26166,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          2.60985,
+          0,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-0/opening/d8584be7-18de-5aa0-ac79-90e8f49d02b4/buck-jamb/end",
+        "id": "6fd06db0-3b3c-5d4e-98d7-b13a9e473e32",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "d8584be7-18de-5aa0-ac79-90e8f49d02b4",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          2.60985,
+          0,
+          0.8763
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/axis-x/y2/x0-x1/plane-L1/beam/frame/axis-x/y2/x0-x1/plane-L1/brace/x1",
         "id": "704f4c7b-cf31-5af2-8b29-9df437b902e6",
@@ -24899,6 +26218,42 @@
           "6281ebaf-61b8-55d9-95fb-71f8cd140262"
         ],
         "schema_version": 1
+      },
+      {
+        "height_m": 1.2192,
+        "id": "711176bd-4637-582a-8296-b887f3c9ce2f",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "39f76269-384d-5282-97e5-6fde3161eefd",
+        "width_m": 0.9144
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          3.6575999999999995,
+          7.3152,
+          3.048
+        ],
+        "framing_ids": [
+          "a3000750-4b5f-58e3-ac57-e11613436288",
+          "89ac6dad-2257-5896-9d50-5e719d337afb",
+          "a5aa5059-37ab-53e3-b85a-b55db8554a93",
+          "7b95d40f-ec9b-5dd8-8072-736b5c7ea57b"
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-1",
+        "height_m": 2.7432,
+        "id": "7410a9c0-3847-5698-83f6-0fe539eeee6e",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          0,
+          7.3152,
+          3.048
+        ]
       },
       {
         "connection_type": "HOUSED_DOVETAIL",
@@ -25077,6 +26432,31 @@
         "schema_version": 1
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          10.9728,
+          7.3152,
+          0
+        ],
+        "framing_ids": [
+          "6734c4e5-866b-5e6c-b107-7843ae33cf2b",
+          "e2be017c-abd4-5fee-b0b4-b57a694f12aa",
+          "631768b3-5905-54c5-a19e-77c578bffd44",
+          "78b95c87-6713-5d3b-971a-74788e824a59"
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-0",
+        "height_m": 3.048,
+        "id": "77543876-d19e-5592-b61b-7499411de31d",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          7.315199999999999,
+          7.3152,
+          0
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/x1/y0/level-0/post/frame/axis-y/x1/y0-y1/plane-L1/brace/y0",
         "id": "77a588b6-b959-52ed-bc8d-eef6a40d137d",
@@ -25111,6 +26491,48 @@
           0,
           3.048
         ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "78aaaaf2-66a2-59e0-bb6b-febaaa59c94b",
+        "kind": "Opening",
+        "offset_m": 1.0668,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "1ddf8b32-e08b-52f5-b42e-c4dd503af146",
+        "width_m": 1.524
+      },
+      {
+        "end_m": [
+          9.601199999999999,
+          7.3152,
+          0.89535
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-0/opening/6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e/buck-sill",
+        "id": "78b95c87-6713-5d3b-971a-74788e824a59",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.686799999999998,
+          7.3152,
+          0.89535
+        ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "79cc344e-d3c8-5b29-98cf-a055b6f3bfc1",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "97d86826-34ad-5aed-a567-61fa36c7c4af",
+        "width_m": 0.9144
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -25162,6 +26584,26 @@
           "9a9b3833-c8e2-5743-8853-a8882feb42ac"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          9.925049999999999,
+          0,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-0/opening/78aaaaf2-66a2-59e0-bb6b-febaaa59c94b/buck-jamb/end",
+        "id": "7a99def0-93f7-5a69-9447-7ac93ff55a85",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "78aaaaf2-66a2-59e0-bb6b-febaaa59c94b",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          9.925049999999999,
+          0,
+          0.8763
+        ]
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -25218,6 +26660,26 @@
       },
       {
         "end_m": [
+          2.286,
+          7.3152,
+          3.94335
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-1/opening/6ee92b6d-6932-5ae1-a2e5-7bca1427c96b/buck-sill",
+        "id": "7b95d40f-ec9b-5dd8-8072-736b5c7ea57b",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "6ee92b6d-6932-5ae1-a2e5-7bca1427c96b",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.3716,
+          7.3152,
+          3.94335
+        ]
+      },
+      {
+        "end_m": [
           3.6575999999999995,
           7.3152,
           0
@@ -25252,6 +26714,26 @@
           3.048,
           3.6576,
           3.048
+        ]
+      },
+      {
+        "end_m": [
+          2.5907999999999998,
+          0,
+          2.15265
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-0/opening/d8584be7-18de-5aa0-ac79-90e8f49d02b4/buck-head",
+        "id": "7c0af7aa-1fbc-5bd4-b12e-43561cdd4370",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "d8584be7-18de-5aa0-ac79-90e8f49d02b4",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.0668,
+          0,
+          2.15265
         ]
       },
       {
@@ -25503,6 +26985,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          0,
+          5.9436,
+          2.15265
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-0/opening/79cc344e-d3c8-5b29-98cf-a055b6f3bfc1/buck-head",
+        "id": "824e196e-a50f-5f48-a6ff-31f823a221d2",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "79cc344e-d3c8-5b29-98cf-a055b6f3bfc1",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          5.0291999999999994,
+          2.15265
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/purlin-rafter/frame/roof/x2/north/principal-rafter/frame/roof/x2-x3/north/p2/purlin",
         "id": "83082f3b-bb98-5690-9b48-d7f24de18e7a",
@@ -25712,6 +27214,26 @@
       },
       {
         "end_m": [
+          10.9728,
+          2.286,
+          0.89535
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-0/opening/931811de-abce-581d-99d9-46ab2e2a74d8/buck-sill",
+        "id": "87d5ff99-001b-5a28-9666-c3e60ba24ff2",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "931811de-abce-581d-99d9-46ab2e2a74d8",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          1.3716,
+          0.89535
+        ]
+      },
+      {
+        "end_m": [
           8.5344,
           3.6576,
           3.048
@@ -25762,6 +27284,26 @@
           "6e23472d-e5da-55f8-9703-92cd4b6a3747"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          2.30505,
+          7.3152,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-1/opening/6ee92b6d-6932-5ae1-a2e5-7bca1427c96b/buck-jamb/end",
+        "id": "89ac6dad-2257-5896-9d50-5e719d337afb",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "6ee92b6d-6932-5ae1-a2e5-7bca1427c96b",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          2.30505,
+          7.3152,
+          3.9243
+        ]
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -25863,6 +27405,42 @@
         "schema_version": 1
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          10.9728,
+          7.3152,
+          0
+        ],
+        "framing_ids": [
+          "603b6fab-e5c1-5404-9b7a-67de118dc524",
+          "2f504e24-b0f8-5207-be57-43bdf3f8e75a",
+          "1d86a614-3fdf-580e-9540-e959f0caf92c",
+          "1a93b90f-76a7-5099-add1-c6b299db541d"
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-0",
+        "height_m": 3.048,
+        "id": "8cd745d8-e49a-5df7-b206-938f8ea29c86",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          10.9728,
+          3.6576,
+          0
+        ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "8ce7ffd1-fe17-5672-b4f1-7eb8c7a7364f",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "956b30fb-9878-5a72-8f12-6d59aa0b0806",
+        "width_m": 0.9144
+      },
+      {
         "density_kg_m3": null,
         "grade": null,
         "id": "8cf0b7b4-e3d6-5f86-8814-9db5b1c13f62",
@@ -25960,6 +27538,26 @@
           "885f956c-bcad-560b-8554-d3cfce403c05"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          10.9728,
+          5.9436,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-y/x3/y1-y2/level-1/opening/1edca7b4-57b2-5f25-8301-14add07f728b/buck-head",
+        "id": "90902ac9-c6b5-56d7-b2a6-3716460c3c60",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "1edca7b4-57b2-5f25-8301-14add07f728b",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          5.0291999999999994,
+          5.2006499999999996
+        ]
       },
       {
         "end_m": [
@@ -26085,6 +27683,17 @@
         "schema_version": 1
       },
       {
+        "height_m": 2.032,
+        "id": "92682b17-6507-548d-9de8-a1d34b3b06bb",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "DOOR",
+        "schema_version": 1,
+        "sill_height_m": 0,
+        "wall_id": "1d0100ae-3dc2-57b6-83ac-cff9c3872af3",
+        "width_m": 0.9144
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/purlin-rafter/frame/roof/x0/south/principal-rafter/frame/roof/x0-x1/south/p2/purlin",
         "id": "926da613-38a5-570c-837e-8c93ce28a0b6",
@@ -26100,6 +27709,17 @@
           "fcb14963-270b-5f09-ada9-ac720f9b3824"
         ],
         "schema_version": 1
+      },
+      {
+        "height_m": 1.2192,
+        "id": "931811de-abce-581d-99d9-46ab2e2a74d8",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "3e4f8bd2-db8c-5376-951d-d38e5f1c2637",
+        "width_m": 0.9144
       },
       {
         "end_m": [
@@ -26155,6 +27775,31 @@
         "schema_version": 1
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          10.9728,
+          7.3152,
+          3.048
+        ],
+        "framing_ids": [
+          "3aea0d43-2a87-54e9-8454-cb8d1cc2a657",
+          "11225d0d-36da-56b3-b74e-94580d4a4e20",
+          "6dfe27ef-2167-5397-8668-58a3c99676a8",
+          "980e9060-e8ce-5e54-b392-d1a535ef6c21"
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-1",
+        "height_m": 2.7432,
+        "id": "940db8c6-ed6f-5be8-b32b-d961208d59ec",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          7.315199999999999,
+          7.3152,
+          3.048
+        ]
+      },
+      {
         "connection_type": "HOUSED_DOVETAIL",
         "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j3/y0-y1/plane-L1/joist",
         "id": "943b3c09-8e6f-5112-a4d3-ab43f7a7fd98",
@@ -26188,6 +27833,31 @@
           3.6575999999999995,
           2.4383999999999997,
           7.619999999999999
+        ]
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          3.6575999999999995,
+          0,
+          3.048
+        ],
+        "framing_ids": [
+          "2063fe91-710f-555d-8f96-54ade9b2efb6",
+          "4b5f4084-385a-5baa-ae5b-56fcd6a84dcb",
+          "6193b5f0-16b4-5658-8599-b0a03aebaee7",
+          "44e8ec6a-b4f2-5d06-8960-321060904bdf"
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-1",
+        "height_m": 2.7432,
+        "id": "956b30fb-9878-5a72-8f12-6d59aa0b0806",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          0,
+          0,
+          3.048
         ]
       },
       {
@@ -26377,6 +28047,31 @@
         ]
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          0,
+          7.3152,
+          0
+        ],
+        "framing_ids": [
+          "824e196e-a50f-5f48-a6ff-31f823a221d2",
+          "c61bb58f-0527-5314-bbea-85ed8e4f2957",
+          "1eba075a-0fd3-511e-9987-f03ee2564f34",
+          "ba691f8d-18c9-5470-8535-3def41ad5e69"
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-0",
+        "height_m": 3.048,
+        "id": "97d86826-34ad-5aed-a567-61fa36c7c4af",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          0,
+          3.6576,
+          0
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/post-beam/frame/x2/y2/level-1/post/frame/axis-y/x2/y1-y2/plane-eave/beam",
         "id": "97eb062e-3dc2-5e10-bcda-629b8353dcd4",
@@ -26392,6 +28087,26 @@
           "464e59ed-b7aa-57f9-8997-93591c07bda8"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          9.601199999999999,
+          7.3152,
+          3.94335
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-1/opening/625ae519-b58e-5150-800a-627a6cbd234e/buck-sill",
+        "id": "980e9060-e8ce-5e54-b392-d1a535ef6c21",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "625ae519-b58e-5150-800a-627a6cbd234e",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.686799999999998,
+          7.3152,
+          3.94335
+        ]
       },
       {
         "end_m": [
@@ -26562,6 +28277,36 @@
         ]
       },
       {
+        "end_m": [
+          0,
+          2.30505,
+          2.1717
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-0/opening/711176bd-4637-582a-8296-b887f3c9ce2f/buck-jamb/end",
+        "id": "9c5718a6-cf59-5d33-93dc-ea1fff22a389",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "711176bd-4637-582a-8296-b887f3c9ce2f",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          2.30505,
+          0.8763
+        ]
+      },
+      {
+        "density_kg_m3": null,
+        "grade": null,
+        "id": "9c66b1c2-6f92-5f82-8e09-214746435841",
+        "kind": "Material",
+        "name": "Clay plaster",
+        "provenance": null,
+        "schema_version": 1,
+        "species": null
+      },
+      {
         "connection_type": "HOUSED_DOVETAIL",
         "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j2/y1-y2/plane-L1/joist",
         "id": "9cadc326-e776-58bf-a326-da021d1dcd79",
@@ -26594,6 +28339,26 @@
           "84503190-fa83-545c-b0e7-7b96edc6ad6a"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          5.9436,
+          0,
+          2.05105
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-0/opening/92682b17-6507-548d-9de8-a1d34b3b06bb/buck-head",
+        "id": "9d1bfda1-eecb-53fb-bc99-dfcc146fb510",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "92682b17-6507-548d-9de8-a1d34b3b06bb",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.0291999999999994,
+          0,
+          2.05105
+        ]
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -26702,6 +28467,26 @@
       {
         "end_m": [
           10.9728,
+          2.286,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-1/opening/52becff0-b26b-5b57-b5a0-dd048e232ee1/buck-head",
+        "id": "9eb016bd-a708-5324-b695-37d066ba267c",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "52becff0-b26b-5b57-b5a0-dd048e232ee1",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          1.3716,
+          5.2006499999999996
+        ]
+      },
+      {
+        "end_m": [
+          10.9728,
           7.3152,
           3.048
         ],
@@ -26716,6 +28501,26 @@
           7.315199999999999,
           7.3152,
           3.048
+        ]
+      },
+      {
+        "end_m": [
+          5.96265,
+          7.3152,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-1/opening/478b228d-11ce-5cb3-8be4-6e245f7cedc5/buck-jamb/end",
+        "id": "9f288a76-8804-59b2-9a4d-8696354fa182",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "478b228d-11ce-5cb3-8be4-6e245f7cedc5",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.96265,
+          7.3152,
+          3.9243
         ]
       },
       {
@@ -26840,6 +28645,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          2.286,
+          7.3152,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-1/opening/6ee92b6d-6932-5ae1-a2e5-7bca1427c96b/buck-head",
+        "id": "a3000750-4b5f-58e3-ac57-e11613436288",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "6ee92b6d-6932-5ae1-a2e5-7bca1427c96b",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.3716,
+          7.3152,
+          5.2006499999999996
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/axis-x/y1/x1-x2/plane-eave/beam/frame/axis-x/y1/x1-x2/plane-eave/brace/x2",
         "id": "a308a6d7-bef1-54bc-bddf-e38c7bfcd96a",
@@ -26891,6 +28716,15 @@
           "1bf97239-9209-557c-a644-e3cde52eeb55"
         ],
         "schema_version": 1
+      },
+      {
+        "actual_depth_m": 0.4572,
+        "actual_width_m": 0.0381,
+        "id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "kind": "Section",
+        "nominal_label": "1.5x18",
+        "schema_version": 1,
+        "shape": "rectangular"
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -26948,6 +28782,26 @@
         ]
       },
       {
+        "end_m": [
+          1.35255,
+          7.3152,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-1/opening/6ee92b6d-6932-5ae1-a2e5-7bca1427c96b/buck-jamb/start",
+        "id": "a5aa5059-37ab-53e3-b85a-b55db8554a93",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "6ee92b6d-6932-5ae1-a2e5-7bca1427c96b",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.35255,
+          7.3152,
+          3.9243
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/x0/y2/level-1/post/frame/axis-y/x0/y1-y2/plane-eave/brace/y2",
         "id": "a75c2734-149d-5e11-bd58-d2897786bd1d",
@@ -27001,6 +28855,26 @@
         ]
       },
       {
+        "end_m": [
+          5.9436,
+          0,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-1/opening/acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b/buck-head",
+        "id": "a92812c4-8be0-5a67-ad21-2bef2235a3cd",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.0291999999999994,
+          0,
+          5.2006499999999996
+        ]
+      },
+      {
         "connection_type": "HOUSED_DOVETAIL",
         "generation_key": "connection/joist-beam/frame/axis-x/y1/x1-x2/plane-L1/beam/frame/axis-y/x1-x2/j4/y1-y2/plane-L1/joist",
         "id": "a92f6fb8-a7c4-5905-a046-dd28bda15888",
@@ -27016,6 +28890,26 @@
           "55995104-35d4-5aaa-8b78-d204fe5f0101"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          10.9728,
+          1.35255,
+          2.1717
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-0/opening/931811de-abce-581d-99d9-46ab2e2a74d8/buck-jamb/start",
+        "id": "a9f11990-66f7-5f15-a2d3-fef5c8627df9",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "931811de-abce-581d-99d9-46ab2e2a74d8",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          1.35255,
+          0.8763
+        ]
       },
       {
         "end_m": [
@@ -27107,6 +29001,17 @@
           "1826e871-051d-53ee-9200-1c3f1312b2f0"
         ],
         "schema_version": 1
+      },
+      {
+        "height_m": 1.2192,
+        "id": "acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "1a517791-2308-5196-b268-94d6fdce1813",
+        "width_m": 0.9144
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -27319,6 +29224,51 @@
         ]
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          7.315199999999999,
+          7.3152,
+          0
+        ],
+        "framing_ids": [
+          "4a15279b-67bd-569c-9fc2-b8bd3ff48e24",
+          "659b6f54-d017-567a-a73c-ff8d9b70d7a8",
+          "f3fcbcaf-90c6-56f3-9971-6ab1857aa741",
+          "f26a4ea4-01b6-562d-90a8-afdcd86dcd78"
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-0",
+        "height_m": 3.048,
+        "id": "b1536422-56a0-5de0-bab7-47cf9931bab9",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          3.6575999999999995,
+          7.3152,
+          0
+        ]
+      },
+      {
+        "end_m": [
+          0,
+          5.9436,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-1/opening/0a1d458e-e899-5105-ae48-be19ffba0e05/buck-head",
+        "id": "b163656e-d81a-5857-8514-abb9d9c3a82b",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "0a1d458e-e899-5105-ae48-be19ffba0e05",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          5.0291999999999994,
+          5.2006499999999996
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/x1/y0/level-1/post/frame/axis-y/x1/y0-y1/plane-eave/brace/y0",
         "id": "b1eba253-5057-5807-9e8a-7bca79572ab7",
@@ -27351,6 +29301,31 @@
           "d402fbd5-35bd-536f-89a1-d7d37d1e39be"
         ],
         "schema_version": 1
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          3.6575999999999995,
+          0,
+          0
+        ],
+        "framing_ids": [
+          "7c0af7aa-1fbc-5bd4-b12e-43561cdd4370",
+          "6fd06db0-3b3c-5d4e-98d7-b13a9e473e32",
+          "54844015-29cb-5979-ad0b-3e0bef0a56d4",
+          "d949316a-527f-5bad-820c-002eb4a1f5e9"
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-0",
+        "height_m": 3.048,
+        "id": "b3d81008-ed98-5686-932d-ddd361623335",
+        "kind": "Wall",
+        "level_id": "4e83adcb-061d-5d8d-8b61-3e77e9a158f4",
+        "schema_version": 1,
+        "start_m": [
+          0,
+          0,
+          0
+        ]
       },
       {
         "end_m": [
@@ -27387,6 +29362,26 @@
           "47569324-b017-5fb3-9168-f0c125b7daf6"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          10.9728,
+          2.286,
+          3.94335
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-1/opening/52becff0-b26b-5b57-b5a0-dd048e232ee1/buck-sill",
+        "id": "b4f8e7c5-9bb7-5a20-989c-5c4fa8e256fc",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "52becff0-b26b-5b57-b5a0-dd048e232ee1",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          1.3716,
+          3.94335
+        ]
       },
       {
         "actual_depth_m": 0.1524,
@@ -27576,6 +29571,31 @@
         "schema_version": 1
       },
       {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          10.9728,
+          0,
+          3.048
+        ],
+        "framing_ids": [
+          "f1a4ac3e-86de-5c33-aa5c-686717e5b4cc",
+          "4f33ac74-3c36-5d7a-b5f3-2b9a02231df2",
+          "1975f3d7-23f5-5e6c-bddb-ccb7b603d809",
+          "323f9c2e-b39e-5f8d-908e-72c78ac62815"
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-1",
+        "height_m": 2.7432,
+        "id": "b72fef04-1d03-5bb0-a471-006864ada5f6",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          7.315199999999999,
+          0,
+          3.048
+        ]
+      },
+      {
         "end_m": [
           3.6575999999999995,
           3.6576,
@@ -27646,6 +29666,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          0,
+          5.96265,
+          5.2197
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-1/opening/0a1d458e-e899-5105-ae48-be19ffba0e05/buck-jamb/end",
+        "id": "b8e00eb0-808a-57e3-bff1-dc1a0b243f6e",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "0a1d458e-e899-5105-ae48-be19ffba0e05",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          5.96265,
+          3.9243
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/post-beam/frame/x3/y1/level-1/post/frame/axis-y/x3/y0-y1/plane-eave/beam",
         "id": "b9bc8946-f1d3-5b6d-b5ff-a7260de1ad29",
@@ -27661,6 +29701,26 @@
           "1b504570-7e95-51db-b85d-aa6a44cb64c6"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          0,
+          5.9436,
+          0.89535
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-0/opening/79cc344e-d3c8-5b29-98cf-a055b6f3bfc1/buck-sill",
+        "id": "ba691f8d-18c9-5470-8535-3def41ad5e69",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "79cc344e-d3c8-5b29-98cf-a055b6f3bfc1",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          5.0291999999999994,
+          0.89535
+        ]
       },
       {
         "end_m": [
@@ -27714,6 +29774,15 @@
           "aff54c1f-0462-55d1-b7cd-b71a942153a1"
         ],
         "schema_version": 1
+      },
+      {
+        "actual_depth_m": 0.1397,
+        "actual_width_m": 0.0381,
+        "id": "bc88d793-12d4-528d-b713-3b904b36dc43",
+        "kind": "Section",
+        "nominal_label": "2x6",
+        "schema_version": 1,
+        "shape": "rectangular"
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -27804,6 +29873,26 @@
           10.9728,
           3.6576,
           5.7912
+        ]
+      },
+      {
+        "end_m": [
+          0,
+          2.286,
+          0.89535
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-0/opening/711176bd-4637-582a-8296-b887f3c9ce2f/buck-sill",
+        "id": "be768fbb-d648-5f4a-9368-06e131b3b65d",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "711176bd-4637-582a-8296-b887f3c9ce2f",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          1.3716,
+          0.89535
         ]
       },
       {
@@ -27962,6 +30051,46 @@
         ]
       },
       {
+        "end_m": [
+          5.9436,
+          7.3152,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-1/opening/478b228d-11ce-5cb3-8be4-6e245f7cedc5/buck-head",
+        "id": "c569c84f-552f-57a8-a31a-fc8b1bcf0384",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "478b228d-11ce-5cb3-8be4-6e245f7cedc5",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.0291999999999994,
+          7.3152,
+          5.2006499999999996
+        ]
+      },
+      {
+        "end_m": [
+          0,
+          2.286,
+          2.15265
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-0/opening/711176bd-4637-582a-8296-b887f3c9ce2f/buck-head",
+        "id": "c570d624-742b-5d69-9df5-244997eec0d3",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "711176bd-4637-582a-8296-b887f3c9ce2f",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          1.3716,
+          2.15265
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/axis-y/x3/y0-y1/plane-eave/beam/frame/axis-y/x3/y0-y1/plane-eave/brace/y0",
         "id": "c5f99850-7ae3-5ec6-b4b7-008dc50f555a",
@@ -27977,6 +30106,46 @@
           "2c5935da-f229-50d6-b9d5-56c60d9fa012"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          0,
+          5.96265,
+          2.1717
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-0/opening/79cc344e-d3c8-5b29-98cf-a055b6f3bfc1/buck-jamb/end",
+        "id": "c61bb58f-0527-5314-bbea-85ed8e4f2957",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "79cc344e-d3c8-5b29-98cf-a055b6f3bfc1",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          5.96265,
+          0.8763
+        ]
+      },
+      {
+        "end_m": [
+          0,
+          1.35255,
+          2.1717
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-0/opening/711176bd-4637-582a-8296-b887f3c9ce2f/buck-jamb/start",
+        "id": "c66e1f1a-7367-53dc-84ea-11e2d8399f3a",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "711176bd-4637-582a-8296-b887f3c9ce2f",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          1.35255,
+          0.8763
+        ]
       },
       {
         "end_m": [
@@ -28098,6 +30267,16 @@
           "ea661296-b6bc-5d39-b917-2dd828e769b6"
         ],
         "schema_version": 1
+      },
+      {
+        "density_kg_m3": null,
+        "grade": null,
+        "id": "cb4f014b-3a16-5572-b077-44ff5f07ee14",
+        "kind": "Material",
+        "name": "Dense-pack cellulose",
+        "provenance": null,
+        "schema_version": 1,
+        "species": null
       },
       {
         "end_m": [
@@ -28297,6 +30476,17 @@
           3.6576,
           0
         ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "d24bd048-8695-5041-87fc-baa5484be781",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "b72fef04-1d03-5bb0-a471-006864ada5f6",
+        "width_m": 0.9144
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -28585,6 +30775,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          5.96265,
+          0,
+          2.0701
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-0/opening/92682b17-6507-548d-9de8-a1d34b3b06bb/buck-jamb/end",
+        "id": "d7ad59ae-7b7f-502c-b87a-0b07cc88cf09",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "92682b17-6507-548d-9de8-a1d34b3b06bb",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.96265,
+          0,
+          0
+        ]
+      },
+      {
         "connection_type": "HOUSED_DOVETAIL",
         "generation_key": "connection/joist-beam/frame/axis-x/y1/x2-x3/plane-L1/beam/frame/axis-y/x2-x3/j5/y1-y2/plane-L1/joist",
         "id": "d8301f3b-f50c-5d37-b014-808bf32c37c0",
@@ -28600,6 +30810,17 @@
           "0a0998b4-567c-523a-9f3a-3615d9ccc069"
         ],
         "schema_version": 1
+      },
+      {
+        "height_m": 1.2192,
+        "id": "d8584be7-18de-5aa0-ac79-90e8f49d02b4",
+        "kind": "Opening",
+        "offset_m": 1.0668,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "b3d81008-ed98-5686-932d-ddd361623335",
+        "width_m": 1.524
       },
       {
         "end_m": [
@@ -28618,6 +30839,26 @@
           7.315199999999999,
           3.6576,
           3.048
+        ]
+      },
+      {
+        "end_m": [
+          2.5907999999999998,
+          0,
+          0.89535
+        ],
+        "generation_key": "wall/axis-x/y0/x0-x1/level-0/opening/d8584be7-18de-5aa0-ac79-90e8f49d02b4/buck-sill",
+        "id": "d949316a-527f-5bad-820c-002eb4a1f5e9",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "d8584be7-18de-5aa0-ac79-90e8f49d02b4",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          1.0668,
+          0,
+          0.89535
         ]
       },
       {
@@ -28672,6 +30913,26 @@
           "bdf6fcb0-6ffa-524d-8a9c-eb3b45304a5b"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          5.9436,
+          7.3152,
+          3.94335
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-1/opening/478b228d-11ce-5cb3-8be4-6e245f7cedc5/buck-sill",
+        "id": "dc217da5-071c-52bd-abc9-01cf204667c8",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "478b228d-11ce-5cb3-8be4-6e245f7cedc5",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.0291999999999994,
+          7.3152,
+          3.94335
+        ]
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -28797,6 +31058,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          5.010149999999999,
+          7.3152,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-1/opening/478b228d-11ce-5cb3-8be4-6e245f7cedc5/buck-jamb/start",
+        "id": "e01af92e-9980-5c62-86d0-097a2be77d69",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "478b228d-11ce-5cb3-8be4-6e245f7cedc5",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.010149999999999,
+          7.3152,
+          3.9243
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/purlin-rafter/frame/roof/x1/south/principal-rafter/frame/roof/x0-x1/south/p1/purlin",
         "id": "e0340b0e-bcf5-5d02-a6cc-e8dbbc55d767",
@@ -28812,6 +31093,26 @@
           "b48a88c1-5d66-54f6-b7a7-b57ceb65da36"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          8.36295,
+          0,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-0/opening/78aaaaf2-66a2-59e0-bb6b-febaaa59c94b/buck-jamb/start",
+        "id": "e0870bb9-03a2-5f08-b356-650cc5208795",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "78aaaaf2-66a2-59e0-bb6b-febaaa59c94b",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.36295,
+          0,
+          0.8763
+        ]
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -28885,6 +31186,26 @@
       },
       {
         "end_m": [
+          0,
+          5.9436,
+          3.94335
+        ],
+        "generation_key": "wall/axis-y/x0/y1-y2/level-1/opening/0a1d458e-e899-5105-ae48-be19ffba0e05/buck-sill",
+        "id": "e16b5c76-843e-5007-9bcf-8a31a97c2081",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "0a1d458e-e899-5105-ae48-be19ffba0e05",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          5.0291999999999994,
+          3.94335
+        ]
+      },
+      {
+        "end_m": [
           5.4864,
           7.3152,
           3.048
@@ -28922,12 +31243,77 @@
         ]
       },
       {
+        "end_m": [
+          9.620249999999999,
+          7.3152,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y2/x2-x3/level-0/opening/6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e/buck-jamb/end",
+        "id": "e2be017c-abd4-5fee-b0b4-b57a694f12aa",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "6ec678d8-1ee7-5d1b-b5d9-849023ac2c8e",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          9.620249999999999,
+          7.3152,
+          0.8763
+        ]
+      },
+      {
         "elevation_m": 3.048,
         "id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
         "index": 1,
         "kind": "Level",
         "schema_version": 1,
         "story_height_m": 2.7432
+      },
+      {
+        "assembly_definition_id": "3a384b95-2dc2-5d9f-ab25-246c8bf4a679",
+        "end_m": [
+          10.9728,
+          3.6576,
+          3.048
+        ],
+        "framing_ids": [
+          "9eb016bd-a708-5324-b695-37d066ba267c",
+          "2db42945-9dac-5f8d-8ab0-c2440dd8ff3d",
+          "53b4ef32-ef29-553a-8ea4-e96db2dd98ef",
+          "b4f8e7c5-9bb7-5a20-989c-5c4fa8e256fc"
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-1",
+        "height_m": 2.7432,
+        "id": "e3aecce3-dd4c-5b42-b686-32a8ff1d5719",
+        "kind": "Wall",
+        "level_id": "e34db435-e6b6-5fa7-8153-94ead59f9cc0",
+        "schema_version": 1,
+        "start_m": [
+          10.9728,
+          0,
+          3.048
+        ]
+      },
+      {
+        "end_m": [
+          10.9728,
+          2.286,
+          2.15265
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-0/opening/931811de-abce-581d-99d9-46ab2e2a74d8/buck-head",
+        "id": "e474ef4a-e1d2-5246-abf0-9dbc8aa7cba6",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "931811de-abce-581d-99d9-46ab2e2a74d8",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          1.3716,
+          2.15265
+        ]
       },
       {
         "end_m": [
@@ -29262,6 +31648,26 @@
       },
       {
         "end_m": [
+          2.30505,
+          7.3152,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y2/x0-x1/level-0/opening/f05db32a-7faa-575b-acb7-f914b2514e2f/buck-jamb/end",
+        "id": "ea3da701-46bb-5f6e-a9e9-f944130e8829",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "f05db32a-7faa-575b-acb7-f914b2514e2f",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          2.30505,
+          7.3152,
+          0.8763
+        ]
+      },
+      {
+        "end_m": [
           4.2672,
           7.3152,
           3.048
@@ -29403,6 +31809,16 @@
         ]
       },
       {
+        "density_kg_m3": null,
+        "grade": null,
+        "id": "ecb3931d-f318-59f1-95ac-c3b92dd6aa4a",
+        "kind": "Material",
+        "name": "Straw",
+        "provenance": null,
+        "schema_version": 1,
+        "species": null
+      },
+      {
         "end_m": [
           0.6096,
           7.3152,
@@ -29419,6 +31835,26 @@
           0.6096,
           3.6576,
           3.048
+        ]
+      },
+      {
+        "end_m": [
+          5.010149999999999,
+          0,
+          5.2197
+        ],
+        "generation_key": "wall/axis-x/y0/x1-x2/level-1/opening/acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b/buck-jamb/start",
+        "id": "ee4b8bf7-9ccd-584a-8950-d01dfb88338d",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "acbf9cc3-bac8-5544-9dde-4ec51c6e0c9b",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.010149999999999,
+          0,
+          3.9243
         ]
       },
       {
@@ -29511,6 +31947,17 @@
         "schema_version": 1
       },
       {
+        "height_m": 1.2192,
+        "id": "f05db32a-7faa-575b-acb7-f914b2514e2f",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "337b4f12-baa9-5471-a015-c1820542f600",
+        "width_m": 0.9144
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/x1/y0/level-0/post/frame/axis-x/y0/x0-x1/plane-L1/brace/x1",
         "id": "f0e636e9-fd07-532e-9fd0-a23b3fda521e",
@@ -29545,6 +31992,26 @@
         "schema_version": 1
       },
       {
+        "end_m": [
+          9.601199999999999,
+          0,
+          5.2006499999999996
+        ],
+        "generation_key": "wall/axis-x/y0/x2-x3/level-1/opening/d24bd048-8695-5041-87fc-baa5484be781/buck-head",
+        "id": "f1a4ac3e-86de-5c33-aa5c-686717e5b4cc",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "d24bd048-8695-5041-87fc-baa5484be781",
+        "piece_kind": "BUCK_HEAD",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          8.686799999999998,
+          0,
+          5.2006499999999996
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/brace/frame/axis-x/y1/x0-x1/plane-eave/beam/frame/axis-x/y1/x0-x1/plane-eave/brace/x0",
         "id": "f1d73c40-d4dd-5494-876e-d9b6441ba662",
@@ -29560,6 +32027,26 @@
           "d94b4e4e-62ad-511e-9cf8-7c441523eaa7"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          5.9436,
+          7.3152,
+          0.89535
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-0/opening/5954d8fa-dc8f-535d-8828-37d459d19302/buck-sill",
+        "id": "f26a4ea4-01b6-562d-90a8-afdcd86dcd78",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "5954d8fa-dc8f-535d-8828-37d459d19302",
+        "piece_kind": "BUCK_SILL",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.0291999999999994,
+          7.3152,
+          0.89535
+        ]
       },
       {
         "end_m": [
@@ -29596,6 +32083,26 @@
           "adc00f39-da78-5b53-95e0-acb64274662c"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          5.010149999999999,
+          7.3152,
+          2.1717
+        ],
+        "generation_key": "wall/axis-x/y2/x1-x2/level-0/opening/5954d8fa-dc8f-535d-8828-37d459d19302/buck-jamb/start",
+        "id": "f3fcbcaf-90c6-56f3-9971-6ab1857aa741",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "5954d8fa-dc8f-535d-8828-37d459d19302",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          5.010149999999999,
+          7.3152,
+          0.8763
+        ]
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -29687,6 +32194,26 @@
         ]
       },
       {
+        "end_m": [
+          0,
+          2.30505,
+          5.2197
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-1/opening/fc2be3ff-0c80-528e-a852-e929da39b122/buck-jamb/end",
+        "id": "f6807bda-e1e3-534e-a724-fb03aa5329cd",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "fc2be3ff-0c80-528e-a852-e929da39b122",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          2.30505,
+          3.9243
+        ]
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/purlin-rafter/frame/roof/x1/north/principal-rafter/frame/roof/x1-x2/north/p1/purlin",
         "id": "f6a19df2-5495-5820-a52a-d6d03777bb62",
@@ -29721,6 +32248,16 @@
           3.6576,
           2.1336
         ]
+      },
+      {
+        "density_kg_m3": null,
+        "grade": null,
+        "id": "f7ae7d50-4845-5907-9165-8d582bf69dda",
+        "kind": "Material",
+        "name": "Lime plaster",
+        "provenance": null,
+        "schema_version": 1,
+        "species": null
       },
       {
         "connection_type": "PEGGED_MORTISE_TENON",
@@ -29882,6 +32419,37 @@
         ]
       },
       {
+        "end_m": [
+          0,
+          1.35255,
+          5.2197
+        ],
+        "generation_key": "wall/axis-y/x0/y0-y1/level-1/opening/fc2be3ff-0c80-528e-a852-e929da39b122/buck-jamb/start",
+        "id": "fbcba125-824b-5965-9fef-991aac82d523",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "fc2be3ff-0c80-528e-a852-e929da39b122",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          0,
+          1.35255,
+          3.9243
+        ]
+      },
+      {
+        "height_m": 1.2192,
+        "id": "fc2be3ff-0c80-528e-a852-e929da39b122",
+        "kind": "Opening",
+        "offset_m": 1.3716,
+        "opening_kind": "WINDOW",
+        "schema_version": 1,
+        "sill_height_m": 0.9144,
+        "wall_id": "6cd64eac-f93c-5cec-a5bd-42de17cee5d7",
+        "width_m": 0.9144
+      },
+      {
         "connection_type": "PEGGED_MORTISE_TENON",
         "generation_key": "connection/post-beam/frame/x0/y1/level-1/post/frame/axis-x/y1/x0-x1/plane-eave/beam",
         "id": "fc7f7d93-d0cd-5aca-8271-079c8a2848e7",
@@ -29986,9 +32554,29 @@
           "bde6af2b-eea9-53d2-be28-3bf281e02001"
         ],
         "schema_version": 1
+      },
+      {
+        "end_m": [
+          10.9728,
+          2.30505,
+          2.1717
+        ],
+        "generation_key": "wall/axis-y/x3/y0-y1/level-0/opening/931811de-abce-581d-99d9-46ab2e2a74d8/buck-jamb/end",
+        "id": "fffa1aa8-691e-5eec-8a4e-77af43a5337f",
+        "kind": "WallFramingPiece",
+        "material_id": "2b79c8fb-02a9-5fef-8e9c-3c2b6ad71e34",
+        "opening_id": "931811de-abce-581d-99d9-46ab2e2a74d8",
+        "piece_kind": "BUCK_JAMB",
+        "schema_version": 1,
+        "section_id": "a3c2b24c-e56d-5891-b5a3-bd3c5a9b4a05",
+        "start_m": [
+          10.9728,
+          2.30505,
+          0.8763
+        ]
       }
     ],
-    "model_schema_version": 2,
+    "model_schema_version": 3,
     "parent_revision_id": null,
     "project_id": "6f1e2d3c-4b5a-4987-8a6b-5c4d3e2f1a0b",
     "revision_id": "7db093d4-d5b6-58da-a833-f88f79e11a12"
@@ -30031,7 +32619,7 @@
       }
     ],
     "classification": "consequential",
-    "classification_version": "vs02-change-classes-1",
+    "classification_version": "vs02b-change-classes-1",
     "command_hash": "sha256:66a6c2bf9aec40720f853d390457f6fa57fcea481ba299e6e8530028a05b8441",
     "confirmation_required": true,
     "connections": {
@@ -30115,6 +32703,16 @@
     },
     "preview_token": "eyJhY3Rvcl9pZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMSIsImJhc2VfcmV2aXNpb25faWQiOiI3ZGIwOTNkNC1kNWI2LTU4ZGEtYTgzMy1mODhmNzllMTFhMTIiLCJjb21tYW5kX2hhc2giOiJzaGEyNTY6NjZhNmMyYmY5YWVjNDA3MjBmODUzZDM5MDQ1N2Y2ZmE1N2ZjZWE0ODFiYTI5OWU2ZTg1MzAwMjhhMDViODQ0MSIsImV4cGlyZXNfYXQiOiIyMDI2LTExLTE5VDEyOjE1OjAwLjAwMDAwMFoiLCJwcm9qZWN0X2lkIjoiNmYxZTJkM2MtNGI1YS00OTg3LThhNmItNWM0ZDNlMmYxYTBiIn0.qhI-cQVtj9axK23LL2ywtPAlGvxqxwd7KcdikgcBthc",
     "revision_id": "61a7753a-fa79-5725-88e0-576c555767bd",
+    "wall_framing": {
+      "added": [],
+      "removed": [],
+      "updated": []
+    },
+    "walls": {
+      "added": [],
+      "removed": [],
+      "updated": []
+    },
     "warnings": [
       {
         "code": "PRELIMINARY_UNVERIFIED",
@@ -31190,7 +33788,7 @@
       }
     ],
     "classification": "consequential",
-    "classification_version": "vs02-change-classes-1",
+    "classification_version": "vs02b-change-classes-1",
     "command_hash": "sha256:d285e4d00e27a2decccee403429fd2877e81cbdf554e4bc407ff8193e4e45d3d",
     "confirmation_required": true,
     "connections": {
@@ -31684,6 +34282,81 @@
     },
     "preview_token": "eyJhY3Rvcl9pZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMSIsImJhc2VfcmV2aXNpb25faWQiOiI3ZGIwOTNkNC1kNWI2LTU4ZGEtYTgzMy1mODhmNzllMTFhMTIiLCJjb21tYW5kX2hhc2giOiJzaGEyNTY6ZDI4NWU0ZDAwZTI3YTJkZWNjY2VlNDAzNDI5ZmQyODc3ZTgxY2JkZjU1NGU0YmM0MDdmZjgxOTNlNGU0NWQzZCIsImV4cGlyZXNfYXQiOiIyMDI2LTExLTE5VDEyOjE1OjAwLjAwMDAwMFoiLCJwcm9qZWN0X2lkIjoiNmYxZTJkM2MtNGI1YS00OTg3LThhNmItNWM0ZDNlMmYxYTBiIn0.Yh5fuIiqGzSuqa4B_2TWo_tKwe8NjIFdS5K_zUF2iJU",
     "revision_id": "58fa1610-85ca-5164-8c8c-1fc6e63ecb04",
+    "wall_framing": {
+      "added": [],
+      "removed": [],
+      "updated": [
+        "0319498c-0c10-5227-a66e-5fcc4e3ef2e6",
+        "11225d0d-36da-56b3-b74e-94580d4a4e20",
+        "1975f3d7-23f5-5e6c-bddb-ccb7b603d809",
+        "19b690ec-bf21-57f7-b42a-c949bcf8700c",
+        "1a93b90f-76a7-5099-add1-c6b299db541d",
+        "1d86a614-3fdf-580e-9540-e959f0caf92c",
+        "21927ea6-17ac-5df0-b6cc-1d542e0079b7",
+        "2db42945-9dac-5f8d-8ab0-c2440dd8ff3d",
+        "2f504e24-b0f8-5207-be57-43bdf3f8e75a",
+        "323f9c2e-b39e-5f8d-908e-72c78ac62815",
+        "3aea0d43-2a87-54e9-8454-cb8d1cc2a657",
+        "3e2a84df-35b9-5dcd-a067-831df079c596",
+        "3e8bf797-62aa-5d14-a1e6-84a1cc5ec886",
+        "46f1586a-4f81-53b4-b833-654b701c7d7d",
+        "4a15279b-67bd-569c-9fc2-b8bd3ff48e24",
+        "4b00a19c-3846-5d5e-a306-0ec7de828757",
+        "4f33ac74-3c36-5d7a-b5f3-2b9a02231df2",
+        "53b4ef32-ef29-553a-8ea4-e96db2dd98ef",
+        "603b6fab-e5c1-5404-9b7a-67de118dc524",
+        "631768b3-5905-54c5-a19e-77c578bffd44",
+        "652c2488-3334-57b7-b94f-8912fd0788cb",
+        "659b6f54-d017-567a-a73c-ff8d9b70d7a8",
+        "6734c4e5-866b-5e6c-b107-7843ae33cf2b",
+        "6dfe27ef-2167-5397-8668-58a3c99676a8",
+        "78b95c87-6713-5d3b-971a-74788e824a59",
+        "7a99def0-93f7-5a69-9447-7ac93ff55a85",
+        "87d5ff99-001b-5a28-9666-c3e60ba24ff2",
+        "90902ac9-c6b5-56d7-b2a6-3716460c3c60",
+        "980e9060-e8ce-5e54-b392-d1a535ef6c21",
+        "9d1bfda1-eecb-53fb-bc99-dfcc146fb510",
+        "9eb016bd-a708-5324-b695-37d066ba267c",
+        "9f288a76-8804-59b2-9a4d-8696354fa182",
+        "a92812c4-8be0-5a67-ad21-2bef2235a3cd",
+        "a9f11990-66f7-5f15-a2d3-fef5c8627df9",
+        "b4f8e7c5-9bb7-5a20-989c-5c4fa8e256fc",
+        "c569c84f-552f-57a8-a31a-fc8b1bcf0384",
+        "d7ad59ae-7b7f-502c-b87a-0b07cc88cf09",
+        "dc217da5-071c-52bd-abc9-01cf204667c8",
+        "e01af92e-9980-5c62-86d0-097a2be77d69",
+        "e0870bb9-03a2-5f08-b356-650cc5208795",
+        "e2be017c-abd4-5fee-b0b4-b57a694f12aa",
+        "e474ef4a-e1d2-5246-abf0-9dbc8aa7cba6",
+        "ee4b8bf7-9ccd-584a-8950-d01dfb88338d",
+        "f1a4ac3e-86de-5c33-aa5c-686717e5b4cc",
+        "f26a4ea4-01b6-562d-90a8-afdcd86dcd78",
+        "f3fcbcaf-90c6-56f3-9971-6ab1857aa741",
+        "fffa1aa8-691e-5eec-8a4e-77af43a5337f"
+      ]
+    },
+    "walls": {
+      "added": [],
+      "removed": [],
+      "updated": [
+        "086d0a7c-e5c0-56da-aab8-cf514a82ac4a",
+        "1a517791-2308-5196-b268-94d6fdce1813",
+        "1d0100ae-3dc2-57b6-83ac-cff9c3872af3",
+        "1ddf8b32-e08b-52f5-b42e-c4dd503af146",
+        "337b4f12-baa9-5471-a015-c1820542f600",
+        "3a32ec54-257a-54cd-91b5-d7ddbc065abc",
+        "3e4f8bd2-db8c-5376-951d-d38e5f1c2637",
+        "7410a9c0-3847-5698-83f6-0fe539eeee6e",
+        "77543876-d19e-5592-b61b-7499411de31d",
+        "8cd745d8-e49a-5df7-b206-938f8ea29c86",
+        "940db8c6-ed6f-5be8-b32b-d961208d59ec",
+        "956b30fb-9878-5a72-8f12-6d59aa0b0806",
+        "b1536422-56a0-5de0-bab7-47cf9931bab9",
+        "b3d81008-ed98-5686-932d-ddd361623335",
+        "b72fef04-1d03-5bb0-a471-006864ada5f6",
+        "e3aecce3-dd4c-5b42-b686-32a8ff1d5719"
+      ]
+    },
     "warnings": [
       {
         "code": "PRELIMINARY_UNVERIFIED",

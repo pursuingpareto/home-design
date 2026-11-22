@@ -5,7 +5,7 @@
 **Scope:** The version 2 command additions and classification table. Approved from [MODEL-005](../../implementation/tasks/MODEL-005.md) §12, item 4.  
 **Amends:**
 - [D043](D043-vs01-command-set.md) (the command set): adds `SetFrameParameters`, and widens `SetMemberSection` to the version 2 roles;
-- [dependencies.md §4.1](../../architecture/dependencies.md#41-classification-table-vs02-change-classes-1): table `vs02-change-classes-1` replaces `vs01-change-classes-1`, and `SetGableRoofParameters` moves from routine to consequential.
+- [dependencies.md §4.1](../../architecture/dependencies.md#41-classification-table-vs02b-change-classes-1): table `vs02-change-classes-1` replaces `vs01-change-classes-1`, and `SetGableRoofParameters` moves from routine to consequential.
 
 ## Decision
 

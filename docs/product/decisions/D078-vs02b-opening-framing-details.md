@@ -1,6 +1,6 @@
 # D078 — VS-02b opening framing details: pieces meet at faces, the band rule for layout studs, and girts cut by band overlap
 
-**Status:** Confirmed (not yet implemented; [ASM-001](../../implementation/tasks/ASM-001.md))  
+**Status:** Confirmed (implemented in VS-02b; [ASM-001](../../implementation/tasks/ASM-001.md) with [MODEL-006](../../implementation/tasks/MODEL-006.md))  
 **Date:** 2026-11-22  
 **Scope:** Where the opening framing pieces of [D066](D066-vs02b-wall-framing.md) end, which layout studs become cripples, and when a girt counts as crossing an opening. Settled as [ASM-001](../../implementation/tasks/ASM-001.md) §13 item 1, parts 1a–1c, one at a time, within D066 and [D076](D076-vs02b-framed-opening-geometry.md).  
 **Refines:** D066 §3d, which names the pieces but not their ends, the jack case, or what "crosses" means.

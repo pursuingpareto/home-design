@@ -1,6 +1,88 @@
 {
   "components": {
     "schemas": {
+      "AddOpening": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/AddOpeningArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "AddOpening",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "AddOpening",
+        "type": "object"
+      },
+      "AddOpeningArgs": {
+        "additionalProperties": false,
+        "description": "D069: a rough opening in one wall (MODEL-006 §8.2); all required.",
+        "properties": {
+          "height_m": {
+            "title": "Height M",
+            "type": "number"
+          },
+          "offset_m": {
+            "title": "Offset M",
+            "type": "number"
+          },
+          "opening_kind": {
+            "enum": [
+              "WINDOW",
+              "DOOR"
+            ],
+            "title": "Opening Kind",
+            "type": "string"
+          },
+          "sill_height_m": {
+            "title": "Sill Height M",
+            "type": "number"
+          },
+          "wall_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Wall Id",
+            "type": "string"
+          },
+          "width_m": {
+            "title": "Width M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "wall_id",
+          "opening_kind",
+          "width_m",
+          "height_m",
+          "sill_height_m",
+          "offset_m"
+        ],
+        "title": "AddOpeningArgs",
+        "type": "object"
+      },
       "AddSection": {
         "additionalProperties": false,
         "properties": {
@@ -214,6 +296,71 @@
         "title": "VS-01 artifact envelope (artifacts.md §2)",
         "type": "object"
       },
+      "AssemblyDefinition": {
+        "additionalProperties": false,
+        "description": "A fixed layered wall definition, a catalog record (D067; MODEL-006 §4.3).",
+        "properties": {
+          "family": {
+            "enum": [
+              "STRAW_BALE",
+              "STUD_INFILL"
+            ],
+            "title": "Family",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "installation_note": {
+            "title": "Installation Note",
+            "type": "string"
+          },
+          "kind": {
+            "const": "AssemblyDefinition",
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "title": "Label",
+            "type": "string"
+          },
+          "layers": {
+            "items": {
+              "$ref": "#/components/schemas/Layer"
+            },
+            "minItems": 1,
+            "title": "Layers",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "unverified_climate_details": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unverified Climate Details",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "schema_version",
+          "family",
+          "label",
+          "installation_note",
+          "unverified_climate_details",
+          "layers"
+        ],
+        "title": "AssemblyDefinition",
+        "type": "object"
+      },
       "Assumption": {
         "additionalProperties": false,
         "properties": {
@@ -231,6 +378,52 @@
           "message"
         ],
         "title": "Assumption",
+        "type": "object"
+      },
+      "BuckFraming": {
+        "additionalProperties": false,
+        "description": "A straw bale framing layer: bucks at openings, no girts in VS-02b (D066, D067).",
+        "properties": {
+          "buck_section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Buck Section Id",
+            "type": "string"
+          },
+          "framing_material_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Framing Material Id",
+            "type": "string"
+          },
+          "framing_thermal_conductivity_w_m_k": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclaredValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "girt_count": {
+            "ge": -9007199254740991,
+            "le": 9007199254740991,
+            "title": "Girt Count",
+            "type": "integer"
+          },
+          "type": {
+            "const": "BUCK",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "framing_material_id",
+          "framing_thermal_conductivity_w_m_k",
+          "buck_section_id",
+          "girt_count"
+        ],
+        "title": "BuckFraming",
         "type": "object"
       },
       "Building": {
@@ -274,9 +467,14 @@
             "type": "string"
           },
           "schema_version": {
-            "const": 1,
+            "const": 2,
             "title": "Schema Version",
             "type": "integer"
+          },
+          "wall_system_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Wall System Id",
+            "type": "string"
           }
         },
         "required": [
@@ -287,7 +485,8 @@
           "footprint_id",
           "level_ids",
           "roof_id",
-          "frame_system_id"
+          "frame_system_id",
+          "wall_system_id"
         ],
         "title": "Building",
         "type": "object"
@@ -356,15 +555,19 @@
         "description": "Any VS-01 command envelope, discriminated by `type` (interfaces.md §2).",
         "discriminator": {
           "mapping": {
+            "AddOpening": "#/components/schemas/AddOpening",
             "AddSection": "#/components/schemas/AddSection",
             "CreateReferenceProject": "#/components/schemas/CreateReferenceProject",
+            "RemoveOpening": "#/components/schemas/RemoveOpening",
             "SetConnectionType": "#/components/schemas/SetConnectionType",
             "SetFootprintDimensions": "#/components/schemas/SetFootprintDimensions",
             "SetFrameParameters": "#/components/schemas/SetFrameParameters",
             "SetGableRoofParameters": "#/components/schemas/SetGableRoofParameters",
             "SetMemberSection": "#/components/schemas/SetMemberSection",
+            "SetOpening": "#/components/schemas/SetOpening",
             "SetStoryHeights": "#/components/schemas/SetStoryHeights",
             "SetTimberGrid": "#/components/schemas/SetTimberGrid",
+            "SetWallAssembly": "#/components/schemas/SetWallAssembly",
             "UndoToRevision": "#/components/schemas/UndoToRevision"
           },
           "propertyName": "type"
@@ -399,6 +602,18 @@
           },
           {
             "$ref": "#/components/schemas/UndoToRevision"
+          },
+          {
+            "$ref": "#/components/schemas/SetWallAssembly"
+          },
+          {
+            "$ref": "#/components/schemas/AddOpening"
+          },
+          {
+            "$ref": "#/components/schemas/SetOpening"
+          },
+          {
+            "$ref": "#/components/schemas/RemoveOpening"
           }
         ],
         "title": "Command"
@@ -409,15 +624,19 @@
           "command": {
             "discriminator": {
               "mapping": {
+                "AddOpening": "#/components/schemas/AddOpening",
                 "AddSection": "#/components/schemas/AddSection",
                 "CreateReferenceProject": "#/components/schemas/CreateReferenceProject",
+                "RemoveOpening": "#/components/schemas/RemoveOpening",
                 "SetConnectionType": "#/components/schemas/SetConnectionType",
                 "SetFootprintDimensions": "#/components/schemas/SetFootprintDimensions",
                 "SetFrameParameters": "#/components/schemas/SetFrameParameters",
                 "SetGableRoofParameters": "#/components/schemas/SetGableRoofParameters",
                 "SetMemberSection": "#/components/schemas/SetMemberSection",
+                "SetOpening": "#/components/schemas/SetOpening",
                 "SetStoryHeights": "#/components/schemas/SetStoryHeights",
                 "SetTimberGrid": "#/components/schemas/SetTimberGrid",
+                "SetWallAssembly": "#/components/schemas/SetWallAssembly",
                 "UndoToRevision": "#/components/schemas/UndoToRevision"
               },
               "propertyName": "type"
@@ -452,6 +671,18 @@
               },
               {
                 "$ref": "#/components/schemas/UndoToRevision"
+              },
+              {
+                "$ref": "#/components/schemas/SetWallAssembly"
+              },
+              {
+                "$ref": "#/components/schemas/AddOpening"
+              },
+              {
+                "$ref": "#/components/schemas/SetOpening"
+              },
+              {
+                "$ref": "#/components/schemas/RemoveOpening"
               }
             ],
             "title": "Command"
@@ -890,6 +1121,44 @@
           "args"
         ],
         "title": "CreateReferenceProject",
+        "type": "object"
+      },
+      "DeclaredValue": {
+        "additionalProperties": false,
+        "description": "A declared property value with its provenance (D071, D075). The unit is fixed by the field name, in SI.",
+        "properties": {
+          "date": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "title": "Date",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "source",
+          "date",
+          "note"
+        ],
+        "title": "DeclaredValue",
         "type": "object"
       },
       "Dimension": {
@@ -1490,6 +1759,103 @@
         "title": "GridLineArg",
         "type": "object"
       },
+      "Layer": {
+        "additionalProperties": false,
+        "description": "One layer of an assembly definition, embedded in it (D074). Only the FRAMING layer has ``framing``.",
+        "properties": {
+          "framing": {
+            "anyOf": [
+              {
+                "discriminator": {
+                  "mapping": {
+                    "BUCK": "#/components/schemas/BuckFraming",
+                    "STUD": "#/components/schemas/StudFraming"
+                  },
+                  "propertyName": "type"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/StudFraming"
+                  },
+                  {
+                    "$ref": "#/components/schemas/BuckFraming"
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Framing"
+          },
+          "function": {
+            "enum": [
+              "FINISH",
+              "SHEATHING",
+              "INSULATION",
+              "FRAMING"
+            ],
+            "title": "Function",
+            "type": "string"
+          },
+          "material_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Material Id",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "title": "Name",
+            "type": "string"
+          },
+          "thermal_conductivity_w_m_k": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclaredValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "thermal_resistance_m2_k_w": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclaredValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "thickness_m": {
+            "title": "Thickness M",
+            "type": "number"
+          },
+          "vapor_permeance_kg_pa_s_m2": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclaredValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "function",
+          "material_id",
+          "thickness_m",
+          "thermal_conductivity_w_m_k",
+          "thermal_resistance_m2_k_w",
+          "vapor_permeance_kg_pa_s_m2",
+          "framing"
+        ],
+        "title": "Layer",
+        "type": "object"
+      },
       "Level": {
         "additionalProperties": false,
         "properties": {
@@ -1973,6 +2339,69 @@
         "additionalProperties": false,
         "properties": {},
         "title": "NoArgs",
+        "type": "object"
+      },
+      "Opening": {
+        "additionalProperties": false,
+        "description": "A user-authored rough opening, a void, not a product (D069; MODEL-006 §4.6).",
+        "properties": {
+          "height_m": {
+            "title": "Height M",
+            "type": "number"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "Opening",
+            "title": "Kind",
+            "type": "string"
+          },
+          "offset_m": {
+            "title": "Offset M",
+            "type": "number"
+          },
+          "opening_kind": {
+            "enum": [
+              "WINDOW",
+              "DOOR"
+            ],
+            "title": "Opening Kind",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "sill_height_m": {
+            "title": "Sill Height M",
+            "type": "number"
+          },
+          "wall_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Wall Id",
+            "type": "string"
+          },
+          "width_m": {
+            "title": "Width M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "schema_version",
+          "opening_kind",
+          "wall_id",
+          "width_m",
+          "height_m",
+          "sill_height_m",
+          "offset_m"
+        ],
+        "title": "Opening",
         "type": "object"
       },
       "Plan2dPayload": {
@@ -2477,6 +2906,12 @@
             ],
             "title": "Revision Id"
           },
+          "wall_framing": {
+            "$ref": "#/components/schemas/WallFramingChanges"
+          },
+          "walls": {
+            "$ref": "#/components/schemas/WallChanges"
+          },
           "warnings": {
             "items": {
               "$ref": "#/components/schemas/PreviewWarning"
@@ -2498,6 +2933,8 @@
           "changes",
           "members",
           "connections",
+          "walls",
+          "wall_framing",
           "impacted_artifacts",
           "warnings"
         ],
@@ -2764,6 +3201,58 @@
           "created_at"
         ],
         "title": "ProjectSummary",
+        "type": "object"
+      },
+      "RemoveOpening": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/RemoveOpeningArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "RemoveOpening",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "RemoveOpening",
+        "type": "object"
+      },
+      "RemoveOpeningArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "opening_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Opening Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "opening_id"
+        ],
+        "title": "RemoveOpeningArgs",
         "type": "object"
       },
       "RevisionList": {
@@ -3365,6 +3854,79 @@
         "title": "SetMemberSection",
         "type": "object"
       },
+      "SetOpening": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/SetOpeningArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "SetOpening",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "SetOpening",
+        "type": "object"
+      },
+      "SetOpeningArgs": {
+        "additionalProperties": false,
+        "description": "Replaces one opening's dimensions and position in its own wall; its kind and wall do not change.",
+        "properties": {
+          "height_m": {
+            "title": "Height M",
+            "type": "number"
+          },
+          "offset_m": {
+            "title": "Offset M",
+            "type": "number"
+          },
+          "opening_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Opening Id",
+            "type": "string"
+          },
+          "sill_height_m": {
+            "title": "Sill Height M",
+            "type": "number"
+          },
+          "width_m": {
+            "title": "Width M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "opening_id",
+          "width_m",
+          "height_m",
+          "sill_height_m",
+          "offset_m"
+        ],
+        "title": "SetOpeningArgs",
+        "type": "object"
+      },
       "SetStoryHeights": {
         "additionalProperties": false,
         "properties": {
@@ -3439,9 +4001,46 @@
         "title": "SetTimberGrid",
         "type": "object"
       },
+      "SetWallAssembly": {
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "#/components/schemas/WallAssemblyArgs"
+          },
+          "base_revision_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Base Revision Id",
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Command Id",
+            "type": "string"
+          },
+          "project_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "type": {
+            "const": "SetWallAssembly",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command_id",
+          "project_id",
+          "base_revision_id",
+          "type",
+          "args"
+        ],
+        "title": "SetWallAssembly",
+        "type": "object"
+      },
       "Snapshot": {
         "additionalProperties": false,
-        "description": "A semantic snapshot, model schema version 2 (building-model.md §3, §3.3).",
+        "description": "A semantic snapshot, model schema version 3 (building-model.md §3, §3.3, §3.4).",
         "properties": {
           "building": {
             "$ref": "#/components/schemas/Building"
@@ -3455,6 +4054,7 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "AssemblyDefinition": "#/components/schemas/AssemblyDefinition",
                   "Building": "#/components/schemas/Building",
                   "Connection": "#/components/schemas/Connection",
                   "Footprint": "#/components/schemas/Footprint",
@@ -3462,9 +4062,13 @@
                   "GableRoof": "#/components/schemas/GableRoof",
                   "Level": "#/components/schemas/Level",
                   "Material": "#/components/schemas/Material",
+                  "Opening": "#/components/schemas/Opening",
                   "Section": "#/components/schemas/Section",
                   "TimberGrid": "#/components/schemas/TimberGrid",
-                  "TimberMember": "#/components/schemas/TimberMember"
+                  "TimberMember": "#/components/schemas/TimberMember",
+                  "Wall": "#/components/schemas/Wall",
+                  "WallFramingPiece": "#/components/schemas/WallFramingPiece",
+                  "WallSystem": "#/components/schemas/WallSystem"
                 },
                 "propertyName": "kind"
               },
@@ -3498,6 +4102,21 @@
                 },
                 {
                   "$ref": "#/components/schemas/Material"
+                },
+                {
+                  "$ref": "#/components/schemas/WallSystem"
+                },
+                {
+                  "$ref": "#/components/schemas/AssemblyDefinition"
+                },
+                {
+                  "$ref": "#/components/schemas/Wall"
+                },
+                {
+                  "$ref": "#/components/schemas/WallFramingPiece"
+                },
+                {
+                  "$ref": "#/components/schemas/Opening"
                 }
               ]
             },
@@ -3505,7 +4124,7 @@
             "type": "array"
           },
           "model_schema_version": {
-            "const": 2,
+            "const": 3,
             "title": "Model Schema Version",
             "type": "integer"
           },
@@ -3541,7 +4160,7 @@
           "building",
           "entities"
         ],
-        "title": "Semantic building snapshot (model schema version 2)",
+        "title": "Semantic building snapshot (model schema version 3)",
         "type": "object"
       },
       "StoredPriceBook": {
@@ -3594,6 +4213,81 @@
           "story_heights_m"
         ],
         "title": "StoryHeightsArgs",
+        "type": "object"
+      },
+      "StudFraming": {
+        "additionalProperties": false,
+        "description": "A stud infill framing layer (D066, D067; MODEL-006 §4.3). Kings, jacks, cripples, and rough sills take the stud section (D076).",
+        "properties": {
+          "framing_material_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Framing Material Id",
+            "type": "string"
+          },
+          "framing_thermal_conductivity_w_m_k": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclaredValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "girt_count": {
+            "ge": -9007199254740991,
+            "le": 9007199254740991,
+            "title": "Girt Count",
+            "type": "integer"
+          },
+          "girt_section_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Girt Section Id"
+          },
+          "header_section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Header Section Id",
+            "type": "string"
+          },
+          "jack_threshold_width_m": {
+            "title": "Jack Threshold Width M",
+            "type": "number"
+          },
+          "stud_section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Stud Section Id",
+            "type": "string"
+          },
+          "stud_spacing_m": {
+            "title": "Stud Spacing M",
+            "type": "number"
+          },
+          "type": {
+            "const": "STUD",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "framing_material_id",
+          "framing_thermal_conductivity_w_m_k",
+          "stud_section_id",
+          "stud_spacing_m",
+          "girt_count",
+          "girt_section_id",
+          "header_section_id",
+          "jack_threshold_width_m"
+        ],
+        "title": "StudFraming",
         "type": "object"
       },
       "TimberGrid": {
@@ -3988,6 +4682,359 @@
           "args"
         ],
         "title": "UndoToRevision",
+        "type": "object"
+      },
+      "Wall": {
+        "additionalProperties": false,
+        "description": "A generated wall in one perimeter bay of one story (D065; MODEL-006 §4.4).",
+        "properties": {
+          "assembly_definition_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Assembly Definition Id",
+            "type": "string"
+          },
+          "end_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "End M",
+            "type": "array"
+          },
+          "framing_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Framing Ids",
+            "type": "array"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "height_m": {
+            "title": "Height M",
+            "type": "number"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "Wall",
+            "title": "Kind",
+            "type": "string"
+          },
+          "level_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Level Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "start_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Start M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "schema_version",
+          "generation_key",
+          "level_id",
+          "start_m",
+          "end_m",
+          "height_m",
+          "assembly_definition_id",
+          "framing_ids"
+        ],
+        "title": "Wall",
+        "type": "object"
+      },
+      "WallAssemblyArgs": {
+        "additionalProperties": false,
+        "description": "D068: one project-wide wall assembly (MODEL-006 §8.1).",
+        "properties": {
+          "assembly_definition_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Assembly Definition Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assembly_definition_id"
+        ],
+        "title": "WallAssemblyArgs",
+        "type": "object"
+      },
+      "WallChanges": {
+        "additionalProperties": false,
+        "description": "Generated walls the commit adds, removes, or changes (MODEL-006 §8.6), shaped like `members`.",
+        "properties": {
+          "added": {
+            "items": {
+              "$ref": "#/components/schemas/WallRef"
+            },
+            "title": "Added",
+            "type": "array"
+          },
+          "removed": {
+            "items": {
+              "$ref": "#/components/schemas/WallRef"
+            },
+            "title": "Removed",
+            "type": "array"
+          },
+          "updated": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Updated",
+            "type": "array"
+          }
+        },
+        "required": [
+          "added",
+          "removed",
+          "updated"
+        ],
+        "title": "WallChanges",
+        "type": "object"
+      },
+      "WallFramingChanges": {
+        "additionalProperties": false,
+        "description": "Generated wall framing pieces the commit adds, removes, or changes (MODEL-006 §8.6), shaped like `members`.",
+        "properties": {
+          "added": {
+            "items": {
+              "$ref": "#/components/schemas/WallFramingRef"
+            },
+            "title": "Added",
+            "type": "array"
+          },
+          "removed": {
+            "items": {
+              "$ref": "#/components/schemas/WallFramingRef"
+            },
+            "title": "Removed",
+            "type": "array"
+          },
+          "updated": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Updated",
+            "type": "array"
+          }
+        },
+        "required": [
+          "added",
+          "removed",
+          "updated"
+        ],
+        "title": "WallFramingChanges",
+        "type": "object"
+      },
+      "WallFramingPiece": {
+        "additionalProperties": false,
+        "description": "One generated wall framing piece (D066; MODEL-006 §4.5). No connection records.",
+        "properties": {
+          "end_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "End M",
+            "type": "array"
+          },
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "WallFramingPiece",
+            "title": "Kind",
+            "type": "string"
+          },
+          "material_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Material Id",
+            "type": "string"
+          },
+          "opening_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opening Id"
+          },
+          "piece_kind": {
+            "enum": [
+              "STUD",
+              "GIRT",
+              "KING",
+              "JACK",
+              "HEADER",
+              "ROUGH_SILL",
+              "CRIPPLE",
+              "BUCK_JAMB",
+              "BUCK_HEAD",
+              "BUCK_SILL"
+            ],
+            "title": "Piece Kind",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "section_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Section Id",
+            "type": "string"
+          },
+          "start_m": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Start M",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "schema_version",
+          "generation_key",
+          "piece_kind",
+          "opening_id",
+          "start_m",
+          "end_m",
+          "section_id",
+          "material_id"
+        ],
+        "title": "WallFramingPiece",
+        "type": "object"
+      },
+      "WallFramingRef": {
+        "additionalProperties": false,
+        "properties": {
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "generation_key"
+        ],
+        "title": "WallFramingRef",
+        "type": "object"
+      },
+      "WallRef": {
+        "additionalProperties": false,
+        "properties": {
+          "generation_key": {
+            "title": "Generation Key",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "generation_key"
+        ],
+        "title": "WallRef",
+        "type": "object"
+      },
+      "WallSystem": {
+        "additionalProperties": false,
+        "description": "The wall rule version, D068's project-wide default definition, and the walls and openings (D073).",
+        "properties": {
+          "default_assembly_definition_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Default Assembly Definition Id",
+            "type": "string"
+          },
+          "generation_rule_version": {
+            "title": "Generation Rule Version",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "WallSystem",
+            "title": "Kind",
+            "type": "string"
+          },
+          "opening_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Opening Ids",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "wall_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Wall Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "schema_version",
+          "generation_rule_version",
+          "default_assembly_definition_id",
+          "wall_ids",
+          "opening_ids"
+        ],
+        "title": "WallSystem",
         "type": "object"
       },
       "XGridLine": {

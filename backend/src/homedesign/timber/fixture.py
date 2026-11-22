@@ -1,13 +1,14 @@
-"""Build Reference House 001 v2: the fixture and the packaged template (TIMBER-002 §7).
+"""Build Reference House 001 v3: the fixture and the packaged template (TIMBER-002 §7, ASM-001 §8).
 
 Usage (from backend/):
     uv run python -m homedesign.timber.fixture          # write both files
     uv run python -m homedesign.timber.fixture --check  # exit 1 if either is stale
 
-The non-generated records hold the D025 and D053 values, with fixed IDs. Members and
-connections are the exact output of ``vs02-frame-1`` (no hand-entered decimals), with IDs
-derived from their keys.
-Not an engineered design: every value is illustrative design intent (D025, D053, AC-08).
+The non-generated records hold the D025, D053, and D072 values, with fixed IDs; the wall
+records come from ``homedesign.assemblies.template``. Members, connections, walls, and wall
+framing are the exact output of ``vs02-frame-1`` and ``vs02b-walls-1`` (no hand-entered
+decimals), with IDs derived from their keys.
+Not an engineered design: every value is illustrative design intent (D025, D053, D072, AC-08).
 """
 
 from __future__ import annotations
@@ -19,6 +20,8 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from homedesign.assemblies import template as wall_template
+from homedesign.assemblies.rules import get_wall_rule
 from homedesign.model.connections import DEFAULTS as CONNECTION_DEFAULTS
 from homedesign.model.limits import MODEL_SCHEMA_VERSION, RECORD_SCHEMA_VERSIONS
 from homedesign.model.schema import Snapshot
@@ -30,7 +33,7 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 FIXTURE_PATH = REPO_ROOT / "docs" / "reference-projects" / "vermont-timber-house" / "fixture.snapshot.json"
 TEMPLATE_PATH = REPO_ROOT / "backend" / "src" / "homedesign" / "model" / "commands" / "templates" / "reference-house-001.json"
 
-# IDs for records added in version 2 (and for members and connections) are UUIDv5 names under this fixed namespace.
+# IDs for records added in versions 2 and 3 (and for every generated record) are UUIDv5 names under this fixed namespace.
 FIXTURE_NAMESPACE = uuid.UUID("2f0c9d34-6a1e-4b7f-9c2d-5e8a1b3f7c60")
 
 RULE = "vs02-frame-1"
@@ -100,6 +103,16 @@ def build() -> dict[str, Any]:
         connection_ids=[],
         connection_defaults=dict(CONNECTION_DEFAULTS),  # D054
     )
+    wall_records = wall_template.records(_record, _id)
+    definitions = wall_records["definitions"]
+    wall_system = _record(
+        "WallSystem",
+        _id("wall-system"),
+        generation_rule_version=wall_template.WALL_RULE,
+        default_assembly_definition_id=definitions[wall_template.DEFAULT_ASSEMBLY]["id"],
+        wall_ids=[],
+        opening_ids=[],
+    )
     doc = {
         "model_schema_version": MODEL_SCHEMA_VERSION,
         "project_id": "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
@@ -114,8 +127,12 @@ def build() -> dict[str, Any]:
             level_ids=[level0["id"], level1["id"]],
             roof_id=roof["id"],
             frame_system_id=frame["id"],
+            wall_system_id=wall_system["id"],
         ),
-        "entities": [footprint, level0, level1, roof, grid, *sections, material, frame],
+        "entities": [
+            footprint, level0, level1, roof, grid, *sections, material, frame,
+            wall_system, *definitions.values(), *wall_records["sections"].values(), *wall_records["materials"].values(),
+        ],
     }
     snapshot = Snapshot.model_validate(doc)
     rule = get_rule(RULE)
@@ -128,8 +145,29 @@ def build() -> dict[str, Any]:
     ]
     frame["member_ids"] = [m["id"] for m in members]
     frame["connection_ids"] = [c["id"] for c in connections]
-    doc["entities"].extend(members)
-    doc["entities"].extend(connections)
+    authored = doc["entities"]
+
+    # Walls first (they do not depend on openings), then one D072 opening per wall, then the
+    # framing, which the rule places from the openings on the stored walls (ASM-001 §8.3).
+    wall_rule = get_wall_rule(wall_template.WALL_RULE)
+    walls = [_record("Wall", _id(w.generation_key), **w.to_json([])) for w in wall_rule.generate_walls(snapshot)]
+    openings = []
+    for wall in walls:
+        kind, width, height, sill, offset = wall_template.opening_for(wall["generation_key"])
+        openings.append(_record(
+            "Opening", _id("opening/" + wall["generation_key"]),
+            opening_kind=kind, wall_id=wall["id"], width_m=width, height_m=height, sill_height_m=sill, offset_m=offset,
+        ))
+    openings.sort(key=lambda o: o["id"])
+    wall_system["wall_ids"] = [w["id"] for w in walls]
+    wall_system["opening_ids"] = [o["id"] for o in openings]
+    doc["entities"] = [*authored, *openings, *members, *connections, *walls]
+    generated = wall_rule.generate_framing(Snapshot.model_validate(doc))
+    # Framing keys start with their wall's key and "/", so their names never equal a wall's (D080).
+    pieces = [_record("WallFramingPiece", _id(p.generation_key), **p.to_json()) for p in generated]
+    for wall in walls:
+        wall["framing_ids"] = [piece["id"] for p, piece in zip(generated, pieces) if p.wall_key == wall["generation_key"]]
+    doc["entities"].extend(pieces)
     result = validate_value(doc)
     if not result.valid:
         raise SystemExit(f"generated fixture does not validate: {result.to_dict()}")

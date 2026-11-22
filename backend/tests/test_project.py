@@ -484,7 +484,7 @@ def test_actor_must_be_a_uuid(store):
 # MODEL-005 §8.3 (D055): older databases are refused, never migrated or emptied (PostgreSQL only) ---------------
 
 
-def test_migration_refuses_a_database_with_version_1_projects(pg_url):
+def _refuses_outdated(pg_url, version: int) -> None:
     import psycopg
     from psycopg import sql
     from psycopg.conninfo import make_conninfo
@@ -500,13 +500,22 @@ def test_migration_refuses_a_database_with_version_1_projects(pg_url):
         assert migrate(url)  # a fresh database migrates normally
         assert migrate(url) == []
         pid, rev = "11111111-1111-4111-8111-111111111111", "22222222-2222-4222-8222-222222222222"
-        with psycopg.connect(url) as conn:  # a version 1 project, as an earlier build stored it
+        with psycopg.connect(url) as conn:  # a project of an older model schema version, as an earlier build stored it
             conn.execute("INSERT INTO projects VALUES (%s, %s, 1, now(), %s)", (pid, rev, ACTOR))
-            conn.execute("INSERT INTO revisions VALUES (%s, %s, NULL, 1, 1, '{}'::jsonb, 'sha256:0', now())", (rev, pid))
-        with pytest.raises(OutdatedDatabase, match=r"model schema version 1.*scripts/dev.sh --reset"):
+            conn.execute("INSERT INTO revisions VALUES (%s, %s, NULL, 1, %s, '{}'::jsonb, 'sha256:0', now())", (rev, pid, version))
+        with pytest.raises(OutdatedDatabase, match=rf"model schema version {version}.*scripts/dev.sh --reset"):
             migrate(url)
         with psycopg.connect(url) as conn:  # nothing was changed
             assert conn.execute("SELECT count(*) FROM revisions").fetchone()[0] == 1
     finally:
         with psycopg.connect(make_conninfo(pg_url, dbname="postgres"), autocommit=True) as admin:
             admin.execute(sql.SQL("DROP DATABASE IF EXISTS {} WITH (FORCE)").format(sql.Identifier(name)))
+
+
+def test_migration_refuses_a_database_with_version_1_projects(pg_url):
+    _refuses_outdated(pg_url, 1)
+
+
+def test_migration_refuses_a_database_with_version_2_projects(pg_url):
+    """MODEL-006 §9.3: the unchanged guard now refuses version 2 databases, and deletes nothing."""
+    _refuses_outdated(pg_url, 2)

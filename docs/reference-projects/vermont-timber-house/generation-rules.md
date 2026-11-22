@@ -105,9 +105,9 @@ A connection is generated for each member end that lands on another member's axi
 
 ## Fixture and cross-language check
 
-- **Fixture:** `uv run python -m homedesign.timber.fixture [--check]` builds `fixture.snapshot.json` and the packaged template from the D025 and D053 inputs. `--check` runs in `scripts/check.sh` and CI.
+- **Fixture:** `uv run python -m homedesign.timber.fixture [--check]` builds `fixture.snapshot.json` and the packaged template from the D025, D053, and D072 inputs, with both rules (the walls are [wall-rules.md](wall-rules.md)). `--check` runs in `scripts/check.sh` and CI.
 - **Oracle:** `tests/vectors/jcs/generate.mjs` implements this rule independently in ECMAScript. Its inventory vector, members and connections, must match the Python generator under the numeric rules above: bit-identical, except the `tan`-derived `z` values of rafters, purlins, and `rafter-peak` and `purlin-rafter` locations, within 1e-12 m.
 
 ## Out of scope for this rule version
 
-Splice and sill-joint connections (D059), ridge beams, collar ties, rafter tails, dormers, hips, valleys, ceiling joists, floor openings, machining, and any structural adequacy check. Walls and wall framing (girts, studs, and opening framing) are a separate rule, [`vs02b-walls-1`](wall-rules.md) (approved, not yet implemented).
+Splice and sill-joint connections (D059), ridge beams, collar ties, rafter tails, dormers, hips, valleys, ceiling joists, floor openings, machining, and any structural adequacy check. Walls and wall framing (girts, studs, and opening framing) are a separate rule, [`vs02b-walls-1`](wall-rules.md).

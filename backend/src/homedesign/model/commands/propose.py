@@ -25,9 +25,15 @@ from ..validation import Issue, ValidationResult, _Collector, validate_value
 from .envelope import parse_command, reject
 from .mint import mint
 
-CLASSIFICATION_VERSION = "vs02-change-classes-1"  # dependencies.md §4.1, D057
+CLASSIFICATION_VERSION = "vs02b-change-classes-1"  # dependencies.md §4.1, D057, MODEL-006 §8.4
 CLASSIFICATION = {
     "AddSection": "routine",
+    # D069: regenerate only their own wall's framing; no member, connection, or other wall changes.
+    "AddOpening": "routine",
+    "SetOpening": "routine",
+    "RemoveOpening": "routine",
+    # D068: changes every wall and its framing, and the estimate, at once.
+    "SetWallAssembly": "consequential",
     # D057: the pitch places principal rafters and purlins, so roof edits regenerate framing.
     "SetGableRoofParameters": "consequential",
     "SetFrameParameters": "consequential",
@@ -60,7 +66,8 @@ def spath(entity_id: str, *steps: str | int) -> str:
 # --- results -----------------------------------------------------------------
 
 
-_GENERATED_KINDS = ("TimberMember", "Connection")  # never listed in `changes` (interfaces.md §3)
+# Never listed in `changes` (interfaces.md §3; MODEL-006 §8.6). Regenerated in this order (§8.5).
+_GENERATED_KINDS = ("TimberMember", "Connection", "Wall", "WallFramingPiece")
 
 
 @dataclass(frozen=True)
@@ -88,6 +95,8 @@ class CandidateChange:
     changes: tuple[dict[str, Any], ...]
     members: _GeneratedDiff
     connections: _GeneratedDiff
+    walls: _GeneratedDiff
+    wall_framing: _GeneratedDiff
     classification_version: str = CLASSIFICATION_VERSION
     warnings: tuple[dict[str, str], ...] = WARNINGS
 
@@ -108,6 +117,8 @@ class CandidateChange:
             "changes": [dict(c) for c in self.changes],
             "members": self.members.to_dict(),
             "connections": self.connections.to_dict(),
+            "walls": self.walls.to_dict(),
+            "wall_framing": self.wall_framing.to_dict(),
             "warnings": [dict(w) for w in self.warnings],
         }
 
@@ -285,6 +296,84 @@ def _apply_undo(draft: dict, ctx: _Context) -> _Applied:
     return _Applied()
 
 
+def _wall_system(draft: dict) -> dict:
+    return _entity(draft, draft["building"]["wall_system_id"])
+
+
+def _resolve_arg(draft: dict, record_id: str, kind: str, path: str) -> tuple[dict | None, ValidationResult | None]:
+    """An argument naming a record: missing is DANGLING_REFERENCE, another kind WRONG_REFERENCE_KIND (stage 2)."""
+    target = next((e for e in draft["entities"] if e["id"] == record_id), None)
+    if target is None and draft["building"]["id"] == record_id:
+        target = draft["building"]
+    if target is None:
+        return None, reject(path, codes.DANGLING_REFERENCE, f"{kind} does not exist.", record_id)
+    if target["kind"] != kind:
+        return None, reject(path, codes.WRONG_REFERENCE_KIND, f"Referenced record is not a {kind}.", record_id)
+    return target, None
+
+
+def _apply_wall_assembly(draft: dict, ctx: _Context) -> _Applied:
+    """MODEL-006 §8.1 (D068): one project-wide default; regenerates walls and wall framing."""
+    args = ctx.command.args
+    _, error = _resolve_arg(draft, args.assembly_definition_id, "AssemblyDefinition", "args.assembly_definition_id")
+    if error is not None:
+        return _Applied(rejection=error)
+    system = _wall_system(draft)
+    system["default_assembly_definition_id"] = args.assembly_definition_id
+    return _Applied({spath(system["id"], "default_assembly_definition_id"): "args.assembly_definition_id"}, regenerate=True)
+
+
+_OPENING_FIELDS = ("width_m", "height_m", "sill_height_m", "offset_m")
+
+
+def _apply_add_opening(draft: dict, ctx: _Context) -> _Applied:
+    """MODEL-006 §8.2 (D069): ID minted with creation key "opening" (D041)."""
+    args = ctx.command.args
+    _, error = _resolve_arg(draft, args.wall_id, "Wall", "args.wall_id")
+    if error is not None:
+        return _Applied(rejection=error)
+    opening_id = ctx.mint("entity", "opening")
+    draft["entities"].append({
+        "id": opening_id,
+        "kind": "Opening",
+        "schema_version": RECORD_SCHEMA_VERSIONS["Opening"],
+        "opening_kind": args.opening_kind,
+        "wall_id": args.wall_id,
+        **{name: getattr(args, name) for name in _OPENING_FIELDS},
+    })
+    system = _wall_system(draft)
+    system["opening_ids"] = sorted([*system["opening_ids"], opening_id], key=_utf16)
+    field_map = {spath(opening_id, name): f"args.{name}" for name in (*_OPENING_FIELDS, "wall_id", "opening_kind")}
+    return _Applied(field_map, regenerate=True)
+
+
+def _apply_set_opening(draft: dict, ctx: _Context) -> _Applied:
+    """MODEL-006 §8.2: replaces dimensions and position; kind and wall do not change."""
+    args = ctx.command.args
+    opening, error = _resolve_arg(draft, args.opening_id, "Opening", "args.opening_id")
+    if error is not None:
+        return _Applied(rejection=error)
+    for name in _OPENING_FIELDS:
+        opening[name] = getattr(args, name)
+    return _Applied({spath(opening["id"], name): f"args.{name}" for name in _OPENING_FIELDS}, regenerate=True)
+
+
+def _apply_remove_opening(draft: dict, ctx: _Context) -> _Applied:
+    """MODEL-006 §8.2: removes the opening; regeneration removes its framing."""
+    args = ctx.command.args
+    _, error = _resolve_arg(draft, args.opening_id, "Opening", "args.opening_id")
+    if error is not None:
+        return _Applied(rejection=error)
+    # Its framing goes with it, so that no piece names a removed opening before regeneration.
+    framing = {e["id"] for e in draft["entities"] if e["kind"] == "WallFramingPiece" and e["opening_id"] == args.opening_id}
+    draft["entities"] = [e for e in draft["entities"] if e["id"] != args.opening_id and e["id"] not in framing]
+    for wall in (e for e in draft["entities"] if e["kind"] == "Wall"):
+        wall["framing_ids"] = [i for i in wall["framing_ids"] if i not in framing]
+    system = _wall_system(draft)
+    system["opening_ids"] = [i for i in system["opening_ids"] if i != args.opening_id]
+    return _Applied(regenerate=True)
+
+
 _APPLY: dict[str, Callable[[dict, _Context], _Applied]] = {
     "SetFootprintDimensions": _apply_footprint,
     "SetStoryHeights": _apply_story_heights,
@@ -295,6 +384,10 @@ _APPLY: dict[str, Callable[[dict, _Context], _Applied]] = {
     "SetConnectionType": _apply_connection_type,
     "AddSection": _apply_add_section,
     "UndoToRevision": _apply_undo,
+    "SetWallAssembly": _apply_wall_assembly,
+    "AddOpening": _apply_add_opening,
+    "SetOpening": _apply_set_opening,
+    "RemoveOpening": _apply_remove_opening,
 }
 
 
@@ -316,37 +409,50 @@ def _link_args(result: ValidationResult, field_map: dict[str, str]) -> Validatio
 
 
 def _regenerate(draft: dict, base_ids: dict[str, str], mint_entity: Callable[[str], str]) -> None:
-    """Replace members and connections with the rule's output (CONN-001 §7.1).
+    """Replace members, connections, walls, and wall framing with the rules' output, in that order
+    (CONN-001 §7.1, MODEL-006 §8.5).
 
-    ``base_ids`` maps the base's member and connection keys to their IDs: a surviving key
-    keeps its ID, and a new key gets an ID minted from ``"generation/" + key`` (D041).
+    ``base_ids`` maps the base's generated keys to their IDs: a surviving key keeps its ID, and a
+    new key gets an ID minted from ``"generation/" + key`` (D041). Openings follow their wall's ID:
+    an opening whose wall is removed is removed too, before the candidate is validated.
     """
+    from homedesign.assemblies.rules import get_wall_rule
     from homedesign.timber import get_rule
 
     snapshot = Snapshot.model_validate(draft)  # stages 1–4 already passed
     frame, grid = _frame_and_grid(draft)
+    system = _wall_system(draft)
     rule = get_rule(grid["generation_rule_version"])
+    wall_rule = get_wall_rule(system["generation_rule_version"])
 
     def record_id(key: str) -> str:
         return base_ids.get(key) or mint_entity("generation/" + key)
 
-    members = [
-        {"id": record_id(m.generation_key), "kind": "TimberMember", "schema_version": RECORD_SCHEMA_VERSIONS["TimberMember"], **m.to_json()}
-        for m in rule.generate(snapshot)
-    ]
+    def record(kind: str, key: str, fields: dict) -> dict:
+        return {"id": record_id(key), "kind": kind, "schema_version": RECORD_SCHEMA_VERSIONS[kind], **fields}
+
+    members = [record("TimberMember", m.generation_key, m.to_json()) for m in rule.generate(snapshot)]
     member_ids = {m["generation_key"]: m["id"] for m in members}
     connections = [
-        {
-            "id": record_id(c.generation_key),
-            "kind": "Connection",
-            "schema_version": RECORD_SCHEMA_VERSIONS["Connection"],
-            **c.to_json([member_ids[k] for k in c.member_keys]),
-        }
+        record("Connection", c.generation_key, c.to_json([member_ids[k] for k in c.member_keys]))
         for c in rule.generate_connections(snapshot)
     ]
-    draft["entities"] = [e for e in draft["entities"] if e["kind"] not in _GENERATED_KINDS] + members + connections
+    # The wall rule reads openings through the stored walls' keys, so it runs on the draft as it is.
+    inventory = wall_rule.build(snapshot)
+    pieces = [record("WallFramingPiece", p.generation_key, p.to_json()) for p in inventory.framing]
+    framing_ids: dict[str, list[str]] = {}
+    for generated, piece in zip(inventory.framing, pieces):
+        framing_ids.setdefault(generated.wall_key, []).append(piece["id"])
+    walls = [record("Wall", w.generation_key, w.to_json(framing_ids.get(w.generation_key, []))) for w in inventory.walls]
+    wall_ids = {w["id"] for w in walls}
+    retired_openings = {e["id"] for e in draft["entities"] if e["kind"] == "Opening" and e["wall_id"] not in wall_ids}
+
+    kept = [e for e in draft["entities"] if e["kind"] not in _GENERATED_KINDS and e["id"] not in retired_openings]
+    draft["entities"] = kept + members + connections + walls + pieces
     frame["member_ids"] = [m["id"] for m in members]
     frame["connection_ids"] = [c["id"] for c in connections]
+    system["wall_ids"] = [w["id"] for w in walls]
+    system["opening_ids"] = [i for i in system["opening_ids"] if i not in retired_openings]
 
 
 def _content(value: dict | None) -> bytes:
@@ -367,11 +473,12 @@ def _generated_diff(before: dict[str, dict], after: dict[str, dict]) -> _Generat
     )
 
 
-def _diff(base: dict | None, cand: dict) -> tuple[tuple, _GeneratedDiff, _GeneratedDiff]:
-    """Field changes of authored records, and the member and connection diffs (interfaces.md §3).
+def _diff(base: dict | None, cand: dict) -> tuple[tuple, dict[str, _GeneratedDiff]]:
+    """Field changes of authored records, and the diffs of the generated kinds (interfaces.md §3).
 
-    Generated records (members and connections) never appear in ``changes``; the frame's
-    ``member_ids``, ``connection_ids``, and defaults do.
+    Generated records (members, connections, walls, and wall framing) never appear in ``changes``;
+    the frame's ``member_ids``, ``connection_ids``, and defaults, the wall system's lists and
+    default, and openings do (MODEL-006 §8.6).
     """
 
     def records(value):
@@ -397,9 +504,7 @@ def _diff(base: dict | None, cand: dict) -> tuple[tuple, _GeneratedDiff, _Genera
             if canonical_json(before.get(name)) != canonical_json(after.get(name)):
                 changes.append({"entity_kind": after["kind"], "entity_id": rid, "field": name, "before": before.get(name), "after": after.get(name)})
     changes.sort(key=lambda c: (_utf16(c["entity_kind"]), c["entity_id"], _utf16(c["field"])))
-    members = _generated_diff(b_gen["TimberMember"], c_gen["TimberMember"])
-    connections = _generated_diff(b_gen["Connection"], c_gen["Connection"])
-    return tuple(changes), members, connections
+    return tuple(changes), {kind: _generated_diff(b_gen[kind], c_gen[kind]) for kind in _GENERATED_KINDS}
 
 
 def _finish(
@@ -424,7 +529,7 @@ def _finish(
     final = validate_value(draft)
     if not final.valid:
         return _rejected(_link_args(final, applied.field_map))
-    changes, members, connections = _diff(base_value, draft)
+    changes, diffs = _diff(base_value, draft)
     return ProposeResult(
         change=CandidateChange(
             candidate=final.snapshot,
@@ -436,8 +541,10 @@ def _finish(
             is_noop=base_value is not None and _content(base_value) == _content(draft),
             classification=CLASSIFICATION[command.type],
             changes=changes,
-            members=members,
-            connections=connections,
+            members=diffs["TimberMember"],
+            connections=diffs["Connection"],
+            walls=diffs["Wall"],
+            wall_framing=diffs["WallFramingPiece"],
         )
     )
 
@@ -492,7 +599,7 @@ def _template_text() -> str:
 
 
 def template_value() -> dict:
-    """Reference House 001 v2, the CreateReferenceProject template (packaged copy of the fixture; TIMBER-002 §7)."""
+    """Reference House 001 v3, the CreateReferenceProject template (packaged copy of the fixture; TIMBER-002 §7, ASM-001 §8)."""
     return json.loads(_template_text())
 
 
@@ -508,8 +615,13 @@ def propose_create(command: Any, *, project_id: str, actor_id: str, at: str) -> 
         return mint(purpose, project_id, actor_id, parsed.command_id, key)
 
     template = template_value()
-    records = [template["building"], *(e for e in template["entities"] if e["kind"] not in ("TimberMember", "Connection"))]
+    records = [template["building"], *(e for e in template["entities"] if e["kind"] not in _GENERATED_KINDS)]
     id_map = {r["id"]: mint_fn("entity", "template/" + r["id"]) for r in records}
+    # MODEL-006 §9.2: openings follow their walls, whose IDs are minted from their keys (D041). The
+    # template's walls are kept, with those IDs and no framing, so that regeneration finds each
+    # opening's wall by its key and keeps its ID.
+    walls = [e for e in template["entities"] if e["kind"] == "Wall"]
+    id_map.update({w["id"]: mint_fn("entity", "generation/" + w["generation_key"]) for w in walls})
 
     def remap(value: Any) -> Any:
         if isinstance(value, dict):
@@ -519,9 +631,13 @@ def propose_create(command: Any, *, project_id: str, actor_id: str, at: str) -> 
         return id_map.get(value, value) if isinstance(value, str) else value
 
     building, *entities = (remap(copy.deepcopy(r)) for r in records)
+    for wall in walls:
+        entities.append({**remap(copy.deepcopy(wall)), "framing_ids": []})
     frame = next(e for e in entities if e["kind"] == "FrameSystem")
     frame["member_ids"] = []
     frame["connection_ids"] = []
+    system = next(e for e in entities if e["kind"] == "WallSystem")
+    system["opening_ids"] = sorted(system["opening_ids"], key=_utf16)  # new IDs, so a new ID order
     draft = {
         "model_schema_version": template["model_schema_version"],
         "project_id": project_id,

@@ -1,6 +1,6 @@
 # D074 — VS-02b layers live inside their assembly definition
 
-**Status:** Confirmed (not yet implemented; [MODEL-006](../../implementation/tasks/MODEL-006.md))  
+**Status:** Confirmed (implemented in VS-02b; [MODEL-006](../../implementation/tasks/MODEL-006.md) with [ASM-001](../../implementation/tasks/ASM-001.md))  
 **Date:** 2026-11-21  
 **Scope:** How the version 3 model stores an assembly definition's layers. Approved as [MODEL-006](../../implementation/tasks/MODEL-006.md) §13 item 2, within [D067](D067-vs02b-assembly-definitions.md) and [D071](D071-vs02b-thermal-moisture-values.md).  
 **Settles:** the record layout that D067 left to MODEL-006 ("field names, detail codes, and record versions").

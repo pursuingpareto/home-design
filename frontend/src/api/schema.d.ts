@@ -160,6 +160,42 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AddOpening */
+        AddOpening: {
+            args: components["schemas"]["AddOpeningArgs"];
+            /** Base Revision Id */
+            base_revision_id: string;
+            /** Command Id */
+            command_id: string;
+            /** Project Id */
+            project_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "AddOpening";
+        };
+        /**
+         * AddOpeningArgs
+         * @description D069: a rough opening in one wall (MODEL-006 §8.2); all required.
+         */
+        AddOpeningArgs: {
+            /** Height M */
+            height_m: number;
+            /** Offset M */
+            offset_m: number;
+            /**
+             * Opening Kind
+             * @enum {string}
+             */
+            opening_kind: "WINDOW" | "DOOR";
+            /** Sill Height M */
+            sill_height_m: number;
+            /** Wall Id */
+            wall_id: string;
+            /** Width M */
+            width_m: number;
+        };
         /** AddSection */
         AddSection: {
             args: components["schemas"]["AddSectionArgs"];
@@ -241,12 +277,61 @@ export interface components {
             /** Warnings */
             warnings: components["schemas"]["Message"][];
         };
+        /**
+         * AssemblyDefinition
+         * @description A fixed layered wall definition, a catalog record (D067; MODEL-006 §4.3).
+         */
+        AssemblyDefinition: {
+            /**
+             * Family
+             * @enum {string}
+             */
+            family: "STRAW_BALE" | "STUD_INFILL";
+            /** Id */
+            id: string;
+            /** Installation Note */
+            installation_note: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "AssemblyDefinition";
+            /** Label */
+            label: string;
+            /** Layers */
+            layers: components["schemas"]["Layer"][];
+            /**
+             * Schema Version
+             * @constant
+             */
+            schema_version: 1;
+            /** Unverified Climate Details */
+            unverified_climate_details: string[];
+        };
         /** Assumption */
         Assumption: {
             /** Code */
             code: string;
             /** Message */
             message: string;
+        };
+        /**
+         * BuckFraming
+         * @description A straw bale framing layer: bucks at openings, no girts in VS-02b (D066, D067).
+         */
+        BuckFraming: {
+            /** Buck Section Id */
+            buck_section_id: string;
+            /** Framing Material Id */
+            framing_material_id: string;
+            framing_thermal_conductivity_w_m_k: components["schemas"]["DeclaredValue"] | null;
+            /** Girt Count */
+            girt_count: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "BUCK";
         };
         /** Building */
         Building: {
@@ -271,7 +356,9 @@ export interface components {
              * Schema Version
              * @constant
              */
-            schema_version: 1;
+            schema_version: 2;
+            /** Wall System Id */
+            wall_system_id: string;
         };
         /** CatalogType */
         CatalogType: {
@@ -313,11 +400,11 @@ export interface components {
          * Command
          * @description Any VS-01 command envelope, discriminated by `type` (interfaces.md §2).
          */
-        Command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["SetConnectionType"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
+        Command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["SetConnectionType"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"] | components["schemas"]["SetWallAssembly"] | components["schemas"]["AddOpening"] | components["schemas"]["SetOpening"] | components["schemas"]["RemoveOpening"];
         /** CommitRequest */
         CommitRequest: {
             /** Command */
-            command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["SetConnectionType"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"];
+            command: components["schemas"]["CreateReferenceProject"] | components["schemas"]["SetFootprintDimensions"] | components["schemas"]["SetStoryHeights"] | components["schemas"]["SetGableRoofParameters"] | components["schemas"]["SetTimberGrid"] | components["schemas"]["SetMemberSection"] | components["schemas"]["SetFrameParameters"] | components["schemas"]["SetConnectionType"] | components["schemas"]["AddSection"] | components["schemas"]["UndoToRevision"] | components["schemas"]["SetWallAssembly"] | components["schemas"]["AddOpening"] | components["schemas"]["SetOpening"] | components["schemas"]["RemoveOpening"];
             /**
              * Preview Token
              * @description Required for consequential commands that are not no-ops (D047).
@@ -489,6 +576,20 @@ export interface components {
              * @enum {string}
              */
             type: "CreateReferenceProject";
+        };
+        /**
+         * DeclaredValue
+         * @description A declared property value with its provenance (D071, D075). The unit is fixed by the field name, in SI.
+         */
+        DeclaredValue: {
+            /** Date */
+            date: string;
+            /** Note */
+            note: string | null;
+            /** Source */
+            source: string;
+            /** Value */
+            value: number;
         };
         /** Dimension */
         Dimension: {
@@ -724,6 +825,28 @@ export interface components {
             /** Id */
             id?: string;
         };
+        /**
+         * Layer
+         * @description One layer of an assembly definition, embedded in it (D074). Only the FRAMING layer has ``framing``.
+         */
+        Layer: {
+            /** Framing */
+            framing: (components["schemas"]["StudFraming"] | components["schemas"]["BuckFraming"]) | null;
+            /**
+             * Function
+             * @enum {string}
+             */
+            function: "FINISH" | "SHEATHING" | "INSULATION" | "FRAMING";
+            /** Material Id */
+            material_id: string;
+            /** Name */
+            name: string;
+            thermal_conductivity_w_m_k: components["schemas"]["DeclaredValue"] | null;
+            thermal_resistance_m2_k_w: components["schemas"]["DeclaredValue"] | null;
+            /** Thickness M */
+            thickness_m: number;
+            vapor_permeance_kg_pa_s_m2: components["schemas"]["DeclaredValue"] | null;
+        };
         /** Level */
         Level: {
             /** Elevation M */
@@ -894,6 +1017,39 @@ export interface components {
         };
         /** NoArgs */
         NoArgs: Record<string, never>;
+        /**
+         * Opening
+         * @description A user-authored rough opening, a void, not a product (D069; MODEL-006 §4.6).
+         */
+        Opening: {
+            /** Height M */
+            height_m: number;
+            /** Id */
+            id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "Opening";
+            /** Offset M */
+            offset_m: number;
+            /**
+             * Opening Kind
+             * @enum {string}
+             */
+            opening_kind: "WINDOW" | "DOOR";
+            /**
+             * Schema Version
+             * @constant
+             */
+            schema_version: 1;
+            /** Sill Height M */
+            sill_height_m: number;
+            /** Wall Id */
+            wall_id: string;
+            /** Width M */
+            width_m: number;
+        };
         /** plan2d payload (artifacts.md §5) */
         Plan2dPayload: {
             /** Dimensions */
@@ -1047,6 +1203,8 @@ export interface components {
             preview_token: string;
             /** Revision Id */
             revision_id: string | null;
+            wall_framing: components["schemas"]["WallFramingChanges"];
+            walls: components["schemas"]["WallChanges"];
             /** Warnings */
             warnings: components["schemas"]["PreviewWarning"][];
         };
@@ -1150,6 +1308,26 @@ export interface components {
             head_sequence: number;
             /** Project Id */
             project_id: string;
+        };
+        /** RemoveOpening */
+        RemoveOpening: {
+            args: components["schemas"]["RemoveOpeningArgs"];
+            /** Base Revision Id */
+            base_revision_id: string;
+            /** Command Id */
+            command_id: string;
+            /** Project Id */
+            project_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "RemoveOpening";
+        };
+        /** RemoveOpeningArgs */
+        RemoveOpeningArgs: {
+            /** Opening Id */
+            opening_id: string;
         };
         /** RevisionList */
         RevisionList: {
@@ -1382,6 +1560,37 @@ export interface components {
              */
             type: "SetMemberSection";
         };
+        /** SetOpening */
+        SetOpening: {
+            args: components["schemas"]["SetOpeningArgs"];
+            /** Base Revision Id */
+            base_revision_id: string;
+            /** Command Id */
+            command_id: string;
+            /** Project Id */
+            project_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "SetOpening";
+        };
+        /**
+         * SetOpeningArgs
+         * @description Replaces one opening's dimensions and position in its own wall; its kind and wall do not change.
+         */
+        SetOpeningArgs: {
+            /** Height M */
+            height_m: number;
+            /** Offset M */
+            offset_m: number;
+            /** Opening Id */
+            opening_id: string;
+            /** Sill Height M */
+            sill_height_m: number;
+            /** Width M */
+            width_m: number;
+        };
         /** SetStoryHeights */
         SetStoryHeights: {
             args: components["schemas"]["StoryHeightsArgs"];
@@ -1412,21 +1621,36 @@ export interface components {
              */
             type: "SetTimberGrid";
         };
+        /** SetWallAssembly */
+        SetWallAssembly: {
+            args: components["schemas"]["WallAssemblyArgs"];
+            /** Base Revision Id */
+            base_revision_id: string;
+            /** Command Id */
+            command_id: string;
+            /** Project Id */
+            project_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "SetWallAssembly";
+        };
         /**
-         * Semantic building snapshot (model schema version 2)
-         * @description A semantic snapshot, model schema version 2 (building-model.md §3, §3.3).
+         * Semantic building snapshot (model schema version 3)
+         * @description A semantic snapshot, model schema version 3 (building-model.md §3, §3.3, §3.4).
          */
         Snapshot: {
             building: components["schemas"]["Building"];
             /** Created At */
             created_at: string;
             /** Entities */
-            entities: (components["schemas"]["Building"] | components["schemas"]["Footprint"] | components["schemas"]["Level"] | components["schemas"]["GableRoof"] | components["schemas"]["TimberGrid"] | components["schemas"]["FrameSystem"] | components["schemas"]["TimberMember"] | components["schemas"]["Connection"] | components["schemas"]["Section"] | components["schemas"]["Material"])[];
+            entities: (components["schemas"]["Building"] | components["schemas"]["Footprint"] | components["schemas"]["Level"] | components["schemas"]["GableRoof"] | components["schemas"]["TimberGrid"] | components["schemas"]["FrameSystem"] | components["schemas"]["TimberMember"] | components["schemas"]["Connection"] | components["schemas"]["Section"] | components["schemas"]["Material"] | components["schemas"]["WallSystem"] | components["schemas"]["AssemblyDefinition"] | components["schemas"]["Wall"] | components["schemas"]["WallFramingPiece"] | components["schemas"]["Opening"])[];
             /**
              * Model Schema Version
              * @constant
              */
-            model_schema_version: 2;
+            model_schema_version: 3;
             /** Parent Revision Id */
             parent_revision_id: string | null;
             /** Project Id */
@@ -1450,6 +1674,32 @@ export interface components {
         StoryHeightsArgs: {
             /** Story Heights M */
             story_heights_m: number[];
+        };
+        /**
+         * StudFraming
+         * @description A stud infill framing layer (D066, D067; MODEL-006 §4.3). Kings, jacks, cripples, and rough sills take the stud section (D076).
+         */
+        StudFraming: {
+            /** Framing Material Id */
+            framing_material_id: string;
+            framing_thermal_conductivity_w_m_k: components["schemas"]["DeclaredValue"] | null;
+            /** Girt Count */
+            girt_count: number;
+            /** Girt Section Id */
+            girt_section_id: string | null;
+            /** Header Section Id */
+            header_section_id: string;
+            /** Jack Threshold Width M */
+            jack_threshold_width_m: number;
+            /** Stud Section Id */
+            stud_section_id: string;
+            /** Stud Spacing M */
+            stud_spacing_m: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "STUD";
         };
         /** TimberGrid */
         TimberGrid: {
@@ -1594,6 +1844,145 @@ export interface components {
              * @enum {string}
              */
             type: "UndoToRevision";
+        };
+        /**
+         * Wall
+         * @description A generated wall in one perimeter bay of one story (D065; MODEL-006 §4.4).
+         */
+        Wall: {
+            /** Assembly Definition Id */
+            assembly_definition_id: string;
+            /** End M */
+            end_m: number[];
+            /** Framing Ids */
+            framing_ids: string[];
+            /** Generation Key */
+            generation_key: string;
+            /** Height M */
+            height_m: number;
+            /** Id */
+            id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "Wall";
+            /** Level Id */
+            level_id: string;
+            /**
+             * Schema Version
+             * @constant
+             */
+            schema_version: 1;
+            /** Start M */
+            start_m: number[];
+        };
+        /**
+         * WallAssemblyArgs
+         * @description D068: one project-wide wall assembly (MODEL-006 §8.1).
+         */
+        WallAssemblyArgs: {
+            /** Assembly Definition Id */
+            assembly_definition_id: string;
+        };
+        /**
+         * WallChanges
+         * @description Generated walls the commit adds, removes, or changes (MODEL-006 §8.6), shaped like `members`.
+         */
+        WallChanges: {
+            /** Added */
+            added: components["schemas"]["WallRef"][];
+            /** Removed */
+            removed: components["schemas"]["WallRef"][];
+            /** Updated */
+            updated: string[];
+        };
+        /**
+         * WallFramingChanges
+         * @description Generated wall framing pieces the commit adds, removes, or changes (MODEL-006 §8.6), shaped like `members`.
+         */
+        WallFramingChanges: {
+            /** Added */
+            added: components["schemas"]["WallFramingRef"][];
+            /** Removed */
+            removed: components["schemas"]["WallFramingRef"][];
+            /** Updated */
+            updated: string[];
+        };
+        /**
+         * WallFramingPiece
+         * @description One generated wall framing piece (D066; MODEL-006 §4.5). No connection records.
+         */
+        WallFramingPiece: {
+            /** End M */
+            end_m: number[];
+            /** Generation Key */
+            generation_key: string;
+            /** Id */
+            id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "WallFramingPiece";
+            /** Material Id */
+            material_id: string;
+            /** Opening Id */
+            opening_id: string | null;
+            /**
+             * Piece Kind
+             * @enum {string}
+             */
+            piece_kind: "STUD" | "GIRT" | "KING" | "JACK" | "HEADER" | "ROUGH_SILL" | "CRIPPLE" | "BUCK_JAMB" | "BUCK_HEAD" | "BUCK_SILL";
+            /**
+             * Schema Version
+             * @constant
+             */
+            schema_version: 1;
+            /** Section Id */
+            section_id: string;
+            /** Start M */
+            start_m: number[];
+        };
+        /** WallFramingRef */
+        WallFramingRef: {
+            /** Generation Key */
+            generation_key: string;
+            /** Id */
+            id: string;
+        };
+        /** WallRef */
+        WallRef: {
+            /** Generation Key */
+            generation_key: string;
+            /** Id */
+            id: string;
+        };
+        /**
+         * WallSystem
+         * @description The wall rule version, D068's project-wide default definition, and the walls and openings (D073).
+         */
+        WallSystem: {
+            /** Default Assembly Definition Id */
+            default_assembly_definition_id: string;
+            /** Generation Rule Version */
+            generation_rule_version: string;
+            /** Id */
+            id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "WallSystem";
+            /** Opening Ids */
+            opening_ids: string[];
+            /**
+             * Schema Version
+             * @constant
+             */
+            schema_version: 1;
+            /** Wall Ids */
+            wall_ids: string[];
         };
         /**
          * XGridLine

@@ -32,9 +32,10 @@ def test_fixture_is_valid():
     result = validate_bytes(FIXTURE_BYTES)
     assert result.to_dict() == {"valid": True, "code": None, "issues": []}
     assert isinstance(result.snapshot, Snapshot)
-    # 13 non-generated records (D025 plus four D053 sections), 193 members (TIMBER-002 §7),
-    # and 312 connections (CONN-001 §6).
-    assert len(result.snapshot.entities) == 518
+    # 47 authored records (13 from v2, and the D072 wall system, two definitions, three sections, eight
+    # materials, and 20 openings; ASM-001 §8.1), 193 members (TIMBER-002 §7), 312 connections
+    # (CONN-001 §6), 20 walls, and 79 buck pieces.
+    assert len(result.snapshot.entities) == 651
 
 
 def test_round_trip_is_lossless():

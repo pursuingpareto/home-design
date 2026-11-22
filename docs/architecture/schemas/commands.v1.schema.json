@@ -1,5 +1,87 @@
 {
   "$defs": {
+    "AddOpening": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/AddOpeningArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "AddOpening",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "AddOpening",
+      "type": "object"
+    },
+    "AddOpeningArgs": {
+      "additionalProperties": false,
+      "description": "D069: a rough opening in one wall (MODEL-006 §8.2); all required.",
+      "properties": {
+        "height_m": {
+          "title": "Height M",
+          "type": "number"
+        },
+        "offset_m": {
+          "title": "Offset M",
+          "type": "number"
+        },
+        "opening_kind": {
+          "enum": [
+            "WINDOW",
+            "DOOR"
+          ],
+          "title": "Opening Kind",
+          "type": "string"
+        },
+        "sill_height_m": {
+          "title": "Sill Height M",
+          "type": "number"
+        },
+        "wall_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Wall Id",
+          "type": "string"
+        },
+        "width_m": {
+          "title": "Width M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "wall_id",
+        "opening_kind",
+        "width_m",
+        "height_m",
+        "sill_height_m",
+        "offset_m"
+      ],
+      "title": "AddOpeningArgs",
+      "type": "object"
+    },
     "AddSection": {
       "additionalProperties": false,
       "properties": {
@@ -252,6 +334,58 @@
       "title": "NoArgs",
       "type": "object"
     },
+    "RemoveOpening": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/RemoveOpeningArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "RemoveOpening",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "RemoveOpening",
+      "type": "object"
+    },
+    "RemoveOpeningArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "opening_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Opening Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "opening_id"
+      ],
+      "title": "RemoveOpeningArgs",
+      "type": "object"
+    },
     "SetConnectionType": {
       "additionalProperties": false,
       "properties": {
@@ -437,6 +571,79 @@
       "title": "SetMemberSection",
       "type": "object"
     },
+    "SetOpening": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/SetOpeningArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetOpening",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetOpening",
+      "type": "object"
+    },
+    "SetOpeningArgs": {
+      "additionalProperties": false,
+      "description": "Replaces one opening's dimensions and position in its own wall; its kind and wall do not change.",
+      "properties": {
+        "height_m": {
+          "title": "Height M",
+          "type": "number"
+        },
+        "offset_m": {
+          "title": "Offset M",
+          "type": "number"
+        },
+        "opening_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Opening Id",
+          "type": "string"
+        },
+        "sill_height_m": {
+          "title": "Sill Height M",
+          "type": "number"
+        },
+        "width_m": {
+          "title": "Width M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "opening_id",
+        "width_m",
+        "height_m",
+        "sill_height_m",
+        "offset_m"
+      ],
+      "title": "SetOpeningArgs",
+      "type": "object"
+    },
     "SetStoryHeights": {
       "additionalProperties": false,
       "properties": {
@@ -509,6 +716,43 @@
         "args"
       ],
       "title": "SetTimberGrid",
+      "type": "object"
+    },
+    "SetWallAssembly": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/WallAssemblyArgs"
+        },
+        "base_revision_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Base Revision Id",
+          "type": "string"
+        },
+        "command_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Command Id",
+          "type": "string"
+        },
+        "project_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "SetWallAssembly",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command_id",
+        "project_id",
+        "base_revision_id",
+        "type",
+        "args"
+      ],
+      "title": "SetWallAssembly",
       "type": "object"
     },
     "StoryHeightsArgs": {
@@ -606,21 +850,41 @@
       ],
       "title": "UndoToRevision",
       "type": "object"
+    },
+    "WallAssemblyArgs": {
+      "additionalProperties": false,
+      "description": "D068: one project-wide wall assembly (MODEL-006 §8.1).",
+      "properties": {
+        "assembly_definition_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Assembly Definition Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assembly_definition_id"
+      ],
+      "title": "WallAssemblyArgs",
+      "type": "object"
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Stage 1 (syntactic) contract for command envelopes, discriminated by `type`. Generated from backend/src/homedesign/model/commands/envelope.py; do not edit by hand. Semantics: docs/architecture/interfaces.md §2–4 and §7.1.",
   "discriminator": {
     "mapping": {
+      "AddOpening": "#/$defs/AddOpening",
       "AddSection": "#/$defs/AddSection",
       "CreateReferenceProject": "#/$defs/CreateReferenceProject",
+      "RemoveOpening": "#/$defs/RemoveOpening",
       "SetConnectionType": "#/$defs/SetConnectionType",
       "SetFootprintDimensions": "#/$defs/SetFootprintDimensions",
       "SetFrameParameters": "#/$defs/SetFrameParameters",
       "SetGableRoofParameters": "#/$defs/SetGableRoofParameters",
       "SetMemberSection": "#/$defs/SetMemberSection",
+      "SetOpening": "#/$defs/SetOpening",
       "SetStoryHeights": "#/$defs/SetStoryHeights",
       "SetTimberGrid": "#/$defs/SetTimberGrid",
+      "SetWallAssembly": "#/$defs/SetWallAssembly",
       "UndoToRevision": "#/$defs/UndoToRevision"
     },
     "propertyName": "type"
@@ -655,7 +919,19 @@
     },
     {
       "$ref": "#/$defs/UndoToRevision"
+    },
+    {
+      "$ref": "#/$defs/SetWallAssembly"
+    },
+    {
+      "$ref": "#/$defs/AddOpening"
+    },
+    {
+      "$ref": "#/$defs/SetOpening"
+    },
+    {
+      "$ref": "#/$defs/RemoveOpening"
     }
   ],
-  "title": "Command envelopes, model schema version 2 (MODEL-003, MODEL-005)"
+  "title": "Command envelopes, model schema version 3 (MODEL-003, MODEL-005, MODEL-006)"
 }

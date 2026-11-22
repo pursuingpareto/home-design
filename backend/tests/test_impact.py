@@ -121,7 +121,8 @@ CASES = [
       for p in (math.atan(10 / 12), math.atan(6 / 12), math.atan(12 / 12), 0.5)),
     ("overhang only 1'", overhang(1 * FT), ["mesh3d", "plan2d"]),
     ("overhang only 0", overhang(0.0), ["mesh3d", "plan2d"]),
-    *((f"move y1 to {f}", move("y", 1, f), ALL) for f in (0.4, 0.45, 0.55, 0.6, 0.3)),
+    # MODEL-006 §10: 0.3 (a 7'-2⅖" bay) is no longer a case: no 3'-0" window fits it (test below).
+    *((f"move y1 to {f}", move("y", 1, f), ALL) for f in (0.4, 0.45, 0.55, 0.6)),
     *((f"move x1 to {f}", move("x", 1, f), ALL) for f in (0.3, 0.32, 0.35)),
     ("re-identify y1", reidentify("y", 1), ["mesh3d", "plan2d", "timber_schedule"]),
     ("re-identify x1", reidentify("x", 1), ALL),  # the purlin total moves in its last bit (C6)
@@ -158,6 +159,18 @@ def test_measured_impact(name, make, expected):
             assert new["input_fingerprint"] != old["input_fingerprint"] and new["generated_at"] == "2026-11-19T12:01:00.000000Z", kind
         else:  # reused: the base's row, copied
             assert (new["input_fingerprint"], new["generated_at"], new["payload"]) == (old["input_fingerprint"], old["generated_at"], old["payload"]), kind
+
+
+def test_move_y1_to_0_3_is_rejected_by_the_fit():
+    """MODEL-006 §10, a changed outcome: the 7'-2⅖" bay leaves no room for its 3'-0" windows (D076)."""
+    from homedesign.project.errors import CommandRejected
+
+    svc, pid = house(MemoryStore())
+    type_, args = move("y", 1, 0.3)(svc, pid)
+    with pytest.raises(CommandRejected) as caught:
+        svc.preview(pid, envelope(svc, pid, type_, args), actor_id=ACTOR, now=at(1))
+    found = [i for i in caught.value.result.issues if i.code in ("OPENING_OUTSIDE_WALL", "OPENING_CROSSES_BRACE")]
+    assert found and all("args.y_lines" in i.related_paths for i in found)
 
 
 def test_undo_reuses_every_payload_of_its_target(store):

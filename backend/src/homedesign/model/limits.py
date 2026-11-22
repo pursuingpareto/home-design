@@ -1,8 +1,8 @@
-"""Supported-configuration constants for model schema version 2.
+"""Supported-configuration constants for model schema version 3.
 
 Each value cites the decision that defines it. These are supported-range limits,
 not structural, headroom, or building-code limits. The VS-01 bounds (D031–D034)
-still apply; the frame parameter bounds are MODEL-005 §5.
+still apply; the frame parameter bounds are MODEL-005 §5, and the assembly definition bounds D077.
 """
 
 from __future__ import annotations
@@ -19,9 +19,9 @@ MAX_SAFE_INTEGER = 2**53 - 1
 
 # Schema versions accepted by this implementation (building-model.md §3.3, §8; D055).
 # Only the newest model schema is supported; record versions are per kind (MODEL-005 §4.1).
-MODEL_SCHEMA_VERSION = 2
+MODEL_SCHEMA_VERSION = 3
 RECORD_SCHEMA_VERSIONS = {
-    "Building": 1,
+    "Building": 2,  # MODEL-006 §4.1: gains wall_system_id
     "Footprint": 1,
     "Level": 1,
     "GableRoof": 1,
@@ -31,6 +31,12 @@ RECORD_SCHEMA_VERSIONS = {
     "Section": 1,
     "Material": 1,
     "Connection": 1,
+    # MODEL-006 §4.1: the version 3 kinds start at 1.
+    "WallSystem": 1,
+    "AssemblyDefinition": 1,
+    "Wall": 1,
+    "WallFramingPiece": 1,
+    "Opening": 1,
 }
 
 # D032: footprint, bay, grid, roof bounds (inclusive).
@@ -55,6 +61,12 @@ JOIST_SPACING_MAX_M = 1.2192  # 48"
 PURLINS_PER_SLOPE_MAX = 4
 KNEE_BRACE_LEG_MIN_M = 0.4572  # 1'-6"
 KNEE_BRACE_LEG_MAX_M = 1.2192  # 4'-0"; below STORY_HEIGHT_MIN_M, so braces always fit their posts (§5.2)
+
+# D077: assembly definition supported ranges (inclusive). Borrowed from the joist-spacing and
+# purlins-per-slope ranges; supported range, not structural limits.
+STUD_SPACING_MIN_M = 0.3048  # 12"
+STUD_SPACING_MAX_M = 1.2192  # 48"
+GIRT_COUNT_MAX = 4
 
 # The only supported generation mode. Supported generation rules are those registered
 # in homedesign.timber.rules (TIMBER-001 §6).

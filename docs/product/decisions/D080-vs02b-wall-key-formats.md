@@ -1,6 +1,6 @@
 # D080 — VS-02b generation keys for walls and wall framing
 
-**Status:** Confirmed (not yet implemented; [ASM-001](../../implementation/tasks/ASM-001.md))  
+**Status:** Confirmed (implemented in VS-02b; [ASM-001](../../implementation/tasks/ASM-001.md) with [MODEL-006](../../implementation/tasks/MODEL-006.md))  
 **Date:** 2026-11-22  
 **Scope:** The `generation_key` formats of `Wall` and `WallFramingPiece` records under rule `vs02b-walls-1`. Approved as [ASM-001](../../implementation/tasks/ASM-001.md) §13 item 3. Routine item 11 of the [VS-02b scope](../../implementation/acceptance-tests/vs-02b.md) (§6) left the formats to the task file. This decision sets them within [D041](D041-deterministic-id-minting.md), [D042](D042-stable-grid-line-ids.md), [D065](D065-vs02b-wall-placement.md), [D066](D066-vs02b-wall-framing.md), and [D069](D069-vs02b-openings.md).
 

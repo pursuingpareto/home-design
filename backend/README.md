@@ -1,13 +1,14 @@
 # Backend
 
 Python backend for the Home Design Platform. It contains:
-- the `model` module ([MODEL-001](../docs/implementation/tasks/MODEL-001.md), with typed commands from [MODEL-003](../docs/implementation/tasks/MODEL-003.md) and model schema version 2 from [MODEL-005](../docs/implementation/tasks/MODEL-005.md));
+- the `model` module ([MODEL-001](../docs/implementation/tasks/MODEL-001.md), with typed commands from [MODEL-003](../docs/implementation/tasks/MODEL-003.md), model schema version 2 from [MODEL-005](../docs/implementation/tasks/MODEL-005.md), and version 3 from [MODEL-006](../docs/implementation/tasks/MODEL-006.md));
 - the `timber` module ([TIMBER-001](../docs/implementation/tasks/TIMBER-001.md), [TIMBER-002](../docs/implementation/tasks/TIMBER-002.md));
+- the `assemblies` module: the wall rule `vs02b-walls-1` and the template's assembly definitions ([ASM-001](../docs/implementation/tasks/ASM-001.md));
 - the `project` module ([MODEL-004](../docs/implementation/tasks/MODEL-004.md));
 - the artifact, geometry, and estimating modules ([ART-001](../docs/implementation/tasks/ART-001.md), [GEOM-001](../docs/implementation/tasks/GEOM-001.md), [EST-001](../docs/implementation/tasks/EST-001.md));
 - the HTTP API ([API-001](../docs/implementation/tasks/API-001.md)).
 
-Together they provide the authoritative Pydantic schema for model schema version 2 snapshots (D028, D055), five-stage validation (D035, D046), the `vs02-frame-1` generator, RFC 8785 canonical serialization (D029, D030), typed commands, PostgreSQL revision persistence with concurrency, idempotency, and preview tokens, the four derived artifacts, and the `/api/v1` HTTP API. The browser client is in [`frontend/`](../frontend/README.md) ([UI-001](../docs/implementation/tasks/UI-001.md)).
+Together they provide the authoritative Pydantic schema for model schema version 3 snapshots (D028, D055), five-stage validation (D035, D046), the `vs02-frame-1` and `vs02b-walls-1` generators, RFC 8785 canonical serialization (D029, D030), typed commands, PostgreSQL revision persistence with concurrency, idempotency, and preview tokens, the four derived artifacts, and the `/api/v1` HTTP API. The browser client is in [`frontend/`](../frontend/README.md) ([UI-001](../docs/implementation/tasks/UI-001.md)).
 
 ## Setup
 

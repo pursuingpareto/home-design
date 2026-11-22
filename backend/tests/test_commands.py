@@ -250,8 +250,9 @@ def test_frame_parameters_no_op_and_errors():
     assert run("SetFrameParameters", current).change.is_noop
     rejected = run("SetFrameParameters", {**current, "knee_brace_leg_m": 2.0}).rejection
     assert rejected.code == UC
-    issue = rejected.issues[0]
-    assert issue.path == epath(FRAME, "parameters", "knee_brace_leg_m") and "args.knee_brace_leg_m" in issue.related_paths
+    # MODEL-006 §10: a 2 m leg also crosses the framed openings now, so the leg issue is found by path.
+    issue = next(i for i in rejected.issues if i.path == epath(FRAME, "parameters", "knee_brace_leg_m"))
+    assert "args.knee_brace_leg_m" in issue.related_paths
     unknown = run("SetFrameParameters", {**current, "girts": True}).rejection
     assert (unknown.code, unknown.issues[0].code, unknown.issues[0].path) == (VF, codes.UNKNOWN_FIELD, "args.girts")
 
@@ -429,9 +430,12 @@ def test_created_project_equals_fixture_exactly():
     assert len(change.members.added) == 193 and change.classification == "consequential"
     assert len(change.connections.added) == 312  # CONN-001 §5.2: minted by the regeneration
     id_map = {}
-    fixture_records = [FIXTURE["building"], *(e for e in FIXTURE["entities"] if e["kind"] not in ("TimberMember", "Connection"))]
+    generated = ("TimberMember", "Connection", "Wall", "WallFramingPiece")
+    fixture_records = [FIXTURE["building"], *(e for e in FIXTURE["entities"] if e["kind"] not in generated)]
     for record in fixture_records:
         id_map[record["id"]] = mint("entity", P, ACTOR, CREATE_ID, "template/" + record["id"])
+    for wall in (e for e in FIXTURE["entities"] if e["kind"] == "Wall"):  # MODEL-006 §9.2: openings follow their walls
+        id_map[wall["id"]] = mint("entity", P, ACTOR, CREATE_ID, "generation/" + wall["generation_key"])
 
     def remap(v):
         if isinstance(v, dict):
@@ -446,6 +450,8 @@ def test_created_project_equals_fixture_exactly():
         if record["kind"] == "FrameSystem":
             expected["member_ids"] = created[expected["id"]]["member_ids"]
             expected["connection_ids"] = created[expected["id"]]["connection_ids"]
+        if record["kind"] == "WallSystem":
+            expected["opening_ids"] = sorted(expected["opening_ids"])  # ID order, and the IDs are new
         assert created[expected["id"]] == expected
     fixture_members = {e["generation_key"]: e for e in FIXTURE["entities"] if e["kind"] == "TimberMember"}
     for key, member in members_by_key(cand).items():
@@ -503,7 +509,7 @@ def test_preview_dict_shape():
     preview = run("SetFootprintDimensions", {"width_m": 12.192, "depth_m": FP.depth_m}).change.to_preview_dict()
     assert set(preview) == {
         "base_revision_id", "revision_id", "command_hash", "classification", "classification_version",
-        "confirmation_required", "is_noop", "changes", "members", "connections", "warnings",
+        "confirmation_required", "is_noop", "changes", "members", "connections", "walls", "wall_framing", "warnings",
     }  # impacted_artifacts is computed by the service, which knows the derivations (DEP-001 §6)
     assert preview["classification_version"] == CLASSIFICATION_VERSION
     assert preview["warnings"][0]["code"] == "PRELIMINARY_UNVERIFIED"

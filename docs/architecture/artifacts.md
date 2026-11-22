@@ -550,6 +550,8 @@ Version 2 reconciliation ([ART-002](../implementation/tasks/ART-002.md) §13; ch
 - `connection_aggregates` counts sum to the number of connection rows and of `Connection` records, and each class's count equals CONN-001 §6's formula.
 - The estimate's `assumptions` equal its schedule's, and no payload carries a capacity, size, or fastener field.
 
+**VS-02b interim (MODEL-006 §10):** model schema version 3 adds walls, wall framing, and openings, but no payload reads them yet. The four payloads are unchanged in shape and content for the v3 house (their fingerprints change with the model schema version), and `SetWallAssembly`, `AddOpening`, `SetOpening`, and `RemoveOpening` impact no artifact. `ART-003` adds the assembly schedule, walls in `plan2d` and `mesh3d`, estimate lines, and their selectors.
+
 ## 11. Out of scope
 
 glTF/IFC/DXF download, triangle buffers as the interchange format, cost databases, embodied carbon, drawing sheets, dimension styles, and kernel B-rep. Changing those requires a new document; it does not silently extend these DTOs.

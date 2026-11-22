@@ -4,7 +4,7 @@
 **Date:** 2026-11-20  
 **Scope:** Which connections `vs02-frame-1` generates, which member receives each one, and how switching a junction class's type is classified. Approved from [CONN-001](../../implementation/tasks/CONN-001.md) §11, items 7–10.  
 **Resolves:** the two open points of [D054](D054-vs02-connection-catalog.md): the exact junction rules (and so the Reference House 001 v2 count), and the type-switching command's classification.  
-**Amends:** [dependencies.md §4.1](../../architecture/dependencies.md#41-classification-table-vs02-change-classes-1): table `vs02-change-classes-1` gains its `SetConnectionType` row, as [D057](D057-vs02-frame-command-roof-classification.md) anticipated. The row was added with the implementation, because a test keeps the table equal to the server's classification.
+**Amends:** [dependencies.md §4.1](../../architecture/dependencies.md#41-classification-table-vs02b-change-classes-1): table `vs02-change-classes-1` gains its `SetConnectionType` row, as [D057](D057-vs02-frame-command-roof-classification.md) anticipated. The row was added with the implementation, because a test keeps the table equal to the server's classification.
 
 ## Decision
 

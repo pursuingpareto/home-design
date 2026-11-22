@@ -38,13 +38,17 @@ UI must visibly label `STALE`, `COMPUTING`, `FAILED`, or `UNAVAILABLE`; it may s
 - Classification is rule-based, versioned, conservative, and server-enforced; future AI may suggest classification but cannot override it.
 - For VS-01, any footprint/roof/grid change that regenerates framing is treated as **consequential** by default, until a more nuanced policy is approved.
 
-### 4.1 Classification table (`vs02-change-classes-1`)
+### 4.1 Classification table (`vs02b-change-classes-1`)
 
-Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7, as `vs01-change-classes-1`, and replaced in VS-02 by `vs02-change-classes-1` ([D057](../product/decisions/D057-vs02-frame-command-roof-classification.md), MODEL-005 §7.3). The server applies this table; clients cannot override it.
+Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7, as `vs01-change-classes-1`, replaced in VS-02 by `vs02-change-classes-1` ([D057](../product/decisions/D057-vs02-frame-command-roof-classification.md), MODEL-005 §7.3), and in VS-02b by `vs02b-change-classes-1` ([MODEL-006](../implementation/tasks/MODEL-006.md) §8.4, approved as §13 item 11). The server applies this table; clients cannot override it.
 
 | Command | Class | Reason |
 |---|---|---|
 | `AddSection` | routine | Adds a catalog record; no member changes |
+| `AddOpening` | routine | Regenerates only its own wall's framing; no member, connection, or other wall changes ([D069](../product/decisions/D069-vs02b-openings.md)) |
+| `SetOpening` | routine | As `AddOpening` (D069) |
+| `RemoveOpening` | routine | As `AddOpening` (D069) |
+| `SetWallAssembly` | consequential | Changes every wall and its framing, and the estimate, at once ([D068](../product/decisions/D068-vs02b-wall-assembly-choice.md)) |
 | `SetGableRoofParameters` | consequential | Regenerates principal rafters and purlins, which follow the pitch (D057; routine in `vs01-change-classes-1`, when no member used the roof) |
 | `SetFrameParameters` | consequential | Regenerates framing; may retire and create members |
 | `SetFootprintDimensions` | consequential | Regenerates framing |
@@ -57,7 +61,7 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7, as
 
 `SetConnectionType` was added in VS-02 ([D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md), [CONN-001](../implementation/tasks/CONN-001.md)) within version `vs02-change-classes-1`, as D057 anticipated.
 
-**VS-02b amendment (approved as [MODEL-006](../implementation/tasks/MODEL-006.md) §13 item 11, not yet implemented):** version `vs02b-change-classes-1` replaces this table with the implementation. It keeps every row above and adds `SetWallAssembly` as consequential ([D068](../product/decisions/D068-vs02b-wall-assembly-choice.md)) and `AddOpening`, `SetOpening`, and `RemoveOpening` as routine ([D069](../product/decisions/D069-vs02b-openings.md)). The rows are added with the implementation, because a test keeps the table equal to the server's classification.
+VS-02b's `vs02b-change-classes-1` keeps every row of `vs02-change-classes-1` and adds the four wall commands. Until `ART-003`, the three opening commands and `SetWallAssembly` impact no artifact, which is exact: no payload reads walls, framing, or openings yet (MODEL-006 §10).
 
 - **Routine** commands may be committed without a preview, and the commit still validates fully. **Consequential** commands require a preview and a confirmation bound to it (§5).
 - A no-op never requires confirmation ([D045](../product/decisions/D045-no-op-commits.md)).

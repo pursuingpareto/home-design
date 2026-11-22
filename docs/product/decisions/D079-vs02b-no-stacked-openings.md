@@ -1,6 +1,6 @@
 # D079 — VS-02b openings in one wall must not overlap along the wall
 
-**Status:** Confirmed (not yet implemented; [MODEL-006](../../implementation/tasks/MODEL-006.md), [ASM-001](../../implementation/tasks/ASM-001.md))  
+**Status:** Confirmed (implemented in VS-02b; [MODEL-006](../../implementation/tasks/MODEL-006.md) with [ASM-001](../../implementation/tasks/ASM-001.md))  
 **Date:** 2026-11-22  
 **Scope:** When two openings in one wall are rejected as overlapping. Approved as [ASM-001](../../implementation/tasks/ASM-001.md) §13 item 2, within [D066](D066-vs02b-wall-framing.md), [D069](D069-vs02b-openings.md), and [D076](D076-vs02b-framed-opening-geometry.md).  
 **Refines:** D069's "framed openings in one wall do not overlap", and D076's framed rectangle. **Amends:** MODEL-006 §5.2, the `OPENINGS_OVERLAP` check, which was approved as overlap in both `u` and `v`.

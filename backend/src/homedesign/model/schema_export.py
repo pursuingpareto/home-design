@@ -16,7 +16,7 @@ from .schema import Snapshot
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 SCHEMA_DIR = REPO_ROOT / "docs" / "architecture" / "schemas"
-SCHEMA_PATH = SCHEMA_DIR / "snapshot.v2.schema.json"  # named after the model schema version (MODEL-005 §4.5)
+SCHEMA_PATH = SCHEMA_DIR / "snapshot.v3.schema.json"  # named after the model schema version (MODEL-005 §4.5)
 COMMANDS_SCHEMA_PATH = SCHEMA_DIR / "commands.v1.schema.json"
 ARTIFACTS_SCHEMA_PATH = SCHEMA_DIR / "artifacts.v1.schema.json"
 OPENAPI_PATH = SCHEMA_DIR / "openapi.v1.json"
@@ -28,7 +28,7 @@ def snapshot_json_schema() -> dict[str, Any]:
     schema = Snapshot.model_json_schema(mode="validation")
     schema["$schema"] = JSON_SCHEMA_DIALECT
     schema["description"] = (
-        "Stage 1 (syntactic) contract for model schema version 2 snapshots. Generated from the Pydantic "
+        "Stage 1 (syntactic) contract for model schema version 3 snapshots. Generated from the Pydantic "
         "models in backend/src/homedesign/model/schema.py; do not edit by hand. "
         "Referential, geometric, and domain rules are in docs/architecture/building-model.md §6."
     )
@@ -40,7 +40,7 @@ def commands_json_schema() -> dict[str, Any]:
 
     schema = COMMAND_ADAPTER.json_schema(mode="validation")
     schema["$schema"] = JSON_SCHEMA_DIALECT
-    schema["title"] = "Command envelopes, model schema version 2 (MODEL-003, MODEL-005)"
+    schema["title"] = "Command envelopes, model schema version 3 (MODEL-003, MODEL-005, MODEL-006)"
     schema["description"] = (
         "Stage 1 (syntactic) contract for command envelopes, discriminated by `type`. "
         "Generated from backend/src/homedesign/model/commands/envelope.py; do not edit by hand. "

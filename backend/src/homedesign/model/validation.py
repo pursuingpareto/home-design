@@ -19,7 +19,7 @@ from . import codes, limits
 from . import connections as connection_catalog
 from .codes import Stage
 from .paths import UUID_PATTERN, EntityAddresser, Step, render
-from .schema import ENTITY_KINDS, TIMESTAMP_PATTERN, X_LINE_ID_PATTERN, Y_LINE_ID_PATTERN, Snapshot
+from .schema import DATE_PATTERN, ENTITY_KINDS, SLUG_PATTERN, TIMESTAMP_PATTERN, X_LINE_ID_PATTERN, Y_LINE_ID_PATTERN, Snapshot
 from .strict_json import DuplicateKeyDict, NonFinite, check_depth, parse
 
 
@@ -187,6 +187,7 @@ _PYDANTIC_CODE = {
     "literal_error": codes.INVALID_ENUM,
     "enum": codes.INVALID_ENUM,
     "invalid_timestamp": codes.INVALID_TIMESTAMP,
+    "invalid_date": codes.INVALID_DATE,
     "integer_out_of_range": codes.INTEGER_OUT_OF_RANGE,
     "less_than_equal": codes.INTEGER_OUT_OF_RANGE,
     "greater_than_equal": codes.INTEGER_OUT_OF_RANGE,
@@ -197,7 +198,7 @@ _PYDANTIC_CODE = {
 _MESSAGES = {
     codes.MISSING_FIELD: "Required field is missing.",
     codes.UNKNOWN_FIELD: "Field is not defined by the schema.",
-    codes.UNKNOWN_KIND: "Record kind is not a model schema version 2 entity kind.",
+    codes.UNKNOWN_KIND: "Record kind is not a model schema version 3 entity kind.",
     codes.INVALID_ENUM: "Value is not one of the allowed values.",
     codes.INVALID_UUID: "Must be a lowercase, hyphenated UUID.",
     codes.INVALID_TIMESTAMP: "Must be an RFC 3339 UTC timestamp ending in Z.",
@@ -206,6 +207,8 @@ _MESSAGES = {
     codes.UNSUPPORTED_SCHEMA_VERSION: "Schema version is not supported.",
     codes.NON_FINITE_NUMBER: "Numbers must be finite.",
     codes.WRONG_TYPE: "Value has the wrong type or shape.",
+    codes.INVALID_SLUG: "Must be a slug: lowercase letters and digits, in words joined by single hyphens (MODEL-006 §4.3).",
+    codes.INVALID_DATE: "Must be an RFC 3339 full date, YYYY-MM-DD.",
 }
 
 
@@ -221,11 +224,18 @@ def code_for_pydantic_error(error: dict[str, Any]) -> str:
             code = codes.INVALID_TIMESTAMP
         elif pattern in (X_LINE_ID_PATTERN, Y_LINE_ID_PATTERN):
             code = codes.INVALID_LINE_ID
+        elif pattern == SLUG_PATTERN:
+            code = codes.INVALID_SLUG
+        elif pattern == DATE_PATTERN:
+            code = codes.INVALID_DATE
     return code
 
 
 def message_for(code: str) -> str:
     return _MESSAGES.get(code, "Invalid value.")
+
+
+_FRAMING_TAGS = frozenset({"STUD", "BUCK"})
 
 
 def _pydantic_issue(error: dict[str, Any], addresser: EntityAddresser) -> tuple[str, str, Any]:
@@ -234,15 +244,22 @@ def _pydantic_issue(error: dict[str, Any], addresser: EntityAddresser) -> tuple[
     # Drop the discriminator tag that Pydantic inserts after an entity index.
     if len(loc) >= 3 and loc[0] == "entities" and isinstance(loc[1], int) and loc[2] in ENTITY_KINDS:
         del loc[2]
+    # ...and the framing shape's tag after a layer's `framing` (MODEL-006 §6.1).
+    for k in range(len(loc) - 1, 0, -1):
+        if loc[k - 1] == "framing" and loc[k] in _FRAMING_TAGS:
+            del loc[k]
     # Pydantic marks errors in a mapping's key with a trailing "[key]" step.
     invalid_key = bool(loc) and loc[-1] == "[key]"
     if invalid_key:
         del loc[-1]
     raw_input = error.get("input")
+    discriminator = str((error.get("ctx") or {}).get("discriminator", "'kind'")).strip("'")
     if error_type in ("union_tag_invalid", "union_tag_not_found"):
-        loc.append("kind")
-        raw_input = raw_input.get("kind") if isinstance(raw_input, dict) else None
+        loc.append(discriminator)
+        raw_input = raw_input.get(discriminator) if isinstance(raw_input, dict) else None
     code = code_for_pydantic_error(error)
+    if error_type == "union_tag_invalid" and discriminator != "kind":
+        code = codes.INVALID_ENUM  # an unknown framing type is an enum value, not a record kind
     if error_type == "literal_error" and loc and loc[-1] == "kind" and not invalid_key:
         code = codes.UNKNOWN_KIND
     if code == codes.MISSING_FIELD and error_type == "missing":
@@ -377,6 +394,38 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
     for index, member in idx.of_kind("TimberMember"):
         check_ref(idx.path(index, "section_id"), member.section_id, "Section")
         check_ref(idx.path(index, "material_id"), member.material_id, "Material")
+
+    # MODEL-006 §6.2: version 3 references.
+    check_ref(idx.path("building", "wall_system_id"), building.wall_system_id, "WallSystem")
+    for index, system in idx.of_kind("WallSystem"):
+        check_ref(idx.path(index, "default_assembly_definition_id"), system.default_assembly_definition_id, "AssemblyDefinition")
+        for k, wall_id in enumerate(system.wall_ids):
+            check_ref(idx.path(index, "wall_ids", k), wall_id, "Wall")
+        for k, opening_id in enumerate(system.opening_ids):
+            check_ref(idx.path(index, "opening_ids", k), opening_id, "Opening")
+    for index, definition in idx.of_kind("AssemblyDefinition"):
+        for k, layer in enumerate(definition.layers):
+            check_ref(idx.path(index, "layers", k, "material_id"), layer.material_id, "Material")
+            framing = layer.framing
+            if framing is None:
+                continue
+            check_ref(idx.path(index, "layers", k, "framing", "framing_material_id"), framing.framing_material_id, "Material")
+            names = ("stud_section_id", "girt_section_id", "header_section_id") if framing.type == "STUD" else ("buck_section_id",)
+            for name in names:
+                if getattr(framing, name) is not None:
+                    check_ref(idx.path(index, "layers", k, "framing", name), getattr(framing, name), "Section")
+    for index, wall in idx.of_kind("Wall"):
+        check_ref(idx.path(index, "level_id"), wall.level_id, "Level")
+        check_ref(idx.path(index, "assembly_definition_id"), wall.assembly_definition_id, "AssemblyDefinition")
+        for k, piece_id in enumerate(wall.framing_ids):
+            check_ref(idx.path(index, "framing_ids", k), piece_id, "WallFramingPiece")
+    for index, piece in idx.of_kind("WallFramingPiece"):
+        if piece.opening_id is not None:
+            check_ref(idx.path(index, "opening_id"), piece.opening_id, "Opening")
+        check_ref(idx.path(index, "section_id"), piece.section_id, "Section")
+        check_ref(idx.path(index, "material_id"), piece.material_id, "Material")
+    for index, opening in idx.of_kind("Opening"):
+        check_ref(idx.path(index, "wall_id"), opening.wall_id, "Wall")
     # MODEL-005 §6.2: a connection joins two distinct existing members.
     for index, connection in idx.of_kind("Connection"):
         for k, member_id in enumerate(connection.member_ids):
@@ -401,11 +450,12 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
         "GableRoof": {building.roof_id},
         "FrameSystem": referenced_frames,
         "TimberGrid": referenced_grids,
+        "WallSystem": {building.wall_system_id},
     }
     for kind, ids in referenced.items():
         for index, entity in idx.of_kind(kind):
             if entity.id not in ids:
-                out.add(idx.path(index), codes.UNREFERENCED_ENTITY, f"{kind} is not referenced by the building or frame system.")
+                out.add(idx.path(index), codes.UNREFERENCED_ENTITY, f"{kind} is not referenced by the building, frame system, or wall system.")
 
     frame_hit = idx.resolve(building.frame_system_id, "FrameSystem")
     members = idx.of_kind("TimberMember")
@@ -432,16 +482,36 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
                 if any(b <= a for a, b in zip(keys, keys[1:])):
                     out.add(idx.path(frame_locator, field), codes.ORDER_VIOLATION, f"{field} must be in strictly ascending generation_key order.")
 
-    # MODEL-005 §6.2: keys are unique across members and connections, because IDs are minted from them (D041).
+    _referential_walls(idx, out)
+
+    # MODEL-005 §6.2, MODEL-006 §6.2: keys are unique across members, connections, walls, and wall
+    # framing together, because IDs are minted from them (D041).
     by_key: dict[str, list[tuple[int, Any]]] = defaultdict(list)
-    for index, record in (*members, *connections):
+    for index, record in (*members, *connections, *idx.of_kind("Wall"), *idx.of_kind("WallFramingPiece")):
         by_key[record.generation_key].append((index, record))
     for group in by_key.values():
         if len(group) > 1:
             group = sorted(group, key=lambda item: item[1].id)
             first_path = idx.path(group[0][0], "generation_key")
             for index, record in group[1:]:
-                out.add(idx.path(index, "generation_key"), codes.DUPLICATE_GENERATION_KEY, "generation_key is used by more than one member or connection.", record.generation_key, [first_path])
+                out.add(idx.path(index, "generation_key"), codes.DUPLICATE_GENERATION_KEY, "generation_key is used by more than one generated record.", record.generation_key, [first_path])
+
+    # MODEL-006 §6.2: definition labels are unique, and layer names within their definition.
+    by_assembly_label: dict[str, list[tuple[int, Any]]] = defaultdict(list)
+    for index, definition in idx.of_kind("AssemblyDefinition"):
+        by_assembly_label[definition.label].append((index, definition))
+        first_layer: dict[str, int] = {}
+        for k, layer in enumerate(definition.layers):
+            if layer.name in first_layer:
+                out.add(idx.path(index, "layers", k, "name"), codes.DUPLICATE_LAYER_NAME, "Layer names must be unique within their definition (D074).", layer.name, [idx.path(index, "layers", first_layer[layer.name], "name")])
+            else:
+                first_layer[layer.name] = k
+    for group in by_assembly_label.values():
+        if len(group) > 1:
+            group = sorted(group, key=lambda item: item[1].id)
+            first_path = idx.path(group[0][0], "label")
+            for index, definition in group[1:]:
+                out.add(idx.path(index, "label"), codes.DUPLICATE_ASSEMBLY_LABEL, "Assembly definition labels must be unique within a project (D067).", definition.label, [first_path])
 
     # D049: section labels are unique (they key schedule aggregates and price-book rows).
     by_label: dict[str, list[tuple[int, Any]]] = defaultdict(list)
@@ -463,6 +533,51 @@ def _stage_referential(snapshot: Snapshot) -> ValidationResult | None:
     return out.result(Stage.REFERENTIAL)
 
 
+def _referential_walls(idx: _Index, out: _Collector) -> None:
+    """MODEL-006 §6.2: the wall system lists exactly the walls and openings, each wall its pieces."""
+    system_hit = idx.resolve(idx.snapshot.building.wall_system_id, "WallSystem")
+    walls = idx.of_kind("Wall")
+    pieces = idx.of_kind("WallFramingPiece")
+    if system_hit is not None:
+        system_locator, system = system_hit
+        for field, kind, records, code in (
+            ("wall_ids", "Wall", walls, codes.WALL_SET_MISMATCH),
+            ("opening_ids", "Opening", idx.of_kind("Opening"), codes.OPENING_SET_MISMATCH),
+        ):
+            listed = set(getattr(system, field))
+            unlisted = [index for index, record in records if record.id not in listed]
+            if unlisted:
+                out.add(idx.path(system_locator, field), code, f"{field} must list exactly the snapshot's {kind} records.", related=[idx.path(index) for index in unlisted])
+        resolved = [idx.resolve(wall_id, "Wall") for wall_id in system.wall_ids]
+        if all(hit is not None for hit in resolved):
+            keys = [_utf16(hit[1].generation_key) for hit in resolved]  # type: ignore[index]
+            if any(b <= a for a, b in zip(keys, keys[1:])):
+                out.add(idx.path(system_locator, "wall_ids"), codes.ORDER_VIOLATION, "wall_ids must be in strictly ascending generation_key order.")
+        ids = [_utf16(opening_id) for opening_id in system.opening_ids]
+        if any(b <= a for a, b in zip(ids, ids[1:])):
+            out.add(idx.path(system_locator, "opening_ids"), codes.ORDER_VIOLATION, "opening_ids must be in strictly ascending ID order.")
+        # Pieces no wall lists are reported once, at the wall list (MODEL-006 §6.2; MODEL-005 §14).
+        listed_pieces = {piece_id for _, wall in walls for piece_id in wall.framing_ids}
+        unlisted = [index for index, piece in pieces if piece.id not in listed_pieces]
+        if unlisted:
+            out.add(idx.path(system_locator, "wall_ids"), codes.FRAMING_SET_MISMATCH, "Every WallFramingPiece must be listed by exactly one wall's framing_ids.", related=[idx.path(index) for index in unlisted])
+    # A piece listed by two walls: reported at the later wall's framing_ids, by ID.
+    first_owner: dict[str, int] = {}
+    for index, wall in sorted(walls, key=lambda item: item[1].id):
+        for piece_id in wall.framing_ids:
+            if piece_id in first_owner and first_owner[piece_id] != index:
+                hit = idx.resolve(piece_id, "WallFramingPiece")
+                related = [idx.path(hit[0])] if hit is not None else []
+                out.add(idx.path(index, "framing_ids"), codes.FRAMING_SET_MISMATCH, "A wall framing piece is listed by more than one wall.", piece_id, related)
+            else:
+                first_owner.setdefault(piece_id, index)
+        resolved = [idx.resolve(piece_id, "WallFramingPiece") for piece_id in wall.framing_ids]
+        if all(hit is not None for hit in resolved):
+            keys = [_utf16(hit[1].generation_key) for hit in resolved]  # type: ignore[index]
+            if any(b <= a for a, b in zip(keys, keys[1:])):
+                out.add(idx.path(index, "framing_ids"), codes.ORDER_VIOLATION, "framing_ids must be in strictly ascending generation_key order.")
+
+
 # ---------------------------------------------------------------------------
 # Stages 3 and 4 operate on a referentially valid snapshot.
 
@@ -475,6 +590,7 @@ class _Resolved:
     roof: tuple[int, Any]
     frame: tuple[int, Any]
     grid: tuple[int, Any]
+    wall_system: tuple[int, Any]
 
 
 def _resolve_all(snapshot: Snapshot) -> _Resolved:
@@ -494,6 +610,7 @@ def _resolve_all(snapshot: Snapshot) -> _Resolved:
         roof=must(building.roof_id, "GableRoof"),
         frame=frame,
         grid=must(frame[1].grid_id, "TimberGrid"),
+        wall_system=must(building.wall_system_id, "WallSystem"),
     )
 
 
@@ -561,7 +678,58 @@ def _stage_geometric(snapshot: Snapshot) -> ValidationResult | None:
         if material.density_kg_m3 is not None and not material.density_kg_m3 > 0:
             out.add(idx.path(index, "density_kg_m3"), codes.OUT_OF_RANGE, "Density, when known, must be greater than zero.", material.density_kg_m3)
 
+    _geometric_walls(idx, out)
     return out.result(Stage.GEOMETRIC)
+
+
+_DECLARED_POSITIVE = ("thermal_conductivity_w_m_k", "thermal_resistance_m2_k_w")
+
+
+def _geometric_walls(idx: _Index, out: _Collector) -> None:
+    """MODEL-006 §6.3: physically meaningful definition, wall, piece, and opening values."""
+
+    def declared(path_steps: tuple, value: Any, positive: bool) -> None:
+        if value is None:
+            return
+        if positive and not value.value > 0:
+            out.add(idx.path(*path_steps, "value"), codes.OUT_OF_RANGE, "A declared conductivity or resistance must be greater than zero; unknown is null (D071).", value.value)
+        if not positive and value.value < 0:
+            out.add(idx.path(*path_steps, "value"), codes.OUT_OF_RANGE, "A declared vapor permeance must not be negative (0 is a perfect vapor barrier).", value.value)
+
+    for index, definition in idx.of_kind("AssemblyDefinition"):
+        for k, layer in enumerate(definition.layers):
+            if not layer.thickness_m > 0:
+                out.add(idx.path(index, "layers", k, "thickness_m"), codes.OUT_OF_RANGE, "Layer thickness must be greater than zero.", layer.thickness_m)
+            for name in _DECLARED_POSITIVE:
+                declared((index, "layers", k, name), getattr(layer, name), True)
+            declared((index, "layers", k, "vapor_permeance_kg_pa_s_m2"), layer.vapor_permeance_kg_pa_s_m2, False)
+            framing = layer.framing
+            if framing is None:
+                continue
+            fpath = lambda name: idx.path(index, "layers", k, "framing", name)  # noqa: E731
+            declared((index, "layers", k, "framing", "framing_thermal_conductivity_w_m_k"), framing.framing_thermal_conductivity_w_m_k, True)
+            if framing.girt_count < 0:
+                out.add(fpath("girt_count"), codes.OUT_OF_RANGE, "Girt count must not be negative.", framing.girt_count)
+            if framing.type == "STUD":
+                if not framing.stud_spacing_m > 0:
+                    out.add(fpath("stud_spacing_m"), codes.OUT_OF_RANGE, "Stud spacing must be greater than zero.", framing.stud_spacing_m)
+                if framing.jack_threshold_width_m < 0:
+                    out.add(fpath("jack_threshold_width_m"), codes.OUT_OF_RANGE, "The jack threshold width must not be negative.", framing.jack_threshold_width_m)
+    for index, wall in idx.of_kind("Wall"):
+        if not wall.height_m > 0:
+            out.add(idx.path(index, "height_m"), codes.OUT_OF_RANGE, "Wall height must be greater than zero.", wall.height_m)
+        if math.dist(wall.start_m, wall.end_m) <= limits.LENGTH_EPSILON_M:
+            out.add(idx.path(index), codes.ZERO_LENGTH_MEMBER, "Wall length must exceed 1e-6 m.")
+    for index, piece in idx.of_kind("WallFramingPiece"):
+        if math.dist(piece.start_m, piece.end_m) <= limits.LENGTH_EPSILON_M:
+            out.add(idx.path(index), codes.ZERO_LENGTH_MEMBER, "Wall framing piece axis length must exceed 1e-6 m.")
+    for index, opening in idx.of_kind("Opening"):
+        for name in ("width_m", "height_m"):
+            if not getattr(opening, name) > 0:
+                out.add(idx.path(index, name), codes.OUT_OF_RANGE, "Opening dimensions must be greater than zero.", getattr(opening, name))
+        for name in ("sill_height_m", "offset_m"):
+            if getattr(opening, name) < 0:
+                out.add(idx.path(index, name), codes.OUT_OF_RANGE, "Must not be negative.", getattr(opening, name))
 
 
 # ---------------------------------------------------------------------------
@@ -670,7 +838,165 @@ def _stage_domain(snapshot: Snapshot) -> ValidationResult | None:
             if member.member_role not in rule.generated_roles:
                 out.add(idx.path(index, "member_role"), codes.UNSUPPORTED_VALUE, f"Rule {rule.version} generates only {', '.join(sorted(rule.generated_roles))} members.", member.member_role)
 
+    _domain_walls(snapshot, r, out)
     return out.result(Stage.DOMAIN)
+
+
+def _framing_layer(definition: Any) -> tuple[int, Any] | None:
+    """The definition's framing layer and its index: the first layer with ``framing``."""
+    for k, layer in enumerate(definition.layers):
+        if layer.framing is not None:
+            return k, layer
+    return None
+
+
+def _domain_definition(idx: _Index, index: int, definition: Any, out: _Collector) -> bool:
+    """MODEL-006 §6.4 checks for one definition. True when it raised no issue."""
+    before = len(out.issues)
+    dpath = lambda *rest: idx.path(index, *rest)  # noqa: E731
+    framing_layers = [k for k, layer in enumerate(definition.layers) if layer.function == "FRAMING"]
+    with_framing = [k for k, layer in enumerate(definition.layers) if layer.framing is not None]
+    if len(framing_layers) != 1 or with_framing != framing_layers:
+        out.add(dpath("layers"), codes.FRAMING_LAYER_COUNT, "Exactly one layer is FRAMING, and only it has framing (MODEL-006 §4.3).", len(framing_layers))
+    for k, layer in enumerate(definition.layers):
+        if layer.thermal_conductivity_w_m_k is not None and layer.thermal_resistance_m2_k_w is not None:
+            out.add(dpath("layers", k, "thermal_resistance_m2_k_w"), codes.UNSUPPORTED_VALUE, "A layer declares a conductivity or a resistance, not both (D075).", related=[dpath("layers", k, "thermal_conductivity_w_m_k")])
+        elif layer.framing is not None and layer.thermal_resistance_m2_k_w is not None:
+            out.add(dpath("layers", k, "thermal_resistance_m2_k_w"), codes.UNSUPPORTED_VALUE, "The framing layer declares conductivities only; its paths are computed over its thickness (D071, D075).")
+        framing = layer.framing
+        if framing is None:
+            continue
+        fpath = lambda name, k=k: dpath("layers", k, "framing", name)  # noqa: E731
+        expected = "STUD" if definition.family == "STUD_INFILL" else "BUCK"
+        if framing.type != expected:
+            out.add(fpath("type"), codes.UNSUPPORTED_VALUE, f"A {definition.family} definition needs {expected} framing (D067).", framing.type, [dpath("family")])
+        if framing.type == "BUCK":
+            if framing.girt_count != 0:
+                out.add(fpath("girt_count"), codes.UNSUPPORTED_VALUE, "Straw bale framing has no girts in VS-02b (D066).", framing.girt_count)
+            continue
+        if framing.girt_section_id is None and framing.girt_count > 0:
+            out.add(fpath("girt_section_id"), codes.UNSUPPORTED_VALUE, "Girts need a girt section.", related=[fpath("girt_count")])
+        # D077: supported ranges, not structural limits.
+        if not limits.within(framing.stud_spacing_m, limits.STUD_SPACING_MIN_M, limits.STUD_SPACING_MAX_M, limits.LENGTH_EPSILON_M):
+            out.add(fpath("stud_spacing_m"), codes.OUT_OF_SUPPORTED_RANGE, "Stud spacing must be between 12\" and 48\" (D077).", framing.stud_spacing_m)
+        if framing.girt_count > limits.GIRT_COUNT_MAX:
+            out.add(fpath("girt_count"), codes.OUT_OF_SUPPORTED_RANGE, "Girt count must be between 0 and 4 (D077).", framing.girt_count)
+    return len(out.issues) == before
+
+
+def _domain_walls(snapshot: Snapshot, r: _Resolved, out: _Collector) -> None:
+    """MODEL-006 §6.4: definitions, openings, the wall rule, and the fit rules (§5)."""
+    idx = r.idx
+    system_loc, system = r.wall_system
+    definitions_ok = True
+    default_index = None
+    for index, definition in idx.of_kind("AssemblyDefinition"):
+        ok = _domain_definition(idx, index, definition, out)
+        if definition.id == system.default_assembly_definition_id:
+            definitions_ok, default_index = ok, index
+    for index, opening in idx.of_kind("Opening"):
+        if opening.opening_kind == "DOOR" and opening.sill_height_m != 0:
+            out.add(idx.path(index, "sill_height_m"), codes.UNSUPPORTED_VALUE, "A door's sill height is 0 (D069).", opening.sill_height_m, [idx.path(index, "opening_kind")])
+    rule = _wall_rule(system.generation_rule_version)
+    if rule is None:
+        out.add(idx.path(system_loc, "generation_rule_version"), codes.UNSUPPORTED_VALUE, f"Supported wall rules: {', '.join(_registered_wall_rules())}.", system.generation_rule_version)
+        return
+    # The fit reads the rule's rectangles, which need a well-formed default definition and the
+    # D077 ranges; with either failing, those issues are reported instead (MODEL-006 §5).
+    if definitions_ok and default_index is not None:
+        _fit(snapshot, r, rule.build(snapshot), default_index, out)
+
+
+def _fit(snapshot: Snapshot, r: _Resolved, inventory: Any, default_index: int, out: _Collector) -> None:
+    """MODEL-006 §5.2: inside the wall, clear of the braces, no overlap along the wall, girts below the braces."""
+    eps = limits.LENGTH_EPSILON_M
+    idx = r.idx
+    system_loc, system = r.wall_system
+    fp_loc, _ = r.footprint
+    grid_loc, _ = r.grid
+    frame_loc, frame = r.frame
+    params = frame.parameters
+    definition = idx.resolve(system.default_assembly_definition_id, "AssemblyDefinition")[1]
+    framing_k, framing_layer = _framing_layer(definition)
+    framing = framing_layer.framing
+    section = lambda name: idx.path(default_index, "layers", framing_k, "framing", name)  # noqa: E731
+    if framing.type == "STUD":
+        u_sections, top_sections, bottom_sections = [section("stud_section_id")], [section("header_section_id")], [section("stud_section_id")]
+    else:
+        u_sections = top_sections = bottom_sections = [section("buck_section_id")]
+    default_path = idx.path(system_loc, "default_assembly_definition_id")
+    plane_flags = ("knee_braces_level_1", "knee_braces_eave")
+    walls = {w.generation_key: w for w in inventory.walls}
+
+    def wall_sources(wall: Any) -> list[str]:
+        """The footprint dimension and grid axis that set W (MODEL-006 §5.2)."""
+        return [idx.path(fp_loc, "width_m" if wall.axis == "x" else "depth_m"), idx.path(grid_loc, "x_lines" if wall.axis == "x" else "y_lines")]
+
+    def height_sources(wall: Any) -> list[str]:
+        return [idx.path(r.levels[wall.level_index][0], "story_height_m")]
+
+    openings = {e.id: (i, e) for i, e in idx.of_kind("Opening")}
+    by_wall: dict[str, list[tuple[int, Any, Any]]] = defaultdict(list)
+    for opening_id, rect in inventory.framed_openings.items():
+        index, opening = openings[opening_id]
+        wall = walls[rect.wall_key]
+        by_wall[rect.wall_key].append((index, opening, rect))
+        W, H = wall.length_m, wall.height_m
+        opath = lambda name, index=index: idx.path(index, name)  # noqa: E731
+        u_related = [*wall_sources(wall), *u_sections, default_path]
+        if rect.u0 < -eps:
+            out.add(opath("offset_m"), codes.OPENING_OUTSIDE_WALL, "The framed opening extends past the wall's start post axis (MODEL-006 §5).", opening.offset_m, u_related)
+        if rect.u1 > W + eps:
+            out.add(opath("width_m"), codes.OPENING_OUTSIDE_WALL, "The framed opening extends past the wall's end post axis (MODEL-006 §5).", opening.width_m, u_related)
+        if rect.v1 > H + eps:
+            out.add(opath("height_m"), codes.OPENING_OUTSIDE_WALL, "The framed opening extends above the wall's upper datum (MODEL-006 §5).", opening.height_m, [*height_sources(wall), *top_sections, default_path])
+        if rect.v0 < -eps:
+            out.add(opath("sill_height_m"), codes.OPENING_OUTSIDE_WALL, "The framed opening extends below the wall's lower datum: the sill must leave room for its rough sill or buck sill (D076).", opening.sill_height_m, [*height_sources(wall), *bottom_sections, default_path])
+        flag = plane_flags[wall.level_index] if wall.level_index < len(plane_flags) else None
+        if flag is not None and getattr(params, flag):
+            L = params.knee_brace_leg_m
+            brace_related = [
+                idx.path(frame_loc, "parameters", "knee_brace_leg_m"),
+                idx.path(frame_loc, "parameters", flag),
+                *wall_sources(wall),
+                *height_sources(wall),
+                *u_sections,
+                *top_sections,
+                default_path,
+            ]
+            # D076, the rectangle rule: the corner nearest each brace must not cross its axis.
+            if (rect.v1 - rect.u0) - (H - L) > eps:
+                out.add(opath("offset_m"), codes.OPENING_CROSSES_BRACE, "The framed opening meets the start knee brace (D076).", opening.offset_m, brace_related)
+            if (rect.v1 + rect.u1) - (H - L + W) > eps:
+                out.add(opath("width_m"), codes.OPENING_CROSSES_BRACE, "The framed opening meets the end knee brace (D076).", opening.width_m, brace_related)
+
+    # D079: no overlap along the wall, whatever the heights.
+    for entries in by_wall.values():
+        entries.sort(key=lambda entry: entry[1].id)
+        for a in range(len(entries)):
+            for b in range(a + 1, len(entries)):
+                (ia, oa, ra), (ib, ob, rb) = entries[a], entries[b]
+                if min(ra.u1, rb.u1) - max(ra.u0, rb.u0) > eps:
+                    out.add(idx.path(ib, "offset_m"), codes.OPENINGS_OVERLAP, "Framed openings in one wall must not overlap along the wall (D079).", ob.offset_m, [idx.path(ia, "offset_m")])
+
+    # D066: with a brace plane on, the top girt lies below the brace feet; once per level.
+    reported: set[int] = set()
+    for wall in inventory.walls:
+        heights = inventory.girt_heights.get(wall.generation_key, ())
+        flag = plane_flags[wall.level_index] if wall.level_index < len(plane_flags) else None
+        if not heights or flag is None or not getattr(params, flag) or wall.level_index in reported:
+            continue
+        L = params.knee_brace_leg_m
+        if (wall.height_m - L) - heights[-1] > eps:
+            continue
+        reported.add(wall.level_index)
+        out.add(
+            section("girt_count"),
+            codes.GIRT_CROSSES_BRACE,
+            f"The top girt at {heights[-1]:.4f} m is not below the brace feet at {wall.height_m - L:.4f} m on level {wall.level_index} (D066).",
+            framing.girt_count,
+            [*height_sources(wall), idx.path(frame_loc, "parameters", "knee_brace_leg_m"), idx.path(frame_loc, "parameters", flag), default_path],
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -690,6 +1016,19 @@ def _registered_rules() -> tuple[str, ...]:
     return registered_versions()
 
 
+def _wall_rule(version: str):
+    """Look up a wall rule in the assemblies registry (MODEL-006 §7)."""
+    from homedesign.assemblies.rules import get_wall_rule  # imported lazily: assemblies depends on model types
+
+    return get_wall_rule(version)
+
+
+def _registered_wall_rules() -> tuple[str, ...]:
+    from homedesign.assemblies.rules import registered_versions
+
+    return registered_versions()
+
+
 def _stage_conformance(snapshot: Snapshot) -> ValidationResult | None:
     out = _Collector()
     r = _resolve_all(snapshot)
@@ -697,8 +1036,14 @@ def _stage_conformance(snapshot: Snapshot) -> ValidationResult | None:
     rule = _rule(r.grid[1].generation_rule_version)
     assert rule is not None, "stage 4 guarantees a registered rule"
     locator = {entity.id: index for index, entity in enumerate(snapshot.entities)}
-    # Member and connection findings come from the rule's shared comparison (TIMBER-002 §6).
-    for finding in rule.conformance(snapshot):
+    # Member and connection findings come from the rule's shared comparison (TIMBER-002 §6); walls
+    # and wall framing are compared only once members and connections conform (MODEL-006 §6.5).
+    findings = rule.conformance(snapshot)
+    if not findings:
+        wall_rule = _wall_rule(r.wall_system[1].generation_rule_version)
+        assert wall_rule is not None, "stage 4 guarantees a registered wall rule"
+        findings = wall_rule.conformance(snapshot)
+    for finding in findings:
         out.add(
             idx.path(locator[finding.entity_id], *finding.field),
             finding.code,

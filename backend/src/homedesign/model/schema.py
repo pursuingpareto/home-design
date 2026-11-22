@@ -1,4 +1,4 @@
-"""Authoritative Pydantic schema for the semantic snapshot, model schema version 2 (D028, MODEL-005).
+"""Authoritative Pydantic schema for the semantic snapshot, model schema version 3 (D028, MODEL-005, MODEL-006).
 
 Covers syntactic validation only (stage 1, D035). Referential, geometric, and
 domain rules live in ``validation.py``. Records keep their wire representation
@@ -8,7 +8,7 @@ domain rules live in ``validation.py``. Records keep their wire representation
 from __future__ import annotations
 
 import re
-from datetime import datetime
+from datetime import date, datetime
 from typing import Annotated, Any, Literal, Union
 
 from pydantic import (
@@ -31,6 +31,10 @@ TIMESTAMP_PATTERN = r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$"
 X_LINE_ID_PATTERN = r"^x(0|[1-9][0-9]{0,8})$"
 Y_LINE_ID_PATTERN = r"^y(0|[1-9][0-9]{0,8})$"
 _TIMESTAMP_RE = re.compile(TIMESTAMP_PATTERN)
+# MODEL-006 §4.3: definition labels and layer names are slugs (tokens of the estimate key, D070).
+SLUG_PATTERN = r"^[a-z0-9]+(-[a-z0-9]+)*$"
+# MODEL-006 §6.1: a DeclaredValue date is an RFC 3339 full date.
+DATE_PATTERN = r"^\d{4}-\d{2}-\d{2}$"
 
 
 def _integral(value: Any) -> Any:
@@ -67,6 +71,14 @@ def _calendar_timestamp(value: str) -> str:
     return value
 
 
+def _calendar_date(value: str) -> str:
+    try:
+        date.fromisoformat(value)
+    except ValueError as exc:
+        raise PydanticCustomError("invalid_date", "Date is not a valid calendar date.") from exc
+    return value
+
+
 SafeInt = Annotated[
     int,
     BeforeValidator(_integral),
@@ -93,10 +105,17 @@ Uuid = Annotated[str, StringConstraints(pattern=UUID_PATTERN)]
 Timestamp = Annotated[
     str, StringConstraints(pattern=TIMESTAMP_PATTERN), AfterValidator(_calendar_timestamp)
 ]
+Slug = Annotated[str, StringConstraints(pattern=SLUG_PATTERN)]
+CalendarDate = Annotated[str, StringConstraints(pattern=DATE_PATTERN), AfterValidator(_calendar_date)]
 Point2 = Annotated[list[float], Field(min_length=2, max_length=2)]
 Point3 = Annotated[list[float], Field(min_length=3, max_length=3)]
 # D052, MODEL-005 §4.2. RAFTER (reserved in VS-01, never generated) is removed.
 MemberRole = Literal["POST", "BEAM", "SILL", "FLOOR_JOIST", "PRINCIPAL_RAFTER", "PURLIN", "KNEE_BRACE"]
+# MODEL-006 §4 (D067, D069, D070). Exported so that payloads and the browser import one definition (§12).
+AssemblyFamily = Literal["STRAW_BALE", "STUD_INFILL"]
+LayerFunction = Literal["FINISH", "SHEATHING", "INSULATION", "FRAMING"]
+PieceKind = Literal["STUD", "GIRT", "KING", "JACK", "HEADER", "ROUGH_SILL", "CRIPPLE", "BUCK_JAMB", "BUCK_HEAD", "BUCK_SILL"]
+OpeningKind = Literal["WINDOW", "DOOR"]
 
 
 class _Strict(BaseModel):
@@ -115,6 +134,7 @@ class Building(_Record):
     level_ids: list[Uuid]
     roof_id: Uuid
     frame_system_id: Uuid
+    wall_system_id: Uuid  # MODEL-006 §4.2, D073
 
 
 class Footprint(_Record):
@@ -237,6 +257,122 @@ class Connection(_Record):
     generation_key: str
 
 
+# --- Version 3: assemblies, walls, wall framing, openings (MODEL-006 §4) ---------
+
+
+class WallSystem(_Record):
+    """The wall rule version, D068's project-wide default definition, and the walls and openings (D073)."""
+
+    kind: Literal["WallSystem"]
+    schema_version: RecordSchemaVersion("WallSystem")
+    generation_rule_version: str
+    default_assembly_definition_id: Uuid
+    wall_ids: list[Uuid]  # ascending generation_key (D030)
+    opening_ids: list[Uuid]  # ascending ID
+
+
+class DeclaredValue(_Strict):
+    """A declared property value with its provenance (D071, D075). The unit is fixed by the field name, in SI."""
+
+    value: float
+    source: str
+    date: CalendarDate
+    note: str | None
+
+
+class StudFraming(_Strict):
+    """A stud infill framing layer (D066, D067; MODEL-006 §4.3). Kings, jacks, cripples, and rough sills take the stud section (D076)."""
+
+    type: Literal["STUD"]
+    framing_material_id: Uuid
+    framing_thermal_conductivity_w_m_k: DeclaredValue | None
+    stud_section_id: Uuid
+    stud_spacing_m: float
+    girt_count: SafeInt
+    girt_section_id: Uuid | None
+    header_section_id: Uuid
+    jack_threshold_width_m: float
+
+
+class BuckFraming(_Strict):
+    """A straw bale framing layer: bucks at openings, no girts in VS-02b (D066, D067)."""
+
+    type: Literal["BUCK"]
+    framing_material_id: Uuid
+    framing_thermal_conductivity_w_m_k: DeclaredValue | None
+    buck_section_id: Uuid
+    girt_count: SafeInt
+
+
+Framing = Annotated[Union[StudFraming, BuckFraming], Field(discriminator="type")]
+
+
+class Layer(_Strict):
+    """One layer of an assembly definition, embedded in it (D074). Only the FRAMING layer has ``framing``."""
+
+    name: Slug
+    function: LayerFunction
+    material_id: Uuid
+    thickness_m: float
+    thermal_conductivity_w_m_k: DeclaredValue | None
+    thermal_resistance_m2_k_w: DeclaredValue | None
+    vapor_permeance_kg_pa_s_m2: DeclaredValue | None
+    framing: Framing | None
+
+
+class AssemblyDefinition(_Record):
+    """A fixed layered wall definition, a catalog record (D067; MODEL-006 §4.3)."""
+
+    kind: Literal["AssemblyDefinition"]
+    schema_version: RecordSchemaVersion("AssemblyDefinition")
+    family: AssemblyFamily
+    label: Slug
+    installation_note: str
+    unverified_climate_details: list[str]
+    layers: Annotated[list[Layer], Field(min_length=1)]  # exterior to interior
+
+
+class Wall(_Record):
+    """A generated wall in one perimeter bay of one story (D065; MODEL-006 §4.4)."""
+
+    kind: Literal["Wall"]
+    schema_version: RecordSchemaVersion("Wall")
+    generation_key: str
+    level_id: Uuid
+    start_m: Point3
+    end_m: Point3
+    height_m: float
+    assembly_definition_id: Uuid
+    framing_ids: list[Uuid]  # ascending generation_key
+
+
+class WallFramingPiece(_Record):
+    """One generated wall framing piece (D066; MODEL-006 §4.5). No connection records."""
+
+    kind: Literal["WallFramingPiece"]
+    schema_version: RecordSchemaVersion("WallFramingPiece")
+    generation_key: str
+    piece_kind: PieceKind
+    opening_id: Uuid | None
+    start_m: Point3
+    end_m: Point3
+    section_id: Uuid
+    material_id: Uuid
+
+
+class Opening(_Record):
+    """A user-authored rough opening, a void, not a product (D069; MODEL-006 §4.6)."""
+
+    kind: Literal["Opening"]
+    schema_version: RecordSchemaVersion("Opening")
+    opening_kind: OpeningKind
+    wall_id: Uuid
+    width_m: float
+    height_m: float
+    sill_height_m: float
+    offset_m: float
+
+
 # Building is accepted here at the type level so that stage 2 can report
 # BUILDING_IN_ENTITIES (building-model.md §3) instead of an unknown kind.
 Entity = Annotated[
@@ -251,6 +387,11 @@ Entity = Annotated[
         Connection,
         Section,
         Material,
+        WallSystem,
+        AssemblyDefinition,
+        Wall,
+        WallFramingPiece,
+        Opening,
     ],
     Field(discriminator="kind"),
 ]
@@ -267,15 +408,20 @@ ENTITY_KINDS = frozenset(
         "Connection",
         "Section",
         "Material",
+        "WallSystem",
+        "AssemblyDefinition",
+        "Wall",
+        "WallFramingPiece",
+        "Opening",
     }
 )
 
 
 class Snapshot(_Strict):
-    """A semantic snapshot, model schema version 2 (building-model.md §3, §3.3)."""
+    """A semantic snapshot, model schema version 3 (building-model.md §3, §3.3, §3.4)."""
 
     model_config = ConfigDict(
-        title="Semantic building snapshot (model schema version 2)",
+        title="Semantic building snapshot (model schema version 3)",
     )
 
     model_schema_version: ModelSchemaVersion

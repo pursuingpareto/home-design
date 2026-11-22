@@ -1,5 +1,5 @@
 {
-  "model_schema_version": 2,
+  "model_schema_version": 3,
   "project_id": "17ac32e0-0b3b-518e-b568-adf98f41bcd0",
   "revision_id": "01b311c6-7a51-528d-befe-b2e592819b66",
   "parent_revision_id": null,
@@ -7,7 +7,7 @@
   "building": {
     "id": "b4d57ae8-a2e8-568d-a2d8-0f83ef42682f",
     "kind": "Building",
-    "schema_version": 1,
+    "schema_version": 2,
     "name": "Reference House 001",
     "footprint_id": "9ba359f1-6354-5019-9b3f-d15f8e53523b",
     "level_ids": [
@@ -15,7 +15,8 @@
       "85281672-fc1f-5723-a2e1-f85e25b1d336"
     ],
     "roof_id": "488040a1-800d-5b05-a1d6-84d22c8f3929",
-    "frame_system_id": "00f66257-d812-58c6-8b69-f90baae2e70e"
+    "frame_system_id": "00f66257-d812-58c6-8b69-f90baae2e70e",
+    "wall_system_id": "f00b472c-eb52-58ee-9c17-950d18a80496"
   },
   "entities": [
     {
@@ -718,6 +719,504 @@
         "rafter-foot": "PEGGED_MORTISE_TENON",
         "purlin-rafter": "PEGGED_MORTISE_TENON"
       }
+    },
+    {
+      "id": "f00b472c-eb52-58ee-9c17-950d18a80496",
+      "kind": "WallSystem",
+      "schema_version": 1,
+      "generation_rule_version": "vs02b-walls-1",
+      "default_assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "wall_ids": [
+        "7b150811-59d7-58d0-984c-6190329e6f8d",
+        "dcba82a9-db77-51bf-8f75-9bbd8b8ae088",
+        "e9f4145f-ce5d-5da2-adf7-93670fc2258a",
+        "323f453f-0ef8-583a-a1cd-dc6a922b7ac5",
+        "ee0d9324-33ad-5a96-998e-2e648c08fe9a",
+        "72729735-2f4e-509c-a937-23b5cc1c00d8",
+        "cb26bf45-d789-5942-a9c3-c32431df0bf3",
+        "87e255fe-f806-565d-8522-5407ef22bdb1",
+        "28b910b2-3099-5d9d-b108-1bca36414d13",
+        "fdbdccee-e568-536e-958f-e0970e126733",
+        "3a689381-2092-50c4-873c-c69f633d8c8c",
+        "3e7e86d8-ebda-5b43-97e5-c55b46d01f9e",
+        "1470c128-ddb7-5df6-bce3-79d1d071a6b9",
+        "381d6fba-7d09-5ee7-9812-f33d746e510a",
+        "99631b5e-3a64-5f2d-802a-3f050c3f19d1",
+        "73c5c9f9-77ca-59b4-ad80-e8cc6fc1efbe",
+        "12584649-7de1-5523-b98c-b5e36a57f74d",
+        "4b24175b-f2fb-58ba-95e2-91e8368baefc",
+        "fb92f691-1601-53dd-8aba-aa377d63b4f6",
+        "b6b3502b-0c4d-5bb6-808c-f683055ad6ca"
+      ],
+      "opening_ids": [
+        "0b26db45-37b9-50e3-ad72-8c1d1a1a327a",
+        "17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63",
+        "1c6cbb5e-9666-5320-bd29-4b2a30ff92d8",
+        "270d8d75-f684-5b6b-b9c5-df9d53faa1b6",
+        "2e856030-6256-5465-8757-9172037a54ef",
+        "35295f77-8f50-5ee4-a4b1-76a93582b511",
+        "3bc7b096-5ac9-5102-9f4c-e8242041a552",
+        "4f69753b-f1c0-5cf5-9f70-505b6aab4330",
+        "6aa15088-64bc-5736-8ea6-8049098795d9",
+        "6e3cd116-61dd-5fff-a12b-291cb048b5a8",
+        "85076901-732f-560b-bb02-bc4b55b54dbf",
+        "86e1ff37-713b-5e3f-ab9d-9d23912c0957",
+        "880c4d3e-effc-5c46-826a-d389cceda644",
+        "9168cf3b-5f19-5941-9bd5-4c6e891ad391",
+        "e2f64f35-32f5-5884-a1e4-e4b352f0a26b",
+        "eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58",
+        "f08ff272-f2ef-552f-9606-7e7ea38532b9",
+        "f53a444d-846e-51bb-b2bd-01cd32b2c7bd",
+        "f7bece37-5e61-5cc2-ab7d-dc86f88579de",
+        "fba22908-28c2-54a9-886c-afde0d70b615"
+      ]
+    },
+    {
+      "id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "kind": "AssemblyDefinition",
+      "schema_version": 1,
+      "family": "STRAW_BALE",
+      "label": "straw-bale",
+      "installation_note": "Straw bales laid flat in courses between the posts, from sill to beam, with a 1½\" × 18\" buck at every opening. Lime plaster outside and clay plaster inside, applied to the bales. Illustrative build-up for a test house, not a specification.",
+      "unverified_climate_details": [
+        "Bale moisture protection at the sill: a raised base and a capillary break below the first course.",
+        "Exterior lime plaster and its rain protection (overhangs, splash zone, or a rain screen) for the site's exposure.",
+        "Plaster junctions at posts, beams, and bucks (cracking and air leakage).",
+        "Flashing and sill pans at window and door bucks.",
+        "Bale moisture content at installation, and drying through both plasters."
+      ],
+      "layers": [
+        {
+          "name": "lime-plaster",
+          "function": "FINISH",
+          "material_id": "f5daa157-0675-5a4d-91dd-4dfb3906ef2a",
+          "thickness_m": 0.0381,
+          "thermal_conductivity_w_m_k": null,
+          "thermal_resistance_m2_k_w": null,
+          "vapor_permeance_kg_pa_s_m2": null,
+          "framing": null
+        },
+        {
+          "name": "bales",
+          "function": "FRAMING",
+          "material_id": "e8321bf3-a7fc-5723-87bb-676df1f9e425",
+          "thickness_m": 0.4572,
+          "thermal_conductivity_w_m_k": null,
+          "thermal_resistance_m2_k_w": null,
+          "vapor_permeance_kg_pa_s_m2": null,
+          "framing": {
+            "type": "BUCK",
+            "framing_material_id": "b0766c9e-7059-5d17-92f3-37d970455c35",
+            "framing_thermal_conductivity_w_m_k": null,
+            "buck_section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+            "girt_count": 0
+          }
+        },
+        {
+          "name": "clay-plaster",
+          "function": "FINISH",
+          "material_id": "30181f66-78a4-55e3-bc14-716776b06fc3",
+          "thickness_m": 0.0254,
+          "thermal_conductivity_w_m_k": null,
+          "thermal_resistance_m2_k_w": null,
+          "vapor_permeance_kg_pa_s_m2": null,
+          "framing": null
+        }
+      ]
+    },
+    {
+      "id": "c9e3e90d-e557-58f5-8a27-98612ee3a1a8",
+      "kind": "AssemblyDefinition",
+      "schema_version": 1,
+      "family": "STUD_INFILL",
+      "label": "stud-infill",
+      "installation_note": "2×6 studs at 24\" on center between the posts, one mid-height girt let in across them, and kings and headers at every opening (jacks above 4'-0\"). Dense-pack cellulose between the studs, sheathing and wood siding outside, gypsum board inside. Illustrative build-up for a test house, not a specification.",
+      "unverified_climate_details": [
+        "Water-resistive barrier and rain-screen gap behind the siding.",
+        "Interior vapor control for the climate zone.",
+        "Air barrier continuity where posts and beams interrupt the sheathing.",
+        "Flashing and sill pans at rough openings.",
+        "Dense-pack cellulose density and settling."
+      ],
+      "layers": [
+        {
+          "name": "siding",
+          "function": "FINISH",
+          "material_id": "203fb7a9-026a-5523-8db8-1022df2070b0",
+          "thickness_m": 0.01905,
+          "thermal_conductivity_w_m_k": null,
+          "thermal_resistance_m2_k_w": null,
+          "vapor_permeance_kg_pa_s_m2": null,
+          "framing": null
+        },
+        {
+          "name": "sheathing",
+          "function": "SHEATHING",
+          "material_id": "e99a5c7c-8315-565b-afe9-5aee42e2965f",
+          "thickness_m": 0.0127,
+          "thermal_conductivity_w_m_k": null,
+          "thermal_resistance_m2_k_w": null,
+          "vapor_permeance_kg_pa_s_m2": null,
+          "framing": null
+        },
+        {
+          "name": "framing",
+          "function": "FRAMING",
+          "material_id": "40d81ba2-172f-5d81-99ff-ea8e0130c559",
+          "thickness_m": 0.1397,
+          "thermal_conductivity_w_m_k": null,
+          "thermal_resistance_m2_k_w": null,
+          "vapor_permeance_kg_pa_s_m2": null,
+          "framing": {
+            "type": "STUD",
+            "framing_material_id": "b0766c9e-7059-5d17-92f3-37d970455c35",
+            "framing_thermal_conductivity_w_m_k": null,
+            "stud_section_id": "73e37bf0-f730-5d99-8fb2-eaf9aaa4b728",
+            "stud_spacing_m": 0.6096,
+            "girt_count": 1,
+            "girt_section_id": "73e37bf0-f730-5d99-8fb2-eaf9aaa4b728",
+            "header_section_id": "989bfce9-cff2-5a23-aefd-0b6802e1dc6f",
+            "jack_threshold_width_m": 1.2192
+          }
+        },
+        {
+          "name": "gypsum-board",
+          "function": "FINISH",
+          "material_id": "6e142d40-ee1b-5d05-a503-e39e292bc394",
+          "thickness_m": 0.0127,
+          "thermal_conductivity_w_m_k": null,
+          "thermal_resistance_m2_k_w": null,
+          "vapor_permeance_kg_pa_s_m2": null,
+          "framing": null
+        }
+      ]
+    },
+    {
+      "id": "73e37bf0-f730-5d99-8fb2-eaf9aaa4b728",
+      "kind": "Section",
+      "schema_version": 1,
+      "shape": "rectangular",
+      "actual_width_m": 0.0381,
+      "actual_depth_m": 0.1397,
+      "nominal_label": "2x6"
+    },
+    {
+      "id": "989bfce9-cff2-5a23-aefd-0b6802e1dc6f",
+      "kind": "Section",
+      "schema_version": 1,
+      "shape": "rectangular",
+      "actual_width_m": 0.0381,
+      "actual_depth_m": 0.18415,
+      "nominal_label": "2x8"
+    },
+    {
+      "id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "kind": "Section",
+      "schema_version": 1,
+      "shape": "rectangular",
+      "actual_width_m": 0.0381,
+      "actual_depth_m": 0.4572,
+      "nominal_label": "1.5x18"
+    },
+    {
+      "id": "f5daa157-0675-5a4d-91dd-4dfb3906ef2a",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Lime plaster",
+      "species": null,
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "e8321bf3-a7fc-5723-87bb-676df1f9e425",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Straw",
+      "species": null,
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "30181f66-78a4-55e3-bc14-716776b06fc3",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Clay plaster",
+      "species": null,
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "203fb7a9-026a-5523-8db8-1022df2070b0",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Wood siding",
+      "species": null,
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "e99a5c7c-8315-565b-afe9-5aee42e2965f",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Sheathing",
+      "species": null,
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "b0766c9e-7059-5d17-92f3-37d970455c35",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Spruce-pine-fir",
+      "species": "spruce-pine-fir",
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "40d81ba2-172f-5d81-99ff-ea8e0130c559",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Dense-pack cellulose",
+      "species": null,
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "6e142d40-ee1b-5d05-a503-e39e292bc394",
+      "kind": "Material",
+      "schema_version": 1,
+      "name": "Gypsum board",
+      "species": null,
+      "grade": null,
+      "density_kg_m3": null,
+      "provenance": null
+    },
+    {
+      "id": "0b26db45-37b9-50e3-ad72-8c1d1a1a327a",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "ee0d9324-33ad-5a96-998e-2e648c08fe9a",
+      "width_m": 1.524,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.0668
+    },
+    {
+      "id": "17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "7b150811-59d7-58d0-984c-6190329e6f8d",
+      "width_m": 1.524,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.0668
+    },
+    {
+      "id": "1c6cbb5e-9666-5320-bd29-4b2a30ff92d8",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "12584649-7de1-5523-b98c-b5e36a57f74d",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "270d8d75-f684-5b6b-b9c5-df9d53faa1b6",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "72729735-2f4e-509c-a937-23b5cc1c00d8",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "2e856030-6256-5465-8757-9172037a54ef",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "28b910b2-3099-5d9d-b108-1bca36414d13",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "35295f77-8f50-5ee4-a4b1-76a93582b511",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "4b24175b-f2fb-58ba-95e2-91e8368baefc",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "3bc7b096-5ac9-5102-9f4c-e8242041a552",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "381d6fba-7d09-5ee7-9812-f33d746e510a",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "4f69753b-f1c0-5cf5-9f70-505b6aab4330",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "99631b5e-3a64-5f2d-802a-3f050c3f19d1",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "6aa15088-64bc-5736-8ea6-8049098795d9",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "3e7e86d8-ebda-5b43-97e5-c55b46d01f9e",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "6e3cd116-61dd-5fff-a12b-291cb048b5a8",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "1470c128-ddb7-5df6-bce3-79d1d071a6b9",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "85076901-732f-560b-bb02-bc4b55b54dbf",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "73c5c9f9-77ca-59b4-ad80-e8cc6fc1efbe",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "86e1ff37-713b-5e3f-ab9d-9d23912c0957",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "3a689381-2092-50c4-873c-c69f633d8c8c",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "880c4d3e-effc-5c46-826a-d389cceda644",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "DOOR",
+      "wall_id": "e9f4145f-ce5d-5da2-adf7-93670fc2258a",
+      "width_m": 0.9144,
+      "height_m": 2.032,
+      "sill_height_m": 0.0,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "9168cf3b-5f19-5941-9bd5-4c6e891ad391",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "cb26bf45-d789-5942-a9c3-c32431df0bf3",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "e2f64f35-32f5-5884-a1e4-e4b352f0a26b",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "dcba82a9-db77-51bf-8f75-9bbd8b8ae088",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "87e255fe-f806-565d-8522-5407ef22bdb1",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "f08ff272-f2ef-552f-9606-7e7ea38532b9",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "323f453f-0ef8-583a-a1cd-dc6a922b7ac5",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "f53a444d-846e-51bb-b2bd-01cd32b2c7bd",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "fdbdccee-e568-536e-958f-e0970e126733",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "f7bece37-5e61-5cc2-ab7d-dc86f88579de",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "fb92f691-1601-53dd-8aba-aa377d63b4f6",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
+    },
+    {
+      "id": "fba22908-28c2-54a9-886c-afde0d70b615",
+      "kind": "Opening",
+      "schema_version": 1,
+      "opening_kind": "WINDOW",
+      "wall_id": "b6b3502b-0c4d-5bb6-808c-f683055ad6ca",
+      "width_m": 0.9144,
+      "height_m": 1.2192,
+      "sill_height_m": 0.9144,
+      "offset_m": 1.3716
     },
     {
       "id": "2e7c8a64-9380-5690-99fd-fea739808f21",
@@ -9689,6 +10188,2085 @@
         3.6576,
         8.5344
       ]
+    },
+    {
+      "id": "7b150811-59d7-58d0-984c-6190329e6f8d",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        3.6575999999999995,
+        0.0,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "1294ad47-9096-53a0-a96e-2bbf4e98e1a0",
+        "ea3ef3c3-5adc-53c5-b113-2b31387d5eec",
+        "573564fa-bc8b-5785-a29b-5ec63745ae88",
+        "2170607f-90f6-53e0-b796-a983335b965d"
+      ]
+    },
+    {
+      "id": "dcba82a9-db77-51bf-8f75-9bbd8b8ae088",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        0.0,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        3.6575999999999995,
+        0.0,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "31ef16ee-38e4-52ab-90d9-98bab785f9fb",
+        "03434060-191b-575a-a741-170e7babc997",
+        "2eaf5d0e-7891-5276-aa34-cd77657cad85",
+        "3b2d1843-3b1a-562f-9941-6e79d77396d7"
+      ]
+    },
+    {
+      "id": "e9f4145f-ce5d-5da2-adf7-93670fc2258a",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        3.6575999999999995,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        7.315199999999999,
+        0.0,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "831fc739-311a-5f32-b498-4646bd700efb",
+        "8c5f6325-2828-54d3-a7b8-9d79bc84adb3",
+        "0a6692c5-9b83-5b95-b492-35d07195b5c6"
+      ]
+    },
+    {
+      "id": "323f453f-0ef8-583a-a1cd-dc6a922b7ac5",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        3.6575999999999995,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        7.315199999999999,
+        0.0,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "cd2efd3a-cd92-5234-b147-63ad7075ea51",
+        "cb941839-8ba7-5470-9576-c006daadb581",
+        "f0605eab-e5bb-5394-97a9-919e4f46d2f3",
+        "ecc8773b-3be3-55a4-b5b5-39fa0c2b7ce1"
+      ]
+    },
+    {
+      "id": "ee0d9324-33ad-5a96-998e-2e648c08fe9a",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        7.315199999999999,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        10.9728,
+        0.0,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "302b49ef-b73f-5dd7-a811-8895085b6a60",
+        "443876a3-c5d9-51b5-a197-62019ff5a247",
+        "736e7231-87dc-5bb8-840f-a06ef66ce79d",
+        "e2c1e603-2a8e-56a2-8c83-1906156dd375"
+      ]
+    },
+    {
+      "id": "72729735-2f4e-509c-a937-23b5cc1c00d8",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        7.315199999999999,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        0.0,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "478c9b7f-749b-5cec-a053-faa479e943e9",
+        "007d4591-20d5-5003-a8ce-8adefa43e1a0",
+        "1c74fd3b-55fe-590e-8ea7-ade4d75a10b2",
+        "47bd4235-657d-5b04-9240-785d89816d6b"
+      ]
+    },
+    {
+      "id": "cb26bf45-d789-5942-a9c3-c32431df0bf3",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        0.0,
+        7.3152,
+        0.0
+      ],
+      "end_m": [
+        3.6575999999999995,
+        7.3152,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "2658f6ee-5e94-5c92-9467-5514e73cddf3",
+        "d50a3460-dd0c-5662-a569-f934c401f51e",
+        "5f41397a-f73f-5fad-bd93-b24f2b66c767",
+        "cbcc7d18-4a1d-5e57-9e30-af35edad3573"
+      ]
+    },
+    {
+      "id": "87e255fe-f806-565d-8522-5407ef22bdb1",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        0.0,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        3.6575999999999995,
+        7.3152,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "50a55b99-a149-5436-9273-140eb3c3ee3a",
+        "c2b64c08-b04f-5ab4-a529-498c24281554",
+        "ddd7f39a-0984-5d06-96be-d8d2bf2e7816",
+        "19199e35-8d0d-5082-8e89-d85c3eaf0752"
+      ]
+    },
+    {
+      "id": "28b910b2-3099-5d9d-b108-1bca36414d13",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        3.6575999999999995,
+        7.3152,
+        0.0
+      ],
+      "end_m": [
+        7.315199999999999,
+        7.3152,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "60bf5e47-971c-5424-a0da-1d98496155b9",
+        "378d248d-bbd5-54d2-9f68-243da35cd4de",
+        "c0ac984f-469b-50e8-936c-d7c8f41618ce",
+        "3d2d1cd7-fe02-5a99-8eb9-72a4af370086"
+      ]
+    },
+    {
+      "id": "fdbdccee-e568-536e-958f-e0970e126733",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        3.6575999999999995,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        7.315199999999999,
+        7.3152,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "103814fc-2c4a-5095-acb7-e24aef7c3a85",
+        "e37d2950-e65c-5bd6-81b3-a4ee045862a6",
+        "5962a630-6e15-5994-bf2a-9a72d73c3886",
+        "fd107068-d490-5384-89b3-dee70ecc85cf"
+      ]
+    },
+    {
+      "id": "3a689381-2092-50c4-873c-c69f633d8c8c",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        7.315199999999999,
+        7.3152,
+        0.0
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "40961907-d0b9-5ecf-ad0b-1e17433ab9e9",
+        "9d342f8b-e03b-5eed-aeac-d8af71c19cb4",
+        "f263e774-a4c3-5acc-9f06-734961f7e748",
+        "1f6312d3-597a-5e58-b3f5-cbf63a6642d4"
+      ]
+    },
+    {
+      "id": "3e7e86d8-ebda-5b43-97e5-c55b46d01f9e",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        7.315199999999999,
+        7.3152,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "72304fd8-9bb5-5a4b-bea1-4bb95ee3d23d",
+        "318a4ae1-95fc-5782-8888-09dc00a9dcf4",
+        "74d1e488-998f-5ed5-8c16-108f5ecb0749",
+        "f2a1093d-82ab-56e1-888d-d64b58ae983b"
+      ]
+    },
+    {
+      "id": "1470c128-ddb7-5df6-bce3-79d1d071a6b9",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        0.0,
+        3.6576,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "59652e2b-7e81-53b5-ba4e-8955924c2a2f",
+        "53b70dcf-b060-5a3f-a43b-e48cf4886d57",
+        "65cd0a77-2199-5214-99f5-ccb77d7fce66",
+        "b8bd57c2-9712-547b-987a-962ea0b39fcf"
+      ]
+    },
+    {
+      "id": "381d6fba-7d09-5ee7-9812-f33d746e510a",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        0.0,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        0.0,
+        3.6576,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "0b6fc5c0-26c3-5150-babc-a827aef53f11",
+        "974b278d-9c72-5b5e-a1f1-82e1007af7a6",
+        "941ace32-d26a-520a-8e3c-ee16908fc041",
+        "1ef8d286-29da-5140-9cd2-7fc66dc70c0d"
+      ]
+    },
+    {
+      "id": "99631b5e-3a64-5f2d-802a-3f050c3f19d1",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        0.0,
+        3.6576,
+        0.0
+      ],
+      "end_m": [
+        0.0,
+        7.3152,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "a8c49b16-2781-50d3-945c-8e22cb717939",
+        "e52ff460-a17b-5362-bed9-dedf4457f65d",
+        "bd8b6c03-effc-5ba9-8d1f-39bfdf84d315",
+        "6ed9f78c-43fb-5a35-b52e-896093cbc49d"
+      ]
+    },
+    {
+      "id": "73c5c9f9-77ca-59b4-ad80-e8cc6fc1efbe",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        0.0,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        0.0,
+        7.3152,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "1f07b242-882a-5e31-8b86-f6372af3e63d",
+        "0723f569-005c-5162-8d43-14fb2cf9baf4",
+        "32918117-2ba7-59e9-b776-1d60bb76fabf",
+        "71156770-3e02-5c9f-889e-6e345ebb3f62"
+      ]
+    },
+    {
+      "id": "12584649-7de1-5523-b98c-b5e36a57f74d",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        10.9728,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        10.9728,
+        3.6576,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "e7909a63-7f3e-56bb-a29d-668f8c4419bb",
+        "4dd0bbba-4f81-5c4d-9774-71db9e72315b",
+        "7030586d-4c6f-5387-999d-3de33fe108a4",
+        "5148f43d-bb68-55b2-b964-041c7b1ecd1d"
+      ]
+    },
+    {
+      "id": "4b24175b-f2fb-58ba-95e2-91e8368baefc",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        10.9728,
+        0.0,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        3.6576,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "42fe8d6f-d86b-52fa-98e3-a6242d1fe3cf",
+        "4d2c5e9e-4904-533e-b3c2-781aa7e162ad",
+        "a01bbac7-20e3-5c6f-8a1c-60e600227035",
+        "271728b6-1bdd-5fa8-9ada-78d561fadb85"
+      ]
+    },
+    {
+      "id": "fb92f691-1601-53dd-8aba-aa377d63b4f6",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-0",
+      "level_id": "bb53ff6a-c109-5f1a-a6fb-e16fd8d7f4ed",
+      "start_m": [
+        10.9728,
+        3.6576,
+        0.0
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        0.0
+      ],
+      "height_m": 3.048,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "c535798e-c287-5cee-8ac8-cf6090fa5092",
+        "8d33c609-8598-5843-bacf-70590a106535",
+        "5c077231-ae4f-520e-befd-b102fbaa7531",
+        "0d54ce75-2c97-5132-8b28-0af2c792fd68"
+      ]
+    },
+    {
+      "id": "b6b3502b-0c4d-5bb6-808c-f683055ad6ca",
+      "kind": "Wall",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-1",
+      "level_id": "85281672-fc1f-5723-a2e1-f85e25b1d336",
+      "start_m": [
+        10.9728,
+        3.6576,
+        3.048
+      ],
+      "end_m": [
+        10.9728,
+        7.3152,
+        3.048
+      ],
+      "height_m": 2.7432,
+      "assembly_definition_id": "dfe45e01-49a2-5164-bf1b-044706544b1f",
+      "framing_ids": [
+        "0640d054-b8b9-53a2-b265-dafb43620c5f",
+        "d4b4ced9-f365-5cc5-96d7-e0cc9cd11c20",
+        "0952ecc9-37aa-5fb6-9bbe-d5ba1bb1bfd8",
+        "42c4b3a8-1a9b-5ec7-9852-1098eb80a062"
+      ]
+    },
+    {
+      "id": "1294ad47-9096-53a0-a96e-2bbf4e98e1a0",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-0/opening/17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63",
+      "start_m": [
+        1.0668,
+        0.0,
+        2.15265
+      ],
+      "end_m": [
+        2.5907999999999998,
+        0.0,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "ea3ef3c3-5adc-53c5-b113-2b31387d5eec",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-0/opening/17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63",
+      "start_m": [
+        2.60985,
+        0.0,
+        0.8763
+      ],
+      "end_m": [
+        2.60985,
+        0.0,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "573564fa-bc8b-5785-a29b-5ec63745ae88",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-0/opening/17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63",
+      "start_m": [
+        1.04775,
+        0.0,
+        0.8763
+      ],
+      "end_m": [
+        1.04775,
+        0.0,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "2170607f-90f6-53e0-b796-a983335b965d",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-0/opening/17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63",
+      "start_m": [
+        1.0668,
+        0.0,
+        0.89535
+      ],
+      "end_m": [
+        2.5907999999999998,
+        0.0,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "31ef16ee-38e4-52ab-90d9-98bab785f9fb",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-1/opening/e2f64f35-32f5-5884-a1e4-e4b352f0a26b/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "e2f64f35-32f5-5884-a1e4-e4b352f0a26b",
+      "start_m": [
+        1.3716,
+        0.0,
+        5.2006499999999996
+      ],
+      "end_m": [
+        2.286,
+        0.0,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "03434060-191b-575a-a741-170e7babc997",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-1/opening/e2f64f35-32f5-5884-a1e4-e4b352f0a26b/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "e2f64f35-32f5-5884-a1e4-e4b352f0a26b",
+      "start_m": [
+        2.30505,
+        0.0,
+        3.9243
+      ],
+      "end_m": [
+        2.30505,
+        0.0,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "2eaf5d0e-7891-5276-aa34-cd77657cad85",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-1/opening/e2f64f35-32f5-5884-a1e4-e4b352f0a26b/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "e2f64f35-32f5-5884-a1e4-e4b352f0a26b",
+      "start_m": [
+        1.35255,
+        0.0,
+        3.9243
+      ],
+      "end_m": [
+        1.35255,
+        0.0,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "3b2d1843-3b1a-562f-9941-6e79d77396d7",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x0-x1/level-1/opening/e2f64f35-32f5-5884-a1e4-e4b352f0a26b/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "e2f64f35-32f5-5884-a1e4-e4b352f0a26b",
+      "start_m": [
+        1.3716,
+        0.0,
+        3.94335
+      ],
+      "end_m": [
+        2.286,
+        0.0,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "831fc739-311a-5f32-b498-4646bd700efb",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-0/opening/880c4d3e-effc-5c46-826a-d389cceda644/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "880c4d3e-effc-5c46-826a-d389cceda644",
+      "start_m": [
+        5.0291999999999994,
+        0.0,
+        2.05105
+      ],
+      "end_m": [
+        5.9436,
+        0.0,
+        2.05105
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "8c5f6325-2828-54d3-a7b8-9d79bc84adb3",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-0/opening/880c4d3e-effc-5c46-826a-d389cceda644/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "880c4d3e-effc-5c46-826a-d389cceda644",
+      "start_m": [
+        5.96265,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        5.96265,
+        0.0,
+        2.0701
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "0a6692c5-9b83-5b95-b492-35d07195b5c6",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-0/opening/880c4d3e-effc-5c46-826a-d389cceda644/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "880c4d3e-effc-5c46-826a-d389cceda644",
+      "start_m": [
+        5.010149999999999,
+        0.0,
+        0.0
+      ],
+      "end_m": [
+        5.010149999999999,
+        0.0,
+        2.0701
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "cd2efd3a-cd92-5234-b147-63ad7075ea51",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-1/opening/f08ff272-f2ef-552f-9606-7e7ea38532b9/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "f08ff272-f2ef-552f-9606-7e7ea38532b9",
+      "start_m": [
+        5.0291999999999994,
+        0.0,
+        5.2006499999999996
+      ],
+      "end_m": [
+        5.9436,
+        0.0,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "cb941839-8ba7-5470-9576-c006daadb581",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-1/opening/f08ff272-f2ef-552f-9606-7e7ea38532b9/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "f08ff272-f2ef-552f-9606-7e7ea38532b9",
+      "start_m": [
+        5.96265,
+        0.0,
+        3.9243
+      ],
+      "end_m": [
+        5.96265,
+        0.0,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "f0605eab-e5bb-5394-97a9-919e4f46d2f3",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-1/opening/f08ff272-f2ef-552f-9606-7e7ea38532b9/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "f08ff272-f2ef-552f-9606-7e7ea38532b9",
+      "start_m": [
+        5.010149999999999,
+        0.0,
+        3.9243
+      ],
+      "end_m": [
+        5.010149999999999,
+        0.0,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "ecc8773b-3be3-55a4-b5b5-39fa0c2b7ce1",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x1-x2/level-1/opening/f08ff272-f2ef-552f-9606-7e7ea38532b9/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "f08ff272-f2ef-552f-9606-7e7ea38532b9",
+      "start_m": [
+        5.0291999999999994,
+        0.0,
+        3.94335
+      ],
+      "end_m": [
+        5.9436,
+        0.0,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "302b49ef-b73f-5dd7-a811-8895085b6a60",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-0/opening/0b26db45-37b9-50e3-ad72-8c1d1a1a327a/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "0b26db45-37b9-50e3-ad72-8c1d1a1a327a",
+      "start_m": [
+        8.382,
+        0.0,
+        2.15265
+      ],
+      "end_m": [
+        9.905999999999999,
+        0.0,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "443876a3-c5d9-51b5-a197-62019ff5a247",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-0/opening/0b26db45-37b9-50e3-ad72-8c1d1a1a327a/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "0b26db45-37b9-50e3-ad72-8c1d1a1a327a",
+      "start_m": [
+        9.925049999999999,
+        0.0,
+        0.8763
+      ],
+      "end_m": [
+        9.925049999999999,
+        0.0,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "736e7231-87dc-5bb8-840f-a06ef66ce79d",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-0/opening/0b26db45-37b9-50e3-ad72-8c1d1a1a327a/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "0b26db45-37b9-50e3-ad72-8c1d1a1a327a",
+      "start_m": [
+        8.36295,
+        0.0,
+        0.8763
+      ],
+      "end_m": [
+        8.36295,
+        0.0,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "e2c1e603-2a8e-56a2-8c83-1906156dd375",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-0/opening/0b26db45-37b9-50e3-ad72-8c1d1a1a327a/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "0b26db45-37b9-50e3-ad72-8c1d1a1a327a",
+      "start_m": [
+        8.382,
+        0.0,
+        0.89535
+      ],
+      "end_m": [
+        9.905999999999999,
+        0.0,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "478c9b7f-749b-5cec-a053-faa479e943e9",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-1/opening/270d8d75-f684-5b6b-b9c5-df9d53faa1b6/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "270d8d75-f684-5b6b-b9c5-df9d53faa1b6",
+      "start_m": [
+        8.686799999999998,
+        0.0,
+        5.2006499999999996
+      ],
+      "end_m": [
+        9.601199999999999,
+        0.0,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "007d4591-20d5-5003-a8ce-8adefa43e1a0",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-1/opening/270d8d75-f684-5b6b-b9c5-df9d53faa1b6/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "270d8d75-f684-5b6b-b9c5-df9d53faa1b6",
+      "start_m": [
+        9.620249999999999,
+        0.0,
+        3.9243
+      ],
+      "end_m": [
+        9.620249999999999,
+        0.0,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "1c74fd3b-55fe-590e-8ea7-ade4d75a10b2",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-1/opening/270d8d75-f684-5b6b-b9c5-df9d53faa1b6/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "270d8d75-f684-5b6b-b9c5-df9d53faa1b6",
+      "start_m": [
+        8.667749999999998,
+        0.0,
+        3.9243
+      ],
+      "end_m": [
+        8.667749999999998,
+        0.0,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "47bd4235-657d-5b04-9240-785d89816d6b",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y0/x2-x3/level-1/opening/270d8d75-f684-5b6b-b9c5-df9d53faa1b6/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "270d8d75-f684-5b6b-b9c5-df9d53faa1b6",
+      "start_m": [
+        8.686799999999998,
+        0.0,
+        3.94335
+      ],
+      "end_m": [
+        9.601199999999999,
+        0.0,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "2658f6ee-5e94-5c92-9467-5514e73cddf3",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-0/opening/9168cf3b-5f19-5941-9bd5-4c6e891ad391/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "9168cf3b-5f19-5941-9bd5-4c6e891ad391",
+      "start_m": [
+        1.3716,
+        7.3152,
+        2.15265
+      ],
+      "end_m": [
+        2.286,
+        7.3152,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "d50a3460-dd0c-5662-a569-f934c401f51e",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-0/opening/9168cf3b-5f19-5941-9bd5-4c6e891ad391/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "9168cf3b-5f19-5941-9bd5-4c6e891ad391",
+      "start_m": [
+        2.30505,
+        7.3152,
+        0.8763
+      ],
+      "end_m": [
+        2.30505,
+        7.3152,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "5f41397a-f73f-5fad-bd93-b24f2b66c767",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-0/opening/9168cf3b-5f19-5941-9bd5-4c6e891ad391/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "9168cf3b-5f19-5941-9bd5-4c6e891ad391",
+      "start_m": [
+        1.35255,
+        7.3152,
+        0.8763
+      ],
+      "end_m": [
+        1.35255,
+        7.3152,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "cbcc7d18-4a1d-5e57-9e30-af35edad3573",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-0/opening/9168cf3b-5f19-5941-9bd5-4c6e891ad391/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "9168cf3b-5f19-5941-9bd5-4c6e891ad391",
+      "start_m": [
+        1.3716,
+        7.3152,
+        0.89535
+      ],
+      "end_m": [
+        2.286,
+        7.3152,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "50a55b99-a149-5436-9273-140eb3c3ee3a",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-1/opening/eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58",
+      "start_m": [
+        1.3716,
+        7.3152,
+        5.2006499999999996
+      ],
+      "end_m": [
+        2.286,
+        7.3152,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "c2b64c08-b04f-5ab4-a529-498c24281554",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-1/opening/eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58",
+      "start_m": [
+        2.30505,
+        7.3152,
+        3.9243
+      ],
+      "end_m": [
+        2.30505,
+        7.3152,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "ddd7f39a-0984-5d06-96be-d8d2bf2e7816",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-1/opening/eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58",
+      "start_m": [
+        1.35255,
+        7.3152,
+        3.9243
+      ],
+      "end_m": [
+        1.35255,
+        7.3152,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "19199e35-8d0d-5082-8e89-d85c3eaf0752",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x0-x1/level-1/opening/eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58",
+      "start_m": [
+        1.3716,
+        7.3152,
+        3.94335
+      ],
+      "end_m": [
+        2.286,
+        7.3152,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "60bf5e47-971c-5424-a0da-1d98496155b9",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-0/opening/2e856030-6256-5465-8757-9172037a54ef/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "2e856030-6256-5465-8757-9172037a54ef",
+      "start_m": [
+        5.0291999999999994,
+        7.3152,
+        2.15265
+      ],
+      "end_m": [
+        5.9436,
+        7.3152,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "378d248d-bbd5-54d2-9f68-243da35cd4de",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-0/opening/2e856030-6256-5465-8757-9172037a54ef/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "2e856030-6256-5465-8757-9172037a54ef",
+      "start_m": [
+        5.96265,
+        7.3152,
+        0.8763
+      ],
+      "end_m": [
+        5.96265,
+        7.3152,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "c0ac984f-469b-50e8-936c-d7c8f41618ce",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-0/opening/2e856030-6256-5465-8757-9172037a54ef/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "2e856030-6256-5465-8757-9172037a54ef",
+      "start_m": [
+        5.010149999999999,
+        7.3152,
+        0.8763
+      ],
+      "end_m": [
+        5.010149999999999,
+        7.3152,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "3d2d1cd7-fe02-5a99-8eb9-72a4af370086",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-0/opening/2e856030-6256-5465-8757-9172037a54ef/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "2e856030-6256-5465-8757-9172037a54ef",
+      "start_m": [
+        5.0291999999999994,
+        7.3152,
+        0.89535
+      ],
+      "end_m": [
+        5.9436,
+        7.3152,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "103814fc-2c4a-5095-acb7-e24aef7c3a85",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-1/opening/f53a444d-846e-51bb-b2bd-01cd32b2c7bd/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "f53a444d-846e-51bb-b2bd-01cd32b2c7bd",
+      "start_m": [
+        5.0291999999999994,
+        7.3152,
+        5.2006499999999996
+      ],
+      "end_m": [
+        5.9436,
+        7.3152,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "e37d2950-e65c-5bd6-81b3-a4ee045862a6",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-1/opening/f53a444d-846e-51bb-b2bd-01cd32b2c7bd/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "f53a444d-846e-51bb-b2bd-01cd32b2c7bd",
+      "start_m": [
+        5.96265,
+        7.3152,
+        3.9243
+      ],
+      "end_m": [
+        5.96265,
+        7.3152,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "5962a630-6e15-5994-bf2a-9a72d73c3886",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-1/opening/f53a444d-846e-51bb-b2bd-01cd32b2c7bd/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "f53a444d-846e-51bb-b2bd-01cd32b2c7bd",
+      "start_m": [
+        5.010149999999999,
+        7.3152,
+        3.9243
+      ],
+      "end_m": [
+        5.010149999999999,
+        7.3152,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "fd107068-d490-5384-89b3-dee70ecc85cf",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x1-x2/level-1/opening/f53a444d-846e-51bb-b2bd-01cd32b2c7bd/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "f53a444d-846e-51bb-b2bd-01cd32b2c7bd",
+      "start_m": [
+        5.0291999999999994,
+        7.3152,
+        3.94335
+      ],
+      "end_m": [
+        5.9436,
+        7.3152,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "40961907-d0b9-5ecf-ad0b-1e17433ab9e9",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-0/opening/86e1ff37-713b-5e3f-ab9d-9d23912c0957/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "86e1ff37-713b-5e3f-ab9d-9d23912c0957",
+      "start_m": [
+        8.686799999999998,
+        7.3152,
+        2.15265
+      ],
+      "end_m": [
+        9.601199999999999,
+        7.3152,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "9d342f8b-e03b-5eed-aeac-d8af71c19cb4",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-0/opening/86e1ff37-713b-5e3f-ab9d-9d23912c0957/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "86e1ff37-713b-5e3f-ab9d-9d23912c0957",
+      "start_m": [
+        9.620249999999999,
+        7.3152,
+        0.8763
+      ],
+      "end_m": [
+        9.620249999999999,
+        7.3152,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "f263e774-a4c3-5acc-9f06-734961f7e748",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-0/opening/86e1ff37-713b-5e3f-ab9d-9d23912c0957/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "86e1ff37-713b-5e3f-ab9d-9d23912c0957",
+      "start_m": [
+        8.667749999999998,
+        7.3152,
+        0.8763
+      ],
+      "end_m": [
+        8.667749999999998,
+        7.3152,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "1f6312d3-597a-5e58-b3f5-cbf63a6642d4",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-0/opening/86e1ff37-713b-5e3f-ab9d-9d23912c0957/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "86e1ff37-713b-5e3f-ab9d-9d23912c0957",
+      "start_m": [
+        8.686799999999998,
+        7.3152,
+        0.89535
+      ],
+      "end_m": [
+        9.601199999999999,
+        7.3152,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "72304fd8-9bb5-5a4b-bea1-4bb95ee3d23d",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-1/opening/6aa15088-64bc-5736-8ea6-8049098795d9/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "6aa15088-64bc-5736-8ea6-8049098795d9",
+      "start_m": [
+        8.686799999999998,
+        7.3152,
+        5.2006499999999996
+      ],
+      "end_m": [
+        9.601199999999999,
+        7.3152,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "318a4ae1-95fc-5782-8888-09dc00a9dcf4",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-1/opening/6aa15088-64bc-5736-8ea6-8049098795d9/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "6aa15088-64bc-5736-8ea6-8049098795d9",
+      "start_m": [
+        9.620249999999999,
+        7.3152,
+        3.9243
+      ],
+      "end_m": [
+        9.620249999999999,
+        7.3152,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "74d1e488-998f-5ed5-8c16-108f5ecb0749",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-1/opening/6aa15088-64bc-5736-8ea6-8049098795d9/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "6aa15088-64bc-5736-8ea6-8049098795d9",
+      "start_m": [
+        8.667749999999998,
+        7.3152,
+        3.9243
+      ],
+      "end_m": [
+        8.667749999999998,
+        7.3152,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "f2a1093d-82ab-56e1-888d-d64b58ae983b",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-x/y2/x2-x3/level-1/opening/6aa15088-64bc-5736-8ea6-8049098795d9/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "6aa15088-64bc-5736-8ea6-8049098795d9",
+      "start_m": [
+        8.686799999999998,
+        7.3152,
+        3.94335
+      ],
+      "end_m": [
+        9.601199999999999,
+        7.3152,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "59652e2b-7e81-53b5-ba4e-8955924c2a2f",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-0/opening/6e3cd116-61dd-5fff-a12b-291cb048b5a8/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "6e3cd116-61dd-5fff-a12b-291cb048b5a8",
+      "start_m": [
+        0.0,
+        1.3716,
+        2.15265
+      ],
+      "end_m": [
+        0.0,
+        2.286,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "53b70dcf-b060-5a3f-a43b-e48cf4886d57",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-0/opening/6e3cd116-61dd-5fff-a12b-291cb048b5a8/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "6e3cd116-61dd-5fff-a12b-291cb048b5a8",
+      "start_m": [
+        0.0,
+        2.30505,
+        0.8763
+      ],
+      "end_m": [
+        0.0,
+        2.30505,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "65cd0a77-2199-5214-99f5-ccb77d7fce66",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-0/opening/6e3cd116-61dd-5fff-a12b-291cb048b5a8/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "6e3cd116-61dd-5fff-a12b-291cb048b5a8",
+      "start_m": [
+        0.0,
+        1.35255,
+        0.8763
+      ],
+      "end_m": [
+        0.0,
+        1.35255,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "b8bd57c2-9712-547b-987a-962ea0b39fcf",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-0/opening/6e3cd116-61dd-5fff-a12b-291cb048b5a8/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "6e3cd116-61dd-5fff-a12b-291cb048b5a8",
+      "start_m": [
+        0.0,
+        1.3716,
+        0.89535
+      ],
+      "end_m": [
+        0.0,
+        2.286,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "0b6fc5c0-26c3-5150-babc-a827aef53f11",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-1/opening/3bc7b096-5ac9-5102-9f4c-e8242041a552/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "3bc7b096-5ac9-5102-9f4c-e8242041a552",
+      "start_m": [
+        0.0,
+        1.3716,
+        5.2006499999999996
+      ],
+      "end_m": [
+        0.0,
+        2.286,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "974b278d-9c72-5b5e-a1f1-82e1007af7a6",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-1/opening/3bc7b096-5ac9-5102-9f4c-e8242041a552/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "3bc7b096-5ac9-5102-9f4c-e8242041a552",
+      "start_m": [
+        0.0,
+        2.30505,
+        3.9243
+      ],
+      "end_m": [
+        0.0,
+        2.30505,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "941ace32-d26a-520a-8e3c-ee16908fc041",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-1/opening/3bc7b096-5ac9-5102-9f4c-e8242041a552/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "3bc7b096-5ac9-5102-9f4c-e8242041a552",
+      "start_m": [
+        0.0,
+        1.35255,
+        3.9243
+      ],
+      "end_m": [
+        0.0,
+        1.35255,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "1ef8d286-29da-5140-9cd2-7fc66dc70c0d",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y0-y1/level-1/opening/3bc7b096-5ac9-5102-9f4c-e8242041a552/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "3bc7b096-5ac9-5102-9f4c-e8242041a552",
+      "start_m": [
+        0.0,
+        1.3716,
+        3.94335
+      ],
+      "end_m": [
+        0.0,
+        2.286,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "a8c49b16-2781-50d3-945c-8e22cb717939",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-0/opening/4f69753b-f1c0-5cf5-9f70-505b6aab4330/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "4f69753b-f1c0-5cf5-9f70-505b6aab4330",
+      "start_m": [
+        0.0,
+        5.0291999999999994,
+        2.15265
+      ],
+      "end_m": [
+        0.0,
+        5.9436,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "e52ff460-a17b-5362-bed9-dedf4457f65d",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-0/opening/4f69753b-f1c0-5cf5-9f70-505b6aab4330/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "4f69753b-f1c0-5cf5-9f70-505b6aab4330",
+      "start_m": [
+        0.0,
+        5.96265,
+        0.8763
+      ],
+      "end_m": [
+        0.0,
+        5.96265,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "bd8b6c03-effc-5ba9-8d1f-39bfdf84d315",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-0/opening/4f69753b-f1c0-5cf5-9f70-505b6aab4330/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "4f69753b-f1c0-5cf5-9f70-505b6aab4330",
+      "start_m": [
+        0.0,
+        5.010149999999999,
+        0.8763
+      ],
+      "end_m": [
+        0.0,
+        5.010149999999999,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "6ed9f78c-43fb-5a35-b52e-896093cbc49d",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-0/opening/4f69753b-f1c0-5cf5-9f70-505b6aab4330/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "4f69753b-f1c0-5cf5-9f70-505b6aab4330",
+      "start_m": [
+        0.0,
+        5.0291999999999994,
+        0.89535
+      ],
+      "end_m": [
+        0.0,
+        5.9436,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "1f07b242-882a-5e31-8b86-f6372af3e63d",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-1/opening/85076901-732f-560b-bb02-bc4b55b54dbf/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "85076901-732f-560b-bb02-bc4b55b54dbf",
+      "start_m": [
+        0.0,
+        5.0291999999999994,
+        5.2006499999999996
+      ],
+      "end_m": [
+        0.0,
+        5.9436,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "0723f569-005c-5162-8d43-14fb2cf9baf4",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-1/opening/85076901-732f-560b-bb02-bc4b55b54dbf/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "85076901-732f-560b-bb02-bc4b55b54dbf",
+      "start_m": [
+        0.0,
+        5.96265,
+        3.9243
+      ],
+      "end_m": [
+        0.0,
+        5.96265,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "32918117-2ba7-59e9-b776-1d60bb76fabf",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-1/opening/85076901-732f-560b-bb02-bc4b55b54dbf/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "85076901-732f-560b-bb02-bc4b55b54dbf",
+      "start_m": [
+        0.0,
+        5.010149999999999,
+        3.9243
+      ],
+      "end_m": [
+        0.0,
+        5.010149999999999,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "71156770-3e02-5c9f-889e-6e345ebb3f62",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x0/y1-y2/level-1/opening/85076901-732f-560b-bb02-bc4b55b54dbf/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "85076901-732f-560b-bb02-bc4b55b54dbf",
+      "start_m": [
+        0.0,
+        5.0291999999999994,
+        3.94335
+      ],
+      "end_m": [
+        0.0,
+        5.9436,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "e7909a63-7f3e-56bb-a29d-668f8c4419bb",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-0/opening/1c6cbb5e-9666-5320-bd29-4b2a30ff92d8/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "1c6cbb5e-9666-5320-bd29-4b2a30ff92d8",
+      "start_m": [
+        10.9728,
+        1.3716,
+        2.15265
+      ],
+      "end_m": [
+        10.9728,
+        2.286,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "4dd0bbba-4f81-5c4d-9774-71db9e72315b",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-0/opening/1c6cbb5e-9666-5320-bd29-4b2a30ff92d8/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "1c6cbb5e-9666-5320-bd29-4b2a30ff92d8",
+      "start_m": [
+        10.9728,
+        2.30505,
+        0.8763
+      ],
+      "end_m": [
+        10.9728,
+        2.30505,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "7030586d-4c6f-5387-999d-3de33fe108a4",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-0/opening/1c6cbb5e-9666-5320-bd29-4b2a30ff92d8/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "1c6cbb5e-9666-5320-bd29-4b2a30ff92d8",
+      "start_m": [
+        10.9728,
+        1.35255,
+        0.8763
+      ],
+      "end_m": [
+        10.9728,
+        1.35255,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "5148f43d-bb68-55b2-b964-041c7b1ecd1d",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-0/opening/1c6cbb5e-9666-5320-bd29-4b2a30ff92d8/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "1c6cbb5e-9666-5320-bd29-4b2a30ff92d8",
+      "start_m": [
+        10.9728,
+        1.3716,
+        0.89535
+      ],
+      "end_m": [
+        10.9728,
+        2.286,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "42fe8d6f-d86b-52fa-98e3-a6242d1fe3cf",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-1/opening/35295f77-8f50-5ee4-a4b1-76a93582b511/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "35295f77-8f50-5ee4-a4b1-76a93582b511",
+      "start_m": [
+        10.9728,
+        1.3716,
+        5.2006499999999996
+      ],
+      "end_m": [
+        10.9728,
+        2.286,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "4d2c5e9e-4904-533e-b3c2-781aa7e162ad",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-1/opening/35295f77-8f50-5ee4-a4b1-76a93582b511/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "35295f77-8f50-5ee4-a4b1-76a93582b511",
+      "start_m": [
+        10.9728,
+        2.30505,
+        3.9243
+      ],
+      "end_m": [
+        10.9728,
+        2.30505,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "a01bbac7-20e3-5c6f-8a1c-60e600227035",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-1/opening/35295f77-8f50-5ee4-a4b1-76a93582b511/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "35295f77-8f50-5ee4-a4b1-76a93582b511",
+      "start_m": [
+        10.9728,
+        1.35255,
+        3.9243
+      ],
+      "end_m": [
+        10.9728,
+        1.35255,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "271728b6-1bdd-5fa8-9ada-78d561fadb85",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y0-y1/level-1/opening/35295f77-8f50-5ee4-a4b1-76a93582b511/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "35295f77-8f50-5ee4-a4b1-76a93582b511",
+      "start_m": [
+        10.9728,
+        1.3716,
+        3.94335
+      ],
+      "end_m": [
+        10.9728,
+        2.286,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "c535798e-c287-5cee-8ac8-cf6090fa5092",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-0/opening/f7bece37-5e61-5cc2-ab7d-dc86f88579de/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "f7bece37-5e61-5cc2-ab7d-dc86f88579de",
+      "start_m": [
+        10.9728,
+        5.0291999999999994,
+        2.15265
+      ],
+      "end_m": [
+        10.9728,
+        5.9436,
+        2.15265
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "8d33c609-8598-5843-bacf-70590a106535",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-0/opening/f7bece37-5e61-5cc2-ab7d-dc86f88579de/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "f7bece37-5e61-5cc2-ab7d-dc86f88579de",
+      "start_m": [
+        10.9728,
+        5.96265,
+        0.8763
+      ],
+      "end_m": [
+        10.9728,
+        5.96265,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "5c077231-ae4f-520e-befd-b102fbaa7531",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-0/opening/f7bece37-5e61-5cc2-ab7d-dc86f88579de/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "f7bece37-5e61-5cc2-ab7d-dc86f88579de",
+      "start_m": [
+        10.9728,
+        5.010149999999999,
+        0.8763
+      ],
+      "end_m": [
+        10.9728,
+        5.010149999999999,
+        2.1717
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "0d54ce75-2c97-5132-8b28-0af2c792fd68",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-0/opening/f7bece37-5e61-5cc2-ab7d-dc86f88579de/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "f7bece37-5e61-5cc2-ab7d-dc86f88579de",
+      "start_m": [
+        10.9728,
+        5.0291999999999994,
+        0.89535
+      ],
+      "end_m": [
+        10.9728,
+        5.9436,
+        0.89535
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "0640d054-b8b9-53a2-b265-dafb43620c5f",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-1/opening/fba22908-28c2-54a9-886c-afde0d70b615/buck-head",
+      "piece_kind": "BUCK_HEAD",
+      "opening_id": "fba22908-28c2-54a9-886c-afde0d70b615",
+      "start_m": [
+        10.9728,
+        5.0291999999999994,
+        5.2006499999999996
+      ],
+      "end_m": [
+        10.9728,
+        5.9436,
+        5.2006499999999996
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "d4b4ced9-f365-5cc5-96d7-e0cc9cd11c20",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-1/opening/fba22908-28c2-54a9-886c-afde0d70b615/buck-jamb/end",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "fba22908-28c2-54a9-886c-afde0d70b615",
+      "start_m": [
+        10.9728,
+        5.96265,
+        3.9243
+      ],
+      "end_m": [
+        10.9728,
+        5.96265,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "0952ecc9-37aa-5fb6-9bbe-d5ba1bb1bfd8",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-1/opening/fba22908-28c2-54a9-886c-afde0d70b615/buck-jamb/start",
+      "piece_kind": "BUCK_JAMB",
+      "opening_id": "fba22908-28c2-54a9-886c-afde0d70b615",
+      "start_m": [
+        10.9728,
+        5.010149999999999,
+        3.9243
+      ],
+      "end_m": [
+        10.9728,
+        5.010149999999999,
+        5.2197
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
+    },
+    {
+      "id": "42c4b3a8-1a9b-5ec7-9852-1098eb80a062",
+      "kind": "WallFramingPiece",
+      "schema_version": 1,
+      "generation_key": "wall/axis-y/x3/y1-y2/level-1/opening/fba22908-28c2-54a9-886c-afde0d70b615/buck-sill",
+      "piece_kind": "BUCK_SILL",
+      "opening_id": "fba22908-28c2-54a9-886c-afde0d70b615",
+      "start_m": [
+        10.9728,
+        5.0291999999999994,
+        3.94335
+      ],
+      "end_m": [
+        10.9728,
+        5.9436,
+        3.94335
+      ],
+      "section_id": "81a08a0e-9f60-5ab7-bd46-15cb7edb7cdd",
+      "material_id": "b0766c9e-7059-5d17-92f3-37d970455c35"
     }
   ]
 }

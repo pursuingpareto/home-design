@@ -1,6 +1,6 @@
 # D081 — Reference House 001 v3 template text: installation notes and unverified climate details
 
-**Status:** Confirmed (not yet implemented; [ASM-001](../../implementation/tasks/ASM-001.md))  
+**Status:** Confirmed (implemented in VS-02b; [ASM-001](../../implementation/tasks/ASM-001.md) with [MODEL-006](../../implementation/tasks/MODEL-006.md))  
 **Date:** 2026-11-22  
 **Scope:** The `installation_note` and `unverified_climate_details` of the template's two assembly definitions. Approved as [ASM-001](../../implementation/tasks/ASM-001.md) §13 item 4, which answers the question [MODEL-006](../../implementation/tasks/MODEL-006.md) §13 left to ASM-001.  
 **Extends:** [D072](D072-reference-house-001-v3-design-intent.md), which gave the build-ups and values but no text. Within [D067](D067-vs02b-assembly-definitions.md) (the fields) and [D071](D071-vs02b-thermal-moisture-values.md) (the details are shown with every figure, under the unverified-climate warning).

@@ -1,6 +1,6 @@
 # D077 — VS-02b supported ranges for assembly definition values
 
-**Status:** Confirmed (not yet implemented; [MODEL-006](../../implementation/tasks/MODEL-006.md))  
+**Status:** Confirmed (implemented in VS-02b; [MODEL-006](../../implementation/tasks/MODEL-006.md) with [ASM-001](../../implementation/tasks/ASM-001.md))  
 **Date:** 2026-11-21  
 **Scope:** Which assembly definition and opening values have supported-range bounds (stage 4) in version 3. Approved as [MODEL-006](../../implementation/tasks/MODEL-006.md) §13 item 5, within [D066](D066-vs02b-wall-framing.md), [D067](D067-vs02b-assembly-definitions.md), and [D069](D069-vs02b-openings.md).
 

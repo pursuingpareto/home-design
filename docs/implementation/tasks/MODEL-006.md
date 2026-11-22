@@ -1,6 +1,6 @@
 # MODEL-006 — Model schema version 3: assemblies, walls, wall framing, and openings
 
-**Status:** Approved, not started (2026-11-21). All five judgment items were approved as recommended ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)–[D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)), and routine items 6–13 together (§13). The approved contracts are recorded in building-model.md §3.4, §6, §6.1, and §8, interfaces.md §2–3, and dependencies.md §4.1, each marked "not yet implemented".  
+**Status:** Done (2026-11-22), merged together with [ASM-001](ASM-001.md); implementation notes in §15. All five judgment items were approved as recommended ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)–[D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)), and routine items 6–13 together (§13), on 2026-11-21. The contracts are recorded in building-model.md §3.4, §6, §6.1, and §8, interfaces.md §2–3, and dependencies.md §4.1.  
 **Refined by:** [D079](../../product/decisions/D079-vs02b-no-stacked-openings.md) (2026-11-22, from [ASM-001](ASM-001.md) §13 item 2): `OPENINGS_OVERLAP` compares framed ranges along the wall only (§5.2).  
 **Owner module:** `model` (schema, validation, commands); `assemblies` (new package: the wall-rule registry and its interface, §7); `project` for the stored-data guard (§9.3)  
 **Slice:** VS-02b ([vs-02b.md](../acceptance-tests/vs-02b.md), agreed 2026-11-21)  
@@ -494,3 +494,65 @@ The approved items are recorded in building-model.md (§3.4 "Version 3 records",
 - All §11 tests pass on the merged MODEL-006 + ASM-001 branch, with the regenerated VS-01 and VS-02 suites, Vitest, and Playwright. `scripts/check.sh` and CI pass.
 - building-model.md, interfaces.md, dependencies.md, and artifacts.md (the §10 note) are updated. The decisions for items 1–5 (D073–D077) are recorded, and the roadmap is updated.
 - Changed files, tests, changed test outcomes, limitations, and next steps are summarized (AGENTS.md).
+
+## 15. Implementation notes (2026-11-22)
+
+Implemented on one branch with [ASM-001](ASM-001.md) (§10), in §12's order, except that the real rule replaced the stub from the start: ASM-001 specifies it fully, and its counts matched on the first run.
+
+**Delivered:**
+- `backend/src/homedesign/model/`:
+  - `limits.py`: `MODEL_SCHEMA_VERSION = 3`; `Building` at record version 2 and the five new kinds at 1; the D077 bounds (`STUD_SPACING_MIN_M`, `STUD_SPACING_MAX_M`, `GIRT_COUNT_MAX`);
+  - `schema.py`: `WallSystem`, `AssemblyDefinition` with embedded `Layer`, `DeclaredValue`, `StudFraming` and `BuckFraming` (discriminated by `type`), `Wall`, `WallFramingPiece`, `Opening`, and `Building.wall_system_id`. `AssemblyFamily`, `LayerFunction`, `PieceKind`, and `OpeningKind` are exported for `ART-003` and `UI-004` (§12);
+  - `codes.py`: the twenty new codes, in the stage catalog;
+  - `validation.py`: stages 1–5 for the new records (§6). Stage 4 checks each definition, then runs the fit (§5) from the wall rule's rectangles and girt heights, only when the default definition passed its own checks; stage 5 compares walls, then framing, once members and connections conform;
+  - `commands/envelope.py`: `SetWallAssembly`, `AddOpening`, `SetOpening`, `RemoveOpening`;
+  - `commands/propose.py`: table `vs02b-change-classes-1`; one regeneration for all four generated kinds, with openings removed with their wall (§8.5); the `walls` and `wall_framing` diffs (§8.6); `CreateReferenceProject` copying the openings and keeping the template's walls, with IDs minted from their keys and no framing, so that regeneration finds each opening's wall (§9.2);
+  - `schema_export.py`: `snapshot.v3.schema.json` replaces `snapshot.v2.schema.json`.
+- `backend/src/homedesign/assemblies/` (new): the wall-rule registry (`rules/__init__.py`), the shared comparison (`inventory.py`), and ASM-001's rule and template.
+- `api/models.py`: `WallChanges` and `WallFramingChanges`, required on `PreviewResponse`.
+- Regenerated, reviewed as diffs: the fixture and packaged template (651 records), the three committed schemas, `frontend/src/api/schema.d.ts`, the UI fixture, the golden record, and `vectors.json`.
+- Documents: building-model.md §3, §3.4, §6, §6.1 (the new codes are rows of the table now), and §8; interfaces.md §1–3; dependencies.md §4.1 (the four rows; the heading anchor is `vs02b-change-classes-1`, and the links to it are updated); artifacts.md (the §10 interim note, before §11); D073–D077 (implemented); the backend README; the roadmap.
+
+**Choices made during implementation** (each follows from the approved text; none changes a requirement):
+- **`RemoveOpening` removes the opening's framing pieces with it** before validation, so that no piece names a removed opening. Without this the candidate fails stage 2 (`DANGLING_REFERENCE` at a piece's `opening_id`) before regeneration can run. §8.2's "removes the opening and its framing" covers it.
+- **Pieces that no wall lists** are reported once, as §6.2 says, at `WallSystem.wall_ids` with the pieces in `related_paths`: §6.2 names "the wall's `framing_ids`" for a piece listed twice, but an unlisted piece has no wall. building-model.md §6.1 records the choice.
+- **The owning-wall mismatch** of `FRAMING_ASSIGNMENT_MISMATCH` (a wall that lists another wall's piece) is reported at the listing wall's `framing_ids`, with the owner's `framing_ids` in `related_paths`.
+- **An unknown framing `type`** is `INVALID_ENUM` at `framing.type` (it is a tag, not a record kind); a missing one is `MISSING_FIELD` there.
+- **`layers` must be non-empty at stage 1** (`WRONG_TYPE`, as for other length constraints); a definition whose layers have no `FRAMING` layer is `FRAMING_LAYER_COUNT`.
+- **Fit paths:** "the framing sections used" are, per side, the section that sets that edge: the stud section for `u0`, `u1`, and `v0` with stud infill, the header section for `v1`, and the buck section for every edge with straw bale. The brace check names the sections of `u` and `v1`. A start-side or brace failure also names the footprint dimension and grid axis that place the wall.
+- **The brace test** is `(v1 − u0) − (H − L) > ε` at the start and `(v1 + u1) − (H − L + W) > ε` at the end: the rectangle's corner nearest each brace, which is where the rectangle first meets the brace or the triangle above it.
+- **Totality:** stages 1–3 allow any positive stud spacing and any girt count, which stage 4 rejects (D077). The rule generates no layout studs beyond 1,000 positions and no girts beyond 1,000, so it stays fast on such snapshots; their output is unspecified (ASM-001 §5.6).
+
+**Changed test outcomes (§10).** Each is listed with its reason. No assertion was loosened: where an edit is now rejected, the old assertion is kept on a house without openings (when it tests something openings do not affect) and the new outcome is asserted separately.
+
+| Test | Before | Now | Reason |
+|---|---|---|---|
+| `test_mutations.py` case `29-width-inside-epsilon` (ASM-001 §10, known) | A 12'-0" − 5e-7 m footprint is accepted | Rejected on the v3 house: `OPENING_OUTSIDE_WALL` (new case `29b-…`). The D032 ε bound itself is still asserted accepted, on the house without openings | 4' bays fit no D072 window (D076) |
+| `test_mutations.py` case `30-width-outside-epsilon` | Exactly one issue, `OUT_OF_SUPPORTED_RANGE` | Unchanged, now asserted on the house without openings | The same stage 4 also reports the windows that do not fit; `only=True` would fail |
+| `test_mutations.py` cases `m005-braces-do-not-fit`, `m005-braces-off-need-no-fit` | Exactly the brace-fit issue; accepted with braces off | Unchanged, on the house without openings | The 5' bay fits no window |
+| `test_mutations.py` case `36-unknown-kind` | `kind: "Wall"` is `UNKNOWN_KIND` | `kind: "AssemblyInstance"` is `UNKNOWN_KIND` | `Wall` is a version 3 kind; `AssemblyInstance` stays reserved and unused (§4.1) |
+| `test_impact.py::test_measured_impact`, case `move y1 to 0.3` | Accepted, impacts all four | Rejected (`OPENING_OUTSIDE_WALL`, `OPENING_CROSSES_BRACE`, with `args.y_lines`); the case moved to `test_move_y1_to_0_3_is_rejected_by_the_fit`. The other four `move y1` cases keep their assertion | A 7'-2⅖" bay is below the straw bale minimum of 8'-9" (D076) |
+| `test_commands.py::test_frame_parameters_no_op_and_errors` | The 2 m leg's issue is `issues[0]` | The same issue and argument link, found by path | A 2 m leg also crosses framed openings, and those issues sort first |
+| `test_project.py` guard test | Version 1 database refused | Unchanged; a second test refuses a version 2 database | §9.3 |
+| Counts: `test_fixture.py`, `test_connections.py` | 518 records | 651 | ASM-001 §8.1 |
+| `test_commands.py`: created project equals the fixture; preview shape | — | Walls map by key, `opening_ids` compared in ID order; `walls` and `wall_framing` in the preview | §8.6, §9.2 |
+| Golden record, UI fixture, vectors | — | Regenerated. The golden scenario's diff is only its 48 input fingerprints and 12 snapshot fingerprints (they include the model schema version): every step keeps its outcome, and the grid step to four 10' bays stays accepted (§10) | D055 |
+| `test_sequences.py` (ASM-001 §10: story heights under 7'-1½") | — | No assertion changed. Those draws were already rejected by D034, and now also report fit issues in the same stage. The outcome gate still reaches every VS-02 outcome; reach is below | — |
+
+**Property sequences' reach (re-measured, `ci` profile, 40 sequences each):** the outcome gate passes on v3, as on v2. Share of generated cases in which each outcome occurs, v2 → v3 (the derandomized draws diverge once an outcome differs, so these are indicative):
+
+| Command | Accepted | Rejected |
+|---|---|---|
+| `SetFootprintDimensions` | 14.3% → 11.8% | 52.4% → 37.3% |
+| `SetTimberGrid` | 11.1% → 17.6% | 31.7% → 35.3% |
+| `SetStoryHeights` | 12.7% → 13.7% | 14.3% → 25.5% |
+| `SetFrameParameters` | 22.2% → 29.4% | 9.5% → 13.7% |
+| `SetGableRoofParameters` | 30.2% → 52.9% | 22.2% → 9.8% |
+
+Every gated outcome (`impacts 0`–`4`, no-ops, both rejection codes) is still reached. The sequences do not send the four new commands yet (`TEST-003`).
+
+Known in advance but not seen: no edit to a bay under 8'-9" occurs elsewhere in the existing suites. The e2e suite (23 tests) passes unchanged: its grid and width edits keep every bay at 8'-9" or more.
+
+**Limitations:**
+- No payload reads walls, framing, or openings, so the four commands impact no artifact (exact until `ART-003`). The browser has no wall controls (`UI-004`); a frame edit rejected for an opening shows its error in the editor that sent it, through the argument path, and an `Opening` or `WallSystem` path falls back to the current tab, with no browser change.
+- The golden scenario, traceability, and sequences do not send the new commands yet (`TEST-003`).

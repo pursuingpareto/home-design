@@ -192,6 +192,122 @@ function generateConnections(snapshot) {
 }
 const connectionsCanonical = canonicalize(generateConnections(fixture));
 
+// Independent ECMAScript implementation of rule vs02b-walls-1 (wall-rules.md; ASM-001 §4-6; D065,
+// D066, D076, D078-D080): walls in every perimeter bay of each story, and each wall's framing from
+// the default definition and the openings on it. Exact IEEE formulas as written, left to right; the
+// rule reads no roof value, so every coordinate must be bit-identical to Python (ASM-001 §9).
+const EPS = 1e-6;
+const byCodeUnits = (a, b) => (a.generation_key < b.generation_key ? -1 : a.generation_key > b.generation_key ? 1 : 0);
+function generateWalls(snapshot) {
+  const byId = new Map();
+  for (const e of snapshot.entities) if (!byId.has(e.id)) byId.set(e.id, e);
+  const b = snapshot.building;
+  const fp = byId.get(b.footprint_id);
+  const levels = b.level_ids.map((id) => byId.get(id));
+  const frame = byId.get(b.frame_system_id);
+  const grid = byId.get(frame.grid_id);
+  const system = byId.get(b.wall_system_id);
+  const p = frame.parameters;
+  const def = byId.get(system.default_assembly_definition_id);
+  const fr = def.layers.find((l) => l.framing !== null).framing;
+  const material = byId.get(fr.framing_material_id).name;
+  const xs = grid.x_lines.map((l) => [l.id, fp.origin_m[0] + fp.width_m * l.fraction]);
+  const ys = grid.y_lines.map((l) => [l.id, fp.origin_m[1] + fp.depth_m * l.fraction]);
+  const L = p.knee_brace_leg_m;
+  const wallKeyOf = new Map(snapshot.entities.filter((e) => e.kind === "Wall").map((w) => [w.id, w.generation_key]));
+  const openings = snapshot.entities.filter((e) => e.kind === "Opening").sort((a, c) => (a.id < c.id ? -1 : a.id > c.id ? 1 : 0));
+  const walls = [];
+  const pieces = [];
+  levels.forEach((level, i) => {
+    const zLo = level.elevation_m, H = level.story_height_m;
+    const braced = i === 0 ? p.knee_braces_level_1 : p.knee_braces_eave;
+    const bays = [];
+    for (const [yId, y] of [ys[0], ys[ys.length - 1]])
+      for (let a = 0; a + 1 < xs.length; a++) bays.push({ axis: "x", line: yId, a: xs[a], b: xs[a + 1], fixed: y });
+    for (const [xId, x] of [xs[0], xs[xs.length - 1]])
+      for (let a = 0; a + 1 < ys.length; a++) bays.push({ axis: "y", line: xId, a: ys[a], b: ys[a + 1], fixed: x });
+    for (const bay of bays) {
+      const key = `wall/axis-${bay.axis}/${bay.line}/${bay.a[0]}-${bay.b[0]}/level-${i}`;
+      const A = bay.a[1], B = bay.b[1], W = B - A;
+      const pt = (along, z) => (bay.axis === "x" ? [along, bay.fixed, z] : [bay.fixed, along, z]);
+      walls.push({ generation_key: key, level_index: i, start_m: pt(A, zLo), end_m: pt(B, zLo), height_m: H });
+      const add = (k, kind, openingId, start, end, label) => pieces.push({
+        generation_key: k, wall_key: key, piece_kind: kind, opening_id: openingId, start_m: start, end_m: end, section_label: label, material_name: material,
+      });
+      const vert = (k, kind, openingId, u, va, vb, label) => { if (vb - va > EPS) add(k, kind, openingId, pt(A + u, zLo + va), pt(A + u, zLo + vb), label); };
+      const horiz = (k, kind, openingId, sa, sb, v, label) => { if (sb - sa > EPS) add(k, kind, openingId, pt(sa, zLo + v), pt(sb, zLo + v), label); };
+      const top = (u) => (braced && u < L - EPS ? (H - L) + u : braced && u > W - L + EPS ? (H - L) + (W - u) : H);
+      const mine = openings.filter((o) => wallKeyOf.get(o.wall_id) === key);
+      if (fr.type === "BUCK") {
+        const sec = byId.get(fr.buck_section_id), bw = sec.actual_width_m, label = sec.nominal_label;
+        for (const o of mine) {
+          const { offset_m: off, width_m: w, sill_height_m: s, height_m: h } = o;
+          const win = o.opening_kind === "WINDOW";
+          const v0 = win ? s - bw : 0, v1 = s + h + bw;
+          const pre = `${key}/opening/${o.id}/`;
+          vert(pre + "buck-jamb/start", "BUCK_JAMB", o.id, off - bw / 2, v0, v1, label);
+          vert(pre + "buck-jamb/end", "BUCK_JAMB", o.id, off + w + bw / 2, v0, v1, label);
+          horiz(pre + "buck-head", "BUCK_HEAD", o.id, A + off, A + (off + w), s + h + bw / 2, label);
+          if (win) horiz(pre + "buck-sill", "BUCK_SILL", o.id, A + off, A + (off + w), s - bw / 2, label);
+        }
+        continue;
+      }
+      const stud = byId.get(fr.stud_section_id), header = byId.get(fr.header_section_id), girt = byId.get(fr.girt_section_id);
+      const t = stud.actual_width_m, d = header.actual_depth_m, S = fr.stud_spacing_m, T = fr.jack_threshold_width_m;
+      const rects = mine.map((o) => {
+        const { offset_m: off, width_m: w, sill_height_m: s, height_m: h } = o;
+        const j = w > T + EPS ? 1 : 0;
+        return { o, j, u0: off - (1 + j) * t, u1: off + w + (1 + j) * t, v0: o.opening_kind === "WINDOW" ? s - t : 0, v1: s + h + d };
+      });
+      for (const { o, j } of rects) {
+        const { offset_m: off, width_m: w, sill_height_m: s, height_m: h } = o;
+        const pre = `${key}/opening/${o.id}/`;
+        const ks = j === 0 ? off - t / 2 : off - 3 * t / 2, ke = j === 0 ? off + w + t / 2 : off + w + 3 * t / 2;
+        vert(pre + "king/start", "KING", o.id, ks, 0, top(ks), stud.nominal_label);
+        vert(pre + "king/end", "KING", o.id, ke, 0, top(ke), stud.nominal_label);
+        if (j === 1) {
+          vert(pre + "jack/start", "JACK", o.id, off - t / 2, 0, s + h, stud.nominal_label);
+          vert(pre + "jack/end", "JACK", o.id, off + w + t / 2, 0, s + h, stud.nominal_label);
+          horiz(pre + "header", "HEADER", o.id, A + (off - t), A + (off + w + t), s + h + d / 2, header.nominal_label);
+        } else {
+          horiz(pre + "header", "HEADER", o.id, A + off, A + (off + w), s + h + d / 2, header.nominal_label);
+        }
+        if (o.opening_kind === "WINDOW") horiz(pre + "rough-sill", "ROUGH_SILL", o.id, A + off, A + (off + w), s - t / 2, stud.nominal_label);
+      }
+      const over = (a0, a1, b0, b1) => Math.min(a1, b1) - Math.max(a0, b0);
+      for (let k = 1; A + k * S < B - EPS; k++) {
+        const pk = k * S, lo = pk - t / 2, hi = pk + t / 2;
+        const r = rects.find((x) => over(lo, hi, x.u0, x.u1) > EPS);
+        if (!r) { vert(`${key}/stud/s${k}`, "STUD", null, pk, 0, top(pk), stud.nominal_label); continue; }
+        if (over(lo, hi, r.u0, r.u0 + t) > EPS || over(lo, hi, r.u1 - t, r.u1) > EPS) continue;
+        const pre = `${key}/opening/${r.o.id}/cripple/s${k}/`;
+        vert(pre + "above", "CRIPPLE", r.o.id, pk, r.v1, top(pk), stud.nominal_label);
+        const onJack = r.j === 1 && (over(lo, hi, r.u0 + t, r.u0 + 2 * t) > EPS || over(lo, hi, r.u1 - 2 * t, r.u1 - t) > EPS);
+        if (r.o.opening_kind === "WINDOW" && !onJack) vert(pre + "below", "CRIPPLE", r.o.id, pk, 0, r.v0, stud.nominal_label);
+      }
+      const n = fr.girt_count;
+      for (let gi = 1; gi <= n; gi++) {
+        const v = H * (gi / (n + 1)), tg = girt.actual_width_m;
+        const cuts = rects.filter((x) => over(v - tg / 2, v + tg / 2, x.v0, x.v1) > EPS)
+          .sort((a, c) => a.u0 - c.u0 || (a.o.id < c.o.id ? -1 : a.o.id > c.o.id ? 1 : 0));
+        let start = A, name = `${key}/girt/g${gi}/start`;
+        for (const c of cuts) {
+          horiz(name, "GIRT", null, start, A + c.u0, v, girt.nominal_label);
+          start = A + c.u1; name = `${key}/girt/g${gi}/after/${c.o.id}`;
+        }
+        horiz(name, "GIRT", null, start, B, v, girt.nominal_label);
+      }
+    }
+  });
+  return { walls: walls.sort(byCodeUnits), wall_framing: pieces.sort(byCodeUnits) };
+}
+const fixtureWalls = generateWalls(fixture);
+// The same house with the stud infill default (ASM-001 §9): only WallSystem.default_assembly_definition_id differs.
+const studFixture = JSON.parse(JSON.stringify(fixture));
+studFixture.entities.find((e) => e.kind === "WallSystem").default_assembly_definition_id =
+  studFixture.entities.find((e) => e.kind === "AssemblyDefinition" && e.label === "stud-infill").id;
+const studWalls = generateWalls(studFixture);
+
 // Independent ECMAScript implementation of the GEOM-001 and ART-002 views (artifacts.md §5-6, D048,
 // D060, geometry.md "Numeric evaluation"). Only tan(pitch)-derived values may differ from other
 // implementations, within 1e-12 m.
@@ -420,6 +536,18 @@ const output = {
       connections_fingerprint: sha256(connectionsCanonical),
       // Full list (CONN-001 §9): rafter-peak and purlin-rafter z values within 1e-12 m, the rest exactly.
       connections: generateConnections(fixture),
+      // ASM-001 §9: walls and wall framing with the straw bale default, compared bit for bit.
+      wall_rule: "vs02b-walls-1",
+      walls: fixtureWalls.walls,
+      wall_framing: fixtureWalls.wall_framing,
+    },
+    {
+      name: "reference-house-001-stud-infill-vs02b-walls-1",
+      source: fixturePath,
+      rule: "vs02b-walls-1",
+      default_assembly: "stud-infill",
+      walls: studWalls.walls,
+      wall_framing: studWalls.wall_framing,
     },
   ],
   snapshots: [
@@ -433,4 +561,4 @@ const output = {
 };
 
 writeFileSync(join(here, "vectors.json"), JSON.stringify(output, null, 2) + "\n");
-console.log(`wrote ${output.documents.length} documents, ${output.numbers.length} numbers, 1 inventory, 1 snapshot`);
+console.log(`wrote ${output.documents.length} documents, ${output.numbers.length} numbers, ${output.inventories.length} inventories, 1 snapshot`);

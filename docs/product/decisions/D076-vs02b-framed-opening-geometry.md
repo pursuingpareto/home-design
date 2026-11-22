@@ -1,6 +1,6 @@
 # D076 — VS-02b framed-opening geometry: the rectangle rule for braces, rough sills included, and stud-section opening pieces
 
-**Status:** Confirmed (not yet implemented; [MODEL-006](../../implementation/tasks/MODEL-006.md))  
+**Status:** Confirmed (implemented in VS-02b; [MODEL-006](../../implementation/tasks/MODEL-006.md) with [ASM-001](../../implementation/tasks/ASM-001.md))  
 **Refined by:** [D079](D079-vs02b-no-stacked-openings.md): framed openings in one wall must not overlap along the wall.  
 **Date:** 2026-11-21  
 **Scope:** What the framed opening of [D069](D069-vs02b-openings.md) is, exactly, and how it is checked against the knee braces. Settled as [MODEL-006](../../implementation/tasks/MODEL-006.md) §13 item 4, parts 4a–4c, one at a time, within [D066](D066-vs02b-wall-framing.md) and D069.  
