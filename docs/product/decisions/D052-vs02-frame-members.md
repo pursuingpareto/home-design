@@ -21,7 +21,7 @@ A new generation rule (working name `vs02-frame-1`) **generates** every member f
 
 **Identity:** generation keys stay grid-based (D042). Keys for joists, purlins, and braces are derived from grid-line IDs plus an ordinal or side, so members on surviving lines keep their IDs. The exact key formats are specified with the rule.
 
-**Not generated:** girts and studs (with walls, in VS-02b), dormers, hips, and valleys (the D031 gable only), ceiling joists, and floor openings.
+**Not generated:** girts and studs (with walls, in VS-02b; *resolved by [D066](D066-vs02b-wall-framing.md): generated as wall framing owned by each wall, not as frame members*), dormers, hips, and valleys (the D031 gable only), ceiling joists, and floor openings.
 
 ## Rationale
 

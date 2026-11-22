@@ -3,6 +3,7 @@
 **Status:** Confirmed (implemented in VS-02)  
 **Date:** 2026-11-19  
 **Scope:** Where the reference axes of `vs02-frame-1` members lie, and how members bear on each other. Approved from [TIMBER-002](../../implementation/tasks/TIMBER-002.md) §11, item 1.  
+**Amended by:** [D066](D066-vs02b-wall-framing.md), for VS-02b wall framing only: king and jack positions and cripple ends use the definition's stud and header sections. The timber frame is unchanged.  
 **Resolves:** the open point in [D053](D053-reference-house-001-v2-design-intent.md), "how members bear on each other".
 
 ## Decision

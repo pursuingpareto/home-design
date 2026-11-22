@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). Proposal 3 has the product owner's direction (studs and girts generated, visible, and counted; §8.1), and its sub-questions are under discussion. Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)). Nothing else is decided yet. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -75,7 +75,7 @@ Proposals 2–9 build on Option 1.
 |---|---|---|---|
 | 1 | ~~Slice boundary: Option 1, 2, or 3~~ **Decided: Option 1** ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)) | **Your judgment** | §3 |
 | 2 | ~~Where walls go, and how they relate to the frame~~ **Decided as recommended** ([D065](../../product/decisions/D065-vs02b-wall-placement.md)) | **Your judgment** | §7 |
-| 3 | Infill framing: studs and girts. **Direction given: generated, visible, counted** (§8.1); 3a–3d settled (separate wall framing; two display switches; girts declared by the definition; continuous studs with girts let in; opening framing with a jack width threshold), 3e under discussion | **Your judgment** | §8 |
+| 3 | ~~Infill framing: studs and girts~~ **Decided: generated wall framing owned by each wall, with kings and jacks by a width threshold** ([D066](../../product/decisions/D066-vs02b-wall-framing.md)) | **Your judgment** | §8 |
 | 4 | Assembly definitions: what they record, and where they live | **Your judgment** | §9 |
 | 5 | Choosing a wall's assembly: granularity, command, classification | **Your judgment** | §10 |
 | 6 | Openings: records, commands, fit, survival, classification | **Your judgment** | §11 |
@@ -89,7 +89,7 @@ Proposals 2–9 build on Option 1.
 | 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
 | 15 | Traceability and budgets in D063's form | Routine | §6 |
 
-**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2.
+**Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3.
 
 ## 6. Routine items (10–15)
 
@@ -123,7 +123,9 @@ Proposals 2–9 build on Option 1.
 - **User-placed walls** (an `AddWall` command): needed eventually for interior walls and off-grid walls. Hand placement needs its own identity and validation story, as D054 said of connections.
 - **Gable-end walls now:** completes the end walls, but needs triangular panels in 2D, 3D, and quantities.
 
-## 8. Proposal 3: infill framing (Your judgment, under discussion)
+## 8. Proposal 3: infill framing (decided as D066)
+
+**Decided** ([D066](../../product/decisions/D066-vs02b-wall-framing.md), 2026-11-21). The sections below keep the discussion: the product owner's direction (§8.1), and the five sub-questions with what was chosen (§8.2).
 
 D052 deferred "girts and studs (with walls, in VS-02b)". This proposal decides whether VS-02b generates them.
 
@@ -185,7 +187,7 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
   - the threshold is design intent for Reference House 001 v3 (proposal 9). It is a declared value, **not derived from any code**, and the outputs say so;
   - the rest stands: rough-opening dimensions, cripples, girts cut at the kings, header sections, straw bale bucks, and section offsets for wall framing as an exception to D058 (wall framing only);
   - a jurisdiction-specific rule (for example more jacks for wider headers, from the local code) replaces the threshold later (open question 5).
-- *Reading to confirm with the product owner when proposal 3 is recorded:* below the threshold, kings and a header remain; one threshold, so at most one jack per side in VS-02b.
+- *Reading stated to the product owner and not corrected; recorded in D066:* below the threshold, kings and a header remain; one threshold, so at most one jack per side in VS-02b.
 
 **Product owner direction (2026-11-21):** the framing must be **realistically buildable**, so **king and jack studs are included where required**. Eventually, "where required" is to **depend on the local building code**. The first recommendation (one edge stud per side, no jacks, no section offsets) is not adopted.
 
@@ -208,7 +210,7 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
   - **edge studs only, on datums** (the first recommendation): keeps D058 for wall framing, but is not buildable as drawn.
 - **Knock-on:** opening commands regenerate wall framing, so proposal 6's recommendation that they are routine is revisited. Proposal 6 also takes the rough-opening meaning of `Opening` dimensions, and its fit rule must leave room for kings and jacks inside the bay.
 
-**3e. Joints.** Whether studs, girts, and opening framing get joint records.
+**3e. Joints.** **Settled (2026-11-21) as recommended.** Whether studs, girts, and opening framing get joint records.
 
 - **Recommendation: no joint records for wall framing.**
   - `Connection` joins two `TimberMember` records (D054), and wall framing is a separate kind (3a), so it gets no `Connection` records. The connection catalog (`vs02-connections-1`), the 312 connections, and the timber schedule's connection tables are unchanged.
@@ -233,7 +235,7 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 **Recommendation:**
 
-- **Content:** an `AssemblyDefinition` has a family (`STRAW_BALE` or `STUD_INFILL`), a unique label, an ordered list of layers from exterior to interior, a short installation note (text, not checked), and a list of climate-specific details to flag as unverified (FR-05). Each `Layer` has a material, a thickness, a function (for example finish, sheathing, insulation, framing), and nullable property values, each with provenance (proposal 8). The framing layer adds its section and spacing (proposal 3).
+- **Content:** an `AssemblyDefinition` has a family (`STRAW_BALE` or `STUD_INFILL`), a unique label, an ordered list of layers from exterior to interior, a short installation note (text, not checked), and a list of climate-specific details to flag as unverified (FR-05). Each `Layer` has a material, a thickness, a function (for example finish, sheathing, insulation, framing), and nullable property values, each with provenance (proposal 8). The **framing layer** of the stud infill definition adds the stud section and spacing, the girt count and section, the header section, and the jack threshold width; the straw bale definition's framing is its girt count (0) and its buck section ([D066](../../product/decisions/D066-vs02b-wall-framing.md)).
 - **Snapshot records,** copied from the template into each project, like `Section` and `Material`: catalog records that may be unreferenced (D038). The model stays the single source (principle 4), and every output names the revision whose definitions it used (principle 6).
 - **Fixed in VS-02b:** the template's two definitions only. Users cannot author or edit definitions or layers yet. "Reusable" (FR-05) means reused by every wall in the project; a library shared across projects comes later.
 - **Materials** are `Material` records, as for timber, with unknown properties `null` (D025).
@@ -362,6 +364,7 @@ These follow Option 1 (D064) and assume the recommendations of proposals 2–15.
   - Walls are generated deterministically in every perimeter bay of both stories: 20 for the reference house.
   - IDs are stable under frame edits that keep the bay.
   - Switching the wall assembly is a validated command that leaves members and connections unchanged.
+  - Wall framing (studs, girts, and opening framing: kings, jacks above the threshold, headers, rough sills, cripples, bucks) is generated deterministically from each wall's definition and openings, with stable IDs, and counted in the assembly schedule (D066).
 - **AC2b-04: openings.**
   - Doors and windows are added, changed, and removed by validated commands, with stable IDs.
   - An opening that does not fit is rejected, whether from its own command or from a frame edit, with an actionable error. Nothing moves an opening silently.
@@ -374,7 +377,7 @@ These follow Option 1 (D064) and assume the recommendations of proposals 2–15.
   - Climate-specific details are flagged unverified, and no output claims code compliance or performance.
 - **AC2b-07: exact impact.** `impacted_artifacts` lists an artifact if and only if its payload changes, for the new artifact and commands too (AC2-04).
 - **AC2b-08: earlier slices still hold.** AC-01 to AC-09 and AC2-02 to AC2-09 pass against the v3 house, and AC2b-01 takes the place of AC2-01. Regenerated fixtures and golden records are reviewed as diffs (D055).
-- **AC2b-09: still preliminary.** Every output is labeled preliminary. Quantities are reference areas, and assumption lines say what is not counted (braces, opening framing, stud and bale counts, openings in the estimate).
+- **AC2b-09: still preliminary.** Every output is labeled preliminary. Quantities are reference areas, and assumption lines say what is not counted (braces deducted from areas, let-in notches, plates, fastenings, bale counts, openings in the estimate), and that the jack threshold is not code-derived.
 - **AC2b-10: browser.**
   - Walls and openings appear in 2D, 3D, and the assembly schedule.
   - The wall assembly and the openings are editable through the existing preview and apply flows.
@@ -386,7 +389,7 @@ These follow Option 1 (D064) and assume the recommendations of proposals 2–15.
 | Task | Delivers | Depends on |
 |---|---|---|
 | `MODEL-006` | Schema version 3: `AssemblyDefinition`, `Layer`, `Wall`, `Opening`, and the wall default; validation stages and detail codes, opening fit included; retirement of version 2; `SetWallAssembly` and the opening commands, with classifications (`vs02b-change-classes-1`); committed schema export | — |
-| `ASM-001` | Wall generation: keys, conformance, and survival of openings under regeneration; the template definitions and materials; the Reference House 001 v3 fixture (20 walls, the approved openings); the ECMAScript oracle extended to walls | MODEL-006 |
+| `ASM-001` | Wall generation: keys, conformance, and survival of openings under regeneration; wall framing (D066): studs, girts, and opening framing, with their keys, section offsets, and conformance; the template definitions and materials; the Reference House 001 v3 fixture (20 walls, the approved openings); the ECMAScript oracle extended to walls and wall framing | MODEL-006 |
 | `ART-003` | `assembly_schedule`, with areas, layer quantities, opening counts, property figures, and assumptions; walls and openings in `plan2d` and `mesh3d`; `assembly.` estimate lines and `m2` price-book rows; selectors for all of them; artifacts.md and OpenAPI updates; interim browser changes for anything the payloads would otherwise break | ASM-001 |
 | `UI-004` | Browser: walls and openings in 2D and 3D; the assembly selector and the opening editor; the assembly schedule and estimate tables; property figures with their provenance and warnings | ART-003 |
 | `TEST-003` | `vs-02b-traceability.md` for AC2b-01 to AC2b-10; the golden scenario with the new commands and their rejections; the new commands in the sequences; budgets for the new payloads | All the above |

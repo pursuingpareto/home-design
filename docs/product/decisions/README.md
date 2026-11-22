@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D065. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D066. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -65,6 +65,7 @@
 - D063: [VS-02 traceability and budgets](D063-vs02-traceability-and-budgets.md) — a separate VS-02 matrix with one row per criterion bullet and the VS-02 contract checks, checked against vs-02.md's IDs and wording; payload size ceilings of 256 KiB (reference house) and 2 MB (largest supported case); time ceilings gated in CI at about 5–10× today (implemented, TEST-002).
 - D064: [VS-02b slice boundary](D064-vs02b-slice-boundary.md) — perimeter infill walls with openings: straw bale and stud infill definitions, walls, openings, net-area quantities and estimate lines, declared thermal and moisture values; roof, floor, and ceiling assemblies wait for a later slice.
 - D065: [VS-02b wall placement](D065-vs02b-wall-placement.md) — generated walls in every perimeter bay of each story, in-plane infill on the grid line (20 for Reference House 001); no gable ends, interior walls, or user-placed walls in VS-02b.
+- D066: [VS-02b wall framing](D066-vs02b-wall-framing.md) — studs, girts, and opening framing generated as a separate kind owned by each wall and counted in the assembly schedule; continuous studs with girts let in; kings, and jacks above a declared (not code-derived) width threshold; Wall layers and Wall framing switches; no joint records; amends D058 for wall framing only; resolves D052's girt and stud deferral.
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 
