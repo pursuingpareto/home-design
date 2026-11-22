@@ -6,7 +6,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 ## Next steps
 
-1. Approve [`MODEL-006`](tasks/MODEL-006.md) (VS-02b: schema version 3, assembly definitions, walls, wall framing, openings, and their commands). Its five judgment items (§13, items 1–5) are approved, recorded as D073–D077. The routine items 6–13 are next, to be approved together. `ASM-001` is drafted next, in its own session; the two are merged together (vs-02b.md §16, "Keeping `main` green").
+1. Draft `ASM-001` (VS-02b: wall generation, wall framing, openings under regeneration, the template definitions, the Reference House 001 v3 fixture, and the oracle), in its own session, from [vs-02b.md](acceptance-tests/vs-02b.md) §16, D064–D077, and [`MODEL-006`](tasks/MODEL-006.md) (approved 2026-11-21; its §3.1 sets the seam and its §13 notes two questions for ASM-001). The two are implemented on one branch and merged together (vs-02b.md §16, "Keeping `main` green").
 2. ~~Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes.~~ **Done** (2026-11-21, by the product owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
@@ -15,7 +15,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 - **VS-01:** Reference building, parametric frame, 2D/3D, persistence, preliminary schedule. *Complete (2026-11-19): all acceptance criteria traced and passing ([TEST-001](tasks/TEST-001.md)).*
 - **VS-02:** Complete timber frame, connections, and dependency selectors ([D051](../product/decisions/D051-vs02-slice-boundary.md)). *Complete (2026-11-20): all acceptance criteria traced and passing ([vs-02-traceability.md](acceptance-tests/vs-02-traceability.md), [TEST-002](tasks/TEST-002.md)); [scope and acceptance criteria](acceptance-tests/vs-02.md).*
-- **VS-02b:** Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame. *Scope and acceptance criteria agreed (2026-11-21): perimeter infill walls with user-placed openings, generated wall framing, fixed layered definitions, one project-wide wall assembly, and a new assembly schedule with framing-corrected thermal figures ([vs-02b.md](acceptance-tests/vs-02b.md), [D064](../product/decisions/D064-vs02b-slice-boundary.md)–[D072](../product/decisions/D072-reference-house-001-v3-design-intent.md)). Tasks `MODEL-006` (drafted, awaiting approval), `ASM-001`, `ART-003`, `UI-004`, and `TEST-003` are drafted one at a time.*
+- **VS-02b:** Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame. *Scope and acceptance criteria agreed (2026-11-21): perimeter infill walls with user-placed openings, generated wall framing, fixed layered definitions, one project-wide wall assembly, and a new assembly schedule with framing-corrected thermal figures ([vs-02b.md](acceptance-tests/vs-02b.md), [D064](../product/decisions/D064-vs02b-slice-boundary.md)–[D072](../product/decisions/D072-reference-house-001-v3-design-intent.md)). Tasks `MODEL-006` (approved, not started), `ASM-001`, `ART-003`, `UI-004`, and `TEST-003` are drafted one at a time.*
 - **VS-03:** Natural-language AI proposals and human approval workflow.
 - **VS-04:** Bounded engineering checks, cost and environmental estimates, alternatives.
 - **VS-05:** Construction documentation and fabrication-oriented outputs.
@@ -47,7 +47,7 @@ The [task index](tasks/README.md) describes what a task file contains.
 | [DEP-001](tasks/DEP-001.md) | VS-02: dependency selectors and exact `impacted_artifacts` (D056) | Done (2026-11-20; [D061](../product/decisions/D061-vs02-selector-contents.md)) |
 | [UI-003](tasks/UI-003.md) | VS-02: browser support for the complete frame and connections (roles and markers in 2D and 3D, the Frame tab, connection types, schedule tables, the confirmation dialog) | Done (2026-11-20; [D062](../product/decisions/D062-vs02-browser-connections.md)) |
 | [TEST-002](tasks/TEST-002.md) | VS-02: traceability and the golden scenario's new commands for AC2-01 to AC2-09 (the if-and-only-if impact property shipped with DEP-001, D061), the sequences' reach, and budgets | Done (2026-11-20; [D063](../product/decisions/D063-vs02-traceability-and-budgets.md)) |
-| [MODEL-006](tasks/MODEL-006.md) | VS-02b: schema version 3 (assembly definitions and layers, `WallSystem`, walls, wall framing, openings), validation with the girt and framed-opening fits, retire version 2, `SetWallAssembly` and the opening commands; merges together with ASM-001 | Drafted, awaiting approval |
+| [MODEL-006](tasks/MODEL-006.md) | VS-02b: schema version 3 (assembly definitions and layers, `WallSystem`, walls, wall framing, openings), validation with the girt and framed-opening fits, retire version 2, `SetWallAssembly` and the opening commands; merges together with ASM-001 | Approved, not started (2026-11-21; [D073](../product/decisions/D073-vs02b-wall-system-record.md)–[D077](../product/decisions/D077-vs02b-definition-supported-ranges.md)) |
 
 ## Current limitations
 

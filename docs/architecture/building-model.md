@@ -56,7 +56,7 @@ This matches the Reference House 001 fixture (D025). Supporting several building
 
 ### 3.2 Future extension types (not VS-01 deliverables)
 
-`Wall`, `Opening`, `AssemblyDefinition`, `AssemblyInstance`, `Layer`, `Connection`, `MEPSystem`, `MEPElement`, `LoadCase`, `AnalysisResult`, `CostDataset`, `EnvironmentalDataset`, `Approval`, `DesignAlternative`. Reserve type namespaces and IDs; do not create empty pretend engineering objects in VS-01. (`Connection` arrives in version 2, §3.3.)
+`Wall`, `Opening`, `AssemblyDefinition`, `AssemblyInstance`, `Layer`, `Connection`, `MEPSystem`, `MEPElement`, `LoadCase`, `AnalysisResult`, `CostDataset`, `EnvironmentalDataset`, `Approval`, `DesignAlternative`. Reserve type namespaces and IDs; do not create empty pretend engineering objects in VS-01. (`Connection` arrives in version 2, §3.3; `Wall`, `Opening`, `AssemblyDefinition`, and `Layer` in version 3, §3.4, with `Layer` an object inside its definition.)
 
 ### 3.3 Version 2 records
 
@@ -87,6 +87,25 @@ Approved as [MODEL-005](../implementation/tasks/MODEL-005.md) §12 items 1–2 a
   - No capacity, fastener, or machining fields (D054).
 - **Schema file:** the snapshot schema is exported as `schemas/snapshot.v2.schema.json`. The command, artifact, and OpenAPI files keep their `v1` names, which follow the API version (interfaces.md §8).
 
+
+### 3.4 Version 3 records (VS-02b amendment, not yet implemented)
+
+Approved as [MODEL-006](../implementation/tasks/MODEL-006.md) §13 (2026-11-21), with decisions [D073](../product/decisions/D073-vs02b-wall-system-record.md)–[D077](../product/decisions/D077-vs02b-definition-supported-ranges.md); to be implemented with `ASM-001`, on one branch. Version 3 **replaces** version 2 (D055); version 2 snapshots are rejected with `UNSUPPORTED_SCHEMA_VERSION`. MODEL-006 §4 has the full field tables and examples.
+
+- **Model schema version:** `model_schema_version` is 3. `Building` moves to record version 2; the new kinds start at 1; every other kind is unchanged. The timber frame (`FrameSystem`, `TimberMember`, `Connection`, `vs02-frame-1`) is unchanged ([D066](../product/decisions/D066-vs02b-wall-framing.md)).
+- **`Building.wall_system_id`** references the single **`WallSystem`** ([D073](../product/decisions/D073-vs02b-wall-system-record.md)): `generation_rule_version` (the registered wall rule, `vs02b-walls-1`), `default_assembly_definition_id` (D068), `wall_ids[]` (ascending `generation_key`), and `opening_ids[]` (ascending ID).
+- **`AssemblyDefinition`** (catalog record; [D067](../product/decisions/D067-vs02b-assembly-definitions.md)): `family` (`STRAW_BALE` | `STUD_INFILL`), `label` (a slug, unique), `installation_note`, `unverified_climate_details[]`, and `layers[]`, exterior to interior.
+  - **Layers are objects inside the definition** ([D074](../product/decisions/D074-vs02b-embedded-layers.md)): `name` (a slug, unique within the definition), `function` (`FINISH` | `SHEATHING` | `INSULATION` | `FRAMING`), `material_id` (the fill, on the framing layer), `thickness_m`, the three declared values, and `framing?`. Exactly one layer is `FRAMING`, and only it has `framing`.
+  - **Declared values** ([D075](../product/decisions/D075-vs02b-declared-property-values.md)): `thermal_conductivity_w_m_k?`, `thermal_resistance_m2_k_w?`, `vapor_permeance_kg_pa_s_m2?`, each `{value, source, date, note?}` in SI; at most one thermal field per layer; the framing layer declares conductivities only. Unknown is `null`, never 0.
+  - **Framing:** `STUD` (`framing_material_id`, `framing_thermal_conductivity_w_m_k?`, `stud_section_id`, `stud_spacing_m`, `girt_count`, `girt_section_id?`, `header_section_id`, `jack_threshold_width_m`) for stud infill; `BUCK` (`framing_material_id`, `framing_thermal_conductivity_w_m_k?`, `buck_section_id`, `girt_count` = 0) for straw bale. Kings, jacks, cripples, and rough sills take the stud section ([D076](../product/decisions/D076-vs02b-framed-opening-geometry.md)). Supported ranges: stud spacing 12"–48", girt count 0–4 ([D077](../product/decisions/D077-vs02b-definition-supported-ranges.md)).
+- **`Wall`** (generated; [D065](../product/decisions/D065-vs02b-wall-placement.md)): `generation_key`, `level_id`, `start_m`, `end_m` (the lower edge in the reference plane, post axis to post axis), `height_m`, `assembly_definition_id` (equal to the default), and `framing_ids[]` (ascending `generation_key`).
+- **`WallFramingPiece`** (generated, one record per piece; D066): `generation_key`, `piece_kind` (`STUD`, `GIRT`, `KING`, `JACK`, `HEADER`, `ROUGH_SILL`, `CRIPPLE`, `BUCK_JAMB`, `BUCK_HEAD`, `BUCK_SILL`), `opening_id?`, `start_m`, `end_m`, `section_id`, `material_id`. Listed by exactly one wall; no connection records.
+- **`Opening`** (user-authored; [D069](../product/decisions/D069-vs02b-openings.md)): `opening_kind` (`WINDOW` | `DOOR`), `wall_id`, rough-opening `width_m` and `height_m`, `sill_height_m` (0 for a door), and `offset_m` from the wall's start post axis. No generation key; the ID is minted from the command (D041).
+- **Generation keys** are unique across members, connections, walls, and wall framing together; wall and framing IDs are minted from `"generation/" + generation_key` (D041). Key formats are set by `ASM-001`.
+- **Fit** (stage 4; MODEL-006 §5, D076): every framed opening lies inside its wall's reference rectangle, does not meet or lie above a knee-brace axis in its wall, and does not overlap another; with stud infill, girts lie below the brace feet. Checked on the full candidate snapshot.
+- **`AssemblyInstance`** stays reserved and unused.
+- **Schema file:** `schemas/snapshot.v3.schema.json` replaces `snapshot.v2.schema.json`.
+
 ## 4. Canonical snapshot
 
 The VS-01 golden snapshot is [Reference House 001](../reference-projects/vermont-timber-house/fixture.snapshot.json) (D025). Complete snapshots must pass referential validation. Do not use abbreviated examples as fixtures.
@@ -102,10 +121,10 @@ Validation runs in five ordered stages ([D035](../product/decisions/D035-validat
 | Stage | Checks | Top-level code |
 |---|---|---|
 | 1 Syntactic | Required fields present, no unknown fields, types, enums, schema versions, finite numbers, canonical lowercase UUIDs (D030), integers within ±(2⁵³ − 1) (D029), no duplicate keys, timestamps | `VALIDATION_FAILED` |
-| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; `member_defaults` references resolve and cover every role the rule generates (D039); unique generation keys; unique section labels (D049); `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030). *Version 2:* each `Connection` references two distinct `TimberMember` records; `FrameSystem.connection_ids` is exactly the set of connections, in ascending `generation_key`; `connection_defaults` covers every junction class the rule generates; generation keys are unique across members and connections together (§3.3) | `VALIDATION_FAILED` |
+| 2 Referential | Every referenced ID exists and is of the expected kind; no duplicate IDs; no `Building` in `entities`; every `Footprint`, `Level`, `GableRoof`, `TimberGrid`, and `FrameSystem` is referenced, while `Section` and `Material` may be unreferenced (D038); `FrameSystem.member_ids` is exactly the set of members; `member_defaults` references resolve and cover every role the rule generates (D039); unique generation keys; unique section labels (D049); `Building.level_ids` in ascending `Level.index` and `member_ids` in ascending `generation_key` (D030). *Version 2:* each `Connection` references two distinct `TimberMember` records; `FrameSystem.connection_ids` is exactly the set of connections, in ascending `generation_key`; `connection_defaults` covers every junction class the rule generates; generation keys are unique across members and connections together (§3.3). *Version 3 (not yet implemented):* the `WallSystem` is referenced by the building and lists exactly the walls and openings; each wall lists its framing pieces, and every piece belongs to exactly one wall; unique definition labels and layer names; keys unique across all four generated kinds (§3.4) | `VALIDATION_FAILED` |
 | 3 Geometric | Positive, finite dimensions; pitch in (0, π/2); overhang ≥ 0; grid line fractions strictly ascending with endpoints 0 and 1; strictly increasing level elevations; story-height consistency (D033); datums: `Footprint.origin_m = [0, 0]` (D031) and Level 0 elevation `0` (D034); nonzero member axes. *Version 2:* joist spacing and brace leg > 0, purlins per slope ≥ 0 (§3.3) | `VALIDATION_FAILED` |
-| 4 Domain | Supported VS-01 configurations only: D031 unsupported values; D032 and D034 bounds, checked on the full candidate snapshot (so a footprint change can be rejected for the bay lengths it produces); exactly two levels; supported generation rule and mode; member roles allowed by that rule. *Version 2:* frame parameter bounds and the brace-fit rule; every `connection_defaults` entry and `Connection.connection_type` is allowed for its junction class by the D054 catalog (§3.3). Never asserts structural adequacy or code compliance | `UNSUPPORTED_CONFIGURATION` |
-| 5 Conformance | Members are exactly what the generation rule produces: same keys, roles, sections and materials (from `member_defaults`), and endpoints within 1e-6 m per coordinate (D046). *Version 2:* connections are exactly what the rule produces: same keys, junction classes, members, and types (from `connection_defaults`), and locations within 1e-6 m per coordinate. Runs only when stages 1–4 pass | `VALIDATION_FAILED` |
+| 4 Domain | Supported VS-01 configurations only: D031 unsupported values; D032 and D034 bounds, checked on the full candidate snapshot (so a footprint change can be rejected for the bay lengths it produces); exactly two levels; supported generation rule and mode; member roles allowed by that rule. *Version 2:* frame parameter bounds and the brace-fit rule; every `connection_defaults` entry and `Connection.connection_type` is allowed for its junction class by the D054 catalog (§3.3). *Version 3 (not yet implemented):* one framing layer per definition, matching its family; definition supported ranges (D077); door sills at 0; the framed-opening and girt fits (§3.4, D076); a registered wall rule. Never asserts structural adequacy or code compliance | `UNSUPPORTED_CONFIGURATION` |
+| 5 Conformance | Members are exactly what the generation rule produces: same keys, roles, sections and materials (from `member_defaults`), and endpoints within 1e-6 m per coordinate (D046). *Version 2:* connections are exactly what the rule produces: same keys, junction classes, members, and types (from `connection_defaults`), and locations within 1e-6 m per coordinate. *Version 3 (not yet implemented):* walls and wall framing are exactly what the wall rule produces, compared after members and connections conform. Runs only when stages 1–4 pass | `VALIDATION_FAILED` |
 
 Authorization (the caller's rights on the project or revision) is checked by the API layer before validation (`UNAUTHORIZED`, `FORBIDDEN`). It is not a stage of the model validator.
 
@@ -167,6 +186,17 @@ Each detail code belongs to one stage, and the stage determines its top-level co
 | `CONNECTION_GEOMETRY_MISMATCH` | 5 | *Version 2.* `location_m` differs from the rule by more than 1e-6 m in any coordinate |
 | `CONNECTION_ASSIGNMENT_MISMATCH` | 5 | *Version 2.* `junction_class`, `member_ids`, or `connection_type` differs from the rule; for `connection_type`, `related_paths` is the class's `connection_defaults` field (D037) |
 
+
+**Version 3 codes** (approved as [MODEL-006](../implementation/tasks/MODEL-006.md) §13 item 9, not yet implemented; they join the table above with the implementation, which a test keeps equal to `codes.py`):
+
+- stage 1: `INVALID_SLUG`, `INVALID_DATE`;
+- stage 2: `WALL_SET_MISMATCH`, `OPENING_SET_MISMATCH`, `FRAMING_SET_MISMATCH`, `DUPLICATE_ASSEMBLY_LABEL`, `DUPLICATE_LAYER_NAME`;
+- stage 4: `FRAMING_LAYER_COUNT`, `OPENING_OUTSIDE_WALL`, `OPENING_CROSSES_BRACE`, `OPENINGS_OVERLAP`, `GIRT_CROSSES_BRACE`;
+- stage 5: `MISSING_GENERATED_WALL`, `UNEXPECTED_WALL`, `WALL_GEOMETRY_MISMATCH`, `WALL_ASSIGNMENT_MISMATCH`, `MISSING_GENERATED_FRAMING`, `UNEXPECTED_FRAMING`, `FRAMING_GEOMETRY_MISMATCH`, `FRAMING_ASSIGNMENT_MISMATCH`;
+- widened: `DUPLICATE_GENERATION_KEY` (all four generated kinds) and `ZERO_LENGTH_MEMBER` (wall framing pieces and walls).
+
+Paths and related paths are in MODEL-006 §5.2 and §6.
+
 ## 7. Revision and storage policy (confirmed, D026)
 
 Persist each revision as an immutable PostgreSQL JSONB snapshot plus an append-only operation/audit table. Transactionally persist a revision and its operation record. A revision has exactly one parent in VS-01; branching and merge semantics are deferred. Optimistic concurrency requires `base_revision_id` equal to the project's current head; conflicts return `REVISION_CONFLICT`, never silently overwrite.
@@ -192,6 +222,8 @@ Each record has a schema version. Persist a top-level model schema version. Migr
 - **One fixture:** the fixture and the packaged template become Reference House 001 v2. The v1 fixture is removed from the tree and kept only in git history.
 - **Stored-data guard:** the migration runner refuses a database that holds any revision with `model_schema_version` below 2. It names the database and the fix, and deletes nothing.
 - **Reset:** `scripts/dev.sh --reset` drops, recreates, and migrates the local development database. The test database is already recreated on every run.
+
+**Version 3 (VS-02b amendment, not yet implemented; [MODEL-006](../implementation/tasks/MODEL-006.md) §9):** version 3 replaces version 2 the same way. The fixture and template become Reference House 001 v3 (`ASM-001`); the guard, which refuses any revision below the current model schema version, now refuses version 2 databases; `scripts/dev.sh --reset` is the fix.
 
 ## 9. VS-01 model acceptance tests
 

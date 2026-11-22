@@ -1,6 +1,6 @@
 # MODEL-006 — Model schema version 3: assemblies, walls, wall framing, and openings
 
-**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are all decided (item 1 approved as [D073](../../product/decisions/D073-vs02b-wall-system-record.md), item 2 as [D074](../../product/decisions/D074-vs02b-embedded-layers.md), item 3 as [D075](../../product/decisions/D075-vs02b-declared-property-values.md), item 4 as [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md), item 5 as [D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)), and routine items 6–13 can be approved together.  
+**Status:** Approved, not started (2026-11-21). All five judgment items were approved as recommended ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)–[D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)), and routine items 6–13 together (§13). The approved contracts are recorded in building-model.md §3.4, §6, §6.1, and §8, interfaces.md §2–3, and dependencies.md §4.1, each marked "not yet implemented".  
 **Owner module:** `model` (schema, validation, commands); `assemblies` (new package: the wall-rule registry and its interface, §7); `project` for the stored-data guard (§9.3)  
 **Slice:** VS-02b ([vs-02b.md](../acceptance-tests/vs-02b.md), agreed 2026-11-21)  
 **Depends on:** VS-02 (complete). Specified before `ASM-001`, but **merged together with it** on one branch (§10), as MODEL-005 and TIMBER-002 were.  
@@ -470,7 +470,7 @@ Run on the merged branch, against the v3 fixture from `ASM-001`:
    - **4c. Sections and in-plane dimensions.** D066 and D067 name only stud, girt, header, and buck sections. **Settled (2026-11-21), as recommended.** *Recommendation:* kings, jacks, cripples, and rough sills take the stud section. A piece's in-plane dimension is its section's `actual_width_m` (studs, kings, jacks, cripples, rough sills, girts, and bucks, all 1½" on the reference house), except a header's, which is its `actual_depth_m` (7¼", vertical, as D066's "the header's depth sets the cripples' lower end" requires). *Alternative:* separate sections in the framing layer for kings, jacks, and rough sills, which D067 does not list.
 5. ~~**Supported ranges for definition values** (§6.4): stud spacing 12"–48" and girt count 0–4, borrowed from the joist-spacing and purlins-per-slope ranges; physical checks only for thicknesses, sections, and the jack threshold; no opening size bounds beyond > 0 and the fit.~~ **Approved: [D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)** (2026-11-21), as recommended. *Not adopted:* no supported ranges until definitions become editable.
 
-**Routine** (they follow from D041, D042, D046, D055, D065–D070, routine items 10–15 of vs-02b.md §6, and the MODEL-005 and CONN-001 patterns; they can be approved together, with record shapes following items 1–3):
+**Routine** (they follow from D041, D042, D046, D055, D065–D070, routine items 10–15 of vs-02b.md §6, and the MODEL-005 and CONN-001 patterns). **All eight approved together (2026-11-21),** with the record shapes of D073–D075.
 
 6. **Version 3 records** (§4): kind names `WallSystem`, `AssemblyDefinition`, `Wall`, `WallFramingPiece`, and `Opening`; `Building` at record version 2 and new kinds at 1; slugs for labels and names; `AssemblyInstance` left unused; `snapshot.v3.schema.json`.
 7. **Walls and pieces as generated records** (§4.4–4.5): one record per piece, as AC2b-03's stable IDs require; geometry stored and checked in conformance, as for members; keys unique across all four generated kinds, with formats set by `ASM-001`.
@@ -481,7 +481,7 @@ Run on the merged branch, against the v3 fixture from `ASM-001`:
 12. **Pipeline and preview** (§8.5–8.6): one regeneration for all generated kinds, openings removed with their wall before validation, and the `walls` and `wall_framing` diffs.
 13. **Retirement and merge scope** (§9–10): the version 3 constants, the unchanged guard pinned by a test, and the interim changes, with changed test outcomes reported rather than loosened.
 
-Approved items update building-model.md (§3.4 "Version 3 records", §6, §6.1, §8), interfaces.md §2 and §3, and dependencies.md §4.1, each marked "not yet implemented" until the merge. Judgment items are recorded as decisions starting at **D073**.
+The approved items are recorded in building-model.md (§3.4 "Version 3 records", §6, §6.1, §8), interfaces.md §2 and §3, and dependencies.md §4.1, each marked "not yet implemented"; the implementation removes the markers, moves the new codes into the §6.1 table, and adds the classification rows. The judgment items are [D073](../../product/decisions/D073-vs02b-wall-system-record.md)–[D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md).
 
 **Noted for later task files** (not MODEL-006 questions):
 

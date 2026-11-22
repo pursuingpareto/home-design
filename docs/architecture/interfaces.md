@@ -52,6 +52,15 @@ Command set ([D043](../product/decisions/D043-vs01-command-set.md), amended by [
 | `AddSection` | `{nominal_label, actual_width_m, actual_depth_m}`: adds a rectangular `Section` to the project catalog ([D038](../product/decisions/D038-field-presence-catalog-records.md)). Its ID is minted with creation key `"section"` ([D041](../product/decisions/D041-deterministic-id-minting.md)). It changes no members; use `SetMemberSection` to apply it. Dimensions must be greater than zero (stage 3). The label must be unique within the project; a duplicate is `DUPLICATE_SECTION_LABEL` with `args.nominal_label` in `related_paths` ([D049](../product/decisions/D049-unique-section-labels.md)) |
 | `UndoToRevision` | `{target_revision_id}`: a new revision whose content equals the target revision's, with the current head as parent; restores original IDs; redo targets a later revision ([D044](../product/decisions/D044-undo-to-revision.md)) |
 
+**VS-02b amendment (approved as [MODEL-006](../implementation/tasks/MODEL-006.md) §13 item 11, not yet implemented):** version 3 adds four commands, with strict arguments as above:
+
+- `SetWallAssembly {assembly_definition_id}`: sets `WallSystem.default_assembly_definition_id` and regenerates walls and wall framing; members and connections are unchanged. A missing or wrong-kind ID is `DANGLING_REFERENCE` or `WRONG_REFERENCE_KIND` at `args.assembly_definition_id`; the current value is a no-op ([D068](../product/decisions/D068-vs02b-wall-assembly-choice.md)).
+- `AddOpening {wall_id, opening_kind, width_m, height_m, sill_height_m, offset_m}`: adds an `Opening`, ID minted with creation key `"opening"` (D041), and regenerates its wall's framing.
+- `SetOpening {opening_id, width_m, height_m, sill_height_m, offset_m}`: replaces one opening's dimensions and position within its wall; its kind and wall do not change. The current values are a no-op.
+- `RemoveOpening {opening_id}`: removes the opening and its framing.
+
+Each opening argument links to the field it sets (§7.1). Fit errors from any command name the opening's field, with the edited field and its argument in `related_paths` ([D069](../product/decisions/D069-vs02b-openings.md), [D076](../product/decisions/D076-vs02b-framed-opening-geometry.md)). Every regenerating command also regenerates walls and wall framing, and an opening whose wall is removed is removed with it.
+
 Commands use full typed arguments, not generic JSON patch paths. The envelopes' JSON Schema is exported to [`schemas/commands.v1.schema.json`](schemas/commands.v1.schema.json) (D028).
 
 ### 2.1 `SetTimberGrid` arguments
@@ -118,6 +127,7 @@ Request: command envelope. Response (illustrative; result contract approved from
   - `updated` lists IDs of members whose geometry, section, or material changed, sorted by ID.
   - Added IDs are exactly the IDs the commit will create ([D041](../product/decisions/D041-deterministic-id-minting.md)).
 - **`connections`** ([CONN-001](../implementation/tasks/CONN-001.md) §7.2) lists connections with the same shape and ordering as `members`: `added` and `removed` are `{id, generation_key}` entries sorted by `generation_key`, and `updated` lists the IDs of surviving connections whose record changed, sorted by ID. Connection records are not listed in `changes`; the frame's `connection_ids` and `connection_defaults` are. A no-op has empty lists.
+- **`walls`** and **`wall_framing`** (VS-02b amendment, [MODEL-006](../implementation/tasks/MODEL-006.md) §8.6, not yet implemented) list walls and wall framing pieces with the same shape and ordering as `members`. Neither kind appears in `changes`. Openings are authored records, so they appear in `changes`; an opening removed with its wall has `after: null`.
 - **`impacted_artifacts`** ([D056](../product/decisions/D056-dependency-selectors.md), [DEP-001](../implementation/tasks/DEP-001.md) §6, §9.1) lists **exactly** the artifact types whose input fingerprints differ between base and candidate, which are exactly the types whose payload for the new revision will differ (AC2-04). The others are reused unchanged for the new revision.
   - Items are artifact type keys (`plan2d`, `mesh3d`, `timber_schedule`, `preliminary_estimate`), unique and sorted in code-unit order. The list may be empty: a no-op impacts nothing, and so do, on Reference House 001 v2, `AddSection` and `SetConnectionType` for a junction class with no connections (which still need confirmation).
   - The example above is a width change, which impacts all four.

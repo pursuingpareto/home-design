@@ -57,6 +57,8 @@ Approved from [MODEL-003](../implementation/tasks/MODEL-003.md) §10, item 7, as
 
 `SetConnectionType` was added in VS-02 ([D059](../product/decisions/D059-vs02-junction-rules-connection-type-command.md), [CONN-001](../implementation/tasks/CONN-001.md)) within version `vs02-change-classes-1`, as D057 anticipated.
 
+**VS-02b amendment (approved as [MODEL-006](../implementation/tasks/MODEL-006.md) §13 item 11, not yet implemented):** version `vs02b-change-classes-1` replaces this table with the implementation. It keeps every row above and adds `SetWallAssembly` as consequential ([D068](../product/decisions/D068-vs02b-wall-assembly-choice.md)) and `AddOpening`, `SetOpening`, and `RemoveOpening` as routine ([D069](../product/decisions/D069-vs02b-openings.md)). The rows are added with the implementation, because a test keeps the table equal to the server's classification.
+
 - **Routine** commands may be committed without a preview, and the commit still validates fully. **Consequential** commands require a preview and a confirmation bound to it (§5).
 - A no-op never requires confirmation ([D045](../product/decisions/D045-no-op-commits.md)).
 - Every preview and commit result records the table version. Changing the table, for example once professional approvals exist and must make some routine edits consequential, means publishing a new version and updating this section.
