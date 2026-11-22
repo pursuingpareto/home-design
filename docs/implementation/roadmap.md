@@ -6,7 +6,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 ## Next steps
 
-1. Approve [`MODEL-006`](tasks/MODEL-006.md) (VS-02b: schema version 3, assembly definitions, walls, wall framing, openings, and their commands). Its five judgment items (§13, items 1–5) are put to the product owner one at a time (items 1–3 approved as D073–D075; item 4a settled, 4b next); the routine items 6–13 can then be approved together. Approved judgment items become decisions from D073. `ASM-001` is drafted next, in its own session; the two are merged together (vs-02b.md §16, "Keeping `main` green").
+1. Approve [`MODEL-006`](tasks/MODEL-006.md) (VS-02b: schema version 3, assembly definitions, walls, wall framing, openings, and their commands). Its five judgment items (§13, items 1–5) are put to the product owner one at a time (items 1–3 approved as D073–D075; items 4a and 4b settled, 4c next); the routine items 6–13 can then be approved together. Approved judgment items become decisions from D073. `ASM-001` is drafted next, in its own session; the two are merged together (vs-02b.md §16, "Keeping `main` green").
 2. ~~Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes.~~ **Done** (2026-11-21, by the product owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
