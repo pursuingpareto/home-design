@@ -1,6 +1,6 @@
 # MODEL-006 — Model schema version 3: assemblies, walls, wall framing, and openings
 
-**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are discussed one at a time (item 1 approved as [D073](../../product/decisions/D073-vs02b-wall-system-record.md), item 2 as [D074](../../product/decisions/D074-vs02b-embedded-layers.md), item 3 as [D075](../../product/decisions/D075-vs02b-declared-property-values.md), item 4 as [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md)), and routine items 6–13 can be approved together.  
+**Status:** Drafted, awaiting approval (2026-11-21). Proposals are in §13: judgment items 1–5 are all decided (item 1 approved as [D073](../../product/decisions/D073-vs02b-wall-system-record.md), item 2 as [D074](../../product/decisions/D074-vs02b-embedded-layers.md), item 3 as [D075](../../product/decisions/D075-vs02b-declared-property-values.md), item 4 as [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md), item 5 as [D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)), and routine items 6–13 can be approved together.  
 **Owner module:** `model` (schema, validation, commands); `assemblies` (new package: the wall-rule registry and its interface, §7); `project` for the stored-data guard (§9.3)  
 **Slice:** VS-02b ([vs-02b.md](../acceptance-tests/vs-02b.md), agreed 2026-11-21)  
 **Depends on:** VS-02 (complete). Specified before `ASM-001`, but **merged together with it** on one branch (§10), as MODEL-005 and TIMBER-002 were.  
@@ -65,7 +65,7 @@ Since the two merge together (§10), MODEL-006's tests may use a stub rule until
 
 ## 4. Version 3 records
 
-`WallSystem` ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)), embedded layers ([D074](../../product/decisions/D074-vs02b-embedded-layers.md)), and the property-value fields ([D075](../../product/decisions/D075-vs02b-declared-property-values.md)) are decided. The framing sections follow [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md); the supported ranges assume judgment item 5 (§13). If an item is decided otherwise, this section changes with it.
+`WallSystem` ([D073](../../product/decisions/D073-vs02b-wall-system-record.md)), embedded layers ([D074](../../product/decisions/D074-vs02b-embedded-layers.md)), and the property-value fields ([D075](../../product/decisions/D075-vs02b-declared-property-values.md)) are decided. The framing sections follow [D076](../../product/decisions/D076-vs02b-framed-opening-geometry.md); the supported ranges are [D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md). If an item is decided otherwise, this section changes with it.
 
 ### 4.1 Changes at a glance
 
@@ -292,7 +292,7 @@ Unlisted walls, openings, and pieces are reported once, by the set-mismatch code
 ### 6.4 Stage 4 — domain
 
 - **Definitions:** exactly one layer is `FRAMING`, and only it has `framing`: **`FRAMING_LAYER_COUNT`** (new) at `layers`. `STUD_INFILL` needs `STUD` framing and `STRAW_BALE` needs `BUCK` framing; a `BUCK` `girt_count` other than 0, a `STUD` `girt_section_id` that is `null` while `girt_count > 0`, a layer declaring both a conductivity and a resistance, and a framing layer declaring a resistance are each `UNSUPPORTED_VALUE`.
-- **Supported ranges** for definition values (item 5): `OUT_OF_SUPPORTED_RANGE`.
+- **Supported ranges** for definition values ([D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)): stud spacing 0.3048–1.2192 m and girt count 0–4, `OUT_OF_SUPPORTED_RANGE` at the `framing` field.
 - **Openings:** a door with `sill_height_m` other than 0 is `UNSUPPORTED_VALUE`. The fit rules of §5.
 - **Wall rule:** `WallSystem.generation_rule_version` must be registered (§7): `UNSUPPORTED_VALUE`, as for the frame rule.
 
@@ -399,7 +399,7 @@ Routine commands may be committed without a preview, and a preview is still avai
 
 - `MODEL_SCHEMA_VERSION = 3`, with `RECORD_SCHEMA_VERSIONS` per §4.1.
 - `vs02-frame-1` stays the only frame rule. `vs02b-walls-1` (`ASM-001`) is the only wall rule.
-- The item 5 bounds go into `model/limits.py`, each citing its decision.
+- The D077 bounds go into `model/limits.py`, each citing its decision.
 
 ### 9.2 Template and fixture
 
@@ -468,7 +468,7 @@ Run on the merged branch, against the v3 fixture from `ASM-001`:
    - **4a. Clearance to braces.** **Settled (2026-11-21): the rectangle rule, as recommended.** *Recommendation:* the framed opening is the rectangle from its bottom (`v0`) to the header top (`v1`), between the kings' outer faces, and must not meet either brace axis, including the triangle above it. Kings above the header may stop on a brace, like any stud (D066). This accepts windows under the braces when they are low enough. With the reference house's windows at their offsets, a bay can shrink to 8'-9" with the straw bale default (9'-4¼" with stud infill), so the golden scenario's 10' bays stay valid. *Alternative:* no part of a framed opening within a brace leg of either post, so every king is full height. Simpler to explain, but the same windows then need bays of at least 10'-7½" (the 3'-0" windows) and 11'-7½" (the 5'-0" windows), and the golden scenario's grid step (four 10' bays) is rejected.
    - **4b. The rough sill is part of a window's framed opening** in stud infill walls, as the buck sill is in straw bale walls. **Settled (2026-11-21): included, as recommended.** *Recommendation:* yes, so a window's sill must leave room for its rough sill (`s ≥ t`), and no rough sill is generated below the lower datum. D069 as written leaves it out. *Alternative:* D069 as written, with windows whose sill is under 1½" generating a rough sill below the floor datum.
    - **4c. Sections and in-plane dimensions.** D066 and D067 name only stud, girt, header, and buck sections. **Settled (2026-11-21), as recommended.** *Recommendation:* kings, jacks, cripples, and rough sills take the stud section. A piece's in-plane dimension is its section's `actual_width_m` (studs, kings, jacks, cripples, rough sills, girts, and bucks, all 1½" on the reference house), except a header's, which is its `actual_depth_m` (7¼", vertical, as D066's "the header's depth sets the cripples' lower end" requires). *Alternative:* separate sections in the framing layer for kings, jacks, and rough sills, which D067 does not list.
-5. **Supported ranges for definition values** (§6.4). No document sets bounds for stud spacing or girt count, and no command can change definitions in VS-02b (D067). *Recommendation:* borrow the frame's analogous approved ranges, so that every generator input has a supported range, as D032 and MODEL-005 §5 did: stud spacing 12"–48" (the joist spacing range) and girt count 0–4 (the purlins-per-slope range). Thicknesses, sections, and the jack threshold get physical checks only. Openings get no size bounds beyond > 0 and the fit. *Alternative:* no supported ranges until definitions become editable. Simpler, but a hand-built snapshot could ask the rule for any number of studs.
+5. ~~**Supported ranges for definition values** (§6.4): stud spacing 12"–48" and girt count 0–4, borrowed from the joist-spacing and purlins-per-slope ranges; physical checks only for thicknesses, sections, and the jack threshold; no opening size bounds beyond > 0 and the fit.~~ **Approved: [D077](../../product/decisions/D077-vs02b-definition-supported-ranges.md)** (2026-11-21), as recommended. *Not adopted:* no supported ranges until definitions become editable.
 
 **Routine** (they follow from D041, D042, D046, D055, D065–D070, routine items 10–15 of vs-02b.md §6, and the MODEL-005 and CONN-001 patterns; they can be approved together, with record shapes following items 1–3):
 
@@ -491,5 +491,5 @@ Approved items update building-model.md (§3.4 "Version 3 records", §6, §6.1, 
 ## 14. Definition of done
 
 - All §11 tests pass on the merged MODEL-006 + ASM-001 branch, with the regenerated VS-01 and VS-02 suites, Vitest, and Playwright. `scripts/check.sh` and CI pass.
-- building-model.md, interfaces.md, dependencies.md, and artifacts.md (the §10 note) are updated. The decisions for items 1–5 are recorded, and the roadmap is updated.
+- building-model.md, interfaces.md, dependencies.md, and artifacts.md (the §10 note) are updated. The decisions for items 1–5 (D073–D077) are recorded, and the roadmap is updated.
 - Changed files, tests, changed test outcomes, limitations, and next steps are summarized (AGENTS.md).
