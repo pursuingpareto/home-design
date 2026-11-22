@@ -1,6 +1,7 @@
 # D065 — VS-02b wall placement: generated in-plane infill in every perimeter bay
 
 **Status:** Confirmed  
+**Refined by:** [D083](D083-vs02b-layer-placement.md): the framing layer, not the whole build-up, is centered on the reference plane.  
 **Date:** 2026-11-21  
 **Scope:** Which surfaces get walls in VS-02b, how a wall relates to the frame, and whether walls are generated or placed. Approved as proposal 2 of the [VS-02b scope proposal](../../implementation/acceptance-tests/vs-02b.md) (§7), within [D064](D064-vs02b-slice-boundary.md).
 
