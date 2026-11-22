@@ -1,6 +1,6 @@
 # VS-02b — Scope and acceptance criteria
 
-**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)); proposal 6, openings, as revised ([D069](../../product/decisions/D069-vs02b-openings.md)); proposal 7, quantities and outputs, as revised ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)); proposal 8, thermal and moisture values with a framing-corrected figure, as revised ([D071](../../product/decisions/D071-vs02b-thermal-moisture-values.md)); proposal 9, the Reference House 001 v3 design intent, as revised ([D072](../../product/decisions/D072-reference-house-001-v3-design-intent.md)). The routine items 10–15 and the acceptance criteria and task breakdown (§15–16) await approval. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
+**Status:** Draft, under review (2026-11-21). Decided so far: proposal 1, the slice boundary, Option 1 ([D064](../../product/decisions/D064-vs02b-slice-boundary.md)); proposal 2, wall placement, as recommended ([D065](../../product/decisions/D065-vs02b-wall-placement.md)). proposal 3, wall framing, to the product owner's direction ([D066](../../product/decisions/D066-vs02b-wall-framing.md)); proposal 4, assembly definitions, as recommended ([D067](../../product/decisions/D067-vs02b-assembly-definitions.md)); proposal 5, one project-wide wall assembly, as recommended ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)); proposal 6, openings, as revised ([D069](../../product/decisions/D069-vs02b-openings.md)); proposal 7, quantities and outputs, as revised ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)); proposal 8, thermal and moisture values with a framing-corrected figure, as revised ([D071](../../product/decisions/D071-vs02b-thermal-moisture-values.md)); proposal 9, the Reference House 001 v3 design intent, as revised ([D072](../../product/decisions/D072-reference-house-001-v3-design-intent.md)). The routine items 10–15 are approved (2026-11-21). The acceptance criteria and task breakdown (§15–16) await approval. §5 lists the proposals: routine items may be approved together, and judgment items are discussed with the product owner one at a time ([AGENTS.md](../../../AGENTS.md), "Collaboration workflow"). The acceptance criteria (§15) and the task breakdown (§16) are drafts pending those decisions.  
 **Roadmap line:** "Modular assemblies (straw bale and stud infill first), with walls and openings as needed, on the VS-02 frame" ([roadmap.md](../roadmap.md); [D051](../../product/decisions/D051-vs02-slice-boundary.md)).  
 **Builds on:** VS-02, complete and verified by `TEST-002` ([vs-02.md](vs-02.md), [vs-02-traceability.md](vs-02-traceability.md)).  
 **Requirements:** FR-05 (modular assemblies), D008 (straw bale and stud-wall infill), and the parts of FR-02 (walls, openings, assemblies), FR-08 (quantities and cost), and FR-10 (preliminary outputs) that walls need.
@@ -82,16 +82,18 @@ Proposals 2–9 build on Option 1.
 | 7 | ~~Quantities and outputs: quantity basis, a new artifact, estimate lines~~ **Decided as revised** ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)) | **Your judgment** | §12 |
 | 8 | ~~Thermal and moisture values: what is recorded, and what is computed~~ **Decided as revised: declared values and a framing-corrected figure** ([D071](../../product/decisions/D071-vs02b-thermal-moisture-values.md)) | **Your judgment** | §13 |
 | 9 | ~~Reference House 001 v3 design intent~~ **Decided as revised** ([D072](../../product/decisions/D072-reference-house-001-v3-design-intent.md)) | **Your judgment** | §14 |
-| 10 | Schema version 3 replaces version 2 | Routine | §6 |
-| 11 | Walls follow the frame's identity and conformance rules | Routine | §6 |
-| 12 | Selectors and exact impact for the new data and artifact | Routine | §6 |
-| 13 | Still preliminary, with an unverified-climate warning | Routine | §6 |
-| 14 | Browser follows the UI-002 and UI-003 patterns | Routine | §6 |
-| 15 | Traceability and budgets in D063's form | Routine | §6 |
+| 10 | Schema version 3 replaces version 2 — **approved** | Routine | §6 |
+| 11 | Walls follow the frame's identity and conformance rules — **approved** | Routine | §6 |
+| 12 | Selectors and exact impact for the new data and artifact — **approved** | Routine | §6 |
+| 13 | Still preliminary, with an unverified-climate warning — **approved** | Routine | §6 |
+| 14 | Browser follows the UI-002 and UI-003 patterns — **approved** | Routine | §6 |
+| 15 | Traceability and budgets in D063's form — **approved** | Routine | §6 |
 
 **Order of discussion:** 1 first, then 2–9 in order, because each builds on the ones before it. The routine items 10–15 follow from D041, D042, D046, D055, D056, D061, D063, AC-08, and FR-05; they can be approved together now that 1 is settled. Approved judgment items are recorded as decisions: D064 is proposal 1, D065 proposal 2, D066 proposal 3, D067 proposal 4, D068 proposal 5, D069 proposal 6, D070 proposal 7, D071 proposal 8, D072 proposal 9.
 
 ## 6. Routine items (10–15)
+
+**Approved together** (2026-11-21). They follow from earlier decisions, so no new decision record is needed; the task files carry them out.
 
 10. **Schema version 3 replaces version 2** (D055). New kinds and fields bump `model_schema_version` to 3. Record versions stay per kind (building-model.md §3.3): new kinds start at 1, and a changed kind's version moves. The committed schema export becomes `snapshot.v3.schema.json`. Version 2 snapshots are rejected with `UNSUPPORTED_SCHEMA_VERSION`, and the migration runner refuses a database that holds them. New detail codes go into building-model.md §6.1 by stage (D035).
 11. **Walls and wall framing follow the frame's identity and conformance rules.** Walls (D065) get generation keys built from grid-line IDs and the story (D042), IDs minted from `"generation/" + key` (D041), and stage-5 conformance codes like the members' (D046). Wall framing (D066) is keyed under its wall's key, and opening framing under the opening's ID (D069). Surviving keys keep their IDs; removed keys are retired and never reused. Key formats are set in the task file.
@@ -395,7 +397,7 @@ This item comes last because its content depends on proposals 2–8. Approved va
 
 ## 15. Draft acceptance criteria (pending approval)
 
-Revised for D064–D072 (2026-11-21). They assume the routine items 10–15, and are confirmed only when the product owner approves them.
+Revised for D064–D072 (2026-11-21). They build on the routine items 10–15 (approved), and are confirmed only when the product owner approves them.
 
 - **AC2b-01: version 3 only.** New projects are Reference House 001 v3 (version 3, D072). Version 2 snapshots are rejected with `UNSUPPORTED_SCHEMA_VERSION` (D055).
 - **AC2b-02: assembly definitions.**
