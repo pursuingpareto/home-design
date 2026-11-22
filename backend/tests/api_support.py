@@ -23,7 +23,15 @@ POST_KEY, BEAM_KEY = "timber.POST.8x8", "timber.BEAM.8x12"
 # Every line of Reference House 001 v2, timber (D053) and connection (ART-002 §7): a book with these rows is complete.
 FULL_PRICES = {POST_KEY: 3150, BEAM_KEY: 4725, "timber.SILL.8x8": 3150, "timber.FLOOR_JOIST.4x8": 1200,
                "timber.PRINCIPAL_RAFTER.8x10": 3900, "timber.PURLIN.6x8": 2350, "timber.KNEE_BRACE.4x6": 900,
-               "connection.BRIDLE": 6500, "connection.HOUSED_DOVETAIL": 3800, "connection.PEGGED_MORTISE_TENON": 4500}
+               "connection.BRIDLE": 6500, "connection.HOUSED_DOVETAIL": 3800, "connection.PEGGED_MORTISE_TENON": 4500,
+               # ART-003 §7: the straw bale walls' layers (per m²) and bucks (per m), so the book stays complete.
+               "assembly.straw-bale.bales": 2200, "assembly.straw-bale.clay-plaster": 3500, "assembly.straw-bale.lime-plaster": 4200,
+               "wallframing.BUCK_HEAD.1.5x18": 1900, "wallframing.BUCK_JAMB.1.5x18": 1900, "wallframing.BUCK_SILL.1.5x18": 1900}
+# The stud infill lines, for books that price both families (ART-003 §7.2).
+STUD_INFILL_PRICES = {"assembly.stud-infill.siding": 5200, "assembly.stud-infill.sheathing": 1800, "assembly.stud-infill.framing": 1500,
+                      "assembly.stud-infill.gypsum-board": 1600, "wallframing.CRIPPLE.2x6": 600, "wallframing.GIRT.2x6": 600,
+                      "wallframing.HEADER.2x8": 800, "wallframing.JACK.2x6": 600, "wallframing.KING.2x6": 600, "wallframing.ROUGH_SILL.2x6": 600,
+                      "wallframing.STUD.2x6": 600}
 UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 
 
@@ -140,5 +148,5 @@ def book(**prices):
 
 
 def unit_for(key: str) -> str:
-    """The unit a key's family requires (ART-002 §7.3)."""
-    return "each" if key.startswith("connection.") else "m"
+    """The unit a key's family requires (ART-002 §7.3, ART-003 §7.2)."""
+    return "each" if key.startswith("connection.") else "m2" if key.startswith("assembly.") else "m"

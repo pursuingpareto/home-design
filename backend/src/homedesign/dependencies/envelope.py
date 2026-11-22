@@ -15,6 +15,14 @@ PRELIMINARY_WARNING = {
     "message": "Framing and estimates are preliminary. Structural adequacy has not been assessed.",
 }
 
+# ART-003 §4.9 (routine item 13 of vs-02b.md §6): every assembly_schedule envelope, whatever its status,
+# carries this after PRELIMINARY_UNVERIFIED, because only that artifact reports assembly properties.
+CLIMATE_WARNING = {
+    "code": "CLIMATE_DETAILS_UNVERIFIED",
+    "message": "Climate-specific details of the wall assemblies have not been verified for this site. Each definition lists them.",
+}
+STANDING_WARNINGS: dict[str, tuple[dict[str, str], ...]] = {"assembly_schedule": (PRELIMINARY_WARNING, CLIMATE_WARNING)}
+
 
 class _Strict(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid", allow_inf_nan=False, frozen=True)
@@ -36,7 +44,7 @@ class ArtifactEnvelope(_Strict):
 
     model_config = ConfigDict(title="VS-01 artifact envelope (artifacts.md §2)")
 
-    artifact_type: Literal["plan2d", "mesh3d", "timber_schedule", "preliminary_estimate"]
+    artifact_type: Literal["plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate"]
     schema_version: Literal[1] = 1
     project_id: Uuid
     source_revision_id: Uuid

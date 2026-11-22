@@ -3,10 +3,12 @@
  *
  * - Rows come from the estimate's line items, plus stored rows that match none (kept, marked unused,
  *   with their stored unit).
- * - Timber prices are typed per foot (imperial) or per meter (metric) and parsed exactly to cents; the
- *   book stores whole cents per meter, so per-foot prices are converted and rounded half-even, and the
- *   stored value is shown before saving. Connection prices are per piece ("each", ART-002 §7.3, §9):
- *   whole cents, never converted. An untouched row keeps its stored value exactly.
+ * - Timber and wall framing prices are typed per foot (imperial) or per meter (metric) and parsed exactly to
+ *   cents; the book stores whole cents per meter, so per-foot prices are converted and rounded half-even,
+ *   and the stored value is shown before saving. Assembly prices ("m2", ART-003 §10, D085) are typed per
+ *   square foot or per square meter and converted the same way to whole cents per square meter.
+ *   Connection prices are per piece ("each", ART-002 §7.3, §9): whole cents, never converted. An untouched
+ *   row keeps its stored value exactly.
  */
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
@@ -15,7 +17,7 @@ import { ApiError, type Api } from "../api/client";
 import type { EstimatePayload, PriceBook, PriceRow, StoredPriceBook } from "../api/types";
 import { ErrorNotice } from "../app/ErrorNotice";
 import type { UnitSystem } from "../units/length";
-import { approxPerFoot, centsPerMeter, formatCents, parseMoney, priceInputText } from "../units/money";
+import { approxPerFoot, approxPerSquareFoot, areaPriceInputText, centsPerMeter, centsPerSquareMeter, formatCents, parseMoney, priceInputText } from "../units/money";
 import { describeDetail, placeDetails } from "./commands";
 import { lineLabel, type ConnectionCatalog } from "./lineItems";
 
@@ -26,7 +28,7 @@ interface Row {
   label: string;
   unit: Unit;
   unused: boolean;
-  stored: number | null; // whole cents per meter ("m") or per piece ("each") in the current book
+  stored: number | null; // whole cents per meter ("m"), per square meter ("m2"), or per piece ("each") in the current book
   text: string;
   dirty: boolean;
 }
@@ -38,13 +40,15 @@ export function rowResult(row: Pick<Row, "unit" | "stored" | "text" | "dirty">, 
   if (row.text.trim() === "") return { kind: "blank" };
   const parsed = parseMoney(row.text);
   if (!parsed.ok) return { kind: "invalid", error: parsed.error };
-  return { kind: "price", unitPriceMinor: Number(row.unit === "each" ? parsed.cents : centsPerMeter(parsed.cents, units)) };
+  const cents = row.unit === "each" ? parsed.cents : row.unit === "m2" ? centsPerSquareMeter(parsed.cents, units) : centsPerMeter(parsed.cents, units);
+  return { kind: "price", unitPriceMinor: Number(cents) };
 }
 
-/** Text for a row's input: per foot or meter for "m" rows, per piece for "each" rows. */
+/** Text for a row's input: per foot or meter for "m" rows, per sf or m² for "m2" rows, per piece for "each" rows. */
 export function rowText(stored: number | null, unit: Unit, units: UnitSystem): string {
   if (stored === null) return "";
-  return unit === "each" ? (stored / 100).toFixed(2) : priceInputText(stored, units);
+  if (unit === "each") return (stored / 100).toFixed(2);
+  return unit === "m2" ? areaPriceInputText(stored, units) : priceInputText(stored, units);
 }
 
 /** The book to PUT, or null when a row is invalid. Blank rows are left out (partial coverage). */
@@ -111,7 +115,8 @@ export function PriceBookForm({
   }, [units]);
 
   const lengthLabel = units === "imperial" ? "per linear foot" : "per meter";
-  const unitLabel = (unit: Unit) => (unit === "each" ? "each" : lengthLabel);
+  const areaLabel = units === "imperial" ? "per square foot" : "per square meter";
+  const unitLabel = (unit: Unit) => (unit === "each" ? "each" : unit === "m2" ? areaLabel : lengthLabel);
   const details = error instanceof ApiError ? error.details : [];
   // A row's errors are those at its price or its unit (PRICE_UNIT_MISMATCH, ART-002 §7.3).
   const rowFields = useMemo(
@@ -152,8 +157,8 @@ export function PriceBookForm({
     <form className="price-book" onSubmit={save} aria-labelledby="price-book-heading" data-testid="price-book-form">
       <h3 id="price-book-heading">Unit prices</h3>
       <p className="hint">
-        Currency: USD. Timber prices are entered {lengthLabel} and stored in whole cents per meter; connection prices are entered and stored per piece. Leave a price
-        blank to leave that item unpriced.
+        Currency: USD. Timber and wall framing prices are entered {lengthLabel} and stored in whole cents per meter; wall layer prices are entered {areaLabel} and
+        stored in whole cents per square meter; connection prices are entered and stored per piece. Leave a price blank to leave that item unpriced.
         {stored && ` Current book: version ${stored.version}.`}
       </p>
       {(["source", "geography"] as const).map((field) => (
@@ -208,6 +213,11 @@ export function PriceBookForm({
                 <td data-testid={`stored-${row.key}`}>
                   {result.kind === "price" && row.unit === "each" ? (
                     `${formatCents(result.unitPriceMinor)} each`
+                  ) : result.kind === "price" && row.unit === "m2" ? (
+                    <>
+                      {formatCents(result.unitPriceMinor)}/m²
+                      {units === "imperial" && <span className="approx"> {approxPerSquareFoot(result.unitPriceMinor)}</span>}
+                    </>
                   ) : result.kind === "price" ? (
                     <>
                       {formatCents(result.unitPriceMinor)}/m

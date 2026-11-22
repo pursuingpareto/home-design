@@ -17,7 +17,24 @@ export const ARTIFACT_LABEL: Record<ArtifactType, string> = {
   plan2d: "2D plan",
   mesh3d: "3D model",
   timber_schedule: "Timber schedule",
+  assembly_schedule: "Assembly schedule",
   preliminary_estimate: "Estimate",
+};
+
+export type PieceKind = components["schemas"]["WallFramingRow"]["piece_kind"];
+
+/** Wall framing kinds (D066), for estimate lines and, later, the wall views (UI-004). */
+export const PIECE_KIND_LABEL: Record<PieceKind, string> = {
+  STUD: "Stud",
+  GIRT: "Girt",
+  KING: "King stud",
+  JACK: "Jack stud",
+  HEADER: "Header",
+  ROUGH_SILL: "Rough sill",
+  CRIPPLE: "Cripple",
+  BUCK_JAMB: "Buck jamb",
+  BUCK_HEAD: "Buck head",
+  BUCK_SILL: "Buck sill",
 };
 
 export const ROLE_LABEL: Record<Role, string> = {
@@ -89,3 +106,4 @@ const label = <K extends string>(table: Record<K, string>, code: string): string
 export const roleLabel = (code: string) => label(ROLE_LABEL, code);
 export const junctionLabel = (code: string) => label(JUNCTION_LABEL, code);
 export const typeLabel = (code: string) => label(CONNECTION_TYPE_LABEL, code);
+export const pieceKindLabel = (code: string) => label(PIECE_KIND_LABEL, code);

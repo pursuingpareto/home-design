@@ -29,13 +29,16 @@ _NS = uuid.UUID("0d5c6a2e-91b4-4f3a-8e27-6b1f0c9d4a83")
 FT = 0.3048
 BOOK = {
     "currency": "USD", "as_of": "2026-11-01", "source": "Scenario supplier quote", "geography": "Chittenden County, VT",
-    # One row per timber line (D053) and connection type (ART-002 §7) of Reference House 001 v2, so the estimate is complete.
+    # One row per timber line (D053), connection type (ART-002 §7), and straw bale wall line (ART-003 §7) of Reference
+    # House 001 v3, so the estimate is complete. Assembly rows are per square meter.
     "rows": [
-        {"key": key, "unit": "each" if key.startswith("connection.") else "m", "unit_price_minor": price}
+        {"key": key, "unit": "each" if key.startswith("connection.") else "m2" if key.startswith("assembly.") else "m", "unit_price_minor": price}
         for key, price in (
+            ("assembly.straw-bale.bales", 2200), ("assembly.straw-bale.clay-plaster", 3500), ("assembly.straw-bale.lime-plaster", 4200),
             ("connection.BRIDLE", 6500), ("connection.HOUSED_DOVETAIL", 3800), ("connection.PEGGED_MORTISE_TENON", 4500),
             ("timber.BEAM.8x12", 4725), ("timber.FLOOR_JOIST.4x8", 1200), ("timber.KNEE_BRACE.4x6", 900), ("timber.POST.8x8", 3150),
             ("timber.PRINCIPAL_RAFTER.8x10", 3900), ("timber.PURLIN.6x8", 2350), ("timber.SILL.8x8", 3150),
+            ("wallframing.BUCK_HEAD.1.5x18", 1900), ("wallframing.BUCK_JAMB.1.5x18", 1900), ("wallframing.BUCK_SILL.1.5x18", 1900),
         )
     ],
 }
@@ -167,19 +170,20 @@ class Scenario:
 
         # 7a. Joist spacing 0.62 m keeps the joist count at these 19' bays: member and connection IDs are
         # kept, and the schedule and the estimate are reused (DEP-001 §8, TEST-002 §6).
-        all_four = sorted(view.envelopes)
+        # A frame edit on the straw bale house moves no wall piece, so the assembly schedule is reused (ART-003 §8.3).
+        frame_edit = sorted(kind for kind in view.envelopes if kind != "assembly_schedule")
         parameters = view.one("FrameSystem")["parameters"]
         view = self.consequential("frame-joists-0.62", "SetFrameParameters", {**parameters, "joist_spacing_m": 0.62})
         assert sorted(self.impacts[-1][2]) == ["mesh3d", "plan2d"]
 
         # 7b. Eave braces off: their members and connections are retired; survivors keep their IDs (check_transition).
         view = self.consequential("frame-eave-braces-off", "SetFrameParameters", {**parameters, "joist_spacing_m": 0.62, "knee_braces_eave": False})
-        assert sorted(self.impacts[-1][2]) == all_four
+        assert sorted(self.impacts[-1][2]) == frame_edit
         assert (len(view.members()), len(view.connections())) == (238, 382)
 
         # 7c. Joist hangers on the joist-beam class: a new, unpriced line, so the estimate stays partial with no total, never 0 (AC2-06).
         view = self.consequential("joist-beam-hanger", "SetConnectionType", {"junction_class": "joist-beam", "connection_type": "JOIST_HANGER"})
-        assert sorted(self.impacts[-1][2]) == all_four
+        assert sorted(self.impacts[-1][2]) == frame_edit
         estimate = view.envelopes["preliminary_estimate"]["payload"]
         hanger = next(line for line in estimate["line_items"] if line["key"] == "connection.JOIST_HANGER")
         assert (hanger["quantity_value"], hanger["quantity_unit"], hanger["priced"], hanger["amount_minor"]) == (144, "each", False, None)

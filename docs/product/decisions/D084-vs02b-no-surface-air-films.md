@@ -1,6 +1,6 @@
 # D084 — VS-02b `parallel-path-1` adds no surface air films
 
-**Status:** Confirmed (to be implemented in VS-02b, [ART-003](../../implementation/tasks/ART-003.md))  
+**Status:** Confirmed; implemented in VS-02b by [ART-003](../../implementation/tasks/ART-003.md) (2026-11-22)  
 **Date:** 2026-11-22  
 **Scope:** Whether the D071 method `parallel-path-1` includes inside and outside surface air-film resistances. Approved as [ART-003](../../implementation/tasks/ART-003.md) §12 item 3.  
 **Refines:** [D071](D071-vs02b-thermal-moisture-values.md), whose path resistances are "the sum of every layer's resistance".

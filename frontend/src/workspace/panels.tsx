@@ -7,12 +7,12 @@ import { ARTIFACT_TYPES } from "../api/types";
 import { ARTIFACT_LABEL, junctionLabel, roleLabel, typeLabel } from "../display/labels";
 import { css, ROLE_COLOR } from "../display/palette";
 import { formatLength, type UnitSystem } from "../units/length";
-import { approxPerFoot, formatCents } from "../units/money";
+import { approxPerFoot, approxPerSquareFoot, formatCents } from "../units/money";
 import type { Highlight, Pick } from "../views/highlight";
 import { Mesh3dView } from "../views/Mesh3dView";
 import { pairViews, type ViewState } from "../views/pairing";
 import { Plan2dView } from "../views/Plan2dView";
-import { lineLabel, type ConnectionCatalog } from "./lineItems";
+import { lineLabel, lineQuantity, type ConnectionCatalog } from "./lineItems";
 import { statusOf, type RevisionData } from "./useRevisionData";
 
 /** A pick from a view or the schedule. `toggle` clears the selection when it is picked again (UI-003 §6). */
@@ -359,12 +359,17 @@ export function EstimatePanel({
               {payload.line_items.map((li) => (
                 <tr key={li.key} data-key={li.key}>
                   <td>{lineLabel(li, catalog)}</td>
-                  <td>{li.kind === "connection" ? `${li.quantity_value} each` : formatLength(li.quantity_value, units)}</td>
+                  <td>{lineQuantity(li, units)}</td>
                   <td>
                     {li.unit_price_minor === null
                       ? "Not priced"
-                      : `${formatCents(li.unit_price_minor)}${li.kind === "connection" ? " each" : "/m"}`}
-                    {li.kind === "timber" && li.unit_price_minor !== null && units === "imperial" && <span className="approx"> {approxPerFoot(li.unit_price_minor)}</span>}
+                      : `${formatCents(li.unit_price_minor)}${li.kind === "connection" ? " each" : li.kind === "assembly" ? "/m²" : "/m"}`}
+                    {li.unit_price_minor !== null && units === "imperial" && (li.kind === "timber" || li.kind === "wallframing") && (
+                      <span className="approx"> {approxPerFoot(li.unit_price_minor)}</span>
+                    )}
+                    {li.unit_price_minor !== null && units === "imperial" && li.kind === "assembly" && (
+                      <span className="approx"> {approxPerSquareFoot(li.unit_price_minor)}</span>
+                    )}
                   </td>
                   <td>{li.amount_minor === null ? "—" : formatCents(li.amount_minor)}</td>
                 </tr>

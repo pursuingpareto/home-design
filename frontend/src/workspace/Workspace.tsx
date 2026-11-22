@@ -86,7 +86,7 @@ export function Workspace({ projectId, revisionId }: { projectId: string; revisi
       <nav>
         <a href={href({ name: "projects" })}>Projects</a> / Reference House 001 · <code>{projectId.slice(0, 8)}</code>
       </nav>
-      <PreliminaryBanner envelopes={[data.plan, data.mesh, data.schedule, data.estimate]} />
+      <PreliminaryBanner envelopes={[data.plan, data.mesh, data.schedule, data.assemblies, data.estimate]} />
       <RevisionBar data={data} />
       {!data.isHead && data.revisionId && (
         <p className="notice" data-testid="historical-notice">

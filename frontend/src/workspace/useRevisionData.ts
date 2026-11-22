@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Api } from "../api/client";
 import type {
   ArtifactStatus,
+  AssemblyScheduleEnvelope,
   ArtifactType,
   EstimateEnvelope,
   Manifest,
@@ -28,6 +29,7 @@ export interface RevisionData {
   plan: PlanEnvelope | null;
   mesh: MeshEnvelope | null;
   schedule: ScheduleEnvelope | null;
+  assemblies: AssemblyScheduleEnvelope | null; // read for its status only until UI-004 (D085)
   estimate: EstimateEnvelope | null;
   snapshot: Snapshot | null; // head only: current parameter values for editing
   error: unknown;
@@ -40,13 +42,20 @@ const EMPTY: Omit<RevisionData, "project" | "revisions"> = {
   plan: null,
   mesh: null,
   schedule: null,
+  assemblies: null,
   estimate: null,
   snapshot: null,
   error: null,
 };
 
 export function statusOf(data: RevisionData, type: ArtifactType): ArtifactStatus | "LOADING" {
-  const envelope = { plan2d: data.plan, mesh3d: data.mesh, timber_schedule: data.schedule, preliminary_estimate: data.estimate }[type];
+  const envelope = {
+    plan2d: data.plan,
+    mesh3d: data.mesh,
+    timber_schedule: data.schedule,
+    assembly_schedule: data.assemblies,
+    preliminary_estimate: data.estimate,
+  }[type];
   if (envelope) return envelope.status;
   const entry = data.manifest?.artifacts.find((a) => a.artifact_type === type);
   return entry ? (entry.status as ArtifactStatus) : "LOADING";
@@ -72,6 +81,7 @@ export function useRevisionData(api: Api, projectId: string, routeRevisionId: st
         api.artifact(projectId, "plan2d", revisionId).then((plan) => update({ plan })),
         api.artifact(projectId, "mesh3d", revisionId).then((mesh) => update({ mesh })),
         api.artifact(projectId, "timber_schedule", revisionId).then((schedule) => update({ schedule })),
+        api.artifact(projectId, "assembly_schedule", revisionId).then((assemblies) => update({ assemblies })),
       ]).then(() => api.artifact(projectId, "preliminary_estimate", revisionId).then((estimate) => update({ estimate })));
       const snapshot = isHead ? api.getRevision(projectId, revisionId).then((snapshot) => update({ snapshot })) : Promise.resolve();
       await Promise.all([manifest, artifacts, snapshot]);

@@ -163,7 +163,7 @@ describe("edit flow pieces", () => {
 
   it("lists exactly the impacted artifacts, or says none change (DEP-001 §9.2, UI-003 §9)", () => {
     const { rerender } = render(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: fixture.width_preview }} units="imperial" snapshot={fixture.snapshot} onConfirm={() => {}} onCancel={() => {}} />);
-    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^Updates: 2D plan, 3D model, Timber schedule, Estimate\.$/);
+    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^Updates: 2D plan, 3D model, Timber schedule, Assembly schedule, Estimate\.$/);
     const none = { ...fixture.width_preview, impacted_artifacts: [] };  // e.g. a connection type for a class with no connections
     rerender(<ImpactDialog state={{ step: "review", command: fixture.width_command, preview: none }} units="imperial" snapshot={fixture.snapshot} onConfirm={() => {}} onCancel={() => {}} />);
     expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^No derived views or reports change\.$/);

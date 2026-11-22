@@ -1,7 +1,7 @@
-"""DEP-001 §8 and §14: exact `impacted_artifacts` and reuse on Reference House 001 v2, with the real derivations.
+"""DEP-001 §8 and §14, ART-003 §8.3: exact `impacted_artifacts` and reuse on Reference House 001 v3, with the real derivations.
 
 Each case commits one command from the created house (with a complete price book), and checks that:
-- the preview lists exactly the expected artifacts (the §8 table, measured while drafting);
+- the preview lists exactly the expected artifacts (DEP-001 §8 and ART-003 §8.3, measured from the created house);
 - exactly those artifacts' stored payloads change (AC2-04);
 - every other artifact is reused: the new revision's row has the base's payload, fingerprint, and
   `generated_at`, and its envelope names the new revision as head (D056 item 3).
@@ -13,14 +13,16 @@ import math
 
 import pytest
 
-from api_support import FULL_PRICES, book
+from api_support import FULL_PRICES, STUD_INFILL_PRICES, book
 from homedesign.model.canonical import fingerprint
 from homedesign.project import MemoryStore, ProjectService
 from test_project import ACTOR, KEY, T0, at, create, envelope, head
 
 FT = 0.3048
-ALL = ["mesh3d", "plan2d", "preliminary_estimate", "timber_schedule"]
-TYPES = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")
+ALL = ["assembly_schedule", "mesh3d", "plan2d", "preliminary_estimate", "timber_schedule"]
+FRAME = ["mesh3d", "plan2d", "preliminary_estimate", "timber_schedule"]  # a frame edit that moves no wall piece
+WALLS = ["assembly_schedule", "mesh3d", "plan2d", "preliminary_estimate"]  # a wall edit: never the timber schedule
+TYPES = ("plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate")
 
 
 def house(store):
@@ -124,18 +126,87 @@ CASES = [
     # MODEL-006 §10: 0.3 (a 7'-2⅖" bay) is no longer a case: no 3'-0" window fits it (test below).
     *((f"move y1 to {f}", move("y", 1, f), ALL) for f in (0.4, 0.45, 0.55, 0.6)),
     *((f"move x1 to {f}", move("x", 1, f), ALL) for f in (0.3, 0.32, 0.35)),
-    ("re-identify y1", reidentify("y", 1), ["mesh3d", "plan2d", "timber_schedule"]),
+    # Wall keys name their grid lines (D080): the eight walls on y1 are replaced, and their windows removed with them (MODEL-006 §8.5).
+    ("re-identify y1", reidentify("y", 1), ALL),
     ("re-identify x1", reidentify("x", 1), ALL),  # the purlin total moves in its last bit (C6)
     *((f"joist spacing {s}", frame_args(joist_spacing_m=s), ["mesh3d", "plan2d"]) for s in (0.62, 0.65, 0.70)),
-    ("joist spacing 0.5", frame_args(joist_spacing_m=0.5), ALL),
-    ("brace leg 2'-6\"", frame_args(knee_brace_leg_m=2.5 * FT), ALL),
-    ("3 purlins", frame_args(purlins_per_slope=3), ALL),
-    ("eave braces off", frame_args(knee_braces_eave=False), ALL),
+    ("joist spacing 0.5", frame_args(joist_spacing_m=0.5), FRAME),
+    ("brace leg 2'-6\"", frame_args(knee_brace_leg_m=2.5 * FT), FRAME),
+    ("3 purlins", frame_args(purlins_per_slope=3), FRAME),
+    ("eave braces off", frame_args(knee_braces_eave=False), FRAME),
     ("add section", lambda svc, pid: ("AddSection", {"nominal_label": "10x12", "actual_width_m": 0.2413, "actual_depth_m": 0.2921}), []),
     ("beam to a new 10x12", member_section("10x12", 0.2413, 0.2921), ["mesh3d", "preliminary_estimate", "timber_schedule"]),
     ("beam to 8x12's dimensions, another label", member_section("8x12b"), ["preliminary_estimate", "timber_schedule"]),
-    ("joist-beam to JOIST_HANGER", connection("joist-beam", "JOIST_HANGER"), ALL),
-    ("post-beam to STEEL_KNIFE_PLATE", connection("post-beam", "STEEL_KNIFE_PLATE"), ALL),
+    ("joist-beam to JOIST_HANGER", connection("joist-beam", "JOIST_HANGER"), FRAME),
+    ("post-beam to STEEL_KNIFE_PLATE", connection("post-beam", "STEEL_KNIFE_PLATE"), FRAME),
+]
+
+# ART-003 §8.3: the wall commands, on the Level 1 east wall's 3'-0" window (wall/axis-y/x3/y1-y2/level-1).
+L1_WALL = "wall/axis-y/x3/y1-y2/level-1"
+IN = FT / 12
+
+
+def _window(svc, pid):
+    entities = head(svc, pid).entities
+    wall = next(e for e in entities if e.kind == "Wall" and e.generation_key == L1_WALL)
+    return wall, next(e for e in entities if e.kind == "Opening" and e.wall_id == wall.id)
+
+
+def set_window(change):
+    def make(svc, pid):
+        _, o = _window(svc, pid)
+        args = {k: getattr(o, k) for k in ("width_m", "height_m", "sill_height_m", "offset_m")} | change(o)
+        return "SetOpening", {"opening_id": o.id, **args}
+    return make
+
+
+def add_window(svc, pid):
+    wall, _ = _window(svc, pid)
+    return "AddOpening", {"wall_id": wall.id, "opening_kind": "WINDOW", "width_m": 1 * FT, "height_m": 1 * FT, "sill_height_m": 6 * FT, "offset_m": 9 * FT}
+
+
+def remove_window(svc, pid):
+    return "RemoveOpening", {"opening_id": _window(svc, pid)[1].id}
+
+
+def wall_assembly(label):
+    return lambda svc, pid: ("SetWallAssembly", {"assembly_definition_id": next(
+        e.id for e in head(svc, pid).entities if e.kind == "AssemblyDefinition" and e.label == label)})
+
+
+def _family(svc, pid):
+    system = entity(svc, pid, "WallSystem")
+    return next(e.label for e in head(svc, pid).entities if e.id == system.default_assembly_definition_id)
+
+
+def other_assembly(svc, pid):
+    return wall_assembly("straw-bale" if _family(svc, pid) == "stud-infill" else "stud-infill")(svc, pid)
+
+
+# (name, make, straw bale, stud infill), measured from the created house (ART-003 §8.3, corrected). Moving an
+# opening, or changing only its sill, leaves every quantity the same in exact arithmetic, but piece lengths and
+# face areas are evaluated from the moved positions as written and change in their last bit, so the assembly
+# schedule is impacted. The estimate's sums come out the same here and it is reused, except where a stud infill
+# piece really changes length.
+SILL = ["assembly_schedule", "mesh3d"]
+HEIGHT = ["assembly_schedule", "mesh3d", "preliminary_estimate"]
+OFFSET = ["assembly_schedule", "mesh3d", "plan2d"]
+ROOF = ["mesh3d", "preliminary_estimate", "timber_schedule"]
+FAMILY_CASES = [
+    ("AddOpening", add_window, WALLS, WALLS),
+    ("RemoveOpening", remove_window, WALLS, WALLS),
+    ("SetOpening, width 6in narrower", set_window(lambda o: {"width_m": o.width_m - 6 * IN}), WALLS, WALLS),
+    ("SetOpening, height 6in lower", set_window(lambda o: {"height_m": o.height_m - 6 * IN}), HEIGHT, HEIGHT),
+    ("SetOpening, offset only, 2in", set_window(lambda o: {"offset_m": o.offset_m + 2 * IN}), OFFSET, OFFSET),
+    ("SetOpening, sill only, up 2in", set_window(lambda o: {"sill_height_m": o.sill_height_m + 2 * IN}), SILL, HEIGHT),  # stud infill: cripples
+    ("SetOpening, sill only, down 2in", set_window(lambda o: {"sill_height_m": o.sill_height_m - 2 * IN}), SILL, SILL),
+    ("SetOpening, sill only, up 1ft", set_window(lambda o: {"sill_height_m": o.sill_height_m + 12 * IN}), SILL, SILL),
+    ("SetWallAssembly, to the other family", other_assembly, WALLS, WALLS),
+    ("width 40ft", width(w=40 * FT), ALL, ALL),
+    ("brace leg 2ft 6in", frame_args(knee_brace_leg_m=2.5 * FT), FRAME, ALL),  # no buck reaches a brace; studs under one do
+    ("eave braces off", frame_args(knee_braces_eave=False), FRAME, ALL),
+    ("pitch only 0.5", pitch(0.5), ROOF, ROOF),
+    ("post-beam to STEEL_KNIFE_PLATE", connection("post-beam", "STEEL_KNIFE_PLATE"), FRAME, FRAME),
 ]
 
 
@@ -159,6 +230,32 @@ def test_measured_impact(name, make, expected):
             assert new["input_fingerprint"] != old["input_fingerprint"] and new["generated_at"] == "2026-11-19T12:01:00.000000Z", kind
         else:  # reused: the base's row, copied
             assert (new["input_fingerprint"], new["generated_at"], new["payload"]) == (old["input_fingerprint"], old["generated_at"], old["payload"]), kind
+
+
+@pytest.mark.parametrize("family", ["straw-bale", "stud-infill"])
+@pytest.mark.parametrize("name, make, straw, stud", FAMILY_CASES, ids=[c[0] for c in FAMILY_CASES])
+def test_measured_wall_impact(name, make, straw, stud, family):
+    """ART-003 §8.3 and §13 test 10 (AC2b-07): the wall commands, and some frame edits, on both families. No
+    wall edit impacts the timber schedule; every artifact not listed is reused with the base's row."""
+    svc, pid = house(MemoryStore())
+    if family == "stud-infill":
+        svc.set_price_book(pid, book(**FULL_PRICES, **STUD_INFILL_PRICES), actor_id=ACTOR, now=T0)
+        commit(svc, pid, *wall_assembly("stud-infill")(svc, pid), at(0.5))
+    expected = straw if family == "straw-bale" else stud
+    type_, args = make(svc, pid)
+    base = svc.get_project(pid)["head_revision_id"]
+    before = envelopes(svc, pid, base, at(0.9))
+    preview, result = commit(svc, pid, type_, args, at(1))
+    assert preview.impacted_artifacts == expected == preview.body["impacted_artifacts"]
+    assert result.http_status == 201 and result.body()["artifact_statuses"] == {k: "CURRENT" for k in TYPES}
+    after = envelopes(svc, pid, result.revision_id, at(2))
+    for kind in TYPES:
+        old, new = before[kind], after[kind]
+        assert (fingerprint(old["payload"]) != fingerprint(new["payload"])) == (kind in expected), kind
+        if kind not in expected:
+            assert (new["input_fingerprint"], new["generated_at"], new["payload"]) == (old["input_fingerprint"], old["generated_at"], old["payload"]), kind
+    if type_ in ("AddOpening", "SetOpening", "RemoveOpening", "SetWallAssembly"):
+        assert "timber_schedule" not in expected
 
 
 def test_move_y1_to_0_3_is_rejected_by_the_fit():
@@ -204,7 +301,7 @@ def test_price_book_change_makes_only_the_head_estimate_stale(store):
     svc, pid = house(store)
     rev = svc.get_project(pid)["head_revision_id"]
     svc.set_price_book(pid, book(**{**FULL_PRICES, "timber.POST.8x8": 3200}), actor_id=ACTOR, now=at(1))
-    assert svc.artifacts.statuses(pid, rev) == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "preliminary_estimate": "STALE"}
+    assert svc.artifacts.statuses(pid, rev) == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "assembly_schedule": "CURRENT", "preliminary_estimate": "STALE"}
     assert svc.artifacts.get_artifact(pid, "preliminary_estimate", now=at(2))["payload"]["price_book"]["price_book_version"] == 2
 
 

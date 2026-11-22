@@ -1,12 +1,13 @@
 """TEST-002 §8 and D063: payload size and time budgets.
 
-**Sizes** (§8.1): each payload's RFC 8785 canonical bytes are at most 256 KiB for Reference House 001 v2
-and at most 2,000,000 bytes for the largest supported case (TIMBER-002 §5.3). Canonical bytes are
+**Sizes** (§8.1): each payload's RFC 8785 canonical bytes are at most 256 KiB for Reference House 001 (v3,
+straw bale) and at most 2,000,000 bytes for the largest supported case (TIMBER-002 §5.3). ART-003 §9.4 also
+reports both cases with stud infill, without gating them (TEST-003 decides). Canonical bytes are
 deterministic and independent of the server's JSON settings and of compression, so the check has no tolerance.
 
 **Times** (§8.2): through the service, in-process, with the in-memory store, the median of 5 runs and no
 retries: a reference-house preview within 1 s, a largest-case preview within 5 s, and a largest-case commit
-that derives all four artifacts within 5 s. The browser ceilings are in `frontend/e2e/connections.spec.ts`.
+that derives all five artifacts within 5 s. The browser ceilings are in `frontend/e2e/connections.spec.ts`.
 
 The ceilings catch regressions; they are not targets to tune toward. If a CI measurement exceeds half its
 ceiling, report it to the product owner rather than raising the ceiling (D063). Every check prints its
@@ -23,7 +24,8 @@ from typing import Any, Callable
 import pytest
 
 from api_support import FULL_PRICES, book
-from conftest import FIXTURE, largest_doc
+from conftest import FIXTURE, STUD_INFILL, largest_doc, with_assembly
+from homedesign.assemblies.schedule import build_assembly_schedule, select_assembly_schedule
 from homedesign.estimating import build_estimate
 from homedesign.geometry import build_mesh3d, build_plan2d, select_mesh3d, select_plan2d
 from homedesign.model.canonical import snapshot_fingerprint
@@ -38,11 +40,14 @@ REFERENCE_HOUSE_CEILING = 262_144  # 256 KiB
 LARGEST_CASE_CEILING = 2_000_000
 
 
-def _complete_book(schedule: dict[str, Any]) -> dict[str, Any]:
+def _complete_book(schedule: dict[str, Any], assemblies: dict[str, Any]) -> dict[str, Any]:
     """A stored price-book row pricing every line, so the estimate carries every amount (its largest form)."""
     keys = [f"timber.{a['role']}.{a['nominal_section']}" for a in schedule["aggregates"]]
     keys += sorted({f"connection.{a['connection_type']}" for a in schedule["connection_aggregates"]})
-    rows = [{"key": key, "unit": "each" if key.startswith("connection.") else "m", "unit_price_minor": 4500} for key in keys]
+    keys += [f"assembly.{a['assembly_label']}.{a['layer']}" for a in assemblies["layer_aggregates"]]
+    keys += [f"wallframing.{a['piece_kind']}.{a['nominal_section']}" for a in assemblies["framing_aggregates"]]
+    unit = lambda key: "each" if key.startswith("connection.") else "m2" if key.startswith("assembly.") else "m"  # noqa: E731
+    rows = [{"key": key, "unit": unit(key), "unit_price_minor": 4500} for key in keys]
     book = {"currency": "USD", "as_of": "2026-11-01", "source": "Budget test quote", "geography": "Chittenden County, VT", "rows": rows}
     return {"price_book_id": "00000000-0000-4000-8000-0000000000b1", "version": 1, "book": book}
 
@@ -50,31 +55,48 @@ def _complete_book(schedule: dict[str, Any]) -> dict[str, Any]:
 def payload_sizes(doc: dict[str, Any]) -> dict[str, int]:
     snapshot = Snapshot.model_validate(doc)
     schedule = build_schedule(select_schedule(snapshot))
-    status, estimate, _ = build_estimate(schedule, _complete_book(schedule))
+    assemblies = build_assembly_schedule(select_assembly_schedule(snapshot))
+    status, estimate, _ = build_estimate(schedule, assemblies, _complete_book(schedule, assemblies))
     assert status == "CURRENT" and estimate["coverage"] == "complete"
     payloads = {
         "plan2d": build_plan2d(select_plan2d(snapshot)),
         "mesh3d": build_mesh3d(select_mesh3d(snapshot)),
         "timber_schedule": schedule,
+        "assembly_schedule": assemblies,
         "preliminary_estimate": estimate,
-        "preliminary_estimate (no price book)": build_estimate(schedule, None)[1],
+        "preliminary_estimate (no price book)": build_estimate(schedule, assemblies, None)[1],
     }
     return {kind: len(canonical_json(payload)) for kind, payload in payloads.items()}
 
 
 @pytest.mark.parametrize(
     "case,doc,ceiling",
-    [("Reference House 001 v2", lambda: FIXTURE, REFERENCE_HOUSE_CEILING), ("largest supported case", largest_doc, LARGEST_CASE_CEILING)],
+    [("Reference House 001 v3", lambda: FIXTURE, REFERENCE_HOUSE_CEILING), ("largest supported case", largest_doc, LARGEST_CASE_CEILING)],
     ids=["reference-house", "largest-case"],
 )
 def test_payload_sizes_are_within_budget(case, doc, ceiling, capsys):
     sizes = payload_sizes(doc())
+    _print_sizes(capsys, case, sizes, ceiling)
+    over = {kind: size for kind, size in sizes.items() if size > ceiling}
+    assert not over, f"{case}: payloads over the {ceiling:,}-byte budget (TEST-002 §8.1): {over}"
+
+
+def _print_sizes(capsys, case: str, sizes: dict[str, int], ceiling: int) -> None:
     with capsys.disabled():
         print()
         for kind, size in sizes.items():
             print(f"[TEST-002 budget] {case}: {kind} = {size:,} canonical bytes ({size / ceiling:.0%} of {ceiling:,})")
-    over = {kind: size for kind, size in sizes.items() if size > ceiling}
-    assert not over, f"{case}: payloads over the {ceiling:,}-byte budget (TEST-002 §8.1): {over}"
+
+
+@pytest.mark.parametrize(
+    "case,doc,ceiling",
+    [("Reference House 001 v3, stud infill", lambda: STUD_INFILL, REFERENCE_HOUSE_CEILING),
+     ("largest supported case, stud infill", lambda: with_assembly(largest_doc()), LARGEST_CASE_CEILING)],
+    ids=["reference-house-stud-infill", "largest-case-stud-infill"],
+)
+def test_stud_infill_payload_sizes_are_reported(case, doc, ceiling, capsys):
+    """ART-003 §9.4: measured and reported, not gated; TEST-003 decides whether these become budget cases (D086)."""
+    _print_sizes(capsys, case, payload_sizes(doc()), ceiling)
 
 
 # --- time (§8.2) ------------------------------------------------------------------------------
@@ -101,13 +123,13 @@ def _report(capsys, what: str, ceiling: float, median: float, times: list[float]
 
 
 def _width_edit(svc: ProjectService, pid: str) -> dict[str, Any]:
-    """One foot narrower: every member and connection is regenerated, and all four artifacts change."""
+    """One foot narrower: every member, connection, wall, and piece is regenerated, and all five artifacts change."""
     footprint = next(e for e in head(svc, pid).entities if e.kind == "Footprint")
     return envelope(svc, pid, "SetFootprintDimensions", {"width_m": footprint.width_m - FT, "depth_m": footprint.depth_m})
 
 
 def _seeded_largest_case(svc: ProjectService) -> str:
-    """A project whose head is the largest supported case, with a complete price book and its four
+    """A project whose head is the largest supported case, with a complete price book and its five
     artifacts derived, so a preview or commit starts from stored payloads as in use."""
     doc = Snapshot.model_validate(largest_doc()).model_dump(mode="json")
     doc["project_id"], doc["revision_id"] = str(uuid.uuid4()), str(uuid.uuid4())
@@ -125,22 +147,22 @@ def test_reference_house_preview_time(capsys):
     svc = ProjectService(MemoryStore(), token_key=KEY)
     pid = create(svc).project_id
     command = _width_edit(svc, pid)
-    assert len(svc.preview(pid, command, actor_id=ACTOR, now=at(1)).impacted_artifacts) == 4  # warm-up, not timed
+    assert len(svc.preview(pid, command, actor_id=ACTOR, now=at(1)).impacted_artifacts) == 5  # warm-up, not timed
     median, times = _median_seconds(lambda i: svc.preview(pid, command, actor_id=ACTOR, now=at(2 + i)))
-    _report(capsys, "preview, Reference House 001 v2, width edit", 1.0, median, times)
+    _report(capsys, "preview, Reference House 001 v3, width edit", 1.0, median, times)
 
 
 def test_largest_case_preview_time(capsys):
     svc = ProjectService(MemoryStore(), token_key=KEY)
     pid = _seeded_largest_case(svc)
     command = _width_edit(svc, pid)
-    assert len(svc.preview(pid, command, actor_id=ACTOR, now=at(1)).impacted_artifacts) == 4  # warm-up, not timed
+    assert len(svc.preview(pid, command, actor_id=ACTOR, now=at(1)).impacted_artifacts) == 5  # warm-up, not timed
     median, times = _median_seconds(lambda i: svc.preview(pid, command, actor_id=ACTOR, now=at(2 + i)))
     _report(capsys, "preview, largest supported case, width edit", 5.0, median, times)
 
 
 def test_largest_case_commit_time(capsys):
-    """The commit and the derivation of all four artifacts for the new revision (dependencies.md §6)."""
+    """The commit and the derivation of all five artifacts for the new revision (dependencies.md §6)."""
     svc = ProjectService(MemoryStore(), token_key=KEY)
     pids = [_seeded_largest_case(svc) for _ in range(RUNS)]  # a commit is not repeatable, so one project per run
     previewed = []
@@ -154,4 +176,4 @@ def test_largest_case_commit_time(capsys):
         assert result.http_status == 201 and set(result.artifact_statuses.values()) == {"CURRENT"}, result
 
     median, times = _median_seconds(run)
-    _report(capsys, "commit with all four artifacts derived, largest supported case, width edit", 5.0, median, times)
+    _report(capsys, "commit with all five artifacts derived, largest supported case, width edit", 5.0, median, times)

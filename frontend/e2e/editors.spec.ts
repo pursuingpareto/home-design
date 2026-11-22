@@ -101,6 +101,12 @@ test("AC-06: a width the grid cannot support points to the Grid tab, and works a
   await expect(page.getByTestId("dim-footprint-width")).toHaveText(`Width: 76' 0"`);
 });
 
+// The straw bale walls' six lines (ART-003 §7.1): layers per square foot, bucks per foot (D085).
+const WALL_PRICES = [
+  ["Straw (straw-bale, bales)", "2.04"], ["Clay plaster (straw-bale, clay-plaster)", "3.25"], ["Lime plaster (straw-bale, lime-plaster)", "3.90"],
+  ["Buck head 1.5x18", "5.79"], ["Buck jamb 1.5x18", "5.79"], ["Buck sill 1.5x18", "5.79"],
+] as const;
+
 test("sections: add, reject a duplicate, apply to beams, and see the price row become unused", async ({ page }) => {
   await newProject(page);
   await page.getByRole("button", { name: "Set unit prices" }).click();
@@ -117,6 +123,7 @@ test("sections: add, reject a duplicate, apply to beams, and see the price row b
   await prices.getByLabel("Pegged mortise and tenon").fill("45.00"); // per piece (ART-002 §9)
   await prices.getByLabel("Bridle joint").fill("65.00");
   await prices.getByLabel("Housed dovetail").fill("38.00");
+  for (const [label, price] of WALL_PRICES) await prices.getByLabel(label).fill(price);
   await prices.getByRole("button", { name: "Save prices" }).click();
   await expect(page.getByTestId("estimate-coverage")).toContainText("complete");
   await prices.getByRole("button", { name: "Close" }).click();

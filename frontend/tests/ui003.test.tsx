@@ -419,11 +419,11 @@ describe("8. schedule and dialog (§8, §9)", () => {
 
   it("names the artifacts that update and those unchanged", () => {
     dialog(fixture.width_preview);
-    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^Updates: 2D plan, 3D model, Timber schedule, Estimate\.$/);
+    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^Updates: 2D plan, 3D model, Timber schedule, Assembly schedule, Estimate\.$/);
     cleanup();
     dialog({ ...fixture.width_preview, impacted_artifacts: ["mesh3d", "plan2d"] });
-    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^Updates: 2D plan, 3D model\. Unchanged: Timber schedule, Estimate\.$/);
-    expect(Object.values(ARTIFACT_LABEL)).toEqual(["2D plan", "3D model", "Timber schedule", "Estimate"]);
+    expect(screen.getByTestId("impact-artifacts")).toHaveTextContent(/^Updates: 2D plan, 3D model\. Unchanged: Timber schedule, Assembly schedule, Estimate\.$/);
+    expect(Object.values(ARTIFACT_LABEL)).toEqual(["2D plan", "3D model", "Timber schedule", "Assembly schedule", "Estimate"]);
   });
 
   it("shows the frame preview's connection counts and its parameter change", () => {

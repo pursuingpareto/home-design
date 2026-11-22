@@ -1,4 +1,5 @@
-"""EST-001 acceptance tests (§6) and ART-002 §13 tests 5–8: timber schedule, preliminary estimate, price books."""
+"""EST-001 acceptance tests (§6), ART-002 §13 tests 5–8, and ART-003 §13 tests 8–9: timber schedule, preliminary
+estimate (with VS-02b's wall lines), price books."""
 
 from __future__ import annotations
 
@@ -45,8 +46,13 @@ PMT, BRIDLE, DOVETAIL = "connection.PEGGED_MORTISE_TENON", "connection.BRIDLE", 
 # Every timber line of Reference House 001 v2 (D053).
 TIMBER = {POST: 3150, BEAM: 4725, "timber.SILL.8x8": 3150, "timber.FLOOR_JOIST.4x8": 1200,
           "timber.PRINCIPAL_RAFTER.8x10": 3900, "timber.PURLIN.6x8": 2350, "timber.KNEE_BRACE.4x6": 900}
-# Plus its three connection types (ART-002 §7.1): a book with these rows is complete.
-FULL = {**TIMBER, PMT: 4500, BRIDLE: 6500, DOVETAIL: 3800}
+# Plus its three connection types (ART-002 §7.1): the frame's lines.
+FRAME = {**TIMBER, PMT: 4500, BRIDLE: 6500, DOVETAIL: 3800}
+# Plus the straw bale walls' six lines (ART-003 §7.1): a book with these rows is complete.
+BALES, CLAY, LIME = "assembly.straw-bale.bales", "assembly.straw-bale.clay-plaster", "assembly.straw-bale.lime-plaster"
+HEAD, JAMB, SILL = "wallframing.BUCK_HEAD.1.5x18", "wallframing.BUCK_JAMB.1.5x18", "wallframing.BUCK_SILL.1.5x18"
+WALLS = {BALES: 2200, CLAY: 3500, LIME: 4200, HEAD: 1900, JAMB: 1900, SILL: 1900}
+FULL = {**FRAME, **WALLS}
 # ART-002 §6.2: (junction_class, connection_type) -> count, with the default types.
 REFERENCE_CONNECTION_AGGREGATES = [
     ("brace", "PEGGED_MORTISE_TENON", 136), ("joist-beam", "HOUSED_DOVETAIL", 60), ("post-beam", "PEGGED_MORTISE_TENON", 68),
@@ -191,27 +197,35 @@ def test_no_book_is_unavailable_never_zero(store):
     env = estimate(svc, pid)
     payload = env["payload"]
     assert env["status"] == "UNAVAILABLE" and payload["coverage"] == "none" and payload["currency"] is None
-    assert payload["price_book"] is None and payload["totals"] == {"priced_amount_minor": None, "unpriced_line_count": 10, "grand_total_minor": None}
+    assert payload["price_book"] is None and payload["totals"] == {"priced_amount_minor": None, "unpriced_line_count": 16, "grand_total_minor": None}
     assert "COST_INPUTS_MISSING" in [w["code"] for w in env["warnings"]]
     schedule = svc.artifacts.get_artifact(pid, "timber_schedule", now=T0)["payload"]
-    # ART-002 §7.1: the connection lines precede the timber lines, by key; quantities from this revision's schedule.
+    assemblies = svc.artifacts.get_artifact(pid, "assembly_schedule", now=T0)["payload"]
+    layers = {f"assembly.straw-bale.{a['layer']}": a["area_m2"] for a in assemblies["layer_aggregates"]}
+    framing = {f"wallframing.{a['piece_kind']}.{a['nominal_section']}": a["total_length_m"] for a in assemblies["framing_aggregates"]}
+    # ART-002 §7.1, ART-003 §7.1: by key, so assembly, connection, timber, then wallframing; quantities from this revision's schedules.
     assert [(li["kind"], li["key"], li["quantity_value"], li["quantity_unit"]) for li in payload["line_items"]] == [
+        ("assembly", BALES, layers[BALES], "m2"), ("assembly", CLAY, layers[CLAY], "m2"), ("assembly", LIME, layers[LIME], "m2"),
         ("connection", BRIDLE, 4, "each"), ("connection", DOVETAIL, 60, "each"), ("connection", PMT, 248, "each"),
-        *(("timber", f"timber.{a['role']}.{a['nominal_section']}", a["total_length_m"], "m") for a in schedule["aggregates"])]  # artifacts.md §10 test 8
+        *(("timber", f"timber.{a['role']}.{a['nominal_section']}", a["total_length_m"], "m") for a in schedule["aggregates"]),  # artifacts.md §10 test 8
+        ("wallframing", HEAD, framing[HEAD], "m"), ("wallframing", JAMB, framing[JAMB], "m"), ("wallframing", SILL, framing[SILL], "m")]
     assert all(not li["priced"] and li["amount_minor"] is None and li["unit_price_minor"] is None for li in payload["line_items"])
-    assert_connection_lines_follow(schedule, payload)
+    assert_connection_lines_follow(schedule, payload, assemblies)
     validate_against("PreliminaryEstimatePayload", payload)
 
 
-def assert_connection_lines_follow(schedule, payload):
-    """Connection quantities are the per-type sums of the same schedule; its assumptions are copied (§7.1–7.2)."""
+def assert_connection_lines_follow(schedule, payload, assemblies=None):
+    """Connection quantities are the per-type sums of the same schedule; both schedules' assumptions are copied
+    (§7.1–7.2; ART-003 §7.3)."""
     per_type = Counter()
     for a in schedule["connection_aggregates"]:
         per_type[a["connection_type"]] += a["count"]
     lines = {li["connection_type"]: li["quantity_value"] for li in payload["line_items"] if li["kind"] == "connection"}
     assert lines == dict(per_type)
     assert all(isinstance(q, int) for q in lines.values())
-    assert payload["assumptions"] == schedule["assumptions"]
+    if assemblies is not None:
+        assert payload["assumptions"] == schedule["assumptions"] + assemblies["assumptions"]
+    assert payload["assumptions"][:3] == schedule["assumptions"] and len(payload["assumptions"]) == 12
 
 
 def test_partial_book(store):
@@ -220,21 +234,21 @@ def test_partial_book(store):
     env = estimate(svc, pid, at(1))
     payload = env["payload"]
     assert (env["status"], payload["coverage"], payload["currency"]) == ("CURRENT", "partial", "USD")
-    assert payload["totals"]["grand_total_minor"] is None and payload["totals"]["unpriced_line_count"] == 9
+    assert payload["totals"]["grand_total_minor"] is None and payload["totals"]["unpriced_line_count"] == 15
     assert payload["totals"]["priced_amount_minor"] == next(li["amount_minor"] for li in payload["line_items"] if li["key"] == POST)
     assert "COST_INPUTS_MISSING" in [w["code"] for w in env["warnings"]]
 
 
 def test_timber_only_book_is_partial(store):
-    """§13 test 6: a book that prices every timber line leaves the connection lines unpriced, never 0."""
+    """§13 test 6: a book that prices every timber line leaves the connection and wall lines unpriced, never 0."""
     svc, pid = svc_project(store)
     svc.set_price_book(pid, book(**TIMBER), actor_id=ACTOR, now=at(1))
     env = estimate(svc, pid, at(1))
     payload = env["payload"]
     assert (env["status"], payload["coverage"], payload["totals"]["grand_total_minor"]) == ("CURRENT", "partial", None)
-    assert payload["totals"]["unpriced_line_count"] == 3
+    assert payload["totals"]["unpriced_line_count"] == 9
     unpriced = [li for li in payload["line_items"] if not li["priced"]]
-    assert [li["key"] for li in unpriced] == [BRIDLE, DOVETAIL, PMT]
+    assert [li["key"] for li in unpriced] == [BALES, CLAY, LIME, BRIDLE, DOVETAIL, PMT, HEAD, JAMB, SILL]
     assert all(li["amount_minor"] is None and li["unit_price_minor"] is None for li in unpriced)
     assert payload["totals"]["priced_amount_minor"] == sum(li["amount_minor"] for li in payload["line_items"] if li["priced"])
     assert "COST_INPUTS_MISSING" in [w["code"] for w in env["warnings"]]
@@ -251,7 +265,7 @@ def test_complete_book(store):
     connection_amounts = {li["key"]: li["amount_minor"] for li in payload["line_items"] if li["kind"] == "connection"}
     assert connection_amounts == {BRIDLE: 6500 * 4, DOVETAIL: 3800 * 60, PMT: 4500 * 248}  # exact integer products
     schedule = svc.artifacts.get_artifact(pid, "timber_schedule", now=at(1))["payload"]
-    assert_connection_lines_follow(schedule, payload)
+    assert_connection_lines_follow(schedule, payload, svc.artifacts.get_artifact(pid, "assembly_schedule", now=at(1))["payload"])
     assert payload["totals"]["grand_total_minor"] == sum(li["amount_minor"] for li in payload["line_items"])
     assert isinstance(payload["totals"]["grand_total_minor"], int)
     assert payload["price_book"]["price_book_version"] == 1 and payload["price_book"]["source"] == "Supplier quote #123"
@@ -301,6 +315,101 @@ def test_amount_beyond_safe_integers_fails_the_derivation(store):
     assert env["status"] == "FAILED" and env["error"]["code"] == "DERIVATION_FAILED" and env.get("payload") is None
 
 
+# ART-003 §13 test 8: wall lines --------------------------------------------------------------------
+
+
+def test_frame_only_book_leaves_the_six_wall_lines_unpriced(store):
+    svc, pid = svc_project(store)
+    svc.set_price_book(pid, book(**FRAME), actor_id=ACTOR, now=at(1))
+    env = estimate(svc, pid, at(1))
+    payload = env["payload"]
+    assert (env["status"], payload["coverage"], payload["totals"]["grand_total_minor"]) == ("CURRENT", "partial", None)
+    unpriced = [li for li in payload["line_items"] if not li["priced"]]
+    assert [li["key"] for li in unpriced] == [BALES, CLAY, LIME, HEAD, JAMB, SILL]
+    assert all(li["amount_minor"] is None and li["unit_price_minor"] is None for li in unpriced)  # never 0 (AC2b-05)
+    assert "COST_INPUTS_MISSING" in [w["code"] for w in env["warnings"]]
+
+
+def test_wall_lines_carry_their_schedule_fields_and_exact_amounts(store):
+    svc, pid = svc_project(store)
+    svc.set_price_book(pid, book(**FULL), actor_id=ACTOR, now=at(1))
+    payload = estimate(svc, pid, at(1))["payload"]
+    assemblies = svc.artifacts.get_artifact(pid, "assembly_schedule", now=at(1))["payload"]
+    lines = {li["key"]: li for li in payload["line_items"]}
+    for a in assemblies["layer_aggregates"]:
+        line = lines[f"assembly.{a['assembly_label']}.{a['layer']}"]
+        assert (line["kind"], line["assembly_label"], line["layer"], line["layer_function"], line["material_name"]) == (
+            "assembly", a["assembly_label"], a["layer"], a["function"], a["material_name"])
+        assert (line["quantity_value"], line["quantity_unit"]) == (a["area_m2"], "m2")
+        assert line["amount_minor"] == round(Fraction(line["unit_price_minor"]) * Fraction(a["area_m2"]))  # exact, half-even
+    for a in assemblies["framing_aggregates"]:
+        line = lines[f"wallframing.{a['piece_kind']}.{a['nominal_section']}"]
+        assert (line["piece_kind"], line["nominal_section"], line["count"], line["quantity_value"], line["quantity_unit"]) == (
+            a["piece_kind"], a["nominal_section"], a["count"], a["total_length_m"], "m")
+    assert lines[BALES]["material_name"] == "Straw" and lines[BALES]["amount_minor"] == amount_minor(2200, lines[BALES]["quantity_value"])
+    assert payload["coverage"] == "complete" and payload["totals"]["grand_total_minor"] == sum(li["amount_minor"] for li in payload["line_items"])
+    validate_against("PreliminaryEstimatePayload", payload)
+
+
+def test_wall_assembly_switch_turns_bucks_into_unused_rows(store):
+    """§13 test 8: after SetWallAssembly to stud infill, 21 lines, the buck rows unused, the stud infill lines unpriced."""
+    svc, pid = svc_project(store)
+    svc.set_price_book(pid, book(**FULL), actor_id=ACTOR, now=at(1))
+    stud = next(e for e in svc.get_revision(pid, svc.get_project(pid)["head_revision_id"]).entities if e.kind == "AssemblyDefinition" and e.label == "stud-infill")
+    preview_commit(svc, pid, envelope(svc, pid, "SetWallAssembly", {"assembly_definition_id": stud.id}), now=at(2))
+    env = estimate(svc, pid, at(2))
+    payload = env["payload"]
+    assert len(payload["line_items"]) == 21 and payload["coverage"] == "partial" and payload["totals"]["grand_total_minor"] is None
+    unpriced = [li["key"] for li in payload["line_items"] if not li["priced"]]
+    assert unpriced == ["assembly.stud-infill.framing", "assembly.stud-infill.gypsum-board", "assembly.stud-infill.sheathing", "assembly.stud-infill.siding",
+                        "wallframing.CRIPPLE.2x6", "wallframing.GIRT.2x6", "wallframing.HEADER.2x8", "wallframing.JACK.2x6", "wallframing.KING.2x6",
+                        "wallframing.ROUGH_SILL.2x6", "wallframing.STUD.2x6"]
+    fill = next(li for li in payload["line_items"] if li["key"] == "assembly.stud-infill.framing")
+    assert fill["material_name"] == "Dense-pack cellulose" and fill["layer_function"] == "FRAMING"
+    (unused,) = [w for w in env["warnings"] if w["code"] == "PRICE_ROWS_UNUSED"]
+    for key in (BALES, CLAY, LIME, HEAD, JAMB, SILL):
+        assert key in unused["message"]
+
+
+def test_failed_assembly_schedule_fails_the_estimate(store):
+    """§7.3, §14: a failed assembly schedule makes the estimate FAILED with UPSTREAM_NOT_CURRENT."""
+    from homedesign.assemblies.schedule import select_assembly_schedule
+    from homedesign.dependencies import ArtifactService, default_registry, registry_of
+    from homedesign.dependencies.registry import Derivation
+
+    def broken(context):
+        raise RuntimeError("boom")
+
+    svc, pid = svc_project(store)
+    parts = dict(default_registry().derivations)
+    parts["assembly_schedule"] = Derivation("assembly_schedule", "assembly-schedule-vs02b", "broken", select_assembly_schedule, broken)
+    artifacts = ArtifactService(store, registry_of(parts.values()))
+    env = artifacts.get_artifact(pid, "preliminary_estimate", now=at(1))
+    assert (env["status"], env["error"]["code"], env.get("payload")) == ("FAILED", "UPSTREAM_NOT_CURRENT", None)
+    assert artifacts.get_artifact(pid, "assembly_schedule", now=at(1))["status"] == "FAILED"
+
+
+@pytest.mark.parametrize(
+    "row",
+    [{"key": BALES, "unit": "m", "unit_price_minor": 1}, {"key": BALES, "unit": "each", "unit_price_minor": 1},
+     {"key": JAMB, "unit": "m2", "unit_price_minor": 1}, {"key": JAMB, "unit": "each", "unit_price_minor": 1},
+     {"key": POST, "unit": "m2", "unit_price_minor": 1}, {"key": PMT, "unit": "m2", "unit_price_minor": 1}],
+)
+def test_wall_families_need_their_units(row):
+    """§13 test 9: assembly. needs m2 and wallframing. needs m; m2 is no unit for the frame's families."""
+    candidate = book(**{BEAM: 4725})
+    candidate["rows"].append(row)
+    _, result = validate_price_book(candidate)
+    assert [(i.code, i.path, i.value, i.related_paths) for i in result.issues] == [(codes.PRICE_UNIT_MISMATCH, "rows[1].unit", row["unit"], ("rows[1].key",))]
+
+
+def test_m2_rows_are_accepted_for_assembly_keys():
+    candidate = book(**{BALES: 2200, LIME: 4200, JAMB: 1900})
+    parsed, result = validate_price_book(candidate)
+    assert result is None and [r.unit for r in parsed.rows] == ["m2", "m2", "m"]
+    validate_against("PriceBook", candidate)
+
+
 # 5. rounding -------------------------------------------------------------------------------------
 
 
@@ -320,13 +429,13 @@ def test_half_even_on_the_exact_binary_value(price, quantity, expected):
 def test_book_change_makes_only_the_estimate_stale(store):
     svc, pid = svc_project(store)
     head_id = svc.get_project(pid)["head_revision_id"]
-    before = {t: svc.artifacts.get_artifact(pid, t, now=T0) for t in ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")}
+    before = {t: svc.artifacts.get_artifact(pid, t, now=T0) for t in ("plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate")}
     first = svc.set_price_book(pid, book(**{POST: 3150}), actor_id=ACTOR, now=at(1))
     second = svc.set_price_book(pid, book(**{POST: 3150, BEAM: 4725}), actor_id=ACTOR, now=at(2))
     assert (first["version"], second["version"]) == (1, 2) and first["price_book_id"] == second["price_book_id"]
     assert svc.get_project(pid)["head_revision_id"] == head_id  # not a model command: no revision
     statuses = svc.artifacts.statuses(pid, head_id)
-    assert statuses == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "preliminary_estimate": "STALE"}
+    assert statuses == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "assembly_schedule": "CURRENT", "preliminary_estimate": "STALE"}
     refreshed = estimate(svc, pid, at(3))
     assert refreshed["status"] == "CURRENT" and refreshed["payload"]["price_book"]["price_book_version"] == 2
     assert refreshed["input_fingerprint"] != before["preliminary_estimate"]["input_fingerprint"]
@@ -366,9 +475,12 @@ def test_width_change_recomputes_schedule_and_estimate(store):
 
 
 def test_estimate_is_deterministic():
+    from homedesign.assemblies.schedule import build_assembly_schedule, select_assembly_schedule
+
     schedule = build_schedule(select_schedule(FIXTURE_SNAPSHOT))
+    assemblies = build_assembly_schedule(select_assembly_schedule(FIXTURE_SNAPSHOT))
     row = {"price_book_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", "version": 3, "book": book(**{POST: 3150, BEAM: 4725})}
-    assert build_estimate(schedule, row) == build_estimate(schedule, row)
+    assert build_estimate(schedule, assemblies, row) == build_estimate(schedule, assemblies, row)
 
 
 # 10. contract and invalid books -----------------------------------------------------------------------------

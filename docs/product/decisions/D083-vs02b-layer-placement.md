@@ -1,6 +1,6 @@
 # D083 — VS-02b layer placement: the framing layer is centered on the wall's reference plane
 
-**Status:** Confirmed (to be implemented in VS-02b, [ART-003](../../implementation/tasks/ART-003.md))  
+**Status:** Confirmed; implemented in VS-02b by [ART-003](../../implementation/tasks/ART-003.md) (2026-11-22)  
 **Date:** 2026-11-22  
 **Scope:** Where each layer of a wall's build-up sits through the wall's thickness, as the views (`plan2d`, `mesh3d`) draw it. Approved as [ART-003](../../implementation/tasks/ART-003.md) §12 item 2.  
 **Settles:** [D065](D065-vs02b-wall-placement.md)'s "the definition's layers are placed symmetrically about it unless the approved build-ups say otherwise".

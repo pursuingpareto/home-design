@@ -14,7 +14,7 @@ from homedesign.estimating.pricebook import PriceBook
 from homedesign.model.commands.envelope import AnyCommand, CreateReferenceProject
 
 ArtifactStatus = Literal["CURRENT", "STALE", "MISSING", "UNAVAILABLE", "FAILED"]
-ArtifactType = Literal["plan2d", "mesh3d", "timber_schedule", "preliminary_estimate"]  # artifacts.md §1
+ArtifactType = Literal["plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate"]  # artifacts.md §1
 
 
 class _Strict(BaseModel):

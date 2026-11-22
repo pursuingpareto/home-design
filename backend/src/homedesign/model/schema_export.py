@@ -50,22 +50,23 @@ def commands_json_schema() -> dict[str, Any]:
 
 
 def artifacts_json_schema() -> dict[str, Any]:
-    """Envelope and manifest (ART-001), the four payloads (GEOM-001, EST-001), and the price book."""
+    """Envelope and manifest (ART-001), the five payloads (GEOM-001, EST-001, ART-003), and the price book."""
     from pydantic.json_schema import models_json_schema
 
+    from homedesign.assemblies.schedule import AssemblySchedulePayload
     from homedesign.dependencies.envelope import ArtifactEnvelope, Manifest
     from homedesign.estimating.estimate import PreliminaryEstimatePayload
     from homedesign.estimating.pricebook import PriceBook
     from homedesign.geometry.payloads import Mesh3dPayload, Plan2dPayload
     from homedesign.timber.schedule import TimberSchedulePayload
 
-    models = (ArtifactEnvelope, Manifest, Plan2dPayload, Mesh3dPayload, TimberSchedulePayload, PreliminaryEstimatePayload, PriceBook)
+    models = (ArtifactEnvelope, Manifest, Plan2dPayload, Mesh3dPayload, TimberSchedulePayload, AssemblySchedulePayload, PreliminaryEstimatePayload, PriceBook)
     _, schema = models_json_schema([(m, "validation") for m in models])
     schema["$schema"] = JSON_SCHEMA_DIALECT
     schema["title"] = "VS-01 artifact envelope and manifest (ART-001)"
     schema["description"] = (
         "Definitions for artifacts.md §2-3, generated from backend/src/homedesign/dependencies/envelope.py; "
-        "do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope, a manifest against #/$defs/Manifest, payloads against #/$defs/Plan2dPayload, Mesh3dPayload, TimberSchedulePayload, and PreliminaryEstimatePayload, and price books against #/$defs/PriceBook."
+        "do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope, a manifest against #/$defs/Manifest, payloads against #/$defs/Plan2dPayload, Mesh3dPayload, TimberSchedulePayload, AssemblySchedulePayload, and PreliminaryEstimatePayload, and price books against #/$defs/PriceBook."
     )
     return schema
 

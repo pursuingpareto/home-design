@@ -1,4 +1,4 @@
-"""`plan2d` and `mesh3d` payload DTOs (artifacts.md §5–6; Pydantic-authoritative per D028)."""
+"""`plan2d` and `mesh3d` payload DTOs (artifacts.md §5–6; ART-003 §5–6; Pydantic-authoritative per D028)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from homedesign.model.connections import ConnectionType, JunctionClass
-from homedesign.model.schema import MemberRole, Uuid
+from homedesign.model.schema import LayerFunction, MemberRole, OpeningKind, PieceKind, Uuid
 
 XY = Annotated[list[float], Field(min_length=2, max_length=2)]
 XYZ = Annotated[list[float], Field(min_length=3, max_length=3)]
@@ -48,6 +48,45 @@ class PlanConnection(_Strict):
     xy_m: XY
 
 
+class PlanWallOpening(_Strict):
+    """A gap through the wall's full thickness at the rough opening, along its reference line (ART-003 §5.2)."""
+
+    opening_id: Uuid
+    opening_kind: OpeningKind
+    start_xy_m: XY
+    end_xy_m: XY
+
+
+class PlanWall(_Strict):
+    """A wall's outline: the band from start to end, ``exterior_m`` outward and ``interior_m`` inward (D070, D083)."""
+
+    wall_id: Uuid
+    generation_key: str
+    start_xy_m: XY
+    end_xy_m: XY
+    outward_xy: XY
+    exterior_m: float
+    interior_m: float
+    openings: list[PlanWallOpening]
+
+
+class PlanVerticalPiece(_Strict):
+    """A stud, king, jack, cripple, or buck jamb: the plan projection of its start. No key or section (D086)."""
+
+    piece_id: Uuid
+    piece_kind: Literal["STUD", "KING", "JACK", "CRIPPLE", "BUCK_JAMB"]
+    xy_m: XY
+
+
+class PlanHorizontalPiece(_Strict):
+    """A girt, header, rough sill, buck head, or buck sill: the plan projection of its axis (D086)."""
+
+    piece_id: Uuid
+    piece_kind: Literal["GIRT", "HEADER", "ROUGH_SILL", "BUCK_HEAD", "BUCK_SILL"]
+    start_xy_m: XY
+    end_xy_m: XY
+
+
 class PlanPlane(_Strict):
     plane_id: Literal["level-0", "level-1", "eave", "roof"]
     level_id: Uuid | None
@@ -60,6 +99,8 @@ class PlanPlane(_Strict):
     rafters: list[PlanLinearMember]
     purlins: list[PlanLinearMember]
     connections: list[PlanConnection]
+    walls: list[PlanWall]  # VS-02b: the "Wall layers" switch hides this array (D066)
+    wall_framing: list[Annotated[PlanVerticalPiece | PlanHorizontalPiece, Field(discriminator="piece_kind")]]  # and "Wall framing" this one
 
 
 class PlanFootprint(_Strict):
@@ -142,10 +183,57 @@ class Envelope3d(_Strict):
     roof: GableRoofGeometry
 
 
+class WallLayerSpan(_Strict):
+    """A layer's signed interval along the wall's outward normal, 0 at the reference plane (D083)."""
+
+    name: str
+    function: LayerFunction
+    inner_m: float
+    outer_m: float
+
+
+class WallVoid(_Strict):
+    """A rough opening in wall-local coordinates: ``u`` along the wall from its start, ``v`` up from its base."""
+
+    opening_id: Uuid
+    opening_kind: OpeningKind
+    u_m: Annotated[list[float], Field(min_length=2, max_length=2)]
+    v_m: Annotated[list[float], Field(min_length=2, max_length=2)]
+
+
+class MeshWall(_Strict):
+    """One box per layer, with rectangular voids through every layer (ART-003 §6.1). A display primitive."""
+
+    wall_id: Uuid
+    generation_key: str
+    primitive: Literal["layered_wall"] = "layered_wall"
+    base_start_m: XYZ
+    base_end_m: XYZ
+    height_m: float
+    outward_xy: XY
+    layers: Annotated[list[WallLayerSpan], Field(min_length=1)]  # exterior to interior
+    voids: list[WallVoid]
+
+
+class MeshWallFramingPiece(_Strict):
+    """An oriented box per piece (ART-003 §6.2): through-wall along the wall's ``outward_xy``, in-plane in the
+    wall's plane across the axis. No key and no ``primitive`` field (D086)."""
+
+    piece_id: Uuid
+    piece_kind: PieceKind
+    wall_id: Uuid
+    axis_start_m: XYZ
+    axis_end_m: XYZ
+    section_in_plane_m: float
+    section_through_wall_m: float
+
+
 class Mesh3dPayload(_Strict):
     model_config = ConfigDict(title="mesh3d payload (artifacts.md §6)")
 
     units: Literal["m"] = "m"
     members: list[MeshMember]
     connections: list[MeshConnection]
+    walls: list[MeshWall]  # VS-02b: the "Wall layers" switch hides this array (D066)
+    wall_framing: list[MeshWallFramingPiece]  # and the "Wall framing" switch this one
     envelope: Envelope3d

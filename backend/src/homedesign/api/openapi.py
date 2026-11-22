@@ -2,7 +2,7 @@
 
 FastAPI documents routes and response models. Request bodies are parsed strictly by the handlers,
 so their schemas are added to `components` here from the same Pydantic models, together with the
-four artifact payloads (an envelope's `payload` is typed by its `artifact_type`).
+five artifact payloads (an envelope's `payload` is typed by its `artifact_type`).
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from pydantic.json_schema import models_json_schema
 
+from homedesign.assemblies.schedule import AssemblySchedulePayload
 from homedesign.estimating.estimate import PreliminaryEstimatePayload
 from homedesign.estimating.pricebook import PriceBook
 from homedesign.geometry.payloads import Mesh3dPayload, Plan2dPayload
@@ -20,7 +21,7 @@ from homedesign.timber.schedule import TimberSchedulePayload
 
 REF_TEMPLATE = "#/components/schemas/{model}"
 # Envelope payloads are typed per artifact_type (artifacts.md §5-8); named here so clients get their types.
-PAYLOAD_COMPONENTS = (Plan2dPayload, Mesh3dPayload, TimberSchedulePayload, PreliminaryEstimatePayload)
+PAYLOAD_COMPONENTS = (Plan2dPayload, Mesh3dPayload, TimberSchedulePayload, AssemblySchedulePayload, PreliminaryEstimatePayload)
 
 
 def build_openapi(app: FastAPI) -> dict[str, Any]:

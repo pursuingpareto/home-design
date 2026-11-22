@@ -59,7 +59,7 @@ def estimate_stub(book: dict):
 
 def registry(book=None, **overrides):
     book = {} if book is None else book
-    parts = {k: stub(k) for k in ("plan2d", "mesh3d", "timber_schedule")} | {"preliminary_estimate": estimate_stub(book)}
+    parts = {k: stub(k) for k in ("plan2d", "mesh3d", "timber_schedule", "assembly_schedule")} | {"preliminary_estimate": estimate_stub(book)}
     parts.update(overrides)
     return registry_of(parts.values())
 
@@ -68,7 +68,7 @@ def service(store, reg=None):
     return ProjectService(store, token_key=KEY, registry=reg if reg is not None else registry())
 
 
-EXPECTED = {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "preliminary_estimate": "UNAVAILABLE"}
+EXPECTED = {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "assembly_schedule": "CURRENT", "preliminary_estimate": "UNAVAILABLE"}
 
 
 # 1. every revision has artifacts ---------------------------------------------------------
@@ -171,7 +171,7 @@ def test_missing_artifacts_are_derived_on_read(store):
     # Reading the estimate derives its dependency first.
     assert svc.artifacts.get_artifact(created.project_id, "preliminary_estimate", now=at(2))["status"] == "UNAVAILABLE"
     statuses = svc.artifacts.statuses(created.project_id, created.revision_id)
-    assert statuses == {"plan2d": "MISSING", "mesh3d": "MISSING", "timber_schedule": "CURRENT", "preliminary_estimate": "UNAVAILABLE"}
+    assert statuses == {"plan2d": "MISSING", "mesh3d": "MISSING", "timber_schedule": "CURRENT", "assembly_schedule": "MISSING", "preliminary_estimate": "UNAVAILABLE"}
 
 
 def test_generator_version_bump_makes_artifacts_stale(store):
@@ -188,7 +188,7 @@ def test_external_input_change_makes_only_that_artifact_stale(store):
     created = create(svc)
     book["value"] = {"currency": "USD", "rows": []}
     statuses = svc.artifacts.statuses(created.project_id, created.revision_id)
-    assert statuses == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "preliminary_estimate": "STALE"}
+    assert statuses == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "assembly_schedule": "CURRENT", "preliminary_estimate": "STALE"}
     envelope = svc.artifacts.get_artifact(created.project_id, "preliminary_estimate", now=at(4))
     assert envelope["status"] == "CURRENT" and envelope["payload"] == {"coverage": "complete", "members": 193}
     assert envelope["source_revision_id"] == created.revision_id
@@ -322,7 +322,7 @@ def test_lazy_recompute_reuses_a_row_of_another_revision(store):
     assert (envelope["status"], envelope["source_revision_id"], envelope["generated_at"]) == (
         "UNAVAILABLE", committed.revision_id, "2026-11-19T12:00:00.000000Z")
     assert svc.artifacts.statuses(created.project_id, committed.revision_id) == {
-        "plan2d": "MISSING", "mesh3d": "MISSING", "timber_schedule": "CURRENT", "preliminary_estimate": "UNAVAILABLE"}
+        "plan2d": "MISSING", "mesh3d": "MISSING", "timber_schedule": "CURRENT", "assembly_schedule": "MISSING", "preliminary_estimate": "UNAVAILABLE"}
 
 
 def test_selector_errors_fail_the_derivation_only(store):

@@ -1,5 +1,63 @@
 {
   "$defs": {
+    "AreaWeightedFigure": {
+      "additionalProperties": false,
+      "properties": {
+        "missing_inputs": {
+          "items": {
+            "$ref": "#/$defs/MissingInput"
+          },
+          "title": "Missing Inputs",
+          "type": "array"
+        },
+        "net_area_m2": {
+          "title": "Net Area M2",
+          "type": "number"
+        },
+        "r_value_m2_k_w": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "R Value M2 K W"
+        },
+        "u_value_w_m2_k": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "U Value W M2 K"
+        },
+        "ua_w_k": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ua W K"
+        }
+      },
+      "required": [
+        "net_area_m2",
+        "ua_w_k",
+        "u_value_w_m2_k",
+        "r_value_m2_k_w",
+        "missing_inputs"
+      ],
+      "title": "AreaWeightedFigure",
+      "type": "object"
+    },
     "ArtifactEnvelope": {
       "additionalProperties": false,
       "description": "Common envelope for every artifact response (artifacts.md §2).",
@@ -9,6 +67,7 @@
             "plan2d",
             "mesh3d",
             "timber_schedule",
+            "assembly_schedule",
             "preliminary_estimate"
           ],
           "title": "Artifact Type",
@@ -153,6 +212,478 @@
       "title": "VS-01 artifact envelope (artifacts.md §2)",
       "type": "object"
     },
+    "AssemblyLine": {
+      "additionalProperties": false,
+      "description": "One line per definition and layer in use, the framing layer's fill included (D070, D082; ART-003 §7.1).",
+      "properties": {
+        "amount_minor": {
+          "anyOf": [
+            {
+              "ge": -9007199254740991,
+              "le": 9007199254740991,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Amount Minor"
+        },
+        "assembly_label": {
+          "title": "Assembly Label",
+          "type": "string"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "kind": {
+          "const": "assembly",
+          "title": "Kind",
+          "type": "string"
+        },
+        "layer": {
+          "title": "Layer",
+          "type": "string"
+        },
+        "layer_function": {
+          "enum": [
+            "FINISH",
+            "SHEATHING",
+            "INSULATION",
+            "FRAMING"
+          ],
+          "title": "Layer Function",
+          "type": "string"
+        },
+        "material_name": {
+          "title": "Material Name",
+          "type": "string"
+        },
+        "priced": {
+          "title": "Priced",
+          "type": "boolean"
+        },
+        "quantity_unit": {
+          "const": "m2",
+          "title": "Quantity Unit",
+          "type": "string"
+        },
+        "quantity_value": {
+          "title": "Quantity Value",
+          "type": "number"
+        },
+        "unit_price_minor": {
+          "anyOf": [
+            {
+              "ge": -9007199254740991,
+              "le": 9007199254740991,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unit Price Minor"
+        }
+      },
+      "required": [
+        "kind",
+        "key",
+        "assembly_label",
+        "layer",
+        "layer_function",
+        "material_name",
+        "quantity_value",
+        "quantity_unit",
+        "unit_price_minor",
+        "amount_minor",
+        "priced"
+      ],
+      "title": "AssemblyLine",
+      "type": "object"
+    },
+    "AssemblyOpeningRow": {
+      "additionalProperties": false,
+      "description": "No position (ART-003 §4.3): positions belong to the views.",
+      "properties": {
+        "area_m2": {
+          "title": "Area M2",
+          "type": "number"
+        },
+        "has_jacks": {
+          "title": "Has Jacks",
+          "type": "boolean"
+        },
+        "height_m": {
+          "title": "Height M",
+          "type": "number"
+        },
+        "opening_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Opening Id",
+          "type": "string"
+        },
+        "opening_kind": {
+          "enum": [
+            "WINDOW",
+            "DOOR"
+          ],
+          "title": "Opening Kind",
+          "type": "string"
+        },
+        "wall_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Wall Id",
+          "type": "string"
+        },
+        "wall_key": {
+          "title": "Wall Key",
+          "type": "string"
+        },
+        "width_m": {
+          "title": "Width M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "opening_id",
+        "opening_kind",
+        "wall_id",
+        "wall_key",
+        "width_m",
+        "height_m",
+        "area_m2",
+        "has_jacks"
+      ],
+      "title": "AssemblyOpeningRow",
+      "type": "object"
+    },
+    "AssemblySchedulePayload": {
+      "additionalProperties": false,
+      "properties": {
+        "assumptions": {
+          "items": {
+            "$ref": "#/$defs/Assumption"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "definition_aggregates": {
+          "items": {
+            "$ref": "#/$defs/DefinitionAggregate"
+          },
+          "title": "Definition Aggregates",
+          "type": "array"
+        },
+        "definitions": {
+          "items": {
+            "$ref": "#/$defs/DefinitionEntry"
+          },
+          "title": "Definitions",
+          "type": "array"
+        },
+        "framing_aggregates": {
+          "items": {
+            "$ref": "#/$defs/FramingAggregate"
+          },
+          "title": "Framing Aggregates",
+          "type": "array"
+        },
+        "layer_aggregates": {
+          "items": {
+            "$ref": "#/$defs/LayerAggregate"
+          },
+          "title": "Layer Aggregates",
+          "type": "array"
+        },
+        "opening_aggregates": {
+          "items": {
+            "$ref": "#/$defs/OpeningAggregate"
+          },
+          "title": "Opening Aggregates",
+          "type": "array"
+        },
+        "openings": {
+          "items": {
+            "$ref": "#/$defs/AssemblyOpeningRow"
+          },
+          "title": "Openings",
+          "type": "array"
+        },
+        "quantity_basis": {
+          "const": "reference",
+          "default": "reference",
+          "title": "Quantity Basis",
+          "type": "string"
+        },
+        "thermal": {
+          "$ref": "#/$defs/ThermalFigures"
+        },
+        "totals": {
+          "$ref": "#/$defs/AssemblyTotals"
+        },
+        "units": {
+          "$ref": "#/$defs/AssemblyUnits",
+          "default": {
+            "area": "m2",
+            "count": "1",
+            "heat_flow": "W/K",
+            "length": "m",
+            "thermal_resistance": "m2.K/W",
+            "thermal_transmittance": "W/(m2.K)",
+            "volume": "m3"
+          }
+        },
+        "wall_framing": {
+          "items": {
+            "$ref": "#/$defs/WallFramingRow"
+          },
+          "title": "Wall Framing",
+          "type": "array"
+        },
+        "walls": {
+          "items": {
+            "$ref": "#/$defs/AssemblyWallRow"
+          },
+          "title": "Walls",
+          "type": "array"
+        }
+      },
+      "required": [
+        "assumptions",
+        "definitions",
+        "walls",
+        "openings",
+        "wall_framing",
+        "definition_aggregates",
+        "layer_aggregates",
+        "framing_aggregates",
+        "opening_aggregates",
+        "totals",
+        "thermal"
+      ],
+      "title": "assembly_schedule payload (artifacts.md §7A)",
+      "type": "object"
+    },
+    "AssemblyTotals": {
+      "additionalProperties": false,
+      "properties": {
+        "framing_face_area_m2": {
+          "title": "Framing Face Area M2",
+          "type": "number"
+        },
+        "gross_area_m2": {
+          "title": "Gross Area M2",
+          "type": "number"
+        },
+        "net_area_m2": {
+          "title": "Net Area M2",
+          "type": "number"
+        },
+        "opening_area_m2": {
+          "title": "Opening Area M2",
+          "type": "number"
+        },
+        "opening_count": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Opening Count",
+          "type": "integer"
+        },
+        "wall_count": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Wall Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "wall_count",
+        "opening_count",
+        "gross_area_m2",
+        "opening_area_m2",
+        "net_area_m2",
+        "framing_face_area_m2"
+      ],
+      "title": "AssemblyTotals",
+      "type": "object"
+    },
+    "AssemblyUnits": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "const": "m2",
+          "default": "m2",
+          "title": "Area",
+          "type": "string"
+        },
+        "count": {
+          "const": "1",
+          "default": "1",
+          "title": "Count",
+          "type": "string"
+        },
+        "heat_flow": {
+          "const": "W/K",
+          "default": "W/K",
+          "title": "Heat Flow",
+          "type": "string"
+        },
+        "length": {
+          "const": "m",
+          "default": "m",
+          "title": "Length",
+          "type": "string"
+        },
+        "thermal_resistance": {
+          "const": "m2.K/W",
+          "default": "m2.K/W",
+          "title": "Thermal Resistance",
+          "type": "string"
+        },
+        "thermal_transmittance": {
+          "const": "W/(m2.K)",
+          "default": "W/(m2.K)",
+          "title": "Thermal Transmittance",
+          "type": "string"
+        },
+        "volume": {
+          "const": "m3",
+          "default": "m3",
+          "title": "Volume",
+          "type": "string"
+        }
+      },
+      "title": "AssemblyUnits",
+      "type": "object"
+    },
+    "AssemblyWallRow": {
+      "additionalProperties": false,
+      "properties": {
+        "assembly_definition_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Assembly Definition Id",
+          "type": "string"
+        },
+        "assembly_label": {
+          "title": "Assembly Label",
+          "type": "string"
+        },
+        "elevation_side": {
+          "enum": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "title": "Elevation Side",
+          "type": "string"
+        },
+        "framing_face_area_m2": {
+          "title": "Framing Face Area M2",
+          "type": "number"
+        },
+        "framing_fraction": {
+          "title": "Framing Fraction",
+          "type": "number"
+        },
+        "generation_key": {
+          "title": "Generation Key",
+          "type": "string"
+        },
+        "gross_area_m2": {
+          "title": "Gross Area M2",
+          "type": "number"
+        },
+        "height_m": {
+          "title": "Height M",
+          "type": "number"
+        },
+        "length_m": {
+          "title": "Length M",
+          "type": "number"
+        },
+        "level_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Level Id",
+          "type": "string"
+        },
+        "level_index": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Level Index",
+          "type": "integer"
+        },
+        "net_area_m2": {
+          "title": "Net Area M2",
+          "type": "number"
+        },
+        "opening_area_m2": {
+          "title": "Opening Area M2",
+          "type": "number"
+        },
+        "r_value_m2_k_w": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "R Value M2 K W"
+        },
+        "u_value_w_m2_k": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "U Value W M2 K"
+        },
+        "ua_w_k": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ua W K"
+        },
+        "wall_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Wall Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "wall_id",
+        "generation_key",
+        "level_id",
+        "level_index",
+        "elevation_side",
+        "assembly_definition_id",
+        "assembly_label",
+        "length_m",
+        "height_m",
+        "gross_area_m2",
+        "opening_area_m2",
+        "net_area_m2",
+        "framing_face_area_m2",
+        "framing_fraction",
+        "u_value_w_m2_k",
+        "r_value_m2_k_w",
+        "ua_w_k"
+      ],
+      "title": "AssemblyWallRow",
+      "type": "object"
+    },
     "Assumption": {
       "additionalProperties": false,
       "properties": {
@@ -170,6 +701,55 @@
         "message"
       ],
       "title": "Assumption",
+      "type": "object"
+    },
+    "BuckFramingSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "buck_section": {
+          "title": "Buck Section",
+          "type": "string"
+        },
+        "framing_material_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Framing Material Id",
+          "type": "string"
+        },
+        "framing_material_name": {
+          "title": "Framing Material Name",
+          "type": "string"
+        },
+        "framing_thermal_conductivity_w_m_k": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeclaredValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "girt_count": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Girt Count",
+          "type": "integer"
+        },
+        "type": {
+          "const": "BUCK",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "framing_material_id",
+        "framing_material_name",
+        "framing_thermal_conductivity_w_m_k",
+        "buck_section",
+        "girt_count"
+      ],
+      "title": "BuckFramingSummary",
       "type": "object"
     },
     "CatalogType": {
@@ -374,6 +954,244 @@
       "title": "ConnectionLine",
       "type": "object"
     },
+    "DeclaredValue": {
+      "additionalProperties": false,
+      "description": "A declared property value with its provenance (D071, D075). The unit is fixed by the field name, in SI.",
+      "properties": {
+        "date": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "title": "Date",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Note"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "source",
+        "date",
+        "note"
+      ],
+      "title": "DeclaredValue",
+      "type": "object"
+    },
+    "DefinitionAggregate": {
+      "additionalProperties": false,
+      "properties": {
+        "assembly_label": {
+          "title": "Assembly Label",
+          "type": "string"
+        },
+        "gross_area_m2": {
+          "title": "Gross Area M2",
+          "type": "number"
+        },
+        "net_area_m2": {
+          "title": "Net Area M2",
+          "type": "number"
+        },
+        "opening_area_m2": {
+          "title": "Opening Area M2",
+          "type": "number"
+        },
+        "opening_count": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Opening Count",
+          "type": "integer"
+        },
+        "wall_count": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Wall Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "assembly_label",
+        "wall_count",
+        "opening_count",
+        "gross_area_m2",
+        "opening_area_m2",
+        "net_area_m2"
+      ],
+      "title": "DefinitionAggregate",
+      "type": "object"
+    },
+    "DefinitionEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "assembly_definition_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Assembly Definition Id",
+          "type": "string"
+        },
+        "family": {
+          "enum": [
+            "STRAW_BALE",
+            "STUD_INFILL"
+          ],
+          "title": "Family",
+          "type": "string"
+        },
+        "installation_note": {
+          "title": "Installation Note",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "layers": {
+          "items": {
+            "$ref": "#/$defs/DefinitionLayer"
+          },
+          "minItems": 1,
+          "title": "Layers",
+          "type": "array"
+        },
+        "total_thickness_m": {
+          "title": "Total Thickness M",
+          "type": "number"
+        },
+        "unverified_climate_details": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unverified Climate Details",
+          "type": "array"
+        }
+      },
+      "required": [
+        "assembly_definition_id",
+        "label",
+        "family",
+        "installation_note",
+        "unverified_climate_details",
+        "total_thickness_m",
+        "layers"
+      ],
+      "title": "DefinitionEntry",
+      "type": "object"
+    },
+    "DefinitionLayer": {
+      "additionalProperties": false,
+      "description": "A layer as stored, with its material's name and, for the framing layer, its framing by section label.",
+      "properties": {
+        "framing": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "BUCK": "#/$defs/BuckFramingSummary",
+                  "STUD": "#/$defs/StudFramingSummary"
+                },
+                "propertyName": "type"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/StudFramingSummary"
+                },
+                {
+                  "$ref": "#/$defs/BuckFramingSummary"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Framing"
+        },
+        "function": {
+          "enum": [
+            "FINISH",
+            "SHEATHING",
+            "INSULATION",
+            "FRAMING"
+          ],
+          "title": "Function",
+          "type": "string"
+        },
+        "material_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Material Id",
+          "type": "string"
+        },
+        "material_name": {
+          "title": "Material Name",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "thermal_conductivity_w_m_k": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeclaredValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "thermal_resistance_m2_k_w": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeclaredValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "thickness_m": {
+          "title": "Thickness M",
+          "type": "number"
+        },
+        "vapor_permeance_kg_pa_s_m2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeclaredValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "function",
+        "material_id",
+        "material_name",
+        "thickness_m",
+        "thermal_conductivity_w_m_k",
+        "thermal_resistance_m2_k_w",
+        "vapor_permeance_kg_pa_s_m2",
+        "framing"
+      ],
+      "title": "DefinitionLayer",
+      "type": "object"
+    },
     "Dimension": {
       "additionalProperties": false,
       "properties": {
@@ -460,6 +1278,49 @@
       "title": "Envelope3d",
       "type": "object"
     },
+    "FramingAggregate": {
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "ge": 1,
+          "le": 9007199254740991,
+          "title": "Count",
+          "type": "integer"
+        },
+        "nominal_section": {
+          "title": "Nominal Section",
+          "type": "string"
+        },
+        "piece_kind": {
+          "enum": [
+            "STUD",
+            "GIRT",
+            "KING",
+            "JACK",
+            "HEADER",
+            "ROUGH_SILL",
+            "CRIPPLE",
+            "BUCK_JAMB",
+            "BUCK_HEAD",
+            "BUCK_SILL"
+          ],
+          "title": "Piece Kind",
+          "type": "string"
+        },
+        "total_length_m": {
+          "title": "Total Length M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "piece_kind",
+        "nominal_section",
+        "count",
+        "total_length_m"
+      ],
+      "title": "FramingAggregate",
+      "type": "object"
+    },
     "GableRoofGeometry": {
       "additionalProperties": false,
       "properties": {
@@ -514,6 +1375,56 @@
         "surfaces"
       ],
       "title": "GableRoofGeometry",
+      "type": "object"
+    },
+    "LayerAggregate": {
+      "additionalProperties": false,
+      "properties": {
+        "area_m2": {
+          "title": "Area M2",
+          "type": "number"
+        },
+        "assembly_label": {
+          "title": "Assembly Label",
+          "type": "string"
+        },
+        "function": {
+          "enum": [
+            "FINISH",
+            "SHEATHING",
+            "INSULATION",
+            "FRAMING"
+          ],
+          "title": "Function",
+          "type": "string"
+        },
+        "layer": {
+          "title": "Layer",
+          "type": "string"
+        },
+        "material_name": {
+          "title": "Material Name",
+          "type": "string"
+        },
+        "thickness_m": {
+          "title": "Thickness M",
+          "type": "number"
+        },
+        "volume_m3": {
+          "title": "Volume M3",
+          "type": "number"
+        }
+      },
+      "required": [
+        "assembly_label",
+        "layer",
+        "function",
+        "material_name",
+        "thickness_m",
+        "area_m2",
+        "volume_m3"
+      ],
+      "title": "LayerAggregate",
       "type": "object"
     },
     "Manifest": {
@@ -634,11 +1545,27 @@
           "default": "m",
           "title": "Units",
           "type": "string"
+        },
+        "wall_framing": {
+          "items": {
+            "$ref": "#/$defs/MeshWallFramingPiece"
+          },
+          "title": "Wall Framing",
+          "type": "array"
+        },
+        "walls": {
+          "items": {
+            "$ref": "#/$defs/MeshWall"
+          },
+          "title": "Walls",
+          "type": "array"
         }
       },
       "required": [
         "members",
         "connections",
+        "walls",
+        "wall_framing",
         "envelope"
       ],
       "title": "mesh3d payload (artifacts.md §6)",
@@ -771,6 +1698,154 @@
       "title": "MeshMember",
       "type": "object"
     },
+    "MeshWall": {
+      "additionalProperties": false,
+      "description": "One box per layer, with rectangular voids through every layer (ART-003 §6.1). A display primitive.",
+      "properties": {
+        "base_end_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Base End M",
+          "type": "array"
+        },
+        "base_start_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Base Start M",
+          "type": "array"
+        },
+        "generation_key": {
+          "title": "Generation Key",
+          "type": "string"
+        },
+        "height_m": {
+          "title": "Height M",
+          "type": "number"
+        },
+        "layers": {
+          "items": {
+            "$ref": "#/$defs/WallLayerSpan"
+          },
+          "minItems": 1,
+          "title": "Layers",
+          "type": "array"
+        },
+        "outward_xy": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Outward Xy",
+          "type": "array"
+        },
+        "primitive": {
+          "const": "layered_wall",
+          "default": "layered_wall",
+          "title": "Primitive",
+          "type": "string"
+        },
+        "voids": {
+          "items": {
+            "$ref": "#/$defs/WallVoid"
+          },
+          "title": "Voids",
+          "type": "array"
+        },
+        "wall_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Wall Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "wall_id",
+        "generation_key",
+        "base_start_m",
+        "base_end_m",
+        "height_m",
+        "outward_xy",
+        "layers",
+        "voids"
+      ],
+      "title": "MeshWall",
+      "type": "object"
+    },
+    "MeshWallFramingPiece": {
+      "additionalProperties": false,
+      "description": "An oriented box per piece (ART-003 §6.2): through-wall along the wall's ``outward_xy``, in-plane in the\nwall's plane across the axis. No key and no ``primitive`` field (D086).",
+      "properties": {
+        "axis_end_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Axis End M",
+          "type": "array"
+        },
+        "axis_start_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Axis Start M",
+          "type": "array"
+        },
+        "piece_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Piece Id",
+          "type": "string"
+        },
+        "piece_kind": {
+          "enum": [
+            "STUD",
+            "GIRT",
+            "KING",
+            "JACK",
+            "HEADER",
+            "ROUGH_SILL",
+            "CRIPPLE",
+            "BUCK_JAMB",
+            "BUCK_HEAD",
+            "BUCK_SILL"
+          ],
+          "title": "Piece Kind",
+          "type": "string"
+        },
+        "section_in_plane_m": {
+          "title": "Section In Plane M",
+          "type": "number"
+        },
+        "section_through_wall_m": {
+          "title": "Section Through Wall M",
+          "type": "number"
+        },
+        "wall_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Wall Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "piece_id",
+        "piece_kind",
+        "wall_id",
+        "axis_start_m",
+        "axis_end_m",
+        "section_in_plane_m",
+        "section_through_wall_m"
+      ],
+      "title": "MeshWallFramingPiece",
+      "type": "object"
+    },
     "Message": {
       "additionalProperties": false,
       "properties": {
@@ -788,6 +1863,105 @@
         "message"
       ],
       "title": "Message",
+      "type": "object"
+    },
+    "MissingInput": {
+      "additionalProperties": false,
+      "properties": {
+        "assembly_label": {
+          "title": "Assembly Label",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Fields",
+          "type": "array"
+        },
+        "layer": {
+          "title": "Layer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assembly_label",
+        "layer",
+        "fields"
+      ],
+      "title": "MissingInput",
+      "type": "object"
+    },
+    "OpeningAggregate": {
+      "additionalProperties": false,
+      "properties": {
+        "area_m2": {
+          "title": "Area M2",
+          "type": "number"
+        },
+        "count": {
+          "ge": 1,
+          "le": 9007199254740991,
+          "title": "Count",
+          "type": "integer"
+        },
+        "opening_kind": {
+          "enum": [
+            "WINDOW",
+            "DOOR"
+          ],
+          "title": "Opening Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "opening_kind",
+        "count",
+        "area_m2"
+      ],
+      "title": "OpeningAggregate",
+      "type": "object"
+    },
+    "PathFigure": {
+      "additionalProperties": false,
+      "properties": {
+        "missing_inputs": {
+          "items": {
+            "$ref": "#/$defs/MissingInput"
+          },
+          "title": "Missing Inputs",
+          "type": "array"
+        },
+        "r_value_m2_k_w": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "R Value M2 K W"
+        },
+        "u_value_w_m2_k": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "U Value W M2 K"
+        }
+      },
+      "required": [
+        "r_value_m2_k_w",
+        "u_value_w_m2_k",
+        "missing_inputs"
+      ],
+      "title": "PathFigure",
       "type": "object"
     },
     "Plan2dPayload": {
@@ -937,6 +2111,54 @@
         "ring_m"
       ],
       "title": "PlanFootprint",
+      "type": "object"
+    },
+    "PlanHorizontalPiece": {
+      "additionalProperties": false,
+      "description": "A girt, header, rough sill, buck head, or buck sill: the plan projection of its axis (D086).",
+      "properties": {
+        "end_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "End Xy M",
+          "type": "array"
+        },
+        "piece_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Piece Id",
+          "type": "string"
+        },
+        "piece_kind": {
+          "enum": [
+            "GIRT",
+            "HEADER",
+            "ROUGH_SILL",
+            "BUCK_HEAD",
+            "BUCK_SILL"
+          ],
+          "title": "Piece Kind",
+          "type": "string"
+        },
+        "start_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Start Xy M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "piece_id",
+        "piece_kind",
+        "start_xy_m",
+        "end_xy_m"
+      ],
+      "title": "PlanHorizontalPiece",
       "type": "object"
     },
     "PlanLine": {
@@ -1090,6 +2312,42 @@
           "title": "Sills",
           "type": "array"
         },
+        "wall_framing": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "BUCK_HEAD": "#/$defs/PlanHorizontalPiece",
+                "BUCK_JAMB": "#/$defs/PlanVerticalPiece",
+                "BUCK_SILL": "#/$defs/PlanHorizontalPiece",
+                "CRIPPLE": "#/$defs/PlanVerticalPiece",
+                "GIRT": "#/$defs/PlanHorizontalPiece",
+                "HEADER": "#/$defs/PlanHorizontalPiece",
+                "JACK": "#/$defs/PlanVerticalPiece",
+                "KING": "#/$defs/PlanVerticalPiece",
+                "ROUGH_SILL": "#/$defs/PlanHorizontalPiece",
+                "STUD": "#/$defs/PlanVerticalPiece"
+              },
+              "propertyName": "piece_kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/PlanVerticalPiece"
+              },
+              {
+                "$ref": "#/$defs/PlanHorizontalPiece"
+              }
+            ]
+          },
+          "title": "Wall Framing",
+          "type": "array"
+        },
+        "walls": {
+          "items": {
+            "$ref": "#/$defs/PlanWall"
+          },
+          "title": "Walls",
+          "type": "array"
+        },
         "z_m": {
           "title": "Z M",
           "type": "number"
@@ -1106,7 +2364,9 @@
         "braces",
         "rafters",
         "purlins",
-        "connections"
+        "connections",
+        "walls",
+        "wall_framing"
       ],
       "title": "PlanPlane",
       "type": "object"
@@ -1139,6 +2399,158 @@
         "xy_m"
       ],
       "title": "PlanPost",
+      "type": "object"
+    },
+    "PlanVerticalPiece": {
+      "additionalProperties": false,
+      "description": "A stud, king, jack, cripple, or buck jamb: the plan projection of its start. No key or section (D086).",
+      "properties": {
+        "piece_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Piece Id",
+          "type": "string"
+        },
+        "piece_kind": {
+          "enum": [
+            "STUD",
+            "KING",
+            "JACK",
+            "CRIPPLE",
+            "BUCK_JAMB"
+          ],
+          "title": "Piece Kind",
+          "type": "string"
+        },
+        "xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Xy M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "piece_id",
+        "piece_kind",
+        "xy_m"
+      ],
+      "title": "PlanVerticalPiece",
+      "type": "object"
+    },
+    "PlanWall": {
+      "additionalProperties": false,
+      "description": "A wall's outline: the band from start to end, ``exterior_m`` outward and ``interior_m`` inward (D070, D083).",
+      "properties": {
+        "end_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "End Xy M",
+          "type": "array"
+        },
+        "exterior_m": {
+          "title": "Exterior M",
+          "type": "number"
+        },
+        "generation_key": {
+          "title": "Generation Key",
+          "type": "string"
+        },
+        "interior_m": {
+          "title": "Interior M",
+          "type": "number"
+        },
+        "openings": {
+          "items": {
+            "$ref": "#/$defs/PlanWallOpening"
+          },
+          "title": "Openings",
+          "type": "array"
+        },
+        "outward_xy": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Outward Xy",
+          "type": "array"
+        },
+        "start_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Start Xy M",
+          "type": "array"
+        },
+        "wall_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Wall Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "wall_id",
+        "generation_key",
+        "start_xy_m",
+        "end_xy_m",
+        "outward_xy",
+        "exterior_m",
+        "interior_m",
+        "openings"
+      ],
+      "title": "PlanWall",
+      "type": "object"
+    },
+    "PlanWallOpening": {
+      "additionalProperties": false,
+      "description": "A gap through the wall's full thickness at the rough opening, along its reference line (ART-003 §5.2).",
+      "properties": {
+        "end_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "End Xy M",
+          "type": "array"
+        },
+        "opening_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Opening Id",
+          "type": "string"
+        },
+        "opening_kind": {
+          "enum": [
+            "WINDOW",
+            "DOOR"
+          ],
+          "title": "Opening Kind",
+          "type": "string"
+        },
+        "start_xy_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Start Xy M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "opening_id",
+        "opening_kind",
+        "start_xy_m",
+        "end_xy_m"
+      ],
+      "title": "PlanWallOpening",
       "type": "object"
     },
     "PreliminaryEstimatePayload": {
@@ -1176,8 +2588,10 @@
           "items": {
             "discriminator": {
               "mapping": {
+                "assembly": "#/$defs/AssemblyLine",
                 "connection": "#/$defs/ConnectionLine",
-                "timber": "#/$defs/TimberLine"
+                "timber": "#/$defs/TimberLine",
+                "wallframing": "#/$defs/WallFramingLine"
               },
               "propertyName": "kind"
             },
@@ -1187,6 +2601,12 @@
               },
               {
                 "$ref": "#/$defs/ConnectionLine"
+              },
+              {
+                "$ref": "#/$defs/AssemblyLine"
+              },
+              {
+                "$ref": "#/$defs/WallFramingLine"
               }
             ]
           },
@@ -1309,7 +2729,8 @@
         "unit": {
           "enum": [
             "m",
-            "each"
+            "each",
+            "m2"
           ],
           "title": "Unit",
           "type": "string"
@@ -1596,6 +3017,156 @@
       "title": "ScheduleUnits",
       "type": "object"
     },
+    "StudFramingSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "framing_material_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Framing Material Id",
+          "type": "string"
+        },
+        "framing_material_name": {
+          "title": "Framing Material Name",
+          "type": "string"
+        },
+        "framing_thermal_conductivity_w_m_k": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeclaredValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "girt_count": {
+          "ge": -9007199254740991,
+          "le": 9007199254740991,
+          "title": "Girt Count",
+          "type": "integer"
+        },
+        "girt_section": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Girt Section"
+        },
+        "header_section": {
+          "title": "Header Section",
+          "type": "string"
+        },
+        "jack_threshold_width_m": {
+          "title": "Jack Threshold Width M",
+          "type": "number"
+        },
+        "stud_section": {
+          "title": "Stud Section",
+          "type": "string"
+        },
+        "stud_spacing_m": {
+          "title": "Stud Spacing M",
+          "type": "number"
+        },
+        "type": {
+          "const": "STUD",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "framing_material_id",
+        "framing_material_name",
+        "framing_thermal_conductivity_w_m_k",
+        "stud_section",
+        "stud_spacing_m",
+        "girt_count",
+        "girt_section",
+        "header_section",
+        "jack_threshold_width_m"
+      ],
+      "title": "StudFramingSummary",
+      "type": "object"
+    },
+    "ThermalDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "assembly_label": {
+          "title": "Assembly Label",
+          "type": "string"
+        },
+        "center_of_cavity": {
+          "$ref": "#/$defs/PathFigure"
+        },
+        "framing_path": {
+          "$ref": "#/$defs/PathFigure"
+        },
+        "parallel_path": {
+          "$ref": "#/$defs/AreaWeightedFigure"
+        }
+      },
+      "required": [
+        "assembly_label",
+        "center_of_cavity",
+        "framing_path",
+        "parallel_path"
+      ],
+      "title": "ThermalDefinition",
+      "type": "object"
+    },
+    "ThermalFigures": {
+      "additionalProperties": false,
+      "properties": {
+        "all_walls": {
+          "$ref": "#/$defs/AreaWeightedFigure"
+        },
+        "definitions": {
+          "items": {
+            "$ref": "#/$defs/ThermalDefinition"
+          },
+          "title": "Definitions",
+          "type": "array"
+        },
+        "method": {
+          "$ref": "#/$defs/ThermalMethod"
+        }
+      },
+      "required": [
+        "method",
+        "definitions",
+        "all_walls"
+      ],
+      "title": "ThermalFigures",
+      "type": "object"
+    },
+    "ThermalMethod": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "const": "parallel-path-1",
+          "title": "Id",
+          "type": "string"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "notes"
+      ],
+      "title": "ThermalMethod",
+      "type": "object"
+    },
     "TimberLine": {
       "additionalProperties": false,
       "properties": {
@@ -1786,9 +3357,292 @@
       ],
       "title": "Totals",
       "type": "object"
+    },
+    "WallFramingLine": {
+      "additionalProperties": false,
+      "description": "One line per wall framing kind and section in use, priced per meter, with its count beside (D070).",
+      "properties": {
+        "amount_minor": {
+          "anyOf": [
+            {
+              "ge": -9007199254740991,
+              "le": 9007199254740991,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Amount Minor"
+        },
+        "count": {
+          "ge": 1,
+          "le": 9007199254740991,
+          "title": "Count",
+          "type": "integer"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "kind": {
+          "const": "wallframing",
+          "title": "Kind",
+          "type": "string"
+        },
+        "nominal_section": {
+          "title": "Nominal Section",
+          "type": "string"
+        },
+        "piece_kind": {
+          "enum": [
+            "STUD",
+            "GIRT",
+            "KING",
+            "JACK",
+            "HEADER",
+            "ROUGH_SILL",
+            "CRIPPLE",
+            "BUCK_JAMB",
+            "BUCK_HEAD",
+            "BUCK_SILL"
+          ],
+          "title": "Piece Kind",
+          "type": "string"
+        },
+        "priced": {
+          "title": "Priced",
+          "type": "boolean"
+        },
+        "quantity_unit": {
+          "const": "m",
+          "title": "Quantity Unit",
+          "type": "string"
+        },
+        "quantity_value": {
+          "title": "Quantity Value",
+          "type": "number"
+        },
+        "unit_price_minor": {
+          "anyOf": [
+            {
+              "ge": -9007199254740991,
+              "le": 9007199254740991,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unit Price Minor"
+        }
+      },
+      "required": [
+        "kind",
+        "key",
+        "piece_kind",
+        "nominal_section",
+        "count",
+        "quantity_value",
+        "quantity_unit",
+        "unit_price_minor",
+        "amount_minor",
+        "priced"
+      ],
+      "title": "WallFramingLine",
+      "type": "object"
+    },
+    "WallFramingRow": {
+      "additionalProperties": false,
+      "properties": {
+        "generation_key": {
+          "title": "Generation Key",
+          "type": "string"
+        },
+        "grade": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Grade"
+        },
+        "length_m": {
+          "title": "Length M",
+          "type": "number"
+        },
+        "material_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Material Id",
+          "type": "string"
+        },
+        "nominal_section": {
+          "title": "Nominal Section",
+          "type": "string"
+        },
+        "opening_id": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Opening Id"
+        },
+        "piece_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Piece Id",
+          "type": "string"
+        },
+        "piece_kind": {
+          "enum": [
+            "STUD",
+            "GIRT",
+            "KING",
+            "JACK",
+            "HEADER",
+            "ROUGH_SILL",
+            "CRIPPLE",
+            "BUCK_JAMB",
+            "BUCK_HEAD",
+            "BUCK_SILL"
+          ],
+          "title": "Piece Kind",
+          "type": "string"
+        },
+        "quantity": {
+          "const": 1,
+          "default": 1,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "section_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Section Id",
+          "type": "string"
+        },
+        "species": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Species"
+        },
+        "wall_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Wall Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "piece_id",
+        "generation_key",
+        "wall_id",
+        "piece_kind",
+        "opening_id",
+        "nominal_section",
+        "section_id",
+        "material_id",
+        "species",
+        "grade",
+        "length_m"
+      ],
+      "title": "WallFramingRow",
+      "type": "object"
+    },
+    "WallLayerSpan": {
+      "additionalProperties": false,
+      "description": "A layer's signed interval along the wall's outward normal, 0 at the reference plane (D083).",
+      "properties": {
+        "function": {
+          "enum": [
+            "FINISH",
+            "SHEATHING",
+            "INSULATION",
+            "FRAMING"
+          ],
+          "title": "Function",
+          "type": "string"
+        },
+        "inner_m": {
+          "title": "Inner M",
+          "type": "number"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "outer_m": {
+          "title": "Outer M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "function",
+        "inner_m",
+        "outer_m"
+      ],
+      "title": "WallLayerSpan",
+      "type": "object"
+    },
+    "WallVoid": {
+      "additionalProperties": false,
+      "description": "A rough opening in wall-local coordinates: ``u`` along the wall from its start, ``v`` up from its base.",
+      "properties": {
+        "opening_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Opening Id",
+          "type": "string"
+        },
+        "opening_kind": {
+          "enum": [
+            "WINDOW",
+            "DOOR"
+          ],
+          "title": "Opening Kind",
+          "type": "string"
+        },
+        "u_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "U M",
+          "type": "array"
+        },
+        "v_m": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "V M",
+          "type": "array"
+        }
+      },
+      "required": [
+        "opening_id",
+        "opening_kind",
+        "u_m",
+        "v_m"
+      ],
+      "title": "WallVoid",
+      "type": "object"
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Definitions for artifacts.md §2-3, generated from backend/src/homedesign/dependencies/envelope.py; do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope, a manifest against #/$defs/Manifest, payloads against #/$defs/Plan2dPayload, Mesh3dPayload, TimberSchedulePayload, and PreliminaryEstimatePayload, and price books against #/$defs/PriceBook.",
+  "description": "Definitions for artifacts.md §2-3, generated from backend/src/homedesign/dependencies/envelope.py; do not edit by hand. Validate an envelope against #/$defs/ArtifactEnvelope, a manifest against #/$defs/Manifest, payloads against #/$defs/Plan2dPayload, Mesh3dPayload, TimberSchedulePayload, AssemblySchedulePayload, and PreliminaryEstimatePayload, and price books against #/$defs/PriceBook.",
   "title": "VS-01 artifact envelope and manifest (ART-001)"
 }

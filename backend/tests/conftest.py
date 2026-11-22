@@ -186,3 +186,17 @@ def largest_doc() -> dict[str, Any]:
     """TIMBER-002 §5.3: 7 × 7 stations over 80' × 80', 12" joists, 4 purlins, both brace planes
     (1,216 members, 2,110 connections)."""
     return with_frame_parameters(grid_doc(7, 7, bay_ft=80 / 6), joist_spacing_m=0.3048, purlins_per_slope=4)
+
+
+def with_assembly(doc: dict[str, Any] | None = None, label: str = "stud-infill") -> dict[str, Any]:
+    """The doc (by default the fixture) with every wall on the definition labeled ``label``, as
+    ``SetWallAssembly`` leaves it (D068), regenerated."""
+    doc = copy.deepcopy(doc) if doc is not None else fresh_fixture()
+    target = next(e for e in entities_of(doc, "AssemblyDefinition") if e["label"] == label)
+    entities_of(doc, "WallSystem")[0]["default_assembly_definition_id"] = target["id"]
+    for wall in entities_of(doc, "Wall"):
+        wall["assembly_definition_id"] = target["id"]
+    return regenerate(doc)
+
+
+STUD_INFILL: dict[str, Any] = with_assembly()  # Reference House 001 v3 with stud infill (246 pieces)

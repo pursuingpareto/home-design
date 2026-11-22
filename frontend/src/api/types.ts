@@ -11,6 +11,7 @@ export type Manifest = S["Manifest"];
 export type Plan2dPayload = S["Plan2dPayload"];
 export type Mesh3dPayload = S["Mesh3dPayload"];
 export type TimberSchedulePayload = S["TimberSchedulePayload"];
+export type AssemblySchedulePayload = S["AssemblySchedulePayload"];
 export type EstimatePayload = S["PreliminaryEstimatePayload"];
 export type ProjectSummary = S["ProjectSummary"];
 export type ProjectResponse = S["ProjectResponse"];
@@ -35,13 +36,15 @@ export type TypedEnvelope<P> = Omit<Envelope, "payload"> & { payload?: P | null 
 export type PlanEnvelope = TypedEnvelope<Plan2dPayload>;
 export type MeshEnvelope = TypedEnvelope<Mesh3dPayload>;
 export type ScheduleEnvelope = TypedEnvelope<TimberSchedulePayload>;
+export type AssemblyScheduleEnvelope = TypedEnvelope<AssemblySchedulePayload>;
 export type EstimateEnvelope = TypedEnvelope<EstimatePayload>;
 
 export interface PayloadByType {
   plan2d: Plan2dPayload;
   mesh3d: Mesh3dPayload;
   timber_schedule: TimberSchedulePayload;
+  assembly_schedule: AssemblySchedulePayload;
   preliminary_estimate: EstimatePayload;
 }
 
-export const ARTIFACT_TYPES: readonly ArtifactType[] = ["plan2d", "mesh3d", "timber_schedule", "preliminary_estimate"];
+export const ARTIFACT_TYPES: readonly ArtifactType[] = ["plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate"];

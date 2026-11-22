@@ -11,7 +11,7 @@ import pytest
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from conftest import FIXTURE, REPO_ROOT, VECTORS_PATH, fresh_fixture
+from conftest import FIXTURE, REPO_ROOT, STUD_INFILL, VECTORS_PATH, fresh_fixture
 from homedesign.estimating import ESTIMATE
 from homedesign.geometry import MESH3D, PLAN2D, build_mesh3d, build_plan2d, select_mesh3d, select_plan2d
 from homedesign.geometry.views import plan_slot
@@ -29,7 +29,7 @@ FIXTURE_SNAPSHOT = Snapshot.model_validate(FIXTURE)
 SCHEMA = json.loads((REPO_ROOT / "docs/architecture/schemas/artifacts.v1.schema.json").read_text())
 VECTORS = json.loads(VECTORS_PATH.read_text())["geometry"]
 ARRAYS = ("posts", "beams", "sills", "joists", "braces", "rafters", "purlins")
-ARTIFACTS = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")
+ARTIFACTS = ("plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate")
 
 
 def validate_against(name, value):
@@ -70,7 +70,7 @@ def test_reference_house_plan():
     assert plan["roof_plan"]["eave_ring_m"] == [[0.0, -0.6096], [10.9728, -0.6096], [10.9728, 7.9248], [0.0, 7.9248]]
     assert [(d["id"], d["value_m"]) for d in plan["dimensions"]] == [("footprint-width", 10.9728), ("footprint-depth", 7.3152)]
     for plane in plan["planes"]:
-        assert set(plane) == {"plane_id", "level_id", "z_m", *ARRAYS, "connections"}  # every plane has every array
+        assert set(plane) == {"plane_id", "level_id", "z_m", *ARRAYS, "connections", "walls", "wall_framing"}  # every plane has every array
         for group in (*ARRAYS, "connections"):
             assert utf16_sorted([i["generation_key"] for i in plane[group]])
     assert not any("section_id" in entry for _, _, entry in plan_entries(plan))  # §4.3
@@ -305,7 +305,7 @@ def test_zero_cases_through_the_service(store):
     parameters = {**frame.parameters.model_dump(mode="json"), "knee_braces_level_1": False, "knee_braces_eave": False, "purlins_per_slope": 0}
     preview_commit(svc, pid, envelope(svc, pid, "SetFrameParameters", parameters), now=at(1))
     envelopes = {t: svc.artifacts.get_artifact(pid, t, now=at(1)) for t in ARTIFACTS}
-    assert [envelopes[t]["status"] for t in ARTIFACTS] == ["CURRENT", "CURRENT", "CURRENT", "UNAVAILABLE"]
+    assert [envelopes[t]["status"] for t in ARTIFACTS] == ["CURRENT", "CURRENT", "CURRENT", "CURRENT", "UNAVAILABLE"]
     plan = envelopes["plan2d"]["payload"]
     assert all(p["braces"] == [] and p["purlins"] == [] for p in plan["planes"])
     classes = {c["junction_class"] for p in plan["planes"] for c in p["connections"]}
@@ -318,10 +318,13 @@ def test_zero_cases_through_the_service(store):
 
 
 def test_generator_versions():
-    """ART-002 §8: every payload changed shape, so every derivation is at version 2 with its ID unchanged."""
-    assert [(d.artifact_type, d.generator_id, d.generator_version) for d in (PLAN2D, MESH3D, SCHEDULE, ESTIMATE)] == [
-        ("plan2d", "plan2d-vs01", "2"), ("mesh3d", "mesh3d-vs01", "2"), ("timber_schedule", "schedule-vs01", "2"),
-        ("preliminary_estimate", "estimate-vs01", "2")]
+    """ART-003 §9.1: the views and the estimate move to version 3; the timber schedule stays at 2; IDs unchanged."""
+    from homedesign.assemblies.schedule import ASSEMBLY_SCHEDULE
+
+    assert [(d.artifact_type, d.generator_id, d.generator_version) for d in (PLAN2D, MESH3D, SCHEDULE, ASSEMBLY_SCHEDULE, ESTIMATE)] == [
+        ("plan2d", "plan2d-vs01", "3"), ("mesh3d", "mesh3d-vs01", "3"), ("timber_schedule", "schedule-vs01", "2"),
+        ("assembly_schedule", "assembly-schedule-vs02b", "1"), ("preliminary_estimate", "estimate-vs01", "3")]
+    assert ESTIMATE.depends_on == ("timber_schedule", "assembly_schedule")
 
 
 def test_plan_matches_independent_ecmascript_implementation():
@@ -358,14 +361,20 @@ def _keys(value):
 
 
 def test_no_capacity_size_or_fastener_fields():
-    """§13 test 13 (AC2-07): the payloads say where connections are and what type, nothing more."""
+    """§13 test 13 (AC2-07), ART-003 §13 test 6 (AC2b-09): the payloads say where connections are and what type,
+    nothing more, and no payload carries a compliance, capacity, or performance field."""
+    from homedesign.assemblies.schedule import build_assembly_schedule, select_assembly_schedule
     from homedesign.estimating import build_estimate
     from homedesign.timber.schedule import build_schedule, select_schedule
 
-    schedule = build_schedule(select_schedule(FIXTURE_SNAPSHOT))
-    payloads = (build_plan2d(select_plan2d(FIXTURE_SNAPSHOT)), build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT)), schedule, build_estimate(schedule, None)[1])
-    keys = {k for p in payloads for k in _keys(p)}
-    assert not {k for k in keys if any(w in k for w in ("capacity", "fastener", "size", "peg", "plate", "dowel", "load"))}
+    for snapshot in (FIXTURE_SNAPSHOT, Snapshot.model_validate(STUD_INFILL)):
+        schedule = build_schedule(select_schedule(snapshot))
+        assemblies = build_assembly_schedule(select_assembly_schedule(snapshot))
+        payloads = (build_plan2d(select_plan2d(snapshot)), build_mesh3d(select_mesh3d(snapshot)), schedule, assemblies,
+                    build_estimate(schedule, assemblies, None)[1])
+        keys = {k for p in payloads for k in _keys(p)}
+        forbidden = ("capacity", "fastener", "size", "peg", "plate", "dowel", "load", "complian", "code_check", "approved", "permit", "rating")
+        assert not {k for k in keys if any(w in k for w in forbidden)}
 
 
 # 7. robustness ----------------------------------------------------------------------------------------
@@ -401,3 +410,152 @@ def test_views_for_any_accepted_candidate(width, depth, extra_x, h0, h1):
         assert sorted(c["connection_id"] for c in mesh["connections"]) == sorted(records)
         validate_against("Plan2dPayload", plan)
         validate_against("Mesh3dPayload", mesh)
+
+
+# 8. VS-02b: walls, openings, and wall framing (ART-003 §5–6, §13 tests 1, 7, 12) -------------------
+
+STUD_SNAPSHOT = Snapshot.model_validate(STUD_INFILL)
+VERTICAL = {"STUD", "KING", "JACK", "CRIPPLE", "BUCK_JAMB"}
+WALL_VECTORS = json.loads(VECTORS_PATH.read_text())["inventories"]
+
+
+def records(snapshot, kind):
+    return {e.id: e for e in snapshot.entities if e.kind == kind}
+
+
+@pytest.mark.parametrize("snapshot, pieces", [(FIXTURE_SNAPSHOT, 79), (STUD_SNAPSHOT, 246)], ids=["straw-bale", "stud-infill"])
+def test_walls_and_framing_are_on_their_levels_planes(snapshot, pieces):
+    plan, mesh = build_plan2d(select_plan2d(snapshot)), build_mesh3d(select_mesh3d(snapshot))
+    walls, framing = records(snapshot, "Wall"), records(snapshot, "WallFramingPiece")
+    level_plane = {snapshot.building.level_ids[0]: "level-0", snapshot.building.level_ids[1]: "level-1"}
+    owner = {pid: w for w in walls.values() for pid in w.framing_ids}
+    assert [(p["plane_id"], len(p["walls"])) for p in plan["planes"]] == [("level-0", 10), ("level-1", 10), ("eave", 0), ("roof", 0)]
+    assert sum(len(p["wall_framing"]) for p in plan["planes"]) == len(mesh["wall_framing"]) == pieces == len(framing)
+    for plane in plan["planes"]:
+        assert utf16_sorted([w["generation_key"] for w in plane["walls"]])
+        for w in plane["walls"]:
+            record = walls[w["wall_id"]]
+            assert level_plane[record.level_id] == plane["plane_id"] and (w["start_xy_m"], w["end_xy_m"]) == (record.start_m[:2], record.end_m[:2])
+        keys = [framing[f["piece_id"]].generation_key for f in plane["wall_framing"]]
+        assert utf16_sorted(keys)
+        for f in plane["wall_framing"]:
+            piece = framing[f["piece_id"]]
+            assert level_plane[owner[piece.id].level_id] == plane["plane_id"] and f["piece_kind"] == piece.piece_kind
+            assert "generation_key" not in f and "section_id" not in f  # D086
+            if piece.piece_kind in VERTICAL:
+                assert set(f) == {"piece_id", "piece_kind", "xy_m"} and f["xy_m"] == piece.start_m[:2]
+            else:
+                assert set(f) == {"piece_id", "piece_kind", "start_xy_m", "end_xy_m"} and (f["start_xy_m"], f["end_xy_m"]) == (piece.start_m[:2], piece.end_m[:2])
+    assert utf16_sorted([w["generation_key"] for w in mesh["walls"]]) and {w["wall_id"] for w in mesh["walls"]} == set(walls)
+    assert utf16_sorted([framing[f["piece_id"]].generation_key for f in mesh["wall_framing"]])
+    for f in mesh["wall_framing"]:
+        assert set(f) == {"piece_id", "piece_kind", "wall_id", "axis_start_m", "axis_end_m", "section_in_plane_m", "section_through_wall_m"}  # no key, no primitive
+        assert f["wall_id"] == owner[f["piece_id"]].id
+    validate_against("Plan2dPayload", plan)
+    validate_against("Mesh3dPayload", mesh)
+
+
+@pytest.mark.parametrize("snapshot, exterior, interior", [(FIXTURE_SNAPSHOT, 0.2667, 0.254), (STUD_SNAPSHOT, 0.1016, 0.08255)], ids=["straw-bale", "stud-infill"])
+def test_layer_offsets_center_the_framing_layer(snapshot, exterior, interior):
+    """§5.1 (D083): the framing layer is centered on the reference plane; the others stack outward and inward."""
+    plan, mesh = build_plan2d(select_plan2d(snapshot)), build_mesh3d(select_mesh3d(snapshot))
+    (definition,) = {e.id: e for e in snapshot.entities if e.kind == "AssemblyDefinition" and any(w.assembly_definition_id == e.id for w in records(snapshot, "Wall").values())}.values()
+    for w in (w for p in plan["planes"] for w in p["walls"]):
+        assert w["exterior_m"] == pytest.approx(exterior, abs=1e-12) and w["interior_m"] == pytest.approx(interior, abs=1e-12)
+    for w in mesh["walls"]:
+        layers = w["layers"]
+        assert [(layer["name"], layer["function"]) for layer in layers] == [(layer.name, layer.function) for layer in definition.layers]
+        for layer, stored in zip(layers, definition.layers, strict=True):
+            assert layer["outer_m"] - layer["inner_m"] == pytest.approx(stored.thickness_m, abs=1e-12)
+            if stored.framing is not None:
+                assert layer["outer_m"] == -layer["inner_m"] == stored.thickness_m / 2
+        assert all(a["inner_m"] == b["outer_m"] for a, b in zip(layers, layers[1:]))  # contiguous, exterior to interior
+        assert (layers[0]["outer_m"], -layers[-1]["inner_m"]) == pytest.approx((exterior, interior), abs=1e-12)
+
+
+def test_elevation_sides_face_away_from_the_footprint():
+    mesh = build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT))
+    sides = Counter(tuple(w["outward_xy"]) for w in mesh["walls"])
+    assert sides == {(0.0, -1.0): 6, (0.0, 1.0): 6, (-1.0, 0.0): 4, (1.0, 0.0): 4}
+    for w in mesh["walls"]:
+        x, y = w["base_start_m"][:2]
+        out = w["outward_xy"]
+        assert (out[0] * (x - 10.9728 / 2) + out[1] * (y - 7.3152 / 2)) > 0  # outward is away from the footprint's center
+
+
+def test_plan_gaps_and_mesh_voids_are_the_rough_openings():
+    """§5.2, §6.1: a gap through the full thickness at start + offset to start + (offset + width); voids in (u, v)."""
+    plan, mesh = build_plan2d(select_plan2d(FIXTURE_SNAPSHOT)), build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT))
+    openings = records(FIXTURE_SNAPSHOT, "Opening")
+    seen = set()
+    for w in (w for p in plan["planes"] for w in p["walls"]):
+        along = 0 if w["start_xy_m"][1] == w["end_xy_m"][1] else 1
+        for gap in w["openings"]:
+            o = openings[gap["opening_id"]]
+            assert o.wall_id == w["wall_id"] and gap["opening_kind"] == o.opening_kind
+            start, end = list(w["start_xy_m"]), list(w["start_xy_m"])
+            start[along] += o.offset_m
+            end[along] = w["start_xy_m"][along] + (o.offset_m + o.width_m)
+            assert (gap["start_xy_m"], gap["end_xy_m"]) == (start, end)
+            seen.add(o.id)
+    assert seen == set(openings)
+    for w in mesh["walls"]:
+        assert [v["u_m"][0] for v in w["voids"]] == sorted(v["u_m"][0] for v in w["voids"])
+        for v in w["voids"]:
+            o = openings[v["opening_id"]]
+            assert v["u_m"] == [o.offset_m, o.offset_m + o.width_m] and v["v_m"] == [o.sill_height_m, o.sill_height_m + o.height_m]
+    assert sum(len(w["voids"]) for w in mesh["walls"]) == 20
+
+
+@pytest.mark.parametrize("snapshot", [FIXTURE_SNAPSHOT, STUD_SNAPSHOT], ids=["straw-bale", "stud-infill"])
+def test_framing_boxes_follow_the_orientation_rule(snapshot):
+    """§6.2 against a basis computed from the rule: through-wall along the wall's outward normal, in-plane in the
+    wall's plane across the axis; the header's depth is vertical (D076). Every box lies inside its framing layer."""
+    mesh = build_mesh3d(select_mesh3d(snapshot))
+    walls = {w["wall_id"]: w for w in mesh["walls"]}
+    by_id = {e.id: e for e in snapshot.entities}
+    for f in mesh["wall_framing"]:
+        piece, wall = by_id[f["piece_id"]], walls[f["wall_id"]]
+        section = by_id[piece.section_id]
+        expected = (section.actual_depth_m, section.actual_width_m) if piece.piece_kind == "HEADER" else (section.actual_width_m, section.actual_depth_m)
+        assert (f["section_in_plane_m"], f["section_through_wall_m"]) == expected
+        assert (f["axis_start_m"], f["axis_end_m"]) == (piece.start_m, piece.end_m)
+        axis = [e - s for s, e in zip(f["axis_start_m"], f["axis_end_m"], strict=True)]
+        normal = [*wall["outward_xy"], 0.0]
+        along = [e - s for s, e in zip(wall["base_start_m"], wall["base_end_m"], strict=True)]
+        assert abs(sum(a * n for a, n in zip(axis, normal))) == 0.0  # the axis lies in the wall's plane
+        across = [0.0, 0.0, 1.0] if piece.piece_kind not in VERTICAL else [c / math.hypot(*along) for c in along]
+        assert abs(sum(a * c for a, c in zip(axis, across))) <= 1e-12 and abs(sum(n * c for n, c in zip(normal, across))) == 0.0
+        offset = sum((p - b) * n for p, b, n in zip(f["axis_start_m"], wall["base_start_m"], normal))
+        framing_layer = next(layer for layer in wall["layers"] if layer["function"] == "FRAMING")
+        assert offset == 0.0  # on the reference plane (ASM-001)
+        assert framing_layer["inner_m"] - 1e-12 <= -f["section_through_wall_m"] / 2 and f["section_through_wall_m"] / 2 <= framing_layer["outer_m"] + 1e-12
+
+
+def test_wall_assembly_switch_rebuilds_layers_and_boxes():
+    """§13 test 7: after SetWallAssembly, every wall's layers and every box follow the new definition."""
+    for snapshot, label in ((FIXTURE_SNAPSHOT, "straw-bale"), (STUD_SNAPSHOT, "stud-infill")):
+        definition = next(e for e in snapshot.entities if e.kind == "AssemblyDefinition" and e.label == label)
+        mesh = build_mesh3d(select_mesh3d(snapshot))
+        assert all([layer["name"] for layer in w["layers"]] == [layer.name for layer in definition.layers] for w in mesh["walls"])
+        through = {f["section_through_wall_m"] for f in mesh["wall_framing"]}
+        assert through == ({0.4572} if label == "straw-bale" else {0.1397, 0.0381})
+
+
+def test_wall_views_match_independent_ecmascript_implementation():
+    """§9.2: the oracle's plan (by bytes and fingerprint, above) and mesh walls and framing, bit for bit."""
+    mesh, expected = build_mesh3d(select_mesh3d(FIXTURE_SNAPSHOT)), VECTORS["mesh3d"]["payload"]
+    assert mesh["walls"] == expected["walls"] and mesh["wall_framing"] == expected["wall_framing"]
+
+
+@pytest.mark.parametrize("snapshot, index", [(FIXTURE_SNAPSHOT, 0), (STUD_SNAPSHOT, 1)], ids=["straw-bale", "stud-infill"])
+def test_assembly_quantities_match_independent_ecmascript_implementation(snapshot, index):
+    """§9.2: wall areas, framing face areas, fractions, and the aggregates, for both inventories, bit for bit."""
+    from homedesign.assemblies.schedule import build_assembly_schedule, select_assembly_schedule
+
+    payload, vector = build_assembly_schedule(select_assembly_schedule(snapshot)), WALL_VECTORS[index]["assembly_schedule"]
+    fields = list(vector["walls"][0])
+    assert [{k: w[k] for k in fields} for w in payload["walls"]] == vector["walls"]
+    assert [{k: a[k] for k in vector["layer_aggregates"][0]} for a in payload["layer_aggregates"]] == vector["layer_aggregates"]
+    for name in ("framing_aggregates", "opening_aggregates", "definition_aggregates", "totals"):
+        assert payload[name] == vector[name], name

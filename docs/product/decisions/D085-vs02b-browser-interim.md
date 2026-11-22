@@ -1,6 +1,6 @@
 # D085 — VS-02b browser interim: wall estimate lines and square-meter price rows ship with ART-003
 
-**Status:** Confirmed (to be implemented in VS-02b, [ART-003](../../implementation/tasks/ART-003.md))  
+**Status:** Confirmed; implemented in VS-02b by [ART-003](../../implementation/tasks/ART-003.md) (2026-11-22)  
 **Date:** 2026-11-22  
 **Scope:** Which browser changes ship with ART-003's payloads, before `UI-004`. Approved as [ART-003](../../implementation/tasks/ART-003.md) §12 item 4, following [D060](D060-vs02-artifact-payloads.md)'s precedent for VS-02.  
 **Amends:** the task breakdown in [vs-02b.md](../../implementation/acceptance-tests/vs-02b.md) §16. AC2b-10's bullet "The price-book form handles square-meter rows" moves from `UI-004` to `ART-003`. The criterion's wording is unchanged.

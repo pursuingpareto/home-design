@@ -310,8 +310,47 @@ const studWalls = generateWalls(studFixture);
 
 // Independent ECMAScript implementation of the GEOM-001 and ART-002 views (artifacts.md §5-6, D048,
 // D060, geometry.md "Numeric evaluation"). Only tan(pitch)-derived values may differ from other
-// implementations, within 1e-12 m.
+// implementations, within 1e-12 m. Walls, openings, and wall framing (ART-003 §5-6) read no roof
+// value and must be bit-identical.
 const byKey = (a, b) => (a.generation_key < b.generation_key ? -1 : a.generation_key > b.generation_key ? 1 : 0);
+const byId = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+const VERTICAL = new Set(["STUD", "KING", "JACK", "CRIPPLE", "BUCK_JAMB"]);
+
+// ART-003 §5.1 (D083): the framing layer centered on the reference plane, the others stacked outward
+// (earlier layers) and inward (later layers) from it.
+function layerSpans(layers) {
+  const k = layers.findIndex((l) => l.framing !== null);
+  const spans = layers.map(() => null);
+  spans[k] = { inner_m: -(layers[k].thickness_m / 2), outer_m: layers[k].thickness_m / 2 };
+  for (let j = k - 1; j >= 0; j--) { const inner = spans[j + 1].outer_m; spans[j] = { inner_m: inner, outer_m: inner + layers[j].thickness_m }; }
+  for (let j = k + 1; j < layers.length; j++) { const outer = spans[j - 1].inner_m; spans[j] = { inner_m: outer - layers[j].thickness_m, outer_m: outer }; }
+  return spans;
+}
+
+// Walls, openings, and pieces from the stored records, shared by the plan and the mesh below.
+function wallModel(snapshot) {
+  const ids = new Map(snapshot.entities.map((e) => [e.id, e]));
+  const fp = ids.get(snapshot.building.footprint_id);
+  const walls = snapshot.entities.filter((e) => e.kind === "Wall").sort(byKey).map((w) => {
+    const alongX = w.end_m[0] !== w.start_m[0];
+    // Away from the footprint: compared with its center line, independently of the key (ART-003 §4.2).
+    const outward = alongX
+      ? (w.start_m[1] < fp.origin_m[1] + fp.depth_m / 2 ? [0.0, -1.0] : [0.0, 1.0])
+      : (w.start_m[0] < fp.origin_m[0] + fp.width_m / 2 ? [-1.0, 0.0] : [1.0, 0.0]);
+    const def = ids.get(w.assembly_definition_id);
+    const spans = layerSpans(def.layers);
+    const openings = snapshot.entities.filter((e) => e.kind === "Opening" && e.wall_id === w.id)
+      .sort((a, b) => a.offset_m - b.offset_m || byId(a, b));
+    return { w, along: alongX ? 0 : 1, outward, def, spans, openings };
+  });
+  const wallOf = new Map();
+  for (const x of walls) for (const pid of x.w.framing_ids) wallOf.set(pid, x);
+  const pieces = snapshot.entities.filter((e) => e.kind === "WallFramingPiece").sort(byKey);
+  return { ids, walls, wallOf, pieces };
+}
+const pieceDims = (p, s) => (p.piece_kind === "HEADER"
+  ? { in_plane: s.actual_depth_m, through: s.actual_width_m }
+  : { in_plane: s.actual_width_m, through: s.actual_depth_m });
 
 function geometryModel(snapshot) {
   const byId = new Map(snapshot.entities.map((e) => [e.id, e]));
@@ -347,7 +386,7 @@ const PLAN_ARRAYS = ["posts", "beams", "sills", "joists", "braces", "rafters", "
 
 function plan2d(snapshot) {
   const m = geometryModel(snapshot);
-  const plane = (plane_id, level_id, z_m) => ({ plane_id, level_id, z_m, ...Object.fromEntries(PLAN_ARRAYS.map((a) => [a, []])), connections: [] });
+  const plane = (plane_id, level_id, z_m) => ({ plane_id, level_id, z_m, ...Object.fromEntries(PLAN_ARRAYS.map((a) => [a, []])), connections: [], walls: [], wall_framing: [] });
   const planes = {
     "level-0": plane("level-0", m.l0.id, m.l0.elevation_m),
     "level-1": plane("level-1", m.l1.id, m.l1.elevation_m),
@@ -371,6 +410,22 @@ function plan2d(snapshot) {
       connection_type: c.connection_type, xy_m: c.location_m.slice(0, 2),
     });
   }
+  const wm = wallModel(snapshot);
+  const planeOfLevel = (levelId) => (levelId === m.l0.id ? "level-0" : "level-1");
+  for (const { w, along, outward, spans, openings } of wm.walls) {
+    const start = w.start_m.slice(0, 2);
+    const at = (d) => { const q = start.slice(); q[along] = start[along] + d; return q; };
+    planes[planeOfLevel(w.level_id)].walls.push({
+      wall_id: w.id, generation_key: w.generation_key, start_xy_m: start, end_xy_m: w.end_m.slice(0, 2), outward_xy: outward,
+      exterior_m: spans[0].outer_m, interior_m: -spans[spans.length - 1].inner_m,
+      openings: openings.map((o) => ({ opening_id: o.id, opening_kind: o.opening_kind, start_xy_m: at(o.offset_m), end_xy_m: at(o.offset_m + o.width_m) })),
+    });
+  }
+  for (const p of wm.pieces) {
+    planes[planeOfLevel(wm.wallOf.get(p.id).w.level_id)].wall_framing.push(VERTICAL.has(p.piece_kind)
+      ? { piece_id: p.id, piece_kind: p.piece_kind, xy_m: p.start_m.slice(0, 2) }
+      : { piece_id: p.id, piece_kind: p.piece_kind, start_xy_m: p.start_m.slice(0, 2), end_xy_m: p.end_m.slice(0, 2) });
+  }
   return {
     units: "m",
     planes: [planes["level-0"], planes["level-1"], planes.eave, planes.roof],
@@ -391,6 +446,7 @@ function mesh3d(snapshot) {
   const t = Math.tan(m.roof.pitch_rad);
   const zRidge = m.zEave + (m.fp.depth_m / 2) * t;
   const zEdge = m.zEave - m.roof.eave_overhang_m * t;
+  const wm = wallModel(snapshot);
   return {
     units: "m",
     members: m.members.map((mem) => {
@@ -402,6 +458,18 @@ function mesh3d(snapshot) {
       connection_id: c.id, generation_key: c.generation_key, junction_class: c.junction_class,
       connection_type: c.connection_type, location_m: c.location_m,
     })),
+    walls: wm.walls.map(({ w, outward, def, spans, openings }) => ({
+      wall_id: w.id, generation_key: w.generation_key, primitive: "layered_wall", base_start_m: w.start_m, base_end_m: w.end_m,
+      height_m: w.height_m, outward_xy: outward,
+      layers: def.layers.map((l, i) => ({ name: l.name, function: l.function, inner_m: spans[i].inner_m, outer_m: spans[i].outer_m })),
+      voids: openings.map((o) => ({ opening_id: o.id, opening_kind: o.opening_kind, u_m: [o.offset_m, o.offset_m + o.width_m],
+        v_m: [o.sill_height_m, o.sill_height_m + o.height_m] })),
+    })),
+    wall_framing: wm.pieces.map((p) => {
+      const d = pieceDims(p, wm.ids.get(p.section_id));
+      return { piece_id: p.id, piece_kind: p.piece_kind, wall_id: wm.wallOf.get(p.id).w.id, axis_start_m: p.start_m, axis_end_m: p.end_m,
+        section_in_plane_m: d.in_plane, section_through_wall_m: d.through };
+    }),
     envelope: {
       footprint_ring_m: m.ring,
       level_z_m: [m.l0.elevation_m, m.l1.elevation_m],
@@ -475,6 +543,67 @@ function timberSchedule(snapshot) {
 }
 const scheduleCanonical = canonicalize(timberSchedule(fixture));
 
+// Independent ECMAScript implementation of the assembly schedule's quantities (ART-003 §4.2-4.6; D071,
+// D082), from the walls and pieces this file's own wall rule generates (generateWalls above), so the
+// straw bale fixture and the stud infill house are both covered. Areas and lengths are exact IEEE
+// formulas as written, summed in row order; nothing depends on tan, so Python must agree bit for bit.
+function assemblyQuantities(snapshot, generated) {
+  const ids = new Map(snapshot.entities.map((e) => [e.id, e]));
+  const def = ids.get(snapshot.entities.find((e) => e.kind === "WallSystem").default_assembly_definition_id);
+  const section = new Map(snapshot.entities.filter((e) => e.kind === "Section").map((s) => [s.nominal_label, s]));
+  const keyOf = new Map(snapshot.entities.filter((e) => e.kind === "Wall").map((w) => [w.id, w.generation_key]));
+  const openings = snapshot.entities.filter((e) => e.kind === "Opening")
+    .map((o) => ({ o, key: keyOf.get(o.wall_id) }))
+    .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : byId(a.o, b.o)));
+  const len = (s, e) => { const dx = e[0] - s[0], dy = e[1] - s[1], dz = e[2] - s[2]; return Math.sqrt(dx * dx + dy * dy + dz * dz); };
+  const walls = generated.walls.map((w) => {
+    const along = w.end_m[0] !== w.start_m[0] ? 0 : 1;
+    const length = len(w.start_m, w.end_m);
+    const gross = length * w.height_m;
+    let opening = 0;
+    for (const { o, key } of openings) if (key === w.generation_key) opening += o.width_m * o.height_m;
+    const net = gross - opening;
+    // §4.4: faces summed in key order, less each girt-to-vertical overlap, so a crossing counts once.
+    const mine = generated.wall_framing.filter((p) => p.wall_key === w.generation_key);
+    let face = 0;
+    const rects = mine.map((p) => {
+      const ip = pieceDims(p, section.get(p.section_label)).in_plane;
+      face += ip * len(p.start_m, p.end_m);
+      const h = ip / 2;
+      return VERTICAL.has(p.piece_kind)
+        ? { kind: p.piece_kind, u: [p.start_m[along] - h, p.start_m[along] + h], v: [Math.min(p.start_m[2], p.end_m[2]), Math.max(p.start_m[2], p.end_m[2])] }
+        : { kind: p.piece_kind, u: [Math.min(p.start_m[along], p.end_m[along]), Math.max(p.start_m[along], p.end_m[along])], v: [p.start_m[2] - h, p.start_m[2] + h] };
+    });
+    for (const g of rects.filter((r) => r.kind === "GIRT")) {
+      for (const r of rects.filter((x) => VERTICAL.has(x.kind))) {
+        const du = Math.min(g.u[1], r.u[1]) - Math.max(g.u[0], r.u[0]), dv = Math.min(g.v[1], r.v[1]) - Math.max(g.v[0], r.v[0]);
+        if (du > EPS && dv > EPS) face -= du * dv;
+      }
+    }
+    return { generation_key: w.generation_key, length_m: length, height_m: w.height_m, gross_area_m2: gross, opening_area_m2: opening,
+      net_area_m2: net, framing_face_area_m2: face, framing_fraction: face / net };
+  });
+  const totals = new Map();
+  for (const p of generated.wall_framing) {
+    const k = p.piece_kind + "\u0000" + p.section_label;
+    const t = totals.get(k) || { piece_kind: p.piece_kind, nominal_section: p.section_label, count: 0, total_length_m: 0 };
+    t.count += 1; t.total_length_m += len(p.start_m, p.end_m); totals.set(k, t);
+  }
+  const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  let gross = 0, opening = 0, net = 0, face = 0, fill = 0;
+  for (const w of walls) { gross += w.gross_area_m2; opening += w.opening_area_m2; net += w.net_area_m2; face += w.framing_face_area_m2; fill += w.net_area_m2 - w.framing_face_area_m2; }
+  const kinds = new Map();
+  for (const { o } of openings) { const a = kinds.get(o.opening_kind) || { opening_kind: o.opening_kind, count: 0, area_m2: 0 }; a.count += 1; a.area_m2 += o.width_m * o.height_m; kinds.set(o.opening_kind, a); }
+  return {
+    walls,
+    definition_aggregates: [{ assembly_label: def.label, wall_count: walls.length, opening_count: openings.length, gross_area_m2: gross, opening_area_m2: opening, net_area_m2: net }],
+    layer_aggregates: def.layers.map((l) => { const area = l.framing !== null ? fill : net; return { assembly_label: def.label, layer: l.name, area_m2: area, volume_m3: area * l.thickness_m }; }),
+    framing_aggregates: [...totals.values()].sort((a, b) => cmp(a.piece_kind, b.piece_kind) || cmp(a.nominal_section, b.nominal_section)),
+    opening_aggregates: [...kinds.values()].sort((a, b) => cmp(a.opening_kind, b.opening_kind)),
+    totals: { wall_count: walls.length, opening_count: openings.length, gross_area_m2: gross, opening_area_m2: opening, net_area_m2: net, framing_face_area_m2: face },
+  };
+}
+
 // Independent UUIDv5 (RFC 9562) over the canonical name array, for D041 ID minting.
 function uuidv5(namespace, name) {
   const ns = Buffer.from(namespace.replace(/-/g, ""), "hex");
@@ -540,6 +669,8 @@ const output = {
       wall_rule: "vs02b-walls-1",
       walls: fixtureWalls.walls,
       wall_framing: fixtureWalls.wall_framing,
+      // ART-003 §9.2: the assembly schedule's quantities from the walls above, compared bit for bit.
+      assembly_schedule: assemblyQuantities(fixture, fixtureWalls),
     },
     {
       name: "reference-house-001-stud-infill-vs02b-walls-1",
@@ -548,6 +679,7 @@ const output = {
       default_assembly: "stud-infill",
       walls: studWalls.walls,
       wall_framing: studWalls.wall_framing,
+      assembly_schedule: assemblyQuantities(studFixture, studWalls),
     },
   ],
   snapshots: [

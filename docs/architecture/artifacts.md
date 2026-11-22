@@ -1,7 +1,7 @@
-# Derived artifacts — DTO specification (VS-01, version 2 payloads for VS-02)
+# Derived artifacts — DTO specification (VS-01, version 2 payloads for VS-02, VS-02b walls)
 
-**Version:** 0.3 draft (2026-11-20)  
-**Status:** Confirmed for VS-01 ([D027](../product/decisions/D027-vs01-artifact-dtos.md)); version 2 payloads (generator version `"2"`) for the complete VS-02 frame and its connections, from [ART-002](../implementation/tasks/ART-002.md) and [D060](../product/decisions/D060-vs02-artifact-payloads.md). **VS-02b (approved 2026-11-22, not yet implemented):** a fifth artifact, `assembly_schedule`, walls and wall framing in `plan2d` and `mesh3d`, and wall estimate lines, from [ART-003](../implementation/tasks/ART-003.md) and [D082](../product/decisions/D082-vs02b-framing-layer-fill-quantity.md)–[D086](../product/decisions/D086-vs02b-wall-framing-ids-in-views.md); marked in each section below. Payloads are display and reporting views, not the authoritative building model and not construction documents.  
+**Version:** 0.4 draft (2026-11-22)  
+**Status:** Confirmed for VS-01 ([D027](../product/decisions/D027-vs01-artifact-dtos.md)); version 2 payloads (generator version `"2"`) for the complete VS-02 frame and its connections, from [ART-002](../implementation/tasks/ART-002.md) and [D060](../product/decisions/D060-vs02-artifact-payloads.md). **VS-02b (implemented 2026-11-22):** a fifth artifact, `assembly_schedule` (generator version `"1"`), walls and wall framing in `plan2d` and `mesh3d`, and wall estimate lines (generator versions `"3"`), from [ART-003](../implementation/tasks/ART-003.md) and [D082](../product/decisions/D082-vs02b-framing-layer-fill-quantity.md)–[D086](../product/decisions/D086-vs02b-wall-framing-ids-in-views.md); marked "VS-02b" in each section below. Payloads are display and reporting views, not the authoritative building model and not construction documents.  
 **Related:** [building model](building-model.md), [dependencies](dependencies.md), [interfaces](interfaces.md), [geometry](geometry.md), [D025](../product/decisions/D025-reference-house-001-vs01-fixture.md), [D026](../product/decisions/D026-canonical-units-identity-persistence.md).
 
 ## 1. Artifact types
@@ -14,9 +14,9 @@ Stable `artifact_type` keys, used in URLs, manifests, previews, and dependency n
 | `mesh3d` | `geometry` | Display primitives for interactive 3D (not a CAD kernel) |
 | `timber_schedule` | `timber` | Member inventory, reference-axis lengths, aggregates |
 | `preliminary_estimate` | `estimating` | Quantity-based cost only when dated unit prices exist |
-| `assembly_schedule` (VS-02b; not yet implemented) | `assemblies` | Walls, openings, wall framing pieces, aggregates, assumptions, and D071's thermal figures (§7A) |
+| `assembly_schedule` (VS-02b) | `assemblies` | Walls, openings, wall framing pieces, aggregates, assumptions, and D071's thermal figures (§7A) |
 
-**VS-02b (not yet implemented):** the order becomes `plan2d`, `mesh3d`, `timber_schedule`, `assembly_schedule`, `preliminary_estimate` ([D070](../product/decisions/D070-vs02b-quantities-and-outputs.md); [ART-003](../implementation/tasks/ART-003.md) §8.2). No other artifact types are required for VS-01. Do not emit empty analysis, IFC, or approval artifacts.
+**Order (VS-02b):** `plan2d`, `mesh3d`, `timber_schedule`, `assembly_schedule`, `preliminary_estimate` ([D070](../product/decisions/D070-vs02b-quantities-and-outputs.md); [ART-003](../implementation/tasks/ART-003.md) §8.2). No other artifact types are required for VS-01. Do not emit empty analysis, IFC, or approval artifacts.
 
 ## 2. Common envelope
 
@@ -106,7 +106,7 @@ Each derivation declares a pure **selector**: it extracts exactly the values its
 | `timber_schedule` | per member `id`, `generation_key`, `role`, `length_m` (its reference-axis length, not its axis), `section_id`, `nominal_label`, `material_id`, `species`, `grade`; per connection `id`, `generation_key`, `junction_class`, `connection_type`, `member_ids` |
 | `preliminary_estimate` | `{"timber_schedule": {aggregates, connection_aggregates, assumptions}}`, copied from the same revision's schedule payload, or `{"timber_schedule": null}` when the schedule is not `CURRENT`. It reads no snapshot. The price book is an external input (§2.3) |
 
-**VS-02b selections ([ART-003](../implementation/tasks/ART-003.md) §8.1; not yet implemented).** The version 2 contents above are unchanged, and `timber_schedule`'s selection and generator version (`"2"`) do not change:
+**VS-02b selections ([ART-003](../implementation/tasks/ART-003.md) §8.1).** The version 2 contents above are unchanged, and `timber_schedule`'s selection and generator version (`"2"`) do not change:
 
 | Artifact | Added to the selection |
 |---|---|
@@ -134,12 +134,13 @@ No selection holds the `TimberGrid`, the `FrameSystem`, unused sections and mate
     {"artifact_type": "plan2d", "status": "CURRENT", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "2", "input_fingerprint": "sha256:…"},
     {"artifact_type": "mesh3d", "status": "COMPUTING", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "2", "input_fingerprint": null},
     {"artifact_type": "timber_schedule", "status": "CURRENT", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "2", "input_fingerprint": "sha256:…"},
-    {"artifact_type": "preliminary_estimate", "status": "UNAVAILABLE", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "2", "input_fingerprint": "sha256:…"}
+    {"artifact_type": "assembly_schedule", "status": "CURRENT", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "1", "input_fingerprint": "sha256:…"},
+    {"artifact_type": "preliminary_estimate", "status": "UNAVAILABLE", "source_revision_id": "01b311c6-7a51-528d-befe-b2e592819b66", "generator_version": "3", "input_fingerprint": "sha256:…"}
   ]
 }
 ```
 
-All four types appear on every VS-01 revision manifest; with VS-02b, five, `assembly_schedule` included (D070; not yet implemented). Commit responses use the same four keys in `artifact_statuses` (status only; no payload).
+All five types appear on every revision manifest, `assembly_schedule` included since VS-02b (D070, amending VS-01's four). Commit responses use the same five keys in `artifact_statuses` (status only; no payload).
 
 ## 4. View consistency (AC-01, AC-02, AC-07)
 
@@ -149,7 +150,7 @@ Historical `GET` with an explicit `revision_id` returns the artifact **for that 
 
 ## 5. `plan2d` payload
 
-`generator_id`: `plan2d-vs01`. `generator_version`: `2` ([ART-002](../implementation/tasks/ART-002.md) §4; [D060](../product/decisions/D060-vs02-artifact-payloads.md)).
+`generator_id`: `plan2d-vs01`. `generator_version`: `3` (version 2: [ART-002](../implementation/tasks/ART-002.md) §4, [D060](../product/decisions/D060-vs02-artifact-payloads.md); version 3 adds walls and wall framing, [ART-003](../implementation/tasks/ART-003.md) §5).
 
 Four planes, each with one array per member role and a `connections` array. Every plane has every array; arrays with no members are empty. Abridged to one entry per array for Reference House 001 v2:
 
@@ -254,9 +255,9 @@ Further rules ([GEOM-001](../implementation/tasks/GEOM-001.md) §3, approved as 
 
 `dimensions` contains **exactly** `footprint-width` and `footprint-depth`, with `value_m` copied from the footprint, never measured from rendered geometry (AC-01). Bay and grid dimension lines are not part of the payload.
 
-### VS-02b: walls, openings, and wall framing ([ART-003](../implementation/tasks/ART-003.md) §5; not yet implemented)
+### VS-02b: walls, openings, and wall framing ([ART-003](../implementation/tasks/ART-003.md) §5)
 
-`generator_version` moves to `3`. The `level-0` and `level-1` planes gain `walls` and `wall_framing`; every plane has both arrays, empty on `eave` and `roof`. Each wall and piece is on its own level's plane.
+Since generator version `3`, the `level-0` and `level-1` planes gain `walls` and `wall_framing`; every plane has both arrays, empty on `eave` and `roof`. Each wall and piece is on its own level's plane.
 
 ```json
 {"wall_id": "…", "generation_key": "wall/axis-x/y0/x0-x1/level-0",
@@ -272,7 +273,7 @@ Further rules ([GEOM-001](../implementation/tasks/GEOM-001.md) §3, approved as 
 
 ## 6. `mesh3d` payload
 
-`generator_id`: `mesh3d-vs01`. `generator_version`: `2` ([ART-002](../implementation/tasks/ART-002.md) §5).
+`generator_id`: `mesh3d-vs01`. `generator_version`: `3` (version 2: [ART-002](../implementation/tasks/ART-002.md) §5; version 3 adds walls and wall framing, [ART-003](../implementation/tasks/ART-003.md) §6).
 
 This is a **display primitive** list. The client (or a later adapter) tessellates. It is not OpenCascade, glTF, or a Three.js scene graph.
 
@@ -358,9 +359,9 @@ The boxes carry `section_width_m` and `section_depth_m` only; the orientation is
 
 Roof surfaces ([D048](../product/decisions/D048-roof-plane-through-wall-line.md)): each plane passes through the wall line at `z_eave_m` at `pitch_rad`, so the overhang edge is at `z_eave − eave_overhang_m · tan(pitch_rad)` (5.334 m for Reference House 001) and the ridge at `z_eave + (depth_m / 2) · tan(pitch_rad)` (8.5344 m). `z_eave_m` stays the eave plate height.
 
-### VS-02b: walls and wall framing ([ART-003](../implementation/tasks/ART-003.md) §6; not yet implemented)
+### VS-02b: walls and wall framing ([ART-003](../implementation/tasks/ART-003.md) §6)
 
-`generator_version` moves to `3`. Two top-level arrays join `members` and `connections`, each sorted by key:
+Since generator version `3`, two top-level arrays join `members` and `connections`, each sorted by key:
 
 ```json
 {"wall_id": "…", "generation_key": "wall/axis-x/y0/x0-x1/level-0", "primitive": "layered_wall",
@@ -477,7 +478,7 @@ And connection aggregates, with the default types:
 | `rafter-foot` | `PEGGED_MORTISE_TENON` | 8 |
 | `rafter-peak` | `BRIDLE` | 4 |
 
-## 7A. `assembly_schedule` payload (VS-02b; not yet implemented)
+## 7A. `assembly_schedule` payload (VS-02b)
 
 `generator_id`: `assembly-schedule-vs02b`. `generator_version`: `1`. Owner: `assemblies` ([D070](../product/decisions/D070-vs02b-quantities-and-outputs.md), [D071](../product/decisions/D071-vs02b-thermal-moisture-values.md)). The full contract, with an example, the reference house figures, and the numeric rules, is [ART-003](../implementation/tasks/ART-003.md) §4; in brief:
 
@@ -495,7 +496,7 @@ And connection aggregates, with the default types:
 
 ## 8. `preliminary_estimate` payload
 
-`generator_id`: `estimate-vs01`. `generator_version`: `2` ([ART-002](../implementation/tasks/ART-002.md) §7).
+`generator_id`: `estimate-vs01`. `generator_version`: `3` (version 2: [ART-002](../implementation/tasks/ART-002.md) §7; version 3 adds the wall lines, §8.3).
 
 VS-01 does **not** introduce a `CostDataset` entity. Optional dated unit prices live in **project estimate configuration**, outside the semantic snapshot. Default for new reference projects: **no price book**.
 
@@ -581,9 +582,9 @@ Approved from [EST-001](../implementation/tasks/EST-001.md) §5, §7 item 4:
 
 If coverage is `none` or `partial`, include warning code `COST_INPUTS_MISSING`.
 
-### 8.3 VS-02b: wall lines and `m2` rows ([ART-003](../implementation/tasks/ART-003.md) §7; not yet implemented)
+### 8.3 VS-02b: wall lines and `m2` rows ([ART-003](../implementation/tasks/ART-003.md) §7)
 
-`generator_version` moves to `3`.
+Since generator version `3`:
 
 - **`assembly` lines:** one per `layer_aggregates` row of the assembly schedule, fill included (D082), key `assembly.<label>.<layer>`, with `assembly_label`, `layer`, `layer_function`, `material_name`, and the area as `quantity_value` in `m2`.
 - **`wallframing` lines:** one per `framing_aggregates` row, key `wallframing.<piece_kind>.<nominal_section>`, with `piece_kind`, `nominal_section`, `count`, and the total length as `quantity_value` in `m`.
@@ -595,7 +596,7 @@ If coverage is `none` or `partial`, include warning code `COST_INPUTS_MISSING`.
 
 | Request | Behavior |
 |---|---|
-| `GET …/artifacts?revision_id=` | Manifest of all four types (five with VS-02b's `assembly_schedule`; not yet implemented) |
+| `GET …/artifacts?revision_id=` | Manifest of all five types (§1, §3) |
 | `GET …/artifacts/{type}?revision_id=` | Envelope + payload when `CURRENT` or `UNAVAILABLE` |
 | Unknown `{type}` | 404 |
 | Unknown revision | 404 |
@@ -622,7 +623,7 @@ Version 2 reconciliation ([ART-002](../implementation/tasks/ART-002.md) §13; ch
 - `connection_aggregates` counts sum to the number of connection rows and of `Connection` records, and each class's count equals CONN-001 §6's formula.
 - The estimate's `assumptions` equal its schedule's, and no payload carries a capacity, size, or fastener field.
 
-**VS-02b interim (MODEL-006 §10):** model schema version 3 adds walls, wall framing, and openings, but no payload reads them yet. The four payloads are unchanged in shape and content for the v3 house (their fingerprints change with the model schema version), and `SetWallAssembly`, `AddOpening`, `SetOpening`, and `RemoveOpening` impact no artifact. `ART-003` adds the assembly schedule, walls in `plan2d` and `mesh3d`, estimate lines, and their selectors. **Approved to end with ART-003 (not yet implemented):** the five payloads of §1 then present walls, openings, and wall framing, the four wall commands impact the artifacts whose payloads they change (ART-003 §8.3), and every step of the integration suite reconciles the views' and the assembly schedule's walls, openings, and pieces with the snapshot by ID, the areas and aggregates with their rows, and the estimate's wall quantities with the aggregates.
+VS-02b reconciliation ([ART-003](../implementation/tasks/ART-003.md) §11, §13; checked after every step of the integration suite by `check_walls` in `tests/integration/invariants.py`; written as prose so that the VS-02 traceability parser's item count is unchanged, and traced by `TEST-003`). The plan's, mesh's, and assembly schedule's walls, openings, and wall framing pieces are exactly the snapshot's, by ID, and each wall and piece is on its level's plane, with each mesh box's axis its record's. Each wall's length, opening area, and net area follow its records; the totals, per-layer areas (the framing layer's fill net of framing, D082), volumes, and framing aggregates reconcile with the rows; and `has_jacks` agrees with the pieces. The estimate's assembly and wall framing lines equal the assembly schedule's aggregates, with counts beside lengths, and its assumptions are the timber schedule's followed by the assembly schedule's. The assembly schedule's envelope carries `CLIMATE_DETAILS_UNVERIFIED`. The four wall commands impact exactly the artifacts whose payloads they change, and never `timber_schedule` (ART-003 §8.3, as measured).
 
 ## 11. Out of scope
 

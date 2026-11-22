@@ -182,6 +182,11 @@ test("price book: complete then partial coverage", async ({ page }) => {
   await form.getByLabel("Bridle joint").fill("65.00");
   await form.getByLabel("Housed dovetail").fill("38.00");
   await expect(form.getByTestId("stored-connection.PEGGED_MORTISE_TENON")).toHaveText("$45.00 each");
+  // VS-02b's wall lines (ART-003 §10, D085): layers per square foot, bucks per foot as timber is.
+  await form.getByLabel("Straw (straw-bale, bales)").fill("2.04");
+  await form.getByLabel("Clay plaster (straw-bale, clay-plaster)").fill("3.25");
+  await form.getByLabel("Lime plaster (straw-bale, lime-plaster)").fill("3.90");
+  for (const label of ["Buck head 1.5x18", "Buck jamb 1.5x18", "Buck sill 1.5x18"]) await form.getByLabel(label).fill("5.79");
   await form.getByRole("button", { name: "Save prices" }).click();
   await expect(form).toContainText("Saved as version 1.");
   await expect(page.getByTestId("status-preliminary_estimate")).toHaveText("Estimate: CURRENT");

@@ -220,6 +220,19 @@ export interface components {
             /** Nominal Label */
             nominal_label: string;
         };
+        /** AreaWeightedFigure */
+        AreaWeightedFigure: {
+            /** Missing Inputs */
+            missing_inputs: components["schemas"]["MissingInput"][];
+            /** Net Area M2 */
+            net_area_m2: number;
+            /** R Value M2 K W */
+            r_value_m2_k_w: number | null;
+            /** U Value W M2 K */
+            u_value_w_m2_k: number | null;
+            /** Ua W K */
+            ua_w_k: number | null;
+        };
         /**
          * VS-01 artifact envelope (artifacts.md §2)
          * @description Common envelope for every artifact response (artifacts.md §2).
@@ -229,7 +242,7 @@ export interface components {
              * Artifact Type
              * @enum {string}
              */
-            artifact_type: "plan2d" | "mesh3d" | "timber_schedule" | "preliminary_estimate";
+            artifact_type: "plan2d" | "mesh3d" | "timber_schedule" | "assembly_schedule" | "preliminary_estimate";
             /**
              * @default {
              *       "construction_approved": false,
@@ -308,6 +321,209 @@ export interface components {
             /** Unverified Climate Details */
             unverified_climate_details: string[];
         };
+        /**
+         * AssemblyLine
+         * @description One line per definition and layer in use, the framing layer's fill included (D070, D082; ART-003 §7.1).
+         */
+        AssemblyLine: {
+            /** Amount Minor */
+            amount_minor: number | null;
+            /** Assembly Label */
+            assembly_label: string;
+            /** Key */
+            key: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "assembly";
+            /** Layer */
+            layer: string;
+            /**
+             * Layer Function
+             * @enum {string}
+             */
+            layer_function: "FINISH" | "SHEATHING" | "INSULATION" | "FRAMING";
+            /** Material Name */
+            material_name: string;
+            /** Priced */
+            priced: boolean;
+            /**
+             * Quantity Unit
+             * @constant
+             */
+            quantity_unit: "m2";
+            /** Quantity Value */
+            quantity_value: number;
+            /** Unit Price Minor */
+            unit_price_minor: number | null;
+        };
+        /**
+         * AssemblyOpeningRow
+         * @description No position (ART-003 §4.3): positions belong to the views.
+         */
+        AssemblyOpeningRow: {
+            /** Area M2 */
+            area_m2: number;
+            /** Has Jacks */
+            has_jacks: boolean;
+            /** Height M */
+            height_m: number;
+            /** Opening Id */
+            opening_id: string;
+            /**
+             * Opening Kind
+             * @enum {string}
+             */
+            opening_kind: "WINDOW" | "DOOR";
+            /** Wall Id */
+            wall_id: string;
+            /** Wall Key */
+            wall_key: string;
+            /** Width M */
+            width_m: number;
+        };
+        /** assembly_schedule payload (artifacts.md §7A) */
+        AssemblySchedulePayload: {
+            /** Assumptions */
+            assumptions: components["schemas"]["Assumption"][];
+            /** Definition Aggregates */
+            definition_aggregates: components["schemas"]["DefinitionAggregate"][];
+            /** Definitions */
+            definitions: components["schemas"]["DefinitionEntry"][];
+            /** Framing Aggregates */
+            framing_aggregates: components["schemas"]["FramingAggregate"][];
+            /** Layer Aggregates */
+            layer_aggregates: components["schemas"]["LayerAggregate"][];
+            /** Opening Aggregates */
+            opening_aggregates: components["schemas"]["OpeningAggregate"][];
+            /** Openings */
+            openings: components["schemas"]["AssemblyOpeningRow"][];
+            /**
+             * Quantity Basis
+             * @default reference
+             * @constant
+             */
+            quantity_basis: "reference";
+            thermal: components["schemas"]["ThermalFigures"];
+            totals: components["schemas"]["AssemblyTotals"];
+            /**
+             * @default {
+             *       "area": "m2",
+             *       "count": "1",
+             *       "heat_flow": "W/K",
+             *       "length": "m",
+             *       "thermal_resistance": "m2.K/W",
+             *       "thermal_transmittance": "W/(m2.K)",
+             *       "volume": "m3"
+             *     }
+             */
+            units: components["schemas"]["AssemblyUnits"];
+            /** Wall Framing */
+            wall_framing: components["schemas"]["WallFramingRow"][];
+            /** Walls */
+            walls: components["schemas"]["AssemblyWallRow"][];
+        };
+        /** AssemblyTotals */
+        AssemblyTotals: {
+            /** Framing Face Area M2 */
+            framing_face_area_m2: number;
+            /** Gross Area M2 */
+            gross_area_m2: number;
+            /** Net Area M2 */
+            net_area_m2: number;
+            /** Opening Area M2 */
+            opening_area_m2: number;
+            /** Opening Count */
+            opening_count: number;
+            /** Wall Count */
+            wall_count: number;
+        };
+        /** AssemblyUnits */
+        AssemblyUnits: {
+            /**
+             * Area
+             * @default m2
+             * @constant
+             */
+            area: "m2";
+            /**
+             * Count
+             * @default 1
+             * @constant
+             */
+            count: "1";
+            /**
+             * Heat Flow
+             * @default W/K
+             * @constant
+             */
+            heat_flow: "W/K";
+            /**
+             * Length
+             * @default m
+             * @constant
+             */
+            length: "m";
+            /**
+             * Thermal Resistance
+             * @default m2.K/W
+             * @constant
+             */
+            thermal_resistance: "m2.K/W";
+            /**
+             * Thermal Transmittance
+             * @default W/(m2.K)
+             * @constant
+             */
+            thermal_transmittance: "W/(m2.K)";
+            /**
+             * Volume
+             * @default m3
+             * @constant
+             */
+            volume: "m3";
+        };
+        /** AssemblyWallRow */
+        AssemblyWallRow: {
+            /** Assembly Definition Id */
+            assembly_definition_id: string;
+            /** Assembly Label */
+            assembly_label: string;
+            /**
+             * Elevation Side
+             * @enum {string}
+             */
+            elevation_side: "south" | "north" | "west" | "east";
+            /** Framing Face Area M2 */
+            framing_face_area_m2: number;
+            /** Framing Fraction */
+            framing_fraction: number;
+            /** Generation Key */
+            generation_key: string;
+            /** Gross Area M2 */
+            gross_area_m2: number;
+            /** Height M */
+            height_m: number;
+            /** Length M */
+            length_m: number;
+            /** Level Id */
+            level_id: string;
+            /** Level Index */
+            level_index: number;
+            /** Net Area M2 */
+            net_area_m2: number;
+            /** Opening Area M2 */
+            opening_area_m2: number;
+            /** R Value M2 K W */
+            r_value_m2_k_w: number | null;
+            /** U Value W M2 K */
+            u_value_w_m2_k: number | null;
+            /** Ua W K */
+            ua_w_k: number | null;
+            /** Wall Id */
+            wall_id: string;
+        };
         /** Assumption */
         Assumption: {
             /** Code */
@@ -324,6 +540,23 @@ export interface components {
             buck_section_id: string;
             /** Framing Material Id */
             framing_material_id: string;
+            framing_thermal_conductivity_w_m_k: components["schemas"]["DeclaredValue"] | null;
+            /** Girt Count */
+            girt_count: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "BUCK";
+        };
+        /** BuckFramingSummary */
+        BuckFramingSummary: {
+            /** Buck Section */
+            buck_section: string;
+            /** Framing Material Id */
+            framing_material_id: string;
+            /** Framing Material Name */
+            framing_material_name: string;
             framing_thermal_conductivity_w_m_k: components["schemas"]["DeclaredValue"] | null;
             /** Girt Count */
             girt_count: number;
@@ -591,6 +824,65 @@ export interface components {
             /** Value */
             value: number;
         };
+        /** DefinitionAggregate */
+        DefinitionAggregate: {
+            /** Assembly Label */
+            assembly_label: string;
+            /** Gross Area M2 */
+            gross_area_m2: number;
+            /** Net Area M2 */
+            net_area_m2: number;
+            /** Opening Area M2 */
+            opening_area_m2: number;
+            /** Opening Count */
+            opening_count: number;
+            /** Wall Count */
+            wall_count: number;
+        };
+        /** DefinitionEntry */
+        DefinitionEntry: {
+            /** Assembly Definition Id */
+            assembly_definition_id: string;
+            /**
+             * Family
+             * @enum {string}
+             */
+            family: "STRAW_BALE" | "STUD_INFILL";
+            /** Installation Note */
+            installation_note: string;
+            /** Label */
+            label: string;
+            /** Layers */
+            layers: components["schemas"]["DefinitionLayer"][];
+            /** Total Thickness M */
+            total_thickness_m: number;
+            /** Unverified Climate Details */
+            unverified_climate_details: string[];
+        };
+        /**
+         * DefinitionLayer
+         * @description A layer as stored, with its material's name and, for the framing layer, its framing by section label.
+         */
+        DefinitionLayer: {
+            /** Framing */
+            framing: (components["schemas"]["StudFramingSummary"] | components["schemas"]["BuckFramingSummary"]) | null;
+            /**
+             * Function
+             * @enum {string}
+             */
+            function: "FINISH" | "SHEATHING" | "INSULATION" | "FRAMING";
+            /** Material Id */
+            material_id: string;
+            /** Material Name */
+            material_name: string;
+            /** Name */
+            name: string;
+            thermal_conductivity_w_m_k: components["schemas"]["DeclaredValue"] | null;
+            thermal_resistance_m2_k_w: components["schemas"]["DeclaredValue"] | null;
+            /** Thickness M */
+            thickness_m: number;
+            vapor_permeance_kg_pa_s_m2: components["schemas"]["DeclaredValue"] | null;
+        };
         /** Dimension */
         Dimension: {
             /** End M */
@@ -760,6 +1052,20 @@ export interface components {
              */
             schema_version: 2;
         };
+        /** FramingAggregate */
+        FramingAggregate: {
+            /** Count */
+            count: number;
+            /** Nominal Section */
+            nominal_section: string;
+            /**
+             * Piece Kind
+             * @enum {string}
+             */
+            piece_kind: "STUD" | "GIRT" | "KING" | "JACK" | "HEADER" | "ROUGH_SILL" | "CRIPPLE" | "BUCK_JAMB" | "BUCK_HEAD" | "BUCK_SILL";
+            /** Total Length M */
+            total_length_m: number;
+        };
         /** GableRoof */
         GableRoof: {
             /** Eave Overhang M */
@@ -846,6 +1152,26 @@ export interface components {
             /** Thickness M */
             thickness_m: number;
             vapor_permeance_kg_pa_s_m2: components["schemas"]["DeclaredValue"] | null;
+        };
+        /** LayerAggregate */
+        LayerAggregate: {
+            /** Area M2 */
+            area_m2: number;
+            /** Assembly Label */
+            assembly_label: string;
+            /**
+             * Function
+             * @enum {string}
+             */
+            function: "FINISH" | "SHEATHING" | "INSULATION" | "FRAMING";
+            /** Layer */
+            layer: string;
+            /** Material Name */
+            material_name: string;
+            /** Thickness M */
+            thickness_m: number;
+            /** Volume M3 */
+            volume_m3: number;
         };
         /** Level */
         Level: {
@@ -959,6 +1285,10 @@ export interface components {
              * @constant
              */
             units: "m";
+            /** Wall Framing */
+            wall_framing: components["schemas"]["MeshWallFramingPiece"][];
+            /** Walls */
+            walls: components["schemas"]["MeshWall"][];
         };
         /**
          * MeshConnection
@@ -1008,12 +1338,73 @@ export interface components {
             /** Section Width M */
             section_width_m: number;
         };
+        /**
+         * MeshWall
+         * @description One box per layer, with rectangular voids through every layer (ART-003 §6.1). A display primitive.
+         */
+        MeshWall: {
+            /** Base End M */
+            base_end_m: number[];
+            /** Base Start M */
+            base_start_m: number[];
+            /** Generation Key */
+            generation_key: string;
+            /** Height M */
+            height_m: number;
+            /** Layers */
+            layers: components["schemas"]["WallLayerSpan"][];
+            /** Outward Xy */
+            outward_xy: number[];
+            /**
+             * Primitive
+             * @default layered_wall
+             * @constant
+             */
+            primitive: "layered_wall";
+            /** Voids */
+            voids: components["schemas"]["WallVoid"][];
+            /** Wall Id */
+            wall_id: string;
+        };
+        /**
+         * MeshWallFramingPiece
+         * @description An oriented box per piece (ART-003 §6.2): through-wall along the wall's ``outward_xy``, in-plane in the
+         *     wall's plane across the axis. No key and no ``primitive`` field (D086).
+         */
+        MeshWallFramingPiece: {
+            /** Axis End M */
+            axis_end_m: number[];
+            /** Axis Start M */
+            axis_start_m: number[];
+            /** Piece Id */
+            piece_id: string;
+            /**
+             * Piece Kind
+             * @enum {string}
+             */
+            piece_kind: "STUD" | "GIRT" | "KING" | "JACK" | "HEADER" | "ROUGH_SILL" | "CRIPPLE" | "BUCK_JAMB" | "BUCK_HEAD" | "BUCK_SILL";
+            /** Section In Plane M */
+            section_in_plane_m: number;
+            /** Section Through Wall M */
+            section_through_wall_m: number;
+            /** Wall Id */
+            wall_id: string;
+        };
         /** Message */
         Message: {
             /** Code */
             code: string;
             /** Message */
             message: string;
+        };
+        /** MissingInput */
+        MissingInput: {
+            /** Assembly Label */
+            assembly_label: string;
+            /** Fields */
+            fields: string[];
+            /** Layer */
+            layer: string;
         };
         /** NoArgs */
         NoArgs: Record<string, never>;
@@ -1049,6 +1440,27 @@ export interface components {
             wall_id: string;
             /** Width M */
             width_m: number;
+        };
+        /** OpeningAggregate */
+        OpeningAggregate: {
+            /** Area M2 */
+            area_m2: number;
+            /** Count */
+            count: number;
+            /**
+             * Opening Kind
+             * @enum {string}
+             */
+            opening_kind: "WINDOW" | "DOOR";
+        };
+        /** PathFigure */
+        PathFigure: {
+            /** Missing Inputs */
+            missing_inputs: components["schemas"]["MissingInput"][];
+            /** R Value M2 K W */
+            r_value_m2_k_w: number | null;
+            /** U Value W M2 K */
+            u_value_w_m2_k: number | null;
         };
         /** plan2d payload (artifacts.md §5) */
         Plan2dPayload: {
@@ -1100,6 +1512,23 @@ export interface components {
             /** Width M */
             width_m: number;
         };
+        /**
+         * PlanHorizontalPiece
+         * @description A girt, header, rough sill, buck head, or buck sill: the plan projection of its axis (D086).
+         */
+        PlanHorizontalPiece: {
+            /** End Xy M */
+            end_xy_m: number[];
+            /** Piece Id */
+            piece_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            piece_kind: "BUCK_HEAD" | "BUCK_SILL" | "GIRT" | "HEADER" | "ROUGH_SILL";
+            /** Start Xy M */
+            start_xy_m: number[];
+        };
         /** PlanLine */
         PlanLine: {
             /** End Xy M */
@@ -1146,6 +1575,10 @@ export interface components {
             rafters: components["schemas"]["PlanLinearMember"][];
             /** Sills */
             sills: components["schemas"]["PlanLinearMember"][];
+            /** Wall Framing */
+            wall_framing: (components["schemas"]["PlanVerticalPiece"] | components["schemas"]["PlanHorizontalPiece"])[];
+            /** Walls */
+            walls: components["schemas"]["PlanWall"][];
             /** Z M */
             z_m: number;
         };
@@ -1157,6 +1590,60 @@ export interface components {
             member_id: string;
             /** Xy M */
             xy_m: number[];
+        };
+        /**
+         * PlanVerticalPiece
+         * @description A stud, king, jack, cripple, or buck jamb: the plan projection of its start. No key or section (D086).
+         */
+        PlanVerticalPiece: {
+            /** Piece Id */
+            piece_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            piece_kind: "BUCK_JAMB" | "CRIPPLE" | "JACK" | "KING" | "STUD";
+            /** Xy M */
+            xy_m: number[];
+        };
+        /**
+         * PlanWall
+         * @description A wall's outline: the band from start to end, ``exterior_m`` outward and ``interior_m`` inward (D070, D083).
+         */
+        PlanWall: {
+            /** End Xy M */
+            end_xy_m: number[];
+            /** Exterior M */
+            exterior_m: number;
+            /** Generation Key */
+            generation_key: string;
+            /** Interior M */
+            interior_m: number;
+            /** Openings */
+            openings: components["schemas"]["PlanWallOpening"][];
+            /** Outward Xy */
+            outward_xy: number[];
+            /** Start Xy M */
+            start_xy_m: number[];
+            /** Wall Id */
+            wall_id: string;
+        };
+        /**
+         * PlanWallOpening
+         * @description A gap through the wall's full thickness at the rough opening, along its reference line (ART-003 §5.2).
+         */
+        PlanWallOpening: {
+            /** End Xy M */
+            end_xy_m: number[];
+            /** Opening Id */
+            opening_id: string;
+            /**
+             * Opening Kind
+             * @enum {string}
+             */
+            opening_kind: "WINDOW" | "DOOR";
+            /** Start Xy M */
+            start_xy_m: number[];
         };
         /** preliminary_estimate payload (artifacts.md §8) */
         PreliminaryEstimatePayload: {
@@ -1170,7 +1657,7 @@ export interface components {
             /** Currency */
             currency: "USD" | null;
             /** Line Items */
-            line_items: (components["schemas"]["TimberLine"] | components["schemas"]["ConnectionLine"])[];
+            line_items: (components["schemas"]["TimberLine"] | components["schemas"]["ConnectionLine"] | components["schemas"]["AssemblyLine"] | components["schemas"]["WallFramingLine"])[];
             price_book: components["schemas"]["PriceBookInfo"] | null;
             totals: components["schemas"]["Totals"];
         };
@@ -1195,7 +1682,7 @@ export interface components {
              * Impacted Artifacts
              * @description Exactly the artifact types whose payload for the new revision differs from the base's, sorted; possibly empty (interfaces.md §3, DEP-001 §6). The others are reused unchanged.
              */
-            impacted_artifacts: ("plan2d" | "mesh3d" | "timber_schedule" | "preliminary_estimate")[];
+            impacted_artifacts: ("plan2d" | "mesh3d" | "timber_schedule" | "assembly_schedule" | "preliminary_estimate")[];
             /** Is Noop */
             is_noop: boolean;
             members: components["schemas"]["MemberChanges"];
@@ -1273,7 +1760,7 @@ export interface components {
              * Unit
              * @enum {string}
              */
-            unit: "m" | "each";
+            unit: "m" | "each" | "m2";
             /** Unit Price Minor */
             unit_price_minor: number;
         };
@@ -1701,6 +2188,56 @@ export interface components {
              */
             type: "STUD";
         };
+        /** StudFramingSummary */
+        StudFramingSummary: {
+            /** Framing Material Id */
+            framing_material_id: string;
+            /** Framing Material Name */
+            framing_material_name: string;
+            framing_thermal_conductivity_w_m_k: components["schemas"]["DeclaredValue"] | null;
+            /** Girt Count */
+            girt_count: number;
+            /** Girt Section */
+            girt_section: string | null;
+            /** Header Section */
+            header_section: string;
+            /** Jack Threshold Width M */
+            jack_threshold_width_m: number;
+            /** Stud Section */
+            stud_section: string;
+            /** Stud Spacing M */
+            stud_spacing_m: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "STUD";
+        };
+        /** ThermalDefinition */
+        ThermalDefinition: {
+            /** Assembly Label */
+            assembly_label: string;
+            center_of_cavity: components["schemas"]["PathFigure"];
+            framing_path: components["schemas"]["PathFigure"];
+            parallel_path: components["schemas"]["AreaWeightedFigure"];
+        };
+        /** ThermalFigures */
+        ThermalFigures: {
+            all_walls: components["schemas"]["AreaWeightedFigure"];
+            /** Definitions */
+            definitions: components["schemas"]["ThermalDefinition"][];
+            method: components["schemas"]["ThermalMethod"];
+        };
+        /** ThermalMethod */
+        ThermalMethod: {
+            /**
+             * Id
+             * @constant
+             */
+            id: "parallel-path-1";
+            /** Notes */
+            notes: string[];
+        };
         /** TimberGrid */
         TimberGrid: {
             /** Generation Rule Version */
@@ -1910,6 +2447,41 @@ export interface components {
             updated: string[];
         };
         /**
+         * WallFramingLine
+         * @description One line per wall framing kind and section in use, priced per meter, with its count beside (D070).
+         */
+        WallFramingLine: {
+            /** Amount Minor */
+            amount_minor: number | null;
+            /** Count */
+            count: number;
+            /** Key */
+            key: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "wallframing";
+            /** Nominal Section */
+            nominal_section: string;
+            /**
+             * Piece Kind
+             * @enum {string}
+             */
+            piece_kind: "STUD" | "GIRT" | "KING" | "JACK" | "HEADER" | "ROUGH_SILL" | "CRIPPLE" | "BUCK_JAMB" | "BUCK_HEAD" | "BUCK_SILL";
+            /** Priced */
+            priced: boolean;
+            /**
+             * Quantity Unit
+             * @constant
+             */
+            quantity_unit: "m";
+            /** Quantity Value */
+            quantity_value: number;
+            /** Unit Price Minor */
+            unit_price_minor: number | null;
+        };
+        /**
          * WallFramingPiece
          * @description One generated wall framing piece (D066; MODEL-006 §4.5). No connection records.
          */
@@ -1951,6 +2523,57 @@ export interface components {
             /** Id */
             id: string;
         };
+        /** WallFramingRow */
+        WallFramingRow: {
+            /** Generation Key */
+            generation_key: string;
+            /** Grade */
+            grade: string | null;
+            /** Length M */
+            length_m: number;
+            /** Material Id */
+            material_id: string;
+            /** Nominal Section */
+            nominal_section: string;
+            /** Opening Id */
+            opening_id: string | null;
+            /** Piece Id */
+            piece_id: string;
+            /**
+             * Piece Kind
+             * @enum {string}
+             */
+            piece_kind: "STUD" | "GIRT" | "KING" | "JACK" | "HEADER" | "ROUGH_SILL" | "CRIPPLE" | "BUCK_JAMB" | "BUCK_HEAD" | "BUCK_SILL";
+            /**
+             * Quantity
+             * @default 1
+             * @constant
+             */
+            quantity: 1;
+            /** Section Id */
+            section_id: string;
+            /** Species */
+            species: string | null;
+            /** Wall Id */
+            wall_id: string;
+        };
+        /**
+         * WallLayerSpan
+         * @description A layer's signed interval along the wall's outward normal, 0 at the reference plane (D083).
+         */
+        WallLayerSpan: {
+            /**
+             * Function
+             * @enum {string}
+             */
+            function: "FINISH" | "SHEATHING" | "INSULATION" | "FRAMING";
+            /** Inner M */
+            inner_m: number;
+            /** Name */
+            name: string;
+            /** Outer M */
+            outer_m: number;
+        };
         /** WallRef */
         WallRef: {
             /** Generation Key */
@@ -1983,6 +2606,23 @@ export interface components {
             schema_version: 1;
             /** Wall Ids */
             wall_ids: string[];
+        };
+        /**
+         * WallVoid
+         * @description A rough opening in wall-local coordinates: ``u`` along the wall from its start, ``v`` up from its base.
+         */
+        WallVoid: {
+            /** Opening Id */
+            opening_id: string;
+            /**
+             * Opening Kind
+             * @enum {string}
+             */
+            opening_kind: "WINDOW" | "DOOR";
+            /** U M */
+            u_m: number[];
+            /** V M */
+            v_m: number[];
         };
         /**
          * XGridLine

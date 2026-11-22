@@ -48,7 +48,7 @@ def api(store) -> Api:
 def test_vs01_flow(api):
     pid = api.create()
     statuses = {a["artifact_type"]: a["status"] for a in api.get(f"/api/v1/projects/{pid}/artifacts").json()["artifacts"]}
-    assert statuses == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "preliminary_estimate": "UNAVAILABLE"}
+    assert statuses == {"plan2d": "CURRENT", "mesh3d": "CURRENT", "timber_schedule": "CURRENT", "assembly_schedule": "CURRENT", "preliminary_estimate": "UNAVAILABLE"}
 
     command = api.width(pid, 12.192)
     preview = api.preview(pid, command).json()
@@ -388,7 +388,7 @@ def test_artifact_statuses(store):
 def test_empty_registry_is_missing_202(store):
     api = make_api(store, Registry())
     pid = api.create()
-    for kind in ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate"):
+    for kind in ("plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate"):
         response = api.get(f"/api/v1/projects/{pid}/artifacts/{kind}")
         assert (response.status_code, response.json()["status"]) == (202, "MISSING")
 
@@ -427,6 +427,9 @@ def test_price_book_put_get_and_estimate(api):
         (lambda b: b["rows"][0].__setitem__("unit_price_minor", -1), "rows[0].unit_price_minor", codes.OUT_OF_RANGE),
         (lambda b: b.__setitem__("discount", 5), "discount", codes.UNKNOWN_FIELD),
         (lambda b: b["rows"][0].__setitem__("unit", "each"), "rows[0].unit", codes.PRICE_UNIT_MISMATCH),  # ART-002 §7.3
+        (lambda b: b["rows"].append({"key": "assembly.straw-bale.bales", "unit": "m", "unit_price_minor": 1}), "rows[1].unit", codes.PRICE_UNIT_MISMATCH),
+        (lambda b: b["rows"].append({"key": "wallframing.BUCK_JAMB.1.5x18", "unit": "m2", "unit_price_minor": 1}), "rows[1].unit",
+         codes.PRICE_UNIT_MISMATCH),  # ART-003 §13 test 9
     ],
 )
 def test_invalid_price_book_is_422(api, mutate, path, code):

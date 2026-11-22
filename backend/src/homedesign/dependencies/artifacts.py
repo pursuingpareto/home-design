@@ -26,7 +26,7 @@ from homedesign.project.loading import load_snapshot
 from homedesign.project.store import ArtifactRow, RevisionStore
 from homedesign.project.timefmt import format_timestamp
 
-from .envelope import PRELIMINARY_WARNING, ArtifactEnvelope, Manifest, ManifestEntry
+from .envelope import PRELIMINARY_WARNING, STANDING_WARNINGS, ArtifactEnvelope, Manifest, ManifestEntry
 from .registry import ARTIFACT_TYPES, Derivation, DerivationContext, Outcome, Registry, default_registry
 
 log = logging.getLogger("homedesign.dependencies")
@@ -231,7 +231,7 @@ class ArtifactService:
         return memo[kind]
 
     def manifest(self, project_id: str, revision_id: str | None = None) -> dict[str, Any]:
-        """Read-only manifest of all four types (artifacts.md §3). Never derives or copies."""
+        """Read-only manifest of all five types (artifacts.md §3). Never derives or copies."""
         with self.store.transaction() as tx:
             snapshot, head = self._resolve(tx, project_id, revision_id)
             memo: dict = {}
@@ -278,7 +278,8 @@ class ArtifactService:
 
     @staticmethod
     def _envelope(project_id, snapshot, head, kind, derivation, row, status) -> dict[str, Any]:
-        warnings = [PRELIMINARY_WARNING, *(row.warnings if row else [])]  # AC-08: always present
+        standing = STANDING_WARNINGS.get(kind, (PRELIMINARY_WARNING,))  # AC-08 (and ART-003 §4.9): always present
+        warnings = [*standing, *(row.warnings if row else [])]
         serve_payload = row is not None and status in ("CURRENT", "UNAVAILABLE")
         return ArtifactEnvelope(
             artifact_type=kind,

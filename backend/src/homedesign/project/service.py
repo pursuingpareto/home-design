@@ -13,6 +13,7 @@ from dataclasses import dataclass, field, replace
 from datetime import datetime, timedelta
 from typing import Any
 
+from homedesign.dependencies.registry import ARTIFACT_TYPES  # artifacts.md §1
 from homedesign.model.canonical import snapshot_fingerprint
 from homedesign.model.commands import CandidateChange, command_hash, parse_command, propose, propose_create
 from homedesign.model.paths import is_canonical_uuid
@@ -33,7 +34,6 @@ from .store import DuplicateCommand, OperationRow, ProjectRow, RevisionRow, Revi
 from .loading import load_snapshot
 from .timefmt import format_timestamp
 
-ARTIFACT_TYPES = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")  # artifacts.md §1
 PREVIEW_TTL = timedelta(minutes=15)  # D047
 
 

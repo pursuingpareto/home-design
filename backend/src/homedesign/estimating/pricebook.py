@@ -38,13 +38,13 @@ class _Strict(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid", allow_inf_nan=False, frozen=True)
 
 
-# ART-002 §7.3: the unit each key family requires. Keys of other families take either unit and are unused.
-UNIT_BY_FAMILY = {"timber.": "m", "connection.": "each"}
+# ART-002 §7.3, ART-003 §7.2: the unit each key family requires. Keys of other families take any unit and are unused.
+UNIT_BY_FAMILY = {"timber.": "m", "connection.": "each", "assembly.": "m2", "wallframing.": "m"}
 
 
 class PriceRow(_Strict):
     key: str
-    unit: Literal["m", "each"]
+    unit: Literal["m", "each", "m2"]  # per meter, per piece, per square meter
     unit_price_minor: SafeInt  # non-negative: checked as OUT_OF_RANGE below
 
 

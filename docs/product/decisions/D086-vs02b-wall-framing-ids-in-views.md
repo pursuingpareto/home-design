@@ -1,6 +1,6 @@
 # D086 — VS-02b views identify wall framing by ID only
 
-**Status:** Confirmed (to be implemented in VS-02b, [ART-003](../../implementation/tasks/ART-003.md))  
+**Status:** Confirmed; implemented in VS-02b by [ART-003](../../implementation/tasks/ART-003.md) (2026-11-22)  
 **Date:** 2026-11-22  
 **Scope:** How `plan2d` and `mesh3d` identify wall framing pieces, given [D063](D063-vs02-traceability-and-budgets.md)'s per-payload size ceilings. Approved as [ART-003](../../implementation/tasks/ART-003.md) §12 item 5.
 
@@ -13,7 +13,7 @@ With the member pattern (a `generation_key` and a `primitive` field on every box
 - **Wall framing entries in `plan2d` and `mesh3d` carry `piece_id` and no `generation_key`.** Mesh framing boxes carry no `primitive` field: every entry is an oriented box by definition.
 - **Keys and sections are in the assembly schedule.** Clients join on `piece_id`, as they already join members on `member_id` for sections (ART-002 §4.3).
 - **Walls keep their keys** in both views (20 entries on the reference house). Members and connections are unchanged.
-- **Measured effect:** the stud infill mesh drops to about 228,000 bytes (87%); with the straw bale default, about 181,000 (69%).
+- **Measured effect:** the stud infill mesh drops to about 228,000 bytes (87%); with the straw bale default, about 181,000 (69%). As implemented (ART-003 §9.4): 219,188 bytes (84%) and 174,958 (67%).
 
 ## Rationale
 

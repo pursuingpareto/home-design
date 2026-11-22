@@ -1,7 +1,9 @@
-"""`preliminary_estimate` payload, builder, and money rounding (artifacts.md §8; EST-001 §4; ART-002 §7).
+"""`preliminary_estimate` payload, builder, and money rounding (artifacts.md §8; EST-001 §4; ART-002 §7; ART-003 §7).
 
 Timber lines are priced per meter of reference-axis length; connection lines per piece, one line per
-connection type in use (D054). Both use one exact rounding rule, which is exact for integer counts.
+connection type in use (D054). VS-02b adds assembly lines, priced per square meter of reference area
+(the framing layer's fill net of framing, D082), and wall framing lines, priced per meter (D070). Every
+line uses one exact rounding rule, which is exact for integer counts.
 """
 
 from __future__ import annotations
@@ -14,7 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from homedesign.dependencies.registry import Derivation, DerivationContext, Outcome
 from homedesign.model.connections import ConnectionType
-from homedesign.model.schema import MemberRole, SafeInt, Uuid
+from homedesign.model.schema import LayerFunction, MemberRole, PieceKind, SafeInt, Uuid
 from homedesign.timber.schedule import Assumption
 
 COST_INPUTS_MISSING = {"code": "COST_INPUTS_MISSING", "message": "Some or all unit prices are not configured; no complete total is reported."}
@@ -56,7 +58,38 @@ class ConnectionLine(_Strict):
     priced: bool
 
 
-LineItem = Annotated[TimberLine | ConnectionLine, Field(discriminator="kind")]
+class AssemblyLine(_Strict):
+    """One line per definition and layer in use, the framing layer's fill included (D070, D082; ART-003 §7.1)."""
+
+    kind: Literal["assembly"]
+    key: str
+    assembly_label: str
+    layer: str
+    layer_function: LayerFunction
+    material_name: str
+    quantity_value: float
+    quantity_unit: Literal["m2"]
+    unit_price_minor: SafeInt | None
+    amount_minor: SafeInt | None
+    priced: bool
+
+
+class WallFramingLine(_Strict):
+    """One line per wall framing kind and section in use, priced per meter, with its count beside (D070)."""
+
+    kind: Literal["wallframing"]
+    key: str
+    piece_kind: PieceKind
+    nominal_section: str
+    count: Annotated[SafeInt, Field(ge=1)]
+    quantity_value: float
+    quantity_unit: Literal["m"]
+    unit_price_minor: SafeInt | None
+    amount_minor: SafeInt | None
+    priced: bool
+
+
+LineItem = Annotated[TimberLine | ConnectionLine | AssemblyLine | WallFramingLine, Field(discriminator="kind")]
 
 
 class Totals(_Strict):
@@ -73,7 +106,7 @@ class PreliminaryEstimatePayload(_Strict):
     price_book: PriceBookInfo | None
     line_items: list[LineItem]
     totals: Totals
-    assumptions: list[Assumption]  # the schedule's, copied (ART-002 §7.2)
+    assumptions: list[Assumption]  # the timber schedule's, then the assembly schedule's, copied (ART-002 §7.2; ART-003 §7.3)
 
 
 def amount_minor(unit_price_minor: int, quantity: float | int) -> int:
@@ -86,9 +119,12 @@ def _utf16(text: str) -> bytes:
     return text.encode("utf-16-be")
 
 
-def build_estimate(schedule: dict[str, Any], price_book: dict[str, Any] | None) -> tuple[str, dict[str, Any], tuple[dict, ...]]:
-    """(status, payload, warnings) from a CURRENT schedule's `aggregates`, `connection_aggregates`, and
-    `assumptions` (its selection, or the whole schedule payload) and the project's book row."""
+def build_estimate(
+    schedule: dict[str, Any], assemblies: dict[str, Any], price_book: dict[str, Any] | None
+) -> tuple[str, dict[str, Any], tuple[dict, ...]]:
+    """(status, payload, warnings) from a CURRENT timber schedule's `aggregates`, `connection_aggregates`, and
+    `assumptions`, a CURRENT assembly schedule's `layer_aggregates`, `framing_aggregates`, and `assumptions`
+    (each its selection, or the whole payload), and the project's book row."""
     prices = {}
     if price_book is not None:
         prices = {row["key"]: row["unit_price_minor"] for row in price_book["book"]["rows"]}
@@ -126,6 +162,31 @@ def build_estimate(schedule: dict[str, Any], price_book: dict[str, Any] | None) 
             "quantity_unit": "each",
             **pricing(key, count),
         })
+    for aggregate in assemblies["layer_aggregates"]:  # the fill too (D082)
+        key = f"assembly.{aggregate['assembly_label']}.{aggregate['layer']}"
+        lines.append({
+            "kind": "assembly",
+            "key": key,
+            "assembly_label": aggregate["assembly_label"],
+            "layer": aggregate["layer"],
+            "layer_function": aggregate["function"],
+            "material_name": aggregate["material_name"],
+            "quantity_value": aggregate["area_m2"],
+            "quantity_unit": "m2",
+            **pricing(key, aggregate["area_m2"]),
+        })
+    for aggregate in assemblies["framing_aggregates"]:
+        key = f"wallframing.{aggregate['piece_kind']}.{aggregate['nominal_section']}"
+        lines.append({
+            "kind": "wallframing",
+            "key": key,
+            "piece_kind": aggregate["piece_kind"],
+            "nominal_section": aggregate["nominal_section"],
+            "count": aggregate["count"],
+            "quantity_value": aggregate["total_length_m"],
+            "quantity_unit": "m",
+            **pricing(key, aggregate["total_length_m"]),
+        })
     lines.sort(key=lambda line: _utf16(line["key"]))
     amounts = [line["amount_minor"] for line in lines if line["priced"]]
     unpriced = len(lines) - len(amounts)
@@ -151,7 +212,7 @@ def build_estimate(schedule: dict[str, Any], price_book: dict[str, Any] | None) 
             # Never 0 for missing inputs; only a complete book yields a grand total (artifacts.md §8.1).
             "grand_total_minor": sum(amounts) if coverage == "complete" else None,
         },
-        "assumptions": [dict(a) for a in schedule["assumptions"]],
+        "assumptions": [dict(a) for a in (*schedule["assumptions"], *assemblies["assumptions"])],
     }
     warnings: list[dict] = []
     if coverage in ("none", "partial"):
@@ -178,26 +239,36 @@ def _external(tx, project_id: str) -> dict[str, Any]:
     }
 
 
-SCHEDULE_LISTS = ("aggregates", "connection_aggregates", "assumptions")  # what build_estimate reads (DEP-001 §4.2)
+# What build_estimate reads of each schedule (DEP-001 §4.2; ART-003 §8.1).
+SELECTED_LISTS = {
+    "timber_schedule": ("aggregates", "connection_aggregates", "assumptions"),
+    "assembly_schedule": ("layer_aggregates", "framing_aggregates", "assumptions"),
+}
 
 
 def select_estimate(upstream: Mapping[str, Outcome]) -> dict[str, Any]:
-    """DEP-001 §4.2: the schedule's three lists, or null when the schedule is not CURRENT.
+    """DEP-001 §4.2, ART-003 §8.1: each schedule's lists, or null when that schedule is not CURRENT.
 
-    Not the schedule's fingerprint: re-identifying a grid line changes schedule rows but not these
-    lists, and then the estimate's payload does not change either.
+    Not the schedules' fingerprints: re-identifying a grid line, or moving an opening along its wall,
+    changes schedule rows but not these lists, and then the estimate's payload does not change either.
     """
-    schedule = upstream.get("timber_schedule")
-    if schedule is None or schedule.status != "CURRENT" or schedule.payload is None:
-        return {"timber_schedule": None}
-    return {"timber_schedule": {key: schedule.payload[key] for key in SCHEDULE_LISTS}}
+    selection: dict[str, Any] = {}
+    for kind, lists in SELECTED_LISTS.items():
+        schedule = upstream.get(kind)
+        if schedule is None or schedule.status != "CURRENT" or schedule.payload is None:
+            selection[kind] = None
+        else:
+            selection[kind] = {key: schedule.payload[key] for key in lists}
+    return selection
 
 
 def _derive(context: DerivationContext) -> Outcome:
-    status, payload, warnings = build_estimate(context.selection["timber_schedule"], context.external.get("_book"))
+    selection = context.selection
+    status, payload, warnings = build_estimate(selection["timber_schedule"], selection["assembly_schedule"], context.external.get("_book"))
     return Outcome(status, payload, warnings)
 
 
 ESTIMATE = Derivation(
-    "preliminary_estimate", "estimate-vs01", "2", select_estimate, _derive, depends_on=("timber_schedule",), external_inputs=_external
+    "preliminary_estimate", "estimate-vs01", "3", select_estimate, _derive, depends_on=("timber_schedule", "assembly_schedule"),
+    external_inputs=_external,
 )

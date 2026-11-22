@@ -14,8 +14,8 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-# artifacts.md §1: every VS-01 manifest lists exactly these, in this order.
-ARTIFACT_TYPES: tuple[str, ...] = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")
+# artifacts.md §1: every manifest lists exactly these, in this order (VS-02b adds `assembly_schedule`, ART-003 §8.2).
+ARTIFACT_TYPES: tuple[str, ...] = ("plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate")
 
 
 @dataclass(frozen=True)
@@ -95,9 +95,10 @@ def registry_of(derivations: Iterable[Derivation]) -> Registry:
 
 
 def default_registry() -> Registry:
-    """Production registry: GEOM-001 views and EST-001 schedule and estimate."""
-    from homedesign.estimating import ESTIMATE  # lazy: these modules import this one
+    """Production registry: GEOM-001 views, EST-001 schedule and estimate, and ART-003's assembly schedule."""
+    from homedesign.assemblies.schedule import ASSEMBLY_SCHEDULE  # lazy: these modules import this one
+    from homedesign.estimating import ESTIMATE
     from homedesign.geometry import MESH3D, PLAN2D
     from homedesign.timber.schedule import SCHEDULE
 
-    return registry_of([PLAN2D, MESH3D, SCHEDULE, ESTIMATE])
+    return registry_of([PLAN2D, MESH3D, SCHEDULE, ASSEMBLY_SCHEDULE, ESTIMATE])

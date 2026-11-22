@@ -32,6 +32,16 @@ export function centsPerMeter(cents: bigint, system: UnitSystem): bigint {
   return system === "imperial" ? perFootToPerMeter(cents) : cents;
 }
 
+/** Cents per square foot → whole cents per square meter: × 1/0.09290304 = × 1562500/145161, rounded half-even (ART-003 §10). */
+export function perSquareFootToPerSquareMeter(centsPerSquareFoot: bigint): bigint {
+  return roundHalfEven(centsPerSquareFoot * 1562500n, 145161n);
+}
+
+/** Cents per square meter for a price typed in the display system (per sf in imperial, per m² in metric). */
+export function centsPerSquareMeter(cents: bigint, system: UnitSystem): bigint {
+  return system === "imperial" ? perSquareFootToPerSquareMeter(cents) : cents;
+}
+
 /** "$1,234.56" from whole cents (number or bigint). */
 export function formatCents(cents: number | bigint): string {
   const value = BigInt(cents);
@@ -45,6 +55,17 @@ export function formatCents(cents: number | bigint): string {
 /** Approximate per-foot equivalent of a stored per-meter price, for display only (4 decimals). */
 export function approxPerFoot(centsPerMeterValue: number): string {
   return `≈ $${((centsPerMeterValue * 0.3048) / 100).toFixed(4)}/ft`;
+}
+
+/** Approximate per-square-foot equivalent of a stored per-square-meter price, for display only (4 decimals). */
+export function approxPerSquareFoot(centsPerSquareMeterValue: number): string {
+  return `≈ $${((centsPerSquareMeterValue * 0.09290304) / 100).toFixed(4)}/sf`;
+}
+
+/** Text for a price input field in the display system, from a stored per-square-meter price. */
+export function areaPriceInputText(centsPerSquareMeterValue: number, system: UnitSystem): string {
+  if (system === "metric") return (centsPerSquareMeterValue / 100).toFixed(2);
+  return ((centsPerSquareMeterValue * 0.09290304) / 100).toFixed(2);
 }
 
 /** Text for a price input field in the display system, from a stored per-meter price. */

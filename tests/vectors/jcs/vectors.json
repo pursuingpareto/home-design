@@ -195,8 +195,8 @@
   "geometry": {
     "source": "docs/reference-projects/vermont-timber-house/fixture.snapshot.json",
     "plan2d": {
-      "canonical_bytes": 115823,
-      "fingerprint": "sha256:cb224704e297f5e1e7b5e897510b8075b8a36eeaf1d16bd28f026fcd7e0178b3"
+      "canonical_bytes": 132737,
+      "fingerprint": "sha256:9f6def092564fa84566205ac076e49729677d6de77b6162388bb351cf564a4a7"
     },
     "mesh3d": {
       "tan": 0.75,
@@ -7110,6 +7110,2433 @@
               3.6576,
               8.5344
             ]
+          }
+        ],
+        "walls": [
+          {
+            "wall_id": "7b150811-59d7-58d0-984c-6190329e6f8d",
+            "generation_key": "wall/axis-x/y0/x0-x1/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              0,
+              0,
+              0
+            ],
+            "base_end_m": [
+              3.6575999999999995,
+              0,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              0,
+              -1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "17ab8aa9-3c3b-5bcd-9b12-9f37d28b1e63",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.0668,
+                  2.5907999999999998
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "dcba82a9-db77-51bf-8f75-9bbd8b8ae088",
+            "generation_key": "wall/axis-x/y0/x0-x1/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              0,
+              0,
+              3.048
+            ],
+            "base_end_m": [
+              3.6575999999999995,
+              0,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              0,
+              -1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "e2f64f35-32f5-5884-a1e4-e4b352f0a26b",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "e9f4145f-ce5d-5da2-adf7-93670fc2258a",
+            "generation_key": "wall/axis-x/y0/x1-x2/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              3.6575999999999995,
+              0,
+              0
+            ],
+            "base_end_m": [
+              7.315199999999999,
+              0,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              0,
+              -1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "880c4d3e-effc-5c46-826a-d389cceda644",
+                "opening_kind": "DOOR",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0,
+                  2.032
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "323f453f-0ef8-583a-a1cd-dc6a922b7ac5",
+            "generation_key": "wall/axis-x/y0/x1-x2/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              3.6575999999999995,
+              0,
+              3.048
+            ],
+            "base_end_m": [
+              7.315199999999999,
+              0,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              0,
+              -1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "f08ff272-f2ef-552f-9606-7e7ea38532b9",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "ee0d9324-33ad-5a96-998e-2e648c08fe9a",
+            "generation_key": "wall/axis-x/y0/x2-x3/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              7.315199999999999,
+              0,
+              0
+            ],
+            "base_end_m": [
+              10.9728,
+              0,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              0,
+              -1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "0b26db45-37b9-50e3-ad72-8c1d1a1a327a",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.0668,
+                  2.5907999999999998
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "72729735-2f4e-509c-a937-23b5cc1c00d8",
+            "generation_key": "wall/axis-x/y0/x2-x3/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              7.315199999999999,
+              0,
+              3.048
+            ],
+            "base_end_m": [
+              10.9728,
+              0,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              0,
+              -1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "270d8d75-f684-5b6b-b9c5-df9d53faa1b6",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "cb26bf45-d789-5942-a9c3-c32431df0bf3",
+            "generation_key": "wall/axis-x/y2/x0-x1/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              0,
+              7.3152,
+              0
+            ],
+            "base_end_m": [
+              3.6575999999999995,
+              7.3152,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              0,
+              1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "9168cf3b-5f19-5941-9bd5-4c6e891ad391",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "87e255fe-f806-565d-8522-5407ef22bdb1",
+            "generation_key": "wall/axis-x/y2/x0-x1/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              0,
+              7.3152,
+              3.048
+            ],
+            "base_end_m": [
+              3.6575999999999995,
+              7.3152,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              0,
+              1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "eb99e29a-f49f-5c1c-8bf6-a772d6dfeb58",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "28b910b2-3099-5d9d-b108-1bca36414d13",
+            "generation_key": "wall/axis-x/y2/x1-x2/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              3.6575999999999995,
+              7.3152,
+              0
+            ],
+            "base_end_m": [
+              7.315199999999999,
+              7.3152,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              0,
+              1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "2e856030-6256-5465-8757-9172037a54ef",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "fdbdccee-e568-536e-958f-e0970e126733",
+            "generation_key": "wall/axis-x/y2/x1-x2/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              3.6575999999999995,
+              7.3152,
+              3.048
+            ],
+            "base_end_m": [
+              7.315199999999999,
+              7.3152,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              0,
+              1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "f53a444d-846e-51bb-b2bd-01cd32b2c7bd",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "3a689381-2092-50c4-873c-c69f633d8c8c",
+            "generation_key": "wall/axis-x/y2/x2-x3/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              7.315199999999999,
+              7.3152,
+              0
+            ],
+            "base_end_m": [
+              10.9728,
+              7.3152,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              0,
+              1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "86e1ff37-713b-5e3f-ab9d-9d23912c0957",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "3e7e86d8-ebda-5b43-97e5-c55b46d01f9e",
+            "generation_key": "wall/axis-x/y2/x2-x3/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              7.315199999999999,
+              7.3152,
+              3.048
+            ],
+            "base_end_m": [
+              10.9728,
+              7.3152,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              0,
+              1
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "6aa15088-64bc-5736-8ea6-8049098795d9",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "1470c128-ddb7-5df6-bce3-79d1d071a6b9",
+            "generation_key": "wall/axis-y/x0/y0-y1/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              0,
+              0,
+              0
+            ],
+            "base_end_m": [
+              0,
+              3.6576,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              -1,
+              0
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "6e3cd116-61dd-5fff-a12b-291cb048b5a8",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "381d6fba-7d09-5ee7-9812-f33d746e510a",
+            "generation_key": "wall/axis-y/x0/y0-y1/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              0,
+              0,
+              3.048
+            ],
+            "base_end_m": [
+              0,
+              3.6576,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              -1,
+              0
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "3bc7b096-5ac9-5102-9f4c-e8242041a552",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "99631b5e-3a64-5f2d-802a-3f050c3f19d1",
+            "generation_key": "wall/axis-y/x0/y1-y2/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              0,
+              3.6576,
+              0
+            ],
+            "base_end_m": [
+              0,
+              7.3152,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              -1,
+              0
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "4f69753b-f1c0-5cf5-9f70-505b6aab4330",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "73c5c9f9-77ca-59b4-ad80-e8cc6fc1efbe",
+            "generation_key": "wall/axis-y/x0/y1-y2/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              0,
+              3.6576,
+              3.048
+            ],
+            "base_end_m": [
+              0,
+              7.3152,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              -1,
+              0
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "85076901-732f-560b-bb02-bc4b55b54dbf",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "12584649-7de1-5523-b98c-b5e36a57f74d",
+            "generation_key": "wall/axis-y/x3/y0-y1/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              10.9728,
+              0,
+              0
+            ],
+            "base_end_m": [
+              10.9728,
+              3.6576,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              1,
+              0
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "1c6cbb5e-9666-5320-bd29-4b2a30ff92d8",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "4b24175b-f2fb-58ba-95e2-91e8368baefc",
+            "generation_key": "wall/axis-y/x3/y0-y1/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              10.9728,
+              0,
+              3.048
+            ],
+            "base_end_m": [
+              10.9728,
+              3.6576,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              1,
+              0
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "35295f77-8f50-5ee4-a4b1-76a93582b511",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "fb92f691-1601-53dd-8aba-aa377d63b4f6",
+            "generation_key": "wall/axis-y/x3/y1-y2/level-0",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              10.9728,
+              3.6576,
+              0
+            ],
+            "base_end_m": [
+              10.9728,
+              7.3152,
+              0
+            ],
+            "height_m": 3.048,
+            "outward_xy": [
+              1,
+              0
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "f7bece37-5e61-5cc2-ab7d-dc86f88579de",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          },
+          {
+            "wall_id": "b6b3502b-0c4d-5bb6-808c-f683055ad6ca",
+            "generation_key": "wall/axis-y/x3/y1-y2/level-1",
+            "primitive": "layered_wall",
+            "base_start_m": [
+              10.9728,
+              3.6576,
+              3.048
+            ],
+            "base_end_m": [
+              10.9728,
+              7.3152,
+              3.048
+            ],
+            "height_m": 2.7432,
+            "outward_xy": [
+              1,
+              0
+            ],
+            "layers": [
+              {
+                "name": "lime-plaster",
+                "function": "FINISH",
+                "inner_m": 0.2286,
+                "outer_m": 0.2667
+              },
+              {
+                "name": "bales",
+                "function": "FRAMING",
+                "inner_m": -0.2286,
+                "outer_m": 0.2286
+              },
+              {
+                "name": "clay-plaster",
+                "function": "FINISH",
+                "inner_m": -0.254,
+                "outer_m": -0.2286
+              }
+            ],
+            "voids": [
+              {
+                "opening_id": "fba22908-28c2-54a9-886c-afde0d70b615",
+                "opening_kind": "WINDOW",
+                "u_m": [
+                  1.3716,
+                  2.286
+                ],
+                "v_m": [
+                  0.9144,
+                  2.1336
+                ]
+              }
+            ]
+          }
+        ],
+        "wall_framing": [
+          {
+            "piece_id": "1294ad47-9096-53a0-a96e-2bbf4e98e1a0",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "7b150811-59d7-58d0-984c-6190329e6f8d",
+            "axis_start_m": [
+              1.0668,
+              0,
+              2.15265
+            ],
+            "axis_end_m": [
+              2.5907999999999998,
+              0,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "ea3ef3c3-5adc-53c5-b113-2b31387d5eec",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "7b150811-59d7-58d0-984c-6190329e6f8d",
+            "axis_start_m": [
+              2.60985,
+              0,
+              0.8763
+            ],
+            "axis_end_m": [
+              2.60985,
+              0,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "573564fa-bc8b-5785-a29b-5ec63745ae88",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "7b150811-59d7-58d0-984c-6190329e6f8d",
+            "axis_start_m": [
+              1.04775,
+              0,
+              0.8763
+            ],
+            "axis_end_m": [
+              1.04775,
+              0,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "2170607f-90f6-53e0-b796-a983335b965d",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "7b150811-59d7-58d0-984c-6190329e6f8d",
+            "axis_start_m": [
+              1.0668,
+              0,
+              0.89535
+            ],
+            "axis_end_m": [
+              2.5907999999999998,
+              0,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "31ef16ee-38e4-52ab-90d9-98bab785f9fb",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "dcba82a9-db77-51bf-8f75-9bbd8b8ae088",
+            "axis_start_m": [
+              1.3716,
+              0,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              2.286,
+              0,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "03434060-191b-575a-a741-170e7babc997",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "dcba82a9-db77-51bf-8f75-9bbd8b8ae088",
+            "axis_start_m": [
+              2.30505,
+              0,
+              3.9243
+            ],
+            "axis_end_m": [
+              2.30505,
+              0,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "2eaf5d0e-7891-5276-aa34-cd77657cad85",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "dcba82a9-db77-51bf-8f75-9bbd8b8ae088",
+            "axis_start_m": [
+              1.35255,
+              0,
+              3.9243
+            ],
+            "axis_end_m": [
+              1.35255,
+              0,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "3b2d1843-3b1a-562f-9941-6e79d77396d7",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "dcba82a9-db77-51bf-8f75-9bbd8b8ae088",
+            "axis_start_m": [
+              1.3716,
+              0,
+              3.94335
+            ],
+            "axis_end_m": [
+              2.286,
+              0,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "831fc739-311a-5f32-b498-4646bd700efb",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "e9f4145f-ce5d-5da2-adf7-93670fc2258a",
+            "axis_start_m": [
+              5.0291999999999994,
+              0,
+              2.05105
+            ],
+            "axis_end_m": [
+              5.9436,
+              0,
+              2.05105
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "8c5f6325-2828-54d3-a7b8-9d79bc84adb3",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "e9f4145f-ce5d-5da2-adf7-93670fc2258a",
+            "axis_start_m": [
+              5.96265,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              5.96265,
+              0,
+              2.0701
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "0a6692c5-9b83-5b95-b492-35d07195b5c6",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "e9f4145f-ce5d-5da2-adf7-93670fc2258a",
+            "axis_start_m": [
+              5.010149999999999,
+              0,
+              0
+            ],
+            "axis_end_m": [
+              5.010149999999999,
+              0,
+              2.0701
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "cd2efd3a-cd92-5234-b147-63ad7075ea51",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "323f453f-0ef8-583a-a1cd-dc6a922b7ac5",
+            "axis_start_m": [
+              5.0291999999999994,
+              0,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              5.9436,
+              0,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "cb941839-8ba7-5470-9576-c006daadb581",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "323f453f-0ef8-583a-a1cd-dc6a922b7ac5",
+            "axis_start_m": [
+              5.96265,
+              0,
+              3.9243
+            ],
+            "axis_end_m": [
+              5.96265,
+              0,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "f0605eab-e5bb-5394-97a9-919e4f46d2f3",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "323f453f-0ef8-583a-a1cd-dc6a922b7ac5",
+            "axis_start_m": [
+              5.010149999999999,
+              0,
+              3.9243
+            ],
+            "axis_end_m": [
+              5.010149999999999,
+              0,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "ecc8773b-3be3-55a4-b5b5-39fa0c2b7ce1",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "323f453f-0ef8-583a-a1cd-dc6a922b7ac5",
+            "axis_start_m": [
+              5.0291999999999994,
+              0,
+              3.94335
+            ],
+            "axis_end_m": [
+              5.9436,
+              0,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "302b49ef-b73f-5dd7-a811-8895085b6a60",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "ee0d9324-33ad-5a96-998e-2e648c08fe9a",
+            "axis_start_m": [
+              8.382,
+              0,
+              2.15265
+            ],
+            "axis_end_m": [
+              9.905999999999999,
+              0,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "443876a3-c5d9-51b5-a197-62019ff5a247",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "ee0d9324-33ad-5a96-998e-2e648c08fe9a",
+            "axis_start_m": [
+              9.925049999999999,
+              0,
+              0.8763
+            ],
+            "axis_end_m": [
+              9.925049999999999,
+              0,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "736e7231-87dc-5bb8-840f-a06ef66ce79d",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "ee0d9324-33ad-5a96-998e-2e648c08fe9a",
+            "axis_start_m": [
+              8.36295,
+              0,
+              0.8763
+            ],
+            "axis_end_m": [
+              8.36295,
+              0,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "e2c1e603-2a8e-56a2-8c83-1906156dd375",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "ee0d9324-33ad-5a96-998e-2e648c08fe9a",
+            "axis_start_m": [
+              8.382,
+              0,
+              0.89535
+            ],
+            "axis_end_m": [
+              9.905999999999999,
+              0,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "478c9b7f-749b-5cec-a053-faa479e943e9",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "72729735-2f4e-509c-a937-23b5cc1c00d8",
+            "axis_start_m": [
+              8.686799999999998,
+              0,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              9.601199999999999,
+              0,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "007d4591-20d5-5003-a8ce-8adefa43e1a0",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "72729735-2f4e-509c-a937-23b5cc1c00d8",
+            "axis_start_m": [
+              9.620249999999999,
+              0,
+              3.9243
+            ],
+            "axis_end_m": [
+              9.620249999999999,
+              0,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "1c74fd3b-55fe-590e-8ea7-ade4d75a10b2",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "72729735-2f4e-509c-a937-23b5cc1c00d8",
+            "axis_start_m": [
+              8.667749999999998,
+              0,
+              3.9243
+            ],
+            "axis_end_m": [
+              8.667749999999998,
+              0,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "47bd4235-657d-5b04-9240-785d89816d6b",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "72729735-2f4e-509c-a937-23b5cc1c00d8",
+            "axis_start_m": [
+              8.686799999999998,
+              0,
+              3.94335
+            ],
+            "axis_end_m": [
+              9.601199999999999,
+              0,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "2658f6ee-5e94-5c92-9467-5514e73cddf3",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "cb26bf45-d789-5942-a9c3-c32431df0bf3",
+            "axis_start_m": [
+              1.3716,
+              7.3152,
+              2.15265
+            ],
+            "axis_end_m": [
+              2.286,
+              7.3152,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "d50a3460-dd0c-5662-a569-f934c401f51e",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "cb26bf45-d789-5942-a9c3-c32431df0bf3",
+            "axis_start_m": [
+              2.30505,
+              7.3152,
+              0.8763
+            ],
+            "axis_end_m": [
+              2.30505,
+              7.3152,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "5f41397a-f73f-5fad-bd93-b24f2b66c767",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "cb26bf45-d789-5942-a9c3-c32431df0bf3",
+            "axis_start_m": [
+              1.35255,
+              7.3152,
+              0.8763
+            ],
+            "axis_end_m": [
+              1.35255,
+              7.3152,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "cbcc7d18-4a1d-5e57-9e30-af35edad3573",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "cb26bf45-d789-5942-a9c3-c32431df0bf3",
+            "axis_start_m": [
+              1.3716,
+              7.3152,
+              0.89535
+            ],
+            "axis_end_m": [
+              2.286,
+              7.3152,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "50a55b99-a149-5436-9273-140eb3c3ee3a",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "87e255fe-f806-565d-8522-5407ef22bdb1",
+            "axis_start_m": [
+              1.3716,
+              7.3152,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              2.286,
+              7.3152,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "c2b64c08-b04f-5ab4-a529-498c24281554",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "87e255fe-f806-565d-8522-5407ef22bdb1",
+            "axis_start_m": [
+              2.30505,
+              7.3152,
+              3.9243
+            ],
+            "axis_end_m": [
+              2.30505,
+              7.3152,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "ddd7f39a-0984-5d06-96be-d8d2bf2e7816",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "87e255fe-f806-565d-8522-5407ef22bdb1",
+            "axis_start_m": [
+              1.35255,
+              7.3152,
+              3.9243
+            ],
+            "axis_end_m": [
+              1.35255,
+              7.3152,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "19199e35-8d0d-5082-8e89-d85c3eaf0752",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "87e255fe-f806-565d-8522-5407ef22bdb1",
+            "axis_start_m": [
+              1.3716,
+              7.3152,
+              3.94335
+            ],
+            "axis_end_m": [
+              2.286,
+              7.3152,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "60bf5e47-971c-5424-a0da-1d98496155b9",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "28b910b2-3099-5d9d-b108-1bca36414d13",
+            "axis_start_m": [
+              5.0291999999999994,
+              7.3152,
+              2.15265
+            ],
+            "axis_end_m": [
+              5.9436,
+              7.3152,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "378d248d-bbd5-54d2-9f68-243da35cd4de",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "28b910b2-3099-5d9d-b108-1bca36414d13",
+            "axis_start_m": [
+              5.96265,
+              7.3152,
+              0.8763
+            ],
+            "axis_end_m": [
+              5.96265,
+              7.3152,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "c0ac984f-469b-50e8-936c-d7c8f41618ce",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "28b910b2-3099-5d9d-b108-1bca36414d13",
+            "axis_start_m": [
+              5.010149999999999,
+              7.3152,
+              0.8763
+            ],
+            "axis_end_m": [
+              5.010149999999999,
+              7.3152,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "3d2d1cd7-fe02-5a99-8eb9-72a4af370086",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "28b910b2-3099-5d9d-b108-1bca36414d13",
+            "axis_start_m": [
+              5.0291999999999994,
+              7.3152,
+              0.89535
+            ],
+            "axis_end_m": [
+              5.9436,
+              7.3152,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "103814fc-2c4a-5095-acb7-e24aef7c3a85",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "fdbdccee-e568-536e-958f-e0970e126733",
+            "axis_start_m": [
+              5.0291999999999994,
+              7.3152,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              5.9436,
+              7.3152,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "e37d2950-e65c-5bd6-81b3-a4ee045862a6",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "fdbdccee-e568-536e-958f-e0970e126733",
+            "axis_start_m": [
+              5.96265,
+              7.3152,
+              3.9243
+            ],
+            "axis_end_m": [
+              5.96265,
+              7.3152,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "5962a630-6e15-5994-bf2a-9a72d73c3886",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "fdbdccee-e568-536e-958f-e0970e126733",
+            "axis_start_m": [
+              5.010149999999999,
+              7.3152,
+              3.9243
+            ],
+            "axis_end_m": [
+              5.010149999999999,
+              7.3152,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "fd107068-d490-5384-89b3-dee70ecc85cf",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "fdbdccee-e568-536e-958f-e0970e126733",
+            "axis_start_m": [
+              5.0291999999999994,
+              7.3152,
+              3.94335
+            ],
+            "axis_end_m": [
+              5.9436,
+              7.3152,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "40961907-d0b9-5ecf-ad0b-1e17433ab9e9",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "3a689381-2092-50c4-873c-c69f633d8c8c",
+            "axis_start_m": [
+              8.686799999999998,
+              7.3152,
+              2.15265
+            ],
+            "axis_end_m": [
+              9.601199999999999,
+              7.3152,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "9d342f8b-e03b-5eed-aeac-d8af71c19cb4",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "3a689381-2092-50c4-873c-c69f633d8c8c",
+            "axis_start_m": [
+              9.620249999999999,
+              7.3152,
+              0.8763
+            ],
+            "axis_end_m": [
+              9.620249999999999,
+              7.3152,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "f263e774-a4c3-5acc-9f06-734961f7e748",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "3a689381-2092-50c4-873c-c69f633d8c8c",
+            "axis_start_m": [
+              8.667749999999998,
+              7.3152,
+              0.8763
+            ],
+            "axis_end_m": [
+              8.667749999999998,
+              7.3152,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "1f6312d3-597a-5e58-b3f5-cbf63a6642d4",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "3a689381-2092-50c4-873c-c69f633d8c8c",
+            "axis_start_m": [
+              8.686799999999998,
+              7.3152,
+              0.89535
+            ],
+            "axis_end_m": [
+              9.601199999999999,
+              7.3152,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "72304fd8-9bb5-5a4b-bea1-4bb95ee3d23d",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "3e7e86d8-ebda-5b43-97e5-c55b46d01f9e",
+            "axis_start_m": [
+              8.686799999999998,
+              7.3152,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              9.601199999999999,
+              7.3152,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "318a4ae1-95fc-5782-8888-09dc00a9dcf4",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "3e7e86d8-ebda-5b43-97e5-c55b46d01f9e",
+            "axis_start_m": [
+              9.620249999999999,
+              7.3152,
+              3.9243
+            ],
+            "axis_end_m": [
+              9.620249999999999,
+              7.3152,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "74d1e488-998f-5ed5-8c16-108f5ecb0749",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "3e7e86d8-ebda-5b43-97e5-c55b46d01f9e",
+            "axis_start_m": [
+              8.667749999999998,
+              7.3152,
+              3.9243
+            ],
+            "axis_end_m": [
+              8.667749999999998,
+              7.3152,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "f2a1093d-82ab-56e1-888d-d64b58ae983b",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "3e7e86d8-ebda-5b43-97e5-c55b46d01f9e",
+            "axis_start_m": [
+              8.686799999999998,
+              7.3152,
+              3.94335
+            ],
+            "axis_end_m": [
+              9.601199999999999,
+              7.3152,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "59652e2b-7e81-53b5-ba4e-8955924c2a2f",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "1470c128-ddb7-5df6-bce3-79d1d071a6b9",
+            "axis_start_m": [
+              0,
+              1.3716,
+              2.15265
+            ],
+            "axis_end_m": [
+              0,
+              2.286,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "53b70dcf-b060-5a3f-a43b-e48cf4886d57",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "1470c128-ddb7-5df6-bce3-79d1d071a6b9",
+            "axis_start_m": [
+              0,
+              2.30505,
+              0.8763
+            ],
+            "axis_end_m": [
+              0,
+              2.30505,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "65cd0a77-2199-5214-99f5-ccb77d7fce66",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "1470c128-ddb7-5df6-bce3-79d1d071a6b9",
+            "axis_start_m": [
+              0,
+              1.35255,
+              0.8763
+            ],
+            "axis_end_m": [
+              0,
+              1.35255,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "b8bd57c2-9712-547b-987a-962ea0b39fcf",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "1470c128-ddb7-5df6-bce3-79d1d071a6b9",
+            "axis_start_m": [
+              0,
+              1.3716,
+              0.89535
+            ],
+            "axis_end_m": [
+              0,
+              2.286,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "0b6fc5c0-26c3-5150-babc-a827aef53f11",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "381d6fba-7d09-5ee7-9812-f33d746e510a",
+            "axis_start_m": [
+              0,
+              1.3716,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              0,
+              2.286,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "974b278d-9c72-5b5e-a1f1-82e1007af7a6",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "381d6fba-7d09-5ee7-9812-f33d746e510a",
+            "axis_start_m": [
+              0,
+              2.30505,
+              3.9243
+            ],
+            "axis_end_m": [
+              0,
+              2.30505,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "941ace32-d26a-520a-8e3c-ee16908fc041",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "381d6fba-7d09-5ee7-9812-f33d746e510a",
+            "axis_start_m": [
+              0,
+              1.35255,
+              3.9243
+            ],
+            "axis_end_m": [
+              0,
+              1.35255,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "1ef8d286-29da-5140-9cd2-7fc66dc70c0d",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "381d6fba-7d09-5ee7-9812-f33d746e510a",
+            "axis_start_m": [
+              0,
+              1.3716,
+              3.94335
+            ],
+            "axis_end_m": [
+              0,
+              2.286,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "a8c49b16-2781-50d3-945c-8e22cb717939",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "99631b5e-3a64-5f2d-802a-3f050c3f19d1",
+            "axis_start_m": [
+              0,
+              5.0291999999999994,
+              2.15265
+            ],
+            "axis_end_m": [
+              0,
+              5.9436,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "e52ff460-a17b-5362-bed9-dedf4457f65d",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "99631b5e-3a64-5f2d-802a-3f050c3f19d1",
+            "axis_start_m": [
+              0,
+              5.96265,
+              0.8763
+            ],
+            "axis_end_m": [
+              0,
+              5.96265,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "bd8b6c03-effc-5ba9-8d1f-39bfdf84d315",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "99631b5e-3a64-5f2d-802a-3f050c3f19d1",
+            "axis_start_m": [
+              0,
+              5.010149999999999,
+              0.8763
+            ],
+            "axis_end_m": [
+              0,
+              5.010149999999999,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "6ed9f78c-43fb-5a35-b52e-896093cbc49d",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "99631b5e-3a64-5f2d-802a-3f050c3f19d1",
+            "axis_start_m": [
+              0,
+              5.0291999999999994,
+              0.89535
+            ],
+            "axis_end_m": [
+              0,
+              5.9436,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "1f07b242-882a-5e31-8b86-f6372af3e63d",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "73c5c9f9-77ca-59b4-ad80-e8cc6fc1efbe",
+            "axis_start_m": [
+              0,
+              5.0291999999999994,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              0,
+              5.9436,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "0723f569-005c-5162-8d43-14fb2cf9baf4",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "73c5c9f9-77ca-59b4-ad80-e8cc6fc1efbe",
+            "axis_start_m": [
+              0,
+              5.96265,
+              3.9243
+            ],
+            "axis_end_m": [
+              0,
+              5.96265,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "32918117-2ba7-59e9-b776-1d60bb76fabf",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "73c5c9f9-77ca-59b4-ad80-e8cc6fc1efbe",
+            "axis_start_m": [
+              0,
+              5.010149999999999,
+              3.9243
+            ],
+            "axis_end_m": [
+              0,
+              5.010149999999999,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "71156770-3e02-5c9f-889e-6e345ebb3f62",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "73c5c9f9-77ca-59b4-ad80-e8cc6fc1efbe",
+            "axis_start_m": [
+              0,
+              5.0291999999999994,
+              3.94335
+            ],
+            "axis_end_m": [
+              0,
+              5.9436,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "e7909a63-7f3e-56bb-a29d-668f8c4419bb",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "12584649-7de1-5523-b98c-b5e36a57f74d",
+            "axis_start_m": [
+              10.9728,
+              1.3716,
+              2.15265
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.286,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "4dd0bbba-4f81-5c4d-9774-71db9e72315b",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "12584649-7de1-5523-b98c-b5e36a57f74d",
+            "axis_start_m": [
+              10.9728,
+              2.30505,
+              0.8763
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.30505,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "7030586d-4c6f-5387-999d-3de33fe108a4",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "12584649-7de1-5523-b98c-b5e36a57f74d",
+            "axis_start_m": [
+              10.9728,
+              1.35255,
+              0.8763
+            ],
+            "axis_end_m": [
+              10.9728,
+              1.35255,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "5148f43d-bb68-55b2-b964-041c7b1ecd1d",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "12584649-7de1-5523-b98c-b5e36a57f74d",
+            "axis_start_m": [
+              10.9728,
+              1.3716,
+              0.89535
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.286,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "42fe8d6f-d86b-52fa-98e3-a6242d1fe3cf",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "4b24175b-f2fb-58ba-95e2-91e8368baefc",
+            "axis_start_m": [
+              10.9728,
+              1.3716,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.286,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "4d2c5e9e-4904-533e-b3c2-781aa7e162ad",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "4b24175b-f2fb-58ba-95e2-91e8368baefc",
+            "axis_start_m": [
+              10.9728,
+              2.30505,
+              3.9243
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.30505,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "a01bbac7-20e3-5c6f-8a1c-60e600227035",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "4b24175b-f2fb-58ba-95e2-91e8368baefc",
+            "axis_start_m": [
+              10.9728,
+              1.35255,
+              3.9243
+            ],
+            "axis_end_m": [
+              10.9728,
+              1.35255,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "271728b6-1bdd-5fa8-9ada-78d561fadb85",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "4b24175b-f2fb-58ba-95e2-91e8368baefc",
+            "axis_start_m": [
+              10.9728,
+              1.3716,
+              3.94335
+            ],
+            "axis_end_m": [
+              10.9728,
+              2.286,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "c535798e-c287-5cee-8ac8-cf6090fa5092",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "fb92f691-1601-53dd-8aba-aa377d63b4f6",
+            "axis_start_m": [
+              10.9728,
+              5.0291999999999994,
+              2.15265
+            ],
+            "axis_end_m": [
+              10.9728,
+              5.9436,
+              2.15265
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "8d33c609-8598-5843-bacf-70590a106535",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "fb92f691-1601-53dd-8aba-aa377d63b4f6",
+            "axis_start_m": [
+              10.9728,
+              5.96265,
+              0.8763
+            ],
+            "axis_end_m": [
+              10.9728,
+              5.96265,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "5c077231-ae4f-520e-befd-b102fbaa7531",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "fb92f691-1601-53dd-8aba-aa377d63b4f6",
+            "axis_start_m": [
+              10.9728,
+              5.010149999999999,
+              0.8763
+            ],
+            "axis_end_m": [
+              10.9728,
+              5.010149999999999,
+              2.1717
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "0d54ce75-2c97-5132-8b28-0af2c792fd68",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "fb92f691-1601-53dd-8aba-aa377d63b4f6",
+            "axis_start_m": [
+              10.9728,
+              5.0291999999999994,
+              0.89535
+            ],
+            "axis_end_m": [
+              10.9728,
+              5.9436,
+              0.89535
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "0640d054-b8b9-53a2-b265-dafb43620c5f",
+            "piece_kind": "BUCK_HEAD",
+            "wall_id": "b6b3502b-0c4d-5bb6-808c-f683055ad6ca",
+            "axis_start_m": [
+              10.9728,
+              5.0291999999999994,
+              5.2006499999999996
+            ],
+            "axis_end_m": [
+              10.9728,
+              5.9436,
+              5.2006499999999996
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "d4b4ced9-f365-5cc5-96d7-e0cc9cd11c20",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "b6b3502b-0c4d-5bb6-808c-f683055ad6ca",
+            "axis_start_m": [
+              10.9728,
+              5.96265,
+              3.9243
+            ],
+            "axis_end_m": [
+              10.9728,
+              5.96265,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "0952ecc9-37aa-5fb6-9bbe-d5ba1bb1bfd8",
+            "piece_kind": "BUCK_JAMB",
+            "wall_id": "b6b3502b-0c4d-5bb6-808c-f683055ad6ca",
+            "axis_start_m": [
+              10.9728,
+              5.010149999999999,
+              3.9243
+            ],
+            "axis_end_m": [
+              10.9728,
+              5.010149999999999,
+              5.2197
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
+          },
+          {
+            "piece_id": "42c4b3a8-1a9b-5ec7-9852-1098eb80a062",
+            "piece_kind": "BUCK_SILL",
+            "wall_id": "b6b3502b-0c4d-5bb6-808c-f683055ad6ca",
+            "axis_start_m": [
+              10.9728,
+              5.0291999999999994,
+              3.94335
+            ],
+            "axis_end_m": [
+              10.9728,
+              5.9436,
+              3.94335
+            ],
+            "section_in_plane_m": 0.0381,
+            "section_through_wall_m": 0.4572
           }
         ],
         "envelope": {
@@ -16489,7 +18916,281 @@
           "section_label": "1.5x18",
           "material_name": "Spruce-pine-fir"
         }
-      ]
+      ],
+      "assembly_schedule": {
+        "walls": [
+          {
+            "generation_key": "wall/axis-x/y0/x0-x1/level-0",
+            "length_m": 3.6575999999999995,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.8580608,
+            "net_area_m2": 9.290303999999999,
+            "framing_face_area_m2": 0.21483828,
+            "framing_fraction": 0.023125000000000003
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x0-x1/level-1",
+            "length_m": 3.6575999999999995,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.16838675999999997,
+            "framing_fraction": 0.018880208333333336
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x1-x2/level-0",
+            "length_m": 3.6575999999999995,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.8580608,
+            "net_area_m2": 9.290303999999999,
+            "framing_face_area_m2": 0.19258026,
+            "framing_fraction": 0.02072916666666667
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x1-x2/level-1",
+            "length_m": 3.6575999999999995,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.018880208333333343
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x2-x3/level-0",
+            "length_m": 3.6576000000000004,
+            "height_m": 3.048,
+            "gross_area_m2": 11.148364800000001,
+            "opening_area_m2": 1.8580608,
+            "net_area_m2": 9.290304,
+            "framing_face_area_m2": 0.21483827999999994,
+            "framing_fraction": 0.023124999999999993
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x2-x3/level-1",
+            "length_m": 3.6576000000000004,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.03352832,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691840000001,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.018880208333333332
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x0-x1/level-0",
+            "length_m": 3.6575999999999995,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.016782407407407413
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x0-x1/level-1",
+            "length_m": 3.6575999999999995,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.16838675999999997,
+            "framing_fraction": 0.018880208333333336
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x1-x2/level-0",
+            "length_m": 3.6575999999999995,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 0.16838676000000005,
+            "framing_fraction": 0.016782407407407416
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x1-x2/level-1",
+            "length_m": 3.6575999999999995,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.018880208333333343
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x2-x3/level-0",
+            "length_m": 3.6576000000000004,
+            "height_m": 3.048,
+            "gross_area_m2": 11.148364800000001,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528320000002,
+            "framing_face_area_m2": 0.16838676000000005,
+            "framing_fraction": 0.01678240740740741
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x2-x3/level-1",
+            "length_m": 3.6576000000000004,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.03352832,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691840000001,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.018880208333333332
+          },
+          {
+            "generation_key": "wall/axis-y/x0/y0-y1/level-0",
+            "length_m": 3.6576,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.016782407407407413
+          },
+          {
+            "generation_key": "wall/axis-y/x0/y0-y1/level-1",
+            "length_m": 3.6576,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.16838675999999997,
+            "framing_fraction": 0.018880208333333336
+          },
+          {
+            "generation_key": "wall/axis-y/x0/y1-y2/level-0",
+            "length_m": 3.6576,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 0.16838676000000005,
+            "framing_fraction": 0.016782407407407416
+          },
+          {
+            "generation_key": "wall/axis-y/x0/y1-y2/level-1",
+            "length_m": 3.6576,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.018880208333333343
+          },
+          {
+            "generation_key": "wall/axis-y/x3/y0-y1/level-0",
+            "length_m": 3.6576,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.016782407407407413
+          },
+          {
+            "generation_key": "wall/axis-y/x3/y0-y1/level-1",
+            "length_m": 3.6576,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.16838675999999997,
+            "framing_fraction": 0.018880208333333336
+          },
+          {
+            "generation_key": "wall/axis-y/x3/y1-y2/level-0",
+            "length_m": 3.6576,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 0.16838676000000005,
+            "framing_fraction": 0.016782407407407416
+          },
+          {
+            "generation_key": "wall/axis-y/x3/y1-y2/level-1",
+            "length_m": 3.6576,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.16838676000000002,
+            "framing_fraction": 0.018880208333333343
+          }
+        ],
+        "definition_aggregates": [
+          {
+            "assembly_label": "straw-bale",
+            "wall_count": 20,
+            "opening_count": 20,
+            "gross_area_m2": 211.81893119999995,
+            "opening_area_m2": 24.526402560000015,
+            "net_area_m2": 187.29252863999997
+          }
+        ],
+        "layer_aggregates": [
+          {
+            "assembly_label": "straw-bale",
+            "layer": "lime-plaster",
+            "area_m2": 187.29252863999997,
+            "volume_m3": 7.135845341183999
+          },
+          {
+            "assembly_label": "straw-bale",
+            "layer": "bales",
+            "area_m2": 183.80769690000002,
+            "volume_m3": 84.03687902268001
+          },
+          {
+            "assembly_label": "straw-bale",
+            "layer": "clay-plaster",
+            "area_m2": 187.29252863999997,
+            "volume_m3": 4.757230227455999
+          }
+        ],
+        "framing_aggregates": [
+          {
+            "piece_kind": "BUCK_HEAD",
+            "nominal_section": "1.5x18",
+            "count": 20,
+            "total_length_m": 19.507200000000008
+          },
+          {
+            "piece_kind": "BUCK_JAMB",
+            "nominal_section": "1.5x18",
+            "count": 40,
+            "total_length_m": 53.365400000000015
+          },
+          {
+            "piece_kind": "BUCK_SILL",
+            "nominal_section": "1.5x18",
+            "count": 19,
+            "total_length_m": 18.592800000000008
+          }
+        ],
+        "opening_aggregates": [
+          {
+            "opening_kind": "DOOR",
+            "count": 1,
+            "area_m2": 1.8580608
+          },
+          {
+            "opening_kind": "WINDOW",
+            "count": 19,
+            "area_m2": 22.668341760000015
+          }
+        ],
+        "totals": {
+          "wall_count": 20,
+          "opening_count": 20,
+          "gross_area_m2": 211.81893119999995,
+          "opening_area_m2": 24.526402560000015,
+          "net_area_m2": 187.29252863999997,
+          "framing_face_area_m2": 3.4848317400000015
+        }
+      }
     },
     {
       "name": "reference-house-001-stud-infill-vs02b-walls-1",
@@ -21227,7 +23928,311 @@
           "section_label": "2x6",
           "material_name": "Spruce-pine-fir"
         }
-      ]
+      ],
+      "assembly_schedule": {
+        "walls": [
+          {
+            "generation_key": "wall/axis-x/y0/x0-x1/level-0",
+            "length_m": 3.6575999999999995,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.8580608,
+            "net_area_m2": 9.290303999999999,
+            "framing_face_area_m2": 1.2128201550000002,
+            "framing_fraction": 0.13054687500000003
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x0-x1/level-1",
+            "length_m": 3.6575999999999995,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.9524980949999997,
+            "framing_fraction": 0.10679796006944445
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x1-x2/level-0",
+            "length_m": 3.6575999999999995,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.8580608,
+            "net_area_m2": 9.290303999999999,
+            "framing_face_area_m2": 0.969433545,
+            "framing_fraction": 0.10434895833333334
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x1-x2/level-1",
+            "length_m": 3.6575999999999995,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.9524980949999997,
+            "framing_fraction": 0.10679796006944445
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x2-x3/level-0",
+            "length_m": 3.6576000000000004,
+            "height_m": 3.048,
+            "gross_area_m2": 11.148364800000001,
+            "opening_area_m2": 1.8580608,
+            "net_area_m2": 9.290304,
+            "framing_face_area_m2": 1.2128201550000002,
+            "framing_fraction": 0.130546875
+          },
+          {
+            "generation_key": "wall/axis-x/y0/x2-x3/level-1",
+            "length_m": 3.6576000000000004,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.03352832,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691840000001,
+            "framing_face_area_m2": 0.9524980949999999,
+            "framing_fraction": 0.10679796006944442
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x0-x1/level-0",
+            "length_m": 3.6575999999999995,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 1.0337882550000004,
+            "framing_fraction": 0.1030333719135803
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x0-x1/level-1",
+            "length_m": 3.6575999999999995,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.9524980949999997,
+            "framing_fraction": 0.10679796006944445
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x1-x2/level-0",
+            "length_m": 3.6575999999999995,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 1.0337882550000006,
+            "framing_fraction": 0.10303337191358032
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x1-x2/level-1",
+            "length_m": 3.6575999999999995,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.9524980949999997,
+            "framing_fraction": 0.10679796006944445
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x2-x3/level-0",
+            "length_m": 3.6576000000000004,
+            "height_m": 3.048,
+            "gross_area_m2": 11.148364800000001,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528320000002,
+            "framing_face_area_m2": 1.0337882550000006,
+            "framing_fraction": 0.10303337191358028
+          },
+          {
+            "generation_key": "wall/axis-x/y2/x2-x3/level-1",
+            "length_m": 3.6576000000000004,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.03352832,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691840000001,
+            "framing_face_area_m2": 0.9524980949999999,
+            "framing_fraction": 0.10679796006944442
+          },
+          {
+            "generation_key": "wall/axis-y/x0/y0-y1/level-0",
+            "length_m": 3.6576,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 1.0337882550000004,
+            "framing_fraction": 0.1030333719135803
+          },
+          {
+            "generation_key": "wall/axis-y/x0/y0-y1/level-1",
+            "length_m": 3.6576,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.9524980949999997,
+            "framing_fraction": 0.10679796006944445
+          },
+          {
+            "generation_key": "wall/axis-y/x0/y1-y2/level-0",
+            "length_m": 3.6576,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 1.0337882550000006,
+            "framing_fraction": 0.10303337191358032
+          },
+          {
+            "generation_key": "wall/axis-y/x0/y1-y2/level-1",
+            "length_m": 3.6576,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.9524980949999997,
+            "framing_fraction": 0.10679796006944445
+          },
+          {
+            "generation_key": "wall/axis-y/x3/y0-y1/level-0",
+            "length_m": 3.6576,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 1.0337882550000004,
+            "framing_fraction": 0.1030333719135803
+          },
+          {
+            "generation_key": "wall/axis-y/x3/y0-y1/level-1",
+            "length_m": 3.6576,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.9524980949999997,
+            "framing_fraction": 0.10679796006944445
+          },
+          {
+            "generation_key": "wall/axis-y/x3/y1-y2/level-0",
+            "length_m": 3.6576,
+            "height_m": 3.048,
+            "gross_area_m2": 11.1483648,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 10.033528319999999,
+            "framing_face_area_m2": 1.0337882550000006,
+            "framing_fraction": 0.10303337191358032
+          },
+          {
+            "generation_key": "wall/axis-y/x3/y1-y2/level-1",
+            "length_m": 3.6576,
+            "height_m": 2.7432,
+            "gross_area_m2": 10.033528319999999,
+            "opening_area_m2": 1.1148364800000001,
+            "net_area_m2": 8.918691839999997,
+            "framing_face_area_m2": 0.9524980949999997,
+            "framing_fraction": 0.10679796006944445
+          }
+        ],
+        "definition_aggregates": [
+          {
+            "assembly_label": "stud-infill",
+            "wall_count": 20,
+            "opening_count": 20,
+            "gross_area_m2": 211.81893119999995,
+            "opening_area_m2": 24.526402560000015,
+            "net_area_m2": 187.29252863999997
+          }
+        ],
+        "layer_aggregates": [
+          {
+            "assembly_label": "stud-infill",
+            "layer": "siding",
+            "area_m2": 187.29252863999997,
+            "volume_m3": 3.5679226705919995
+          },
+          {
+            "assembly_label": "stud-infill",
+            "layer": "sheathing",
+            "area_m2": 187.29252863999997,
+            "volume_m3": 2.3786151137279994
+          },
+          {
+            "assembly_label": "stud-infill",
+            "layer": "framing",
+            "area_m2": 167.13595604999995,
+            "volume_m3": 23.34889306018499
+          },
+          {
+            "assembly_label": "stud-infill",
+            "layer": "gypsum-board",
+            "area_m2": 187.29252863999997,
+            "volume_m3": 2.3786151137279994
+          }
+        ],
+        "framing_aggregates": [
+          {
+            "piece_kind": "CRIPPLE",
+            "nominal_section": "2x6",
+            "count": 47,
+            "total_length_m": 34.73450000000002
+          },
+          {
+            "piece_kind": "GIRT",
+            "nominal_section": "2x6",
+            "count": 40,
+            "total_length_m": 51.96840000000002
+          },
+          {
+            "piece_kind": "HEADER",
+            "nominal_section": "2x8",
+            "count": 20,
+            "total_length_m": 19.659600000000008
+          },
+          {
+            "piece_kind": "JACK",
+            "nominal_section": "2x6",
+            "count": 4,
+            "total_length_m": 8.5344
+          },
+          {
+            "piece_kind": "KING",
+            "nominal_section": "2x6",
+            "count": 40,
+            "total_length_m": 115.82400000000005
+          },
+          {
+            "piece_kind": "ROUGH_SILL",
+            "nominal_section": "2x6",
+            "count": 19,
+            "total_length_m": 18.592800000000008
+          },
+          {
+            "piece_kind": "STUD",
+            "nominal_section": "2x6",
+            "count": 76,
+            "total_length_m": 207.2640000000001
+          }
+        ],
+        "opening_aggregates": [
+          {
+            "opening_kind": "DOOR",
+            "count": 1,
+            "area_m2": 1.8580608
+          },
+          {
+            "opening_kind": "WINDOW",
+            "count": 19,
+            "area_m2": 22.668341760000015
+          }
+        ],
+        "totals": {
+          "wall_count": 20,
+          "opening_count": 20,
+          "gross_area_m2": 211.81893119999995,
+          "opening_area_m2": 24.526402560000015,
+          "net_area_m2": 187.29252863999997,
+          "framing_face_area_m2": 20.156572590000003
+        }
+      }
     }
   ],
   "snapshots": [

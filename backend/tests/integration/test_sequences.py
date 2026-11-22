@@ -236,7 +236,9 @@ COMMAND_TYPES = {
     "SetMemberSection", "SetConnectionType", "UndoToRevision",
 }
 NEVER_REJECTED = {"SetMemberSection", "UndoToRevision"}  # their draws pick only existing sections and revisions
-REQUIRED_IMPACTS = {"SetFrameParameters": {2}, "SetMemberSection": {2}, "SetGableRoofParameters": {2, 3}, "SetTimberGrid": {3}, "AddSection": {0}}
+# Since ART-003 every grid line names walls (D080), so an accepted grid change replaces walls and impacts all five
+# artifacts; VS-02's "SetTimberGrid: impacts 3" (a re-identification only) is no longer reachable (ART-003 §8.3, §17).
+REQUIRED_IMPACTS = {"SetFrameParameters": {2}, "SetMemberSection": {2}, "SetGableRoofParameters": {2, 3}, "SetTimberGrid": {5}, "AddSection": {0}}
 
 
 def outcome(type_: str, result: str) -> None:

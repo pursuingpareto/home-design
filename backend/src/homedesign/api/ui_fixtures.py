@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
+from homedesign.dependencies.registry import ARTIFACT_TYPES
 from homedesign.model.canonical import canonical_snapshot
 from homedesign.project import MemoryStore, ProjectService
 
@@ -30,13 +31,16 @@ NOW = datetime(2026, 11, 19, 12, 0, tzinfo=UTC)
 KEY = bytes(32)  # fixture-only signing key; tokens in the file are never valid on a real server
 BOOK = {
     "currency": "USD", "as_of": "2026-11-01", "source": "Fixture supplier quote", "geography": "Chittenden County, VT",
-    # One row per timber line (D053) and connection type (ART-002 §7) of Reference House 001 v2, so this estimate is complete.
+    # One row per timber line (D053), connection type (ART-002 §7), wall layer, and wall framing line (ART-003 §7) of
+    # Reference House 001 v3, so this estimate is complete. Assembly rows are priced per square meter.
     "rows": [
-        {"key": key, "unit": "each" if key.startswith("connection.") else "m", "unit_price_minor": price}
+        {"key": key, "unit": "each" if key.startswith("connection.") else "m2" if key.startswith("assembly.") else "m", "unit_price_minor": price}
         for key, price in (
+            ("assembly.straw-bale.bales", 2200), ("assembly.straw-bale.clay-plaster", 3500), ("assembly.straw-bale.lime-plaster", 4200),
             ("connection.BRIDLE", 6500), ("connection.HOUSED_DOVETAIL", 3800), ("connection.PEGGED_MORTISE_TENON", 4500),
             ("timber.BEAM.8x12", 4725), ("timber.FLOOR_JOIST.4x8", 1200), ("timber.KNEE_BRACE.4x6", 900), ("timber.POST.8x8", 3150),
             ("timber.PRINCIPAL_RAFTER.8x10", 3900), ("timber.PURLIN.6x8", 2350), ("timber.SILL.8x8", 3150),
+            ("wallframing.BUCK_HEAD.1.5x18", 1900), ("wallframing.BUCK_JAMB.1.5x18", 1900), ("wallframing.BUCK_SILL.1.5x18", 1900),
         )
     ],
 }
@@ -47,7 +51,7 @@ def build() -> dict[str, Any]:
     created = svc.create_project({"command_id": "00000000-0000-4000-8000-0000000000c1", "type": "CreateReferenceProject", "args": {}}, actor_id=ACTOR_ID, now=NOW)
     head = created.revision_id
     art = lambda kind: svc.artifacts.get_artifact(PROJECT_ID, kind, now=NOW)  # noqa: E731
-    envelopes = {kind: art(kind) for kind in ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")}
+    envelopes = {kind: art(kind) for kind in ARTIFACT_TYPES}
     snapshot = json.loads(canonical_snapshot(svc.get_revision(PROJECT_ID, head)))
     footprint = next(e for e in snapshot["entities"] if e["kind"] == "Footprint")
     width_command = {

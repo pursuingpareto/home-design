@@ -14,7 +14,7 @@ def _mesh3d(context: DerivationContext) -> Outcome:
     return Outcome("CURRENT", build_mesh3d(context.selection))
 
 
-PLAN2D = Derivation("plan2d", "plan2d-vs01", "2", select_plan2d, _plan2d)
-MESH3D = Derivation("mesh3d", "mesh3d-vs01", "2", select_mesh3d, _mesh3d)
+PLAN2D = Derivation("plan2d", "plan2d-vs01", "3", select_plan2d, _plan2d)
+MESH3D = Derivation("mesh3d", "mesh3d-vs01", "3", select_mesh3d, _mesh3d)
 
 __all__ = ["MESH3D", "PLAN2D", "Mesh3dPayload", "Plan2dPayload", "build_mesh3d", "build_plan2d", "select_mesh3d", "select_plan2d"]

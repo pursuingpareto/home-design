@@ -1,6 +1,6 @@
 # D082 — VS-02b framing-layer fill: quantified net of framing, priced per square meter
 
-**Status:** Confirmed (to be implemented in VS-02b, [ART-003](../../implementation/tasks/ART-003.md))  
+**Status:** Confirmed; implemented in VS-02b by [ART-003](../../implementation/tasks/ART-003.md) (2026-11-22)  
 **Date:** 2026-11-22  
 **Scope:** How the assembly schedule and the estimate quantify the fill of a definition's framing layer (the straw bales, or the dense-pack cellulose between studs). Approved as [ART-003](../../implementation/tasks/ART-003.md) §12 item 1, answering the question [MODEL-006](../../implementation/tasks/MODEL-006.md) §13 left to ART-003 ("Noted for later task files").  
 **Refines:** [D070](D070-vs02b-quantities-and-outputs.md), which quantifies "the framing layer … by its pieces", read with [D071](D071-vs02b-thermal-moisture-values.md), which makes the bales and the cellulose that layer's fill.

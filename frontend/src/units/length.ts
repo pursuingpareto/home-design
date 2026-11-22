@@ -106,6 +106,15 @@ export function formatLength(meters: number, system: UnitSystem): string {
   return `${sign}${feet}' ${inchText}"`;
 }
 
+export const SQUARE_METERS_PER_SQUARE_FOOT = 0.09290304; // 0.3048², exact (D026)
+
+/** Display an area: square feet to 0.1 sf, or square meters to 0.01 m². Display only (ART-003 §10). */
+export function formatArea(squareMeters: number, system: UnitSystem): string {
+  const value = system === "metric" ? squareMeters : squareMeters / SQUARE_METERS_PER_SQUARE_FOOT;
+  const [whole = "0", frac = "0"] = value.toFixed(system === "metric" ? 2 : 1).split(".");
+  return `${whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}.${frac} ${system === "metric" ? "m²" : "sf"}`;
+}
+
 /** Text for an input field: the same as display, so editing starts from a readable value. */
 export function lengthInputText(meters: number, system: UnitSystem): string {
   if (system === "metric") return `${meters} m`;

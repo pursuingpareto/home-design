@@ -1,6 +1,6 @@
 """Whole-house invariants checked over HTTP after every step (TEST-001 §5).
 
-`check_revision` reads one revision and its four artifacts through the API (every response is also
+`check_revision` reads one revision and its five artifacts through the API (every response is also
 validated against the committed OpenAPI by `api_support.Api`) and asserts that the model, plan, mesh,
 schedule, and estimate agree. `check_transition` compares consecutive revisions, and
 `assert_unchanged` proves a rejected command left the project as it was.
@@ -14,6 +14,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from typing import Any
 
+from homedesign.assemblies.schedule import build_assembly_schedule, select_assembly_schedule
 from homedesign.dependencies import Outcome
 from homedesign.estimating import build_estimate, select_estimate
 from homedesign.geometry import build_mesh3d, build_plan2d, select_mesh3d, select_plan2d
@@ -22,7 +23,7 @@ from homedesign.model.schema import Snapshot
 from homedesign.timber.schedule import build_schedule, select_schedule
 
 EPS = 1e-6
-ARTIFACTS = ("plan2d", "mesh3d", "timber_schedule", "preliminary_estimate")
+ARTIFACTS = ("plan2d", "mesh3d", "timber_schedule", "assembly_schedule", "preliminary_estimate")
 PLAN_ARRAYS = ("posts", "beams", "sills", "joists", "braces", "rafters", "purlins")
 
 
@@ -77,8 +78,9 @@ def check_revision(api, pid: str, rev: str) -> RevisionView:
         assert env["suitability"] == "preliminary", kind
         assert not any(env["claims"].values()), (kind, env["claims"])
         assert "PRELIMINARY_UNVERIFIED" in [w["code"] for w in env["warnings"]], kind
-    for kind in ("plan2d", "mesh3d", "timber_schedule"):
+    for kind in ("plan2d", "mesh3d", "timber_schedule", "assembly_schedule"):
         assert view.envelopes[kind]["status"] == "CURRENT", (kind, view.envelopes[kind]["status"])
+    assert [w["code"] for w in view.envelopes["assembly_schedule"]["warnings"]][:2] == ["PRELIMINARY_UNVERIFIED", "CLIMATE_DETAILS_UNVERIFIED"]
     assert view.envelopes["preliminary_estimate"]["status"] in ("CURRENT", "UNAVAILABLE")
 
     members = view.members()
@@ -130,21 +132,29 @@ def check_revision(api, pid: str, rev: str) -> RevisionView:
     # Plan, mesh, and schedule carry exactly the snapshot's connections, and the counts reconcile (ART-002 §11).
     check_artifact_connections(view, plan, mesh, schedule)
 
-    # The estimate follows the schedule and never invents a total (artifacts §8.1, §10.4, §10.8; ART-002 §7).
+    # Walls, openings, and wall framing reconcile across the views, the assembly schedule, and the model (ART-003 §11).
+    assemblies = view.envelopes["assembly_schedule"]["payload"]
+    check_walls(view, plan, mesh, assemblies)
+
+    # The estimate follows the schedules and never invents a total (artifacts §8.1, §10.4, §10.8; ART-002 §7; ART-003 §7).
     estimate_env = view.envelopes["preliminary_estimate"]
     estimate = estimate_env["payload"]
     by_key = {f"timber.{role}.{label}": a for (role, label), a in aggregates.items()}
     per_type: Counter = Counter()
     for a in schedule["connection_aggregates"]:
         per_type[a["connection_type"]] += a["count"]
-    expected_lines = {**{k: a["total_length_m"] for k, a in by_key.items()}, **{f"connection.{t}": n for t, n in per_type.items()}}
+    expected_lines = {**{k: a["total_length_m"] for k, a in by_key.items()}, **{f"connection.{t}": n for t, n in per_type.items()},
+                      **{f"assembly.{a['assembly_label']}.{a['layer']}": a["area_m2"] for a in assemblies["layer_aggregates"]},
+                      **{f"wallframing.{a['piece_kind']}.{a['nominal_section']}": a["total_length_m"] for a in assemblies["framing_aggregates"]}}
+    counts = {f"wallframing.{a['piece_kind']}.{a['nominal_section']}": a["count"] for a in assemblies["framing_aggregates"]}
+    assert {li["key"]: li["count"] for li in estimate["line_items"] if li["kind"] == "wallframing"} == counts
     assert {li["key"]: li["quantity_value"] for li in estimate["line_items"]} == expected_lines
     keys = [li["key"] for li in estimate["line_items"]]
     assert keys == sorted(keys, key=lambda k: k.encode("utf-16-be")) and len(set(keys)) == len(keys)
     for li in estimate["line_items"]:
-        assert li["quantity_unit"] == ("each" if li["kind"] == "connection" else "m")
+        assert li["quantity_unit"] == {"connection": "each", "assembly": "m2"}.get(li["kind"], "m")
         assert (li["amount_minor"] is None) == (li["unit_price_minor"] is None) == (not li["priced"])
-    assert estimate["assumptions"] == schedule["assumptions"]
+    assert estimate["assumptions"] == schedule["assumptions"] + assemblies["assumptions"]
     priced = [li for li in estimate["line_items"] if li["priced"]]
     coverage = "none" if not priced else "complete" if len(priced) == len(estimate["line_items"]) else "partial"
     assert estimate["coverage"] == coverage
@@ -167,13 +177,16 @@ def check_fresh_build(api, pid: str, view: RevisionView) -> None:
     """
     snapshot = Snapshot.model_validate(view.snapshot)
     schedule = build_schedule(select_schedule(snapshot))
+    assemblies = build_assembly_schedule(select_assembly_schedule(snapshot))
     with api.service.store.transaction() as tx:
         book = tx.get_price_book(pid)
-    status, estimate, warnings = build_estimate(select_estimate({"timber_schedule": Outcome("CURRENT", schedule)})["timber_schedule"], book)
+    selection = select_estimate({"timber_schedule": Outcome("CURRENT", schedule), "assembly_schedule": Outcome("CURRENT", assemblies)})
+    status, estimate, warnings = build_estimate(selection["timber_schedule"], selection["assembly_schedule"], book)
     fresh = {
         "plan2d": build_plan2d(select_plan2d(snapshot)),
         "mesh3d": build_mesh3d(select_mesh3d(snapshot)),
         "timber_schedule": schedule,
+        "assembly_schedule": assemblies,
         "preliminary_estimate": estimate,
     }
     for kind, payload in fresh.items():
@@ -181,6 +194,60 @@ def check_fresh_build(api, pid: str, view: RevisionView) -> None:
     estimate_env = view.envelopes["preliminary_estimate"]
     assert estimate_env["status"] == status
     assert estimate_env["warnings"][1:] == list(warnings)  # after PRELIMINARY_UNVERIFIED
+
+
+def check_walls(view: RevisionView, plan, mesh, assemblies) -> None:
+    """ART-003 §11 and §13 tests 1-3: the views' and the schedule's walls, openings, and pieces are the snapshot's,
+    by ID and on their level's plane; areas and aggregates reconcile with the rows."""
+    walls = {w["id"]: w for w in view.entities("Wall")}
+    openings = {o["id"]: o for o in view.entities("Opening")}
+    pieces = {p["id"]: p for p in view.entities("WallFramingPiece")}
+    plane_of_level = {lv["id"]: "level-0" if lv["index"] == 0 else "level-1" for lv in view.entities("Level")}
+    plan_walls = {w["wall_id"]: (p["plane_id"], w) for p in plan["planes"] for w in p["walls"]}
+    plan_pieces = {f["piece_id"]: p["plane_id"] for p in plan["planes"] for f in p["wall_framing"]}
+    assert set(plan_walls) == {w["wall_id"] for w in mesh["walls"]} == {w["wall_id"] for w in assemblies["walls"]} == set(walls)
+    assert set(plan_pieces) == {f["piece_id"] for f in mesh["wall_framing"]} == {r["piece_id"] for r in assemblies["wall_framing"]} == set(pieces)
+    assert len(plan_pieces) == sum(len(p["wall_framing"]) for p in plan["planes"])
+    plan_openings = {o["opening_id"] for _, w in plan_walls.values() for o in w["openings"]}
+    assert plan_openings == {v["opening_id"] for w in mesh["walls"] for v in w["voids"]} == {o["opening_id"] for o in assemblies["openings"]} == set(openings)
+    owner = {pid: w for w in walls.values() for pid in w["framing_ids"]}
+    for wid, (plane, w) in plan_walls.items():
+        assert plane == plane_of_level[walls[wid]["level_id"]] and w["generation_key"] == walls[wid]["generation_key"]
+        assert {o["opening_id"] for o in w["openings"]} == {o["id"] for o in openings.values() if o["wall_id"] == wid}
+    for pid, plane in plan_pieces.items():
+        assert plane == plane_of_level[owner[pid]["level_id"]]
+    for f in mesh["wall_framing"]:
+        assert f["wall_id"] == owner[f["piece_id"]]["id"]
+        assert (f["axis_start_m"], f["axis_end_m"]) == (pieces[f["piece_id"]]["start_m"], pieces[f["piece_id"]]["end_m"])
+    # Areas and aggregates reconcile with the rows (AC2b-05).
+    rows = assemblies["walls"]
+    for w in rows:
+        record = walls[w["wall_id"]]
+        d = [e - s for s, e in zip(record["start_m"], record["end_m"], strict=True)]
+        assert close(w["length_m"], math.sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2])) and w["height_m"] == record["height_m"]
+        own = [o for o in openings.values() if o["wall_id"] == w["wall_id"]]
+        assert close(w["opening_area_m2"], sum(o["width_m"] * o["height_m"] for o in own))
+        assert close(w["net_area_m2"], w["gross_area_m2"] - w["opening_area_m2"]) and w["net_area_m2"] > 0
+        assert 0 <= w["framing_fraction"] < 1
+    totals = assemblies["totals"]
+    assert (totals["wall_count"], totals["opening_count"]) == (len(walls), len(openings))
+    n = len(rows)
+    for name in ("gross_area_m2", "opening_area_m2", "net_area_m2", "framing_face_area_m2"):
+        assert close(totals[name], sum(w[name] for w in rows), EPS * n)
+    net = sum(w["net_area_m2"] for w in rows)
+    fill = sum(w["net_area_m2"] - w["framing_face_area_m2"] for w in rows)
+    for layer in assemblies["layer_aggregates"]:
+        assert close(layer["area_m2"], fill if layer["function"] == "FRAMING" else net, EPS * n)
+        assert layer["volume_m3"] == layer["area_m2"] * layer["thickness_m"]
+    lengths: dict[tuple[str, str], list[float]] = defaultdict(list)
+    for r in assemblies["wall_framing"]:
+        lengths[(r["piece_kind"], r["nominal_section"])].append(r["length_m"])
+    assert {(a["piece_kind"], a["nominal_section"]) for a in assemblies["framing_aggregates"]} == set(lengths)
+    for a in assemblies["framing_aggregates"]:
+        group = lengths[(a["piece_kind"], a["nominal_section"])]
+        assert a["count"] == len(group) and close(a["total_length_m"], sum(group), EPS * len(group))
+    jacked = {r["opening_id"] for r in assemblies["wall_framing"] if r["piece_kind"] == "JACK"}
+    assert all(o["has_jacks"] == (o["opening_id"] in jacked) for o in assemblies["openings"])
 
 
 def outcome_key(envelope: dict[str, Any]) -> bytes:

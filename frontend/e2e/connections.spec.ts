@@ -23,7 +23,14 @@ const preview = (page: Page) => page.getByRole("tabpanel").getByRole("button", {
 const dialog = (page: Page) => page.getByTestId("impact-dialog");
 const confirm = (page: Page) => dialog(page).getByRole("button", { name: "Confirm" }).click();
 const revision = (page: Page, n: number) => expect(page.getByTestId("revision-label")).toContainText(`Revision ${n} `);
-const ALL_FOUR = "Updates: 2D plan, 3D model, Timber schedule, Estimate.";
+// A frame edit on the straw bale house changes no wall piece, so the assembly schedule is reused (ART-003 §8.3).
+const FRAME_EDIT = "Updates: 2D plan, 3D model, Timber schedule, Estimate. Unchanged: Assembly schedule.";
+// The straw bale walls' six lines (ART-003 §7.1): layers per square foot, bucks per foot (D085).
+const WALL_PRICES = [
+  ["Straw (straw-bale, bales)", "2.04"], ["Clay plaster (straw-bale, clay-plaster)", "3.25"], ["Lime plaster (straw-bale, lime-plaster)", "3.90"],
+  ["Buck head 1.5x18", "5.79"], ["Buck jamb 1.5x18", "5.79"], ["Buck sill 1.5x18", "5.79"],
+] as const;
+
 
 test("markers: Level 1 shows 162 connections in 91 glyphs, selection highlights, and the switch hides them", async ({ page }) => {
   await newProject(page);
@@ -54,14 +61,14 @@ test("markers: Level 1 shows 162 connections in 91 glyphs, selection highlights,
   await expect(page.locator(".plan2d .connection-glyph")).toHaveCount(12);
 });
 
-test("frame: eave braces off changes all four artifacts", async ({ page }) => {
+test("frame: eave braces off changes every artifact but the assembly schedule", async ({ page }) => {
   await newProject(page);
   await tab(page, "Frame");
   await page.getByRole("checkbox", { name: "Knee braces at the eave" }).uncheck();
   await preview(page);
   await expect(dialog(page).getByTestId("impact-members")).toContainText("Timber members: 0 added, 34 removed");
   await expect(dialog(page).getByTestId("impact-connections")).toContainText("Connections: 0 added, 68 removed");
-  await expect(dialog(page).getByTestId("impact-artifacts")).toHaveText(ALL_FOUR);
+  await expect(dialog(page).getByTestId("impact-artifacts")).toHaveText(FRAME_EDIT);
   await confirm(page);
   await revision(page, 2);
   const mesh = page.locator(".mesh3d");
@@ -79,7 +86,7 @@ test("frame: a joist spacing of 0.65 m changes only the plan and the 3D model", 
   await preview(page);
   await expect(dialog(page).getByTestId("impact-members")).toHaveText("Timber members: 0 added, 0 removed, 30 updated.");
   await expect(dialog(page).getByTestId("impact-connections")).toHaveText("Connections: 0 added, 0 removed, 60 updated.");
-  await expect(dialog(page).getByTestId("impact-artifacts")).toHaveText("Updates: 2D plan, 3D model. Unchanged: Timber schedule, Estimate.");
+  await expect(dialog(page).getByTestId("impact-artifacts")).toHaveText("Updates: 2D plan, 3D model. Unchanged: Timber schedule, Assembly schedule, Estimate.");
   await expect(dialog(page).getByTestId("impact-changes")).toContainText(`parameters.joist_spacing_m2' 0"2' 1 9/16"`);
 });
 
@@ -92,6 +99,7 @@ test("connection type: joist-beam to Joist hanger updates the schedule, the esti
   for (const [label, price] of [
     ["Beam 8x12", "14.40"], ["Post 8x8", "9.60"], ["Sill 8x8", "9.60"], ["Floor joist 4x8", "3.66"], ["Principal rafter 8x10", "11.90"],
     ["Purlin 6x8", "7.16"], ["Knee brace 4x6", "2.74"], ["Pegged mortise and tenon", "45.00"], ["Bridle joint", "65.00"], ["Housed dovetail", "38.00"],
+    ...WALL_PRICES,
   ] as const) {
     await prices.getByLabel(label).fill(price);
   }
@@ -105,7 +113,7 @@ test("connection type: joist-beam to Joist hanger updates the schedule, the esti
   await page.getByRole("button", { name: "Preview Joist–beam change" }).click();
   await expect(dialog(page).getByTestId("impact-members")).toHaveText("Timber members: 0 added, 0 removed, 0 updated.");
   await expect(dialog(page).getByTestId("impact-connections")).toHaveText("Connections: 0 added, 0 removed, 60 updated.");
-  await expect(dialog(page).getByTestId("impact-artifacts")).toHaveText(ALL_FOUR);
+  await expect(dialog(page).getByTestId("impact-artifacts")).toHaveText(FRAME_EDIT);
   await expect(dialog(page).getByTestId("impact-changes")).toContainText("Housed dovetailJoist hanger");
   await confirm(page);
   await revision(page, 2); // the price book is not a revision
