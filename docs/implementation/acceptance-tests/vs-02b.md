@@ -80,7 +80,7 @@ Proposals 2–9 build on Option 1.
 | 5 | ~~Choosing a wall's assembly: granularity, command, classification~~ **Decided as recommended** ([D068](../../product/decisions/D068-vs02b-wall-assembly-choice.md)) | **Your judgment** | §10 |
 | 6 | ~~Openings: records, commands, fit, survival, classification~~ **Decided as revised** ([D069](../../product/decisions/D069-vs02b-openings.md)) | **Your judgment** | §11 |
 | 7 | ~~Quantities and outputs: quantity basis, a new artifact, estimate lines~~ **Decided as revised** ([D070](../../product/decisions/D070-vs02b-quantities-and-outputs.md)) | **Your judgment** | §12 |
-| 8 | Thermal and moisture values: what is recorded, and what is computed | **Your judgment** | §13 |
+| 8 | Thermal and moisture values: what is recorded, and what is computed. **Direction given: a framing-corrected figure** (§13) | **Your judgment** | §13 |
 | 9 | Reference House 001 v3 design intent | **Your judgment** | §14 |
 | 10 | Schema version 3 replaces version 2 | Routine | §6 |
 | 11 | Walls follow the frame's identity and conformance rules | Routine | §6 |
@@ -334,18 +334,33 @@ So VS-02b generates studs and girts as individual pieces. The direction leaves t
 
 **Question:** what property data a layer records, and what, if anything, is computed from it.
 
-**Recommendation:**
+**Product owner direction (2026-11-21):** provide a **figure corrected for framing**. D066 generates every stud, girt, and opening piece, so the framing fraction is known from the model, and the figure can set the product apart. The first recommendation (a layer sum only) is revised below.
 
-- **Recorded per layer:** a declared thermal resistance or conductivity, and a vapor permeance, each nullable and each with provenance (source, date, and a note). Unknown is `null`, never 0 (building-model.md §2).
+**Revised recommendation:**
+
+- **Recorded per layer:** a declared thermal conductivity or thermal resistance, and a vapor permeance, each nullable and each with provenance (source, date, and a note). Unknown is `null`, never 0 (building-model.md §2).
+- **The framing layer has two materials:** its framing material (the studs, girts, and opening pieces) and its fill (for example dense-pack cellulose between studs), each with its own nullable conductivity. In straw bale walls, the bale layer is the fill and the buck is the framing material. This extends D067's framing layer.
 - **Recorded per definition:** the climate-specific details to flag as unverified, for example plaster and rain-screen detailing, and bale moisture protection at the sill. They appear with every figure, under the warning of proposal 13.
-- **Computed:** a per-assembly **sum of layer resistances**, only when every layer's value is known, labeled "declared layer sum: no framing, bridging, or air-leakage correction; not verified". Otherwise `null`, with the missing layers named. Also an **opaque-walls-only** area-weighted figure (net area over resistance, summed), gated the same way. No whole-envelope or heat-loss figure: there are no roof, floor, or opening values.
+- **Computed, per wall:**
+  - **framing fraction** `f`: the face area of the wall's framing pieces in its plane (each piece's section width in the wall plane times its reference-axis length, with stud and girt crossings counted once), divided by the wall's net area. It comes from the generated pieces, so it reflects the spacing, girts, kings, jacks, headers, and bucks of that wall and its openings;
+  - **two path resistances:** through the fill, the sum of every layer's resistance with the framing layer at its fill value; and through the framing, the same with the framing layer at its framing material's value;
+  - **framing-corrected value:** the **parallel-path** combination, `U = f / R_framing + (1 − f) / R_fill`, reported as a U-value and as its effective R-value;
+  - **center-of-cavity value:** `R_fill` alone, reported beside it, so the framing penalty is visible.
+- **Computed, per definition and for all walls:** area-weighted figures over net wall area (the walls' sum of `U × area`, and the average U), **opaque walls only**. No whole-envelope or heat-loss figure: there are no roof, floor, or opening values.
+- **Gating:** a figure is computed only when every value it uses is known; otherwise it is `null`, with the missing layers or materials named. The method is named and versioned in the output (for example `parallel-path-1`), as the jack threshold is (D066).
+- **Labels:** "parallel-path method, framing fraction from the generated framing; heavy-timber frame members in the wall plane, air leakage, and moisture effects are not included; declared values, not verified; not a code-compliance calculation". No output claims energy-code compliance (AC-08).
 - **Moisture:** recorded only. No hygrothermal analysis and no condensation claim.
-- **Values:** come from proposal 9. Unless the product owner supplies values with a source, they are `null`, because open question 6 (dataset sources and licensing) is still open.
+- **Values:** come from proposal 9. Unless the product owner supplies values with a source, they are `null`, because open question 6 (dataset sources and licensing) is still open. With every value `null`, the reference house shows the framing fractions and no U-values.
+
+**Not included, and why:**
+
+- **The heavy-timber frame as a bridge:** posts, sills, beams, and braces lie in the wall plane (D065), but they do not span the full wall thickness, so each needs a path of its own through part timber and part fill. That is a heavier method, and it depends on member sections. A later method version can add it.
+- **Isothermal-planes or two-dimensional methods:** more accurate for some build-ups, but they need more data and a stated method choice per layer.
 
 **Alternatives:**
 
-- **Record values, compute nothing:** the safest, but the comfort comparison then needs the reader to do arithmetic.
-- **A framing-corrected value** (parallel paths through the studs and through the cavity): closer to real performance for stud walls. Since D066 generates every stud, the framing fraction is known, but the figure also needs the framing material's value, which is `null` unless supplied, and a stated method. It could follow once values exist.
+- **Record the values and compute only the layer sum** (the first recommendation): simplest, but it hides the framing penalty that the generated framing makes computable.
+- **Record the values and compute nothing:** the safest, but the comfort comparison then needs the reader to do arithmetic.
 
 ## 14. Proposal 9: Reference House 001 v3 design intent (Your judgment)
 
