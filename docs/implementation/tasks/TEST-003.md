@@ -1,6 +1,6 @@
 # TEST-003 — VS-02b traceability, the golden scenario's wall commands, sequences, and budgets
 
-**Status:** Done (2026-11-23). Implementation notes are in §17. Approved 2026-11-23: routine items 1–8 together. Judgment items 9–11 were approved as recommended and are recorded as [D090](../../product/decisions/D090-vs02b-budgets-and-named-wall-case.md). Item 12 confirmed UI-004's twelve choices as implemented, recorded in UI-004 §20 (§13).  
+**Status:** Implemented (2026-11-23); stopped under D063's rule, awaiting judgment item 13 (two CI times over half their ceilings, §17). Implementation notes are in §17. Approved 2026-11-23: routine items 1–8 together. Judgment items 9–11 were approved as recommended and are recorded as [D090](../../product/decisions/D090-vs02b-budgets-and-named-wall-case.md). Item 12 confirmed UI-004's twelve choices as implemented, recorded in UI-004 §20 (§13).  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes. Two architecture documents change wording only, as their contract checks become rows (§5.3).  
 **Slice:** VS-02b  
 **Depends on:** `MODEL-006`, `ASM-001`, `ART-003`, and `UI-004` (all done; `main` at `9ca3301`). Merges on its own, with CI passing ([vs-02b.md](../acceptance-tests/vs-02b.md) §16).  
@@ -493,4 +493,29 @@ Every estimate is under 7,000 bytes. Above half a ceiling, as D063 asks to repor
 - The time ceilings describe the in-process service and the e2e dev-server setup, not a production build (D063).
 - The outcome gate checks reach only under the derandomized `ci` profile, which is fixed by the test's source: an edit to `test_sequences.py` reshuffles the 40 sequences, and the gate then names anything lost.
 
-CI_VALUES
+**CI values** (PR #22, run [45236217611](https://github.com/pursuingpareto/home-design/actions/runs/45236217611); all four jobs passed; backend 1,004 passed in 25 min 51 s, e2e 31 passed):
+
+*Sizes:* the reference house's are byte-identical to the local ones. The largest frame and the named wall case differ slightly, as §4 expects. The CI values are `mesh3d` 949,138 and 1,045,269 for the largest frame (straw bale, stud infill), 1,263,504 and 997,860 for the named wall case (stud infill, straw bale), and `timber_schedule` 1,135,024 for the largest frame and 1,135,069 for the named case. The other payloads are identical. The shares above half are the same as locally: 84%, 67%, 66%, 63%, and 57%. D090 approved these with the measurements.
+
+*Times* (median of 5; the CI runner was slower than PR #20's: the reference house preview took 293 ms here against 202 ms there):
+
+| What | Local (`check.sh`) | CI (PR #22) | Ceiling | CI share |
+|---|---|---|---|---|
+| Preview, reference house, width edit | 169 ms | 293 ms | 1 s | 29% |
+| Preview, reference house, `SetOpening` | 167 ms | 282 ms | 1 s | 28% |
+| Preview, named wall case, width edit | 1,409 ms | **2,632 ms** | 5 s | **53%** |
+| Preview, named wall case, `SetWallAssembly` to straw bale | 1,148 ms | 2,121 ms | 5 s | 42% |
+| Commit with five artifacts, named wall case | 1,631 ms | **3,077 ms** | 5 s | **62%** |
+| Browser: Create until both views and both schedules | 1,631 ms | 1,777 ms | 10 s | 18% |
+| Browser: Preview pressed until the `SetWallAssembly` dialog | 425 ms | 589 ms | 3 s | 20% |
+| Browser: the stud infill house reloaded until both views | 2,005 ms | 2,225 ms | 10 s | 22% |
+| Browser (TEST-002): Create until 2D, 3D, and the schedule | 1,633 ms | 1,545 ms | 10 s | 15% |
+| Browser (TEST-002): Preview pressed until the dialog | 311 ms | 615 ms | 3 s | 21% |
+
+**Stopped under D063's rule (2026-11-23).** Two CI times are over half their ceilings: the named wall case's commit at 62% and its width preview at 53%. D090 estimated the commit at about 48%, assuming CI runs at 1.5× local. This run was 1.9× local (1.73× for the reference house). As D063 and D090 require, `main` was not fast-forwarded, and no ceiling was changed. Both checks pass. The concern is headroom. D063 set its time ceilings at 5–10× the measured times, because shared runners "vary by several times" and the gates have no retries. At 62%, a runner 1.6× slower than this one fails the commit check, and that blocks `main`. Item 13 puts the response to the product owner.
+
+13. **The named wall case's CI times over half** (*Your judgment*). Options:
+    - **(a) Gate D063's largest frame again; report the named wall case** *(recommended)*. The preview and commit gates go back to D063's largest frame, as before this task: 1,305 ms and 1,569 ms in PR #20's CI, about 2.1 s for the commit on this run's runner. The named case's three timings are printed, not gated. This adds no new number and keeps D063's headroom. Its cost: a slowdown specific to walls is caught only when it also slows the largest frame, or by reading the printed lines. The `SetWallAssembly` preview on the named case can stay gated (42%).
+    - **(b) Keep D090 as approved.** The named case stays gated at 5 s, and the flake risk is accepted. D090 records the CI shares.
+    - **(c) Speed up the commit first.** A product task (profiling the commit's derivation on the named case), with `main` waiting on it.
+    - **(d) Raise the named case's ceilings** (for example to 10 s). This adds a new number, which D063 says not to do as the automatic response.
