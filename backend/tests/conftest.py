@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import os
 import uuid
 from pathlib import Path
@@ -200,3 +201,29 @@ def with_assembly(doc: dict[str, Any] | None = None, label: str = "stud-infill")
 
 
 STUD_INFILL: dict[str, Any] = with_assembly()  # Reference House 001 v3 with stud infill (246 pieces)
+
+
+_WALL_CASE_NS = uuid.UUID("5d0c2b7e-3f41-4e8a-9b6c-1a2d3e4f5a6b")
+
+
+def largest_wall_case(label: str = "stud-infill") -> dict[str, Any]:
+    """D090's named largest case for walls (TEST-003 §8.2): D063's largest frame with 1'-6" brace legs; the stud
+    infill definition at D077's densest framing (studs at 12", 4 girts); a centered 3'-0" × 4'-0" window, sill
+    3'-0", in every wall; every wall on the definition labeled ``label``. With stud infill: 48 walls, 48 openings,
+    1,239 pieces. It is a named case, not a bound: openings have no bounds beyond the fit (D077)."""
+    doc = with_frame_parameters(largest_doc(), knee_brace_leg_m=0.4572)
+    stud_infill = next(e for e in entities_of(doc, "AssemblyDefinition") if e["label"] == "stud-infill")
+    framing = next(layer for layer in stud_infill["layers"] if layer["function"] == "FRAMING")["framing"]
+    framing.update(stud_spacing_m=0.3048, girt_count=4)
+    prototype = entities_of(doc, "Opening")[0]
+    wall_system = entities_of(doc, "WallSystem")[0]
+    doc["entities"] = [e for e in doc["entities"] if e["kind"] != "Opening"]
+    wall_system["opening_ids"] = []
+    for wall in entities_of(doc, "Wall"):
+        length = math.dist(wall["start_m"][:2], wall["end_m"][:2])
+        opening = {**copy.deepcopy(prototype), "id": str(uuid.uuid5(_WALL_CASE_NS, wall["generation_key"])), "wall_id": wall["id"],
+                   "opening_kind": "WINDOW", "width_m": 3 * FT, "height_m": 4 * FT, "sill_height_m": 3 * FT, "offset_m": (length - 3 * FT) / 2}
+        doc["entities"].append(opening)
+        wall_system["opening_ids"].append(opening["id"])
+    wall_system["opening_ids"].sort()
+    return with_assembly(doc, label)

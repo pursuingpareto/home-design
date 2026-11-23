@@ -623,7 +623,13 @@ Version 2 reconciliation ([ART-002](../implementation/tasks/ART-002.md) §13; ch
 - `connection_aggregates` counts sum to the number of connection rows and of `Connection` records, and each class's count equals CONN-001 §6's formula.
 - The estimate's `assumptions` equal its schedule's, and no payload carries a capacity, size, or fastener field.
 
-VS-02b reconciliation ([ART-003](../implementation/tasks/ART-003.md) §11, §13; checked after every step of the integration suite by `check_walls` in `tests/integration/invariants.py`; written as prose so that the VS-02 traceability parser's item count is unchanged, and traced by `TEST-003`). The plan's, mesh's, and assembly schedule's walls, openings, and wall framing pieces are exactly the snapshot's, by ID, and each wall and piece is on its level's plane, with each mesh box's axis its record's. Each wall's length, opening area, and net area follow its records; the totals, per-layer areas (the framing layer's fill net of framing, D082), volumes, and framing aggregates reconcile with the rows; and `has_jacks` agrees with the pieces. The estimate's assembly and wall framing lines equal the assembly schedule's aggregates, with counts beside lengths, and its assumptions are the timber schedule's followed by the assembly schedule's. The assembly schedule's envelope carries `CLIMATE_DETAILS_UNVERIFIED`. The four wall commands impact exactly the artifacts whose payloads they change, and never `timber_schedule` (ART-003 §8.3, as measured).
+VS-02b reconciliation ([ART-003](../implementation/tasks/ART-003.md) §11, §13; checked after every step of the integration suite by `check_walls` in `tests/integration/invariants.py`). These are VS-02b checks, traced as `ART2b-1` to `ART2b-5` in [vs-02b-traceability.md](../implementation/acceptance-tests/vs-02b-traceability.md) ([TEST-003](../implementation/tasks/TEST-003.md) §5.3):
+
+- The plan's, mesh's, and assembly schedule's walls, openings, and wall framing pieces are exactly the snapshot's, by ID, and each wall and piece is on its level's plane, with each mesh box's axis its record's.
+- Each wall's length, opening area, and net area follow its records; the totals, per-layer areas (the framing layer's fill net of framing, D082), volumes, and framing aggregates reconcile with the rows; and `has_jacks` agrees with the pieces.
+- The estimate's assembly and wall framing lines equal the assembly schedule's aggregates, with counts beside lengths, and its assumptions are the timber schedule's followed by the assembly schedule's.
+- The assembly schedule's envelope carries `CLIMATE_DETAILS_UNVERIFIED`.
+- The four wall commands impact exactly the artifacts whose payloads they change, and never `timber_schedule` (ART-003 §8.3, as measured).
 
 ## 11. Out of scope
 

@@ -1,6 +1,6 @@
 # TEST-003 — VS-02b traceability, the golden scenario's wall commands, sequences, and budgets
 
-**Status:** Approved (2026-11-23), not yet implemented. Routine items 1–8 were approved together. Judgment items 9–11 were approved as recommended and are recorded as [D090](../../product/decisions/D090-vs02b-budgets-and-named-wall-case.md). Item 12 confirmed UI-004's twelve choices as implemented, recorded in UI-004 §20 (§13).  
+**Status:** Done (2026-11-23). Implementation notes are in §17. Approved 2026-11-23: routine items 1–8 together. Judgment items 9–11 were approved as recommended and are recorded as [D090](../../product/decisions/D090-vs02b-budgets-and-named-wall-case.md). Item 12 confirmed UI-004's twelve choices as implemented, recorded in UI-004 §20 (§13).  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes. Two architecture documents change wording only, as their contract checks become rows (§5.3).  
 **Slice:** VS-02b  
 **Depends on:** `MODEL-006`, `ASM-001`, `ART-003`, and `UI-004` (all done; `main` at `9ca3301`). Merges on its own, with CI passing ([vs-02b.md](../acceptance-tests/vs-02b.md) §16).  
@@ -283,6 +283,7 @@ D063's largest case is the largest frame: 7 × 7 stations over 80' × 80', 12" j
 | D063's case, fixture definitions (gated straw bale; stud infill reported) | 10 | 402 | 803,659 | 1,047,246 | 203,959 |
 | A centered 3'-0" × 4'-0" window in every wall, fixture definitions | 48 | 668 | 838,503 | 1,123,622 | 351,984 |
 | The same, with D077's densest framing: 12" studs, 4 girts (which need 1'-6" brace legs to fit) | 48 | **1,239** | 899,300 | **1,268,294 (63%)** | 595,252 |
+| *As built in implementation (§17): a centered window in every wall, none of the fixture's openings kept* | 48 | **1,224** | 898,144 | **1,265,481 (63%)** | 588,964 |
 | Two 2'-0" × 4'-0" windows per wall, densest framing | 96 | 1,536 | 940,868 | 1,353,405 (68%) | 756,257 |
 | 26 windows 1" × 1'-0" per wall, straw bale (valid; every framed opening fits) | 1,248 | 4,992 | 1,533,764 | **2,441,533 (122%)** | **2,834,791 (142%)** |
 
@@ -439,3 +440,57 @@ Items 9–11 are approved and recorded as **[D090](../../product/decisions/D090-
 - The judgment items are recorded in D090, and item 12's outcome in UI-004 §20. The §11 documents are updated.
 - VS-02b is complete by its own acceptance criteria. The roadmap says so, and lists what remains open (opening bounds, if item 10 raises them; hosting and identity, open question 8).
 - Changed files, tests, measurements, limitations, and next steps are summarized (AGENTS.md).
+
+## 17. Implementation notes (2026-11-23)
+
+**Delivered** (test-only, plus documents; no product code changes):
+- **Matrix (items 1–3):**
+  - `docs/implementation/acceptance-tests/vs-02b-traceability.md` (new): 33 rows, 22 for the §15 criterion bullets and 11 for the contract checks. It starts from §5.4's candidates, with the new tests added. Its criterion cells were generated from the sources, so their text matches exactly.
+  - artifacts.md §10 and dependencies.md §8: the VS-02b checks are bullet lists now, with every original sentence kept (checked while editing) and DEP2b-3 corrected (§5.3). Their notes point to the matrix.
+  - `vs-02-traceability.md`: AC2-01's row is `N/A — replaced by AC2b-01` (§5.5).
+- **`test_traceability.py`:** `criteria_items` and `bullet_items` read any slice's criteria and contract bullets; `slice_matrix_rows` and `slice_problems` replace the VS-02-only versions. The VS-02 lists now end at "VS-02b reconciliation" and "VS-02b examples", and the VS-02 count guard is still 24. New: `test_every_vs02b_item_is_traced` (count guard 33) and `test_vs02b_check_rejects_reworded_missing_and_untested_rows`, which also checks that neither slice reads the other's bullets.
+- **Golden scenario (item 4):** `scenario.py` gains `wall_steps` (7f–7m, as §6.1 measured them, each detail code, path, and argument asserted), the removed-openings assertion at `grid-x-4`, and the restored openings after the undo. `accepted` passes each step's command to `check_transition`. **Regenerated record:** 26 steps and 16 revisions. Revisions 1–11 and the first 15 steps are byte-identical; the undo moves from sequence 12 to 16, with artifact fingerprints equal to revision 2's. Its `snapshot_fingerprint` changes because its parent is now revision 15, as in TEST-002.
+- **Invariants (item 5):** `check_transition` checks wall and wall framing IDs for surviving keys, and, given the command, that openings never move, appear, or disappear silently (`check_openings_transition`). `test_check_transition_catches_silent_wall_and_opening_changes` checks each rule on mutated fixtures.
+- **Sequences (item 5):** the four wall commands are drawn (§7.2), the gate is extended (§7.4), and fit rejections are recorded as `rejected (fit)`. See the findings for the draw changes that reaching every outcome needed.
+- **Budgets (items 9–11, D090):**
+  - `conftest.largest_wall_case(label)` builds the named case;
+  - `test_payload_sizes_are_within_budget` has six gated cases: the reference house and D063's largest frame, each in both families, and the named wall case in both;
+  - the time checks: `test_reference_house_preview_time` (unchanged), `test_reference_house_set_opening_preview_time`, and, on the named wall case, `test_largest_wall_case_preview_time`, `test_largest_wall_case_set_wall_assembly_preview_time`, and `test_largest_wall_case_commit_time`, which replace D063's largest-frame preview and commit;
+  - `walls.spec.ts`: UI-004's timing test is now `budgets: …`, gated at 10 s, 3 s, and 10 s. `connections.spec.ts` is unchanged.
+- **Documents:** vs-02b.md (status block, §16 row), `tests/README.md`, `backend/README.md`, D090 (implemented; numbers corrected, below) and the register, UI-004 §20 (item 12), and the roadmap.
+
+**Corrected while implementing:** the named wall case as D090 defines it has **1,224 pieces** with stud infill, and its largest payload, `mesh3d`, is 1,265,481 bytes (63%). §8.2's drafting measurement (1,239 pieces, 1,268,294 bytes) kept the fixture's 10 surviving openings, among them a door and two 5'-0" windows. D090 and §8.2 now carry both, with the reason. Nothing approved changed.
+
+**Measured** (local, on the development machine; CI values are below):
+
+*Sizes* (canonical bytes; `test_payload_sizes_are_within_budget`):
+
+| Case | `plan2d` | `mesh3d` | `timber_schedule` | `assembly_schedule` | Largest share |
+|---|---|---|---|---|---|
+| Reference house, straw bale | 132,737 | 174,958 | 173,680 | 63,191 | 67% of 256 KiB |
+| Reference house, stud infill | 150,197 | **219,188** | 173,680 | 135,983 | **84%** of 256 KiB |
+| Largest frame, straw bale | 767,318 | 951,115 | 1,135,194 | 53,558 | 57% of 2 MB |
+| Largest frame, stud infill | 803,659 | 1,047,246 | 1,135,194 | 203,959 | 57% |
+| Named wall case, stud infill | 898,144 | **1,265,481** | 1,135,239 | 588,964 | **63%** |
+| Named wall case, straw bale | 790,268 | 999,837 | 1,135,239 | 142,563 | 57% |
+
+Every estimate is under 7,000 bytes. Above half a ceiling, as D063 asks to report: the stud infill reference house's `mesh3d` (84%), the straw bale reference house's `mesh3d` and `timber_schedule` (67%, 66%), the named wall case's `mesh3d` (63%), and every case's `timber_schedule` on the largest frame (57%). None is over its ceiling.
+
+*The `ci` sequences* (`--hypothesis-show-statistics`, local): 40 passing and 19 invalid cases, **7 min 20 s** (5 min 4 s before this task). Every gated outcome is reached, and the statistics are identical whether the file runs alone or inside the full suite (see the findings). The wall commands' shares of the generated cases: `AddOpening` accepted 17.0% (rejected 5.1%), `SetOpening` accepted 39.0% (impacts 2, 3, 4: 11.9%, 17.0%, 17.0%; rejected 8.5%), `RemoveOpening` accepted 10.2% (rejected 20.3%), `SetWallAssembly` accepted 17.0% (rejected 5.1%), and `SetFrameParameters` impacts 5 in 15.3%. **`SetOpening` can impact a single artifact:** a sill move on straw bale changes the mesh, and leaves the assembly schedule bit-identical when no piece length changes in its last bit. That is exact (D056), and the gate does not require it.
+
+**Findings:**
+- **Reaching every outcome needed more than §7.2's draws.** With them alone, each of five attempts missed two to ten outcomes: 40 sequences of a few steps each cannot reach about 50 outcomes by chance, and Hypothesis builds examples by mutating earlier ones, so a choice made once per sequence (a theme, an offset) repeats across the 40 and clustered (for example 50%, 29%, 15%, and 6% over four themes). What the gate passes with:
+  - **targets from the house's state:** a targeted step takes its target from a hash of the current house's entities, with floats rounded to 1e-6, plus a drawn integer (`target_for`), over all 28 targets: §7.2's, the VS-02 ones, and "brace leg on stud infill" (on stud infill it shortens the braces; otherwise it switches to stud infill, which queues the brace edit). Houses diverge after a sequence's first steps, so the targets spread. The rounding keeps last-bit platform differences (§4) from changing a target;
+  - **a follow-up queue per sequence** (`FOLLOW_UPS`), for outcomes that need a particular house: after an accepted `RemoveOpening`, a window in the now-empty wall, an opening as wide as its wall, the removed ID again, an overlap, a sill move, and a shorter opening; after an accepted roof edit, an undo; after a switch to stud infill, shorter braces; after an accepted `SetConnectionType` or `SetMemberSection`, a joist spacing that keeps the count. Queued steps run first, in order. The queue replaces rules keyed on the last command for these cases, because a rejected step does not change `last`, so such a rule could fire forever. TEST-002's `AddSection` rule is unchanged;
+  - **draws that keep the house valid where an acceptance is wanted:** "footprint accepted" only widens (by up to 3%) and "stories accepted" only raises the heights, because a narrower bay or a lower story can fail the opening fit since v3. A new window goes into an empty wall, or, on the created house where every wall has one, a 1' × 1' window low near the start post. Small changes are drawn with a nonzero size and a sign (`_nudge`), because Hypothesis shrinks floats toward 0, which made "offset only" a no-op;
+  - two steps in three are targeted (one in two before), and sequences have 4 to 8 steps (1 to 8 before). Still 40 sequences.
+- **The derandomized run drew differently alone and inside the full suite.** Hypothesis also draws numeric literals it finds in every loaded local module (its "local constants"; for example 1.1176 m, 3'-8", from another test module), and the full suite loads 21 test modules, so the same seed produced different floats from the twelfth draw on, and `check.sh` missed an outcome that the file alone reached. `no_local_constants` (in the gate's fixture) gives the sequences an empty constant pool, by patching `hypothesis.internal.conjecture.providers._get_local_constants` and swapping its cache, both restored after the module. With it, a full-suite run and a standalone run produce identical statistics (checked). It uses a private Hypothesis API, pinned by `uv.lock`; an upgrade that removes it fails loudly at the patch.
+- **`--hypothesis-seed` is ignored under the `ci` profile,** because it is derandomized: two seeds drew identical values in a small check. So a seed check needs random generation. Run that way (`derandomize=False`, 40 examples, seeds 1–3, through the test's inner function with `no_local_constants`, then the gate's `missing_outcomes`): seed 3 reaches every outcome; seed 1 misses `SetFrameParameters: impacts 5`, and seed 2 `AddSection: rejected` and `RemoveOpening: rejected`. No seed broke an invariant. The gate is deterministic in CI, so this does not make it flaky; it says that a large change to the draw may need a targeted edit to keep the gate passing, as TEST-002 found. TEST-002 §17's seed check used `--hypothesis-seed` with the `ci` profile, so it probably repeated the derandomized run; that is not verified here.
+- **The largest frame's sizes differ between machines** (§4). CI's numbers are the gated ones, and the notes record both.
+
+**Limitations:**
+- The named wall case is a named case, not a bound (D090): openings are unbounded, so a valid house can exceed 2 MB (§8.2).
+- The time ceilings describe the in-process service and the e2e dev-server setup, not a production build (D063).
+- The outcome gate checks reach only under the derandomized `ci` profile, which is fixed by the test's source: an edit to `test_sequences.py` reshuffles the 40 sequences, and the gate then names anything lost.
+
+CI_VALUES

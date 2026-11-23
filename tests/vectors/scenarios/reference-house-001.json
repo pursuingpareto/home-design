@@ -424,6 +424,158 @@
       "artifacts": {
         "assembly_schedule": {
           "generator_version": "1",
+          "input_fingerprint": "sha256:02172140d8538759d403c5a49b00bc3756b155a4581a6e58902ecae30b3bedff",
+          "payload_fingerprint": "sha256:029b0127be47e98b8d98aa90254a4f4e77c0819285fd712835d0d791c49d8304",
+          "status": "CURRENT"
+        },
+        "mesh3d": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:128cbadf9e60652393915e9f06151faea382239dec5975302d609153098809fa",
+          "payload_fingerprint": "sha256:3b24f2a98be3a2140f5738fc4c8e471f22fe54a316be1034e71f2d897b7ee695",
+          "status": "CURRENT"
+        },
+        "plan2d": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:b2ccefcf657b499a931926329ff7747cf8d184c058d01e6c36a555ae9510ea8e",
+          "payload_fingerprint": "sha256:a084be87b57afd3ae958a52b2d12339874476fcebcb7dfd7884664daf1292091",
+          "status": "CURRENT"
+        },
+        "preliminary_estimate": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:ac2ea1fad6f064c1021bad96be50a9cda7cfd647142c867846300fa4db8db118",
+          "payload_fingerprint": "sha256:c403495c389ae20a9ce9b5311f90d26146cedd4d8acd69fab1a4961b35ab6fe4",
+          "status": "CURRENT"
+        },
+        "timber_schedule": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:a11ea274989995903698a6b06266eb215e45a579ccda3e0e8d9c2111262a5318",
+          "payload_fingerprint": "sha256:e7bf213a3149bfcc4739686c26b268fa742573571e2854ae0773fa36cf6147eb",
+          "status": "CURRENT"
+        }
+      },
+      "command_type": "AddOpening",
+      "revision_id": "d2357bc4-c84a-5f3a-a83b-0aa4fbf9d17f",
+      "sequence": 12,
+      "snapshot_fingerprint": "sha256:7a9d0c1ec95220d32a2722e7f406a9b98c05e01841688cbe084c5707aed31b69"
+    },
+    {
+      "artifacts": {
+        "assembly_schedule": {
+          "generator_version": "1",
+          "input_fingerprint": "sha256:b870854f90a70459f6cac7e52be46f5f49c81c59bea09b76dd018c1620845f24",
+          "payload_fingerprint": "sha256:5a1c6ab1a76e7ae20c1670fd5565f2a3e097b32ddb554f3ba1a413965c970a34",
+          "status": "CURRENT"
+        },
+        "mesh3d": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:f4c2c07c4037c9058f351da142f61c3a9d1af34301eb83de4d5c304fac550acb",
+          "payload_fingerprint": "sha256:500525aea6019b2d8f70e601127bcfbe54b9d7144c58b661c6a311d28fef2077",
+          "status": "CURRENT"
+        },
+        "plan2d": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:63341c6d7e5e846d2270d396886904b223d2182a6de3a9c95a29052f7cc6179a",
+          "payload_fingerprint": "sha256:5e644cdc0405d5fa82f36bb4d0f5600849265e267034b9a5601bf457e8b08539",
+          "status": "CURRENT"
+        },
+        "preliminary_estimate": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:2c14135cff2ce5db0bd3408e79a91d7409030ffd2599a146f6817d06a83e0258",
+          "payload_fingerprint": "sha256:f6a3f78ceef1faba98def556d5263b28b1ffdf0e71dda78b5f1373f1fd2236b8",
+          "status": "CURRENT"
+        },
+        "timber_schedule": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:a11ea274989995903698a6b06266eb215e45a579ccda3e0e8d9c2111262a5318",
+          "payload_fingerprint": "sha256:e7bf213a3149bfcc4739686c26b268fa742573571e2854ae0773fa36cf6147eb",
+          "status": "CURRENT"
+        }
+      },
+      "command_type": "SetOpening",
+      "revision_id": "18ae94d9-33dc-55d7-80a4-f71061125412",
+      "sequence": 13,
+      "snapshot_fingerprint": "sha256:53912eadefc48ddeda4c64acc0e7b038ae2e61295fff25f0bd2ea5bea7dc251e"
+    },
+    {
+      "artifacts": {
+        "assembly_schedule": {
+          "generator_version": "1",
+          "input_fingerprint": "sha256:3c678d6a60b34a1ec0348da1894201c307b310036f63c6fd628223a5cd8e9ddb",
+          "payload_fingerprint": "sha256:416afd2f0db9e5630a358270485ed7f37bc8d7c38edd20b372202055d456fe3c",
+          "status": "CURRENT"
+        },
+        "mesh3d": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:0fe1b9af5ab3ddabe83c96b9ae5d499e930510a0d37e4952cbbad7e526356a60",
+          "payload_fingerprint": "sha256:cc937edb3d43bd1e86644b452def2a03775896af152df49b7023dca02245fc3b",
+          "status": "CURRENT"
+        },
+        "plan2d": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:28c33c3629793f1a7f437d09a5b4564efa9ab9b9ea1a1d0bd7e37fd4ff498706",
+          "payload_fingerprint": "sha256:16723d046dcac3924d102cc89051f3ab84ba81831ca93f3bf527abd2255a9d3c",
+          "status": "CURRENT"
+        },
+        "preliminary_estimate": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:31736bf61694e85defa553ccc82286e61812ab31efa71969d5ae15db8ae272f4",
+          "payload_fingerprint": "sha256:2368d78d4bb920343704d75b00ef9bff63d135519b09667be01e6907e8f79e7d",
+          "status": "CURRENT"
+        },
+        "timber_schedule": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:a11ea274989995903698a6b06266eb215e45a579ccda3e0e8d9c2111262a5318",
+          "payload_fingerprint": "sha256:e7bf213a3149bfcc4739686c26b268fa742573571e2854ae0773fa36cf6147eb",
+          "status": "CURRENT"
+        }
+      },
+      "command_type": "SetWallAssembly",
+      "revision_id": "ddbf9856-fedf-5944-900b-a1985b312c61",
+      "sequence": 14,
+      "snapshot_fingerprint": "sha256:8a03be5cc2ffac26397cb23e7d7127a9aef56bd8cdb01719148a2f9f7b398c28"
+    },
+    {
+      "artifacts": {
+        "assembly_schedule": {
+          "generator_version": "1",
+          "input_fingerprint": "sha256:d2a423c7bc76caa429892d36cc110f835f2ec85cad9e8c2569c90c969ba8d754",
+          "payload_fingerprint": "sha256:0051d362098492b9c63bad845d4ede44cc83a0a1aa96d53e58e6aa89afa6ed24",
+          "status": "CURRENT"
+        },
+        "mesh3d": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:50686a833423a482552478e2ed00377f78aab9aa2be83afbd97043259de73489",
+          "payload_fingerprint": "sha256:7c8e14e76170a29a9545dd460ef62c59d5e83340b8fc4ca88ccdd472fc02aab1",
+          "status": "CURRENT"
+        },
+        "plan2d": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:e95aa37c8005b1758cfbe250e6fc036234e09076286f1270e985dee17ed53102",
+          "payload_fingerprint": "sha256:b4be0620fe794e967fb6fc4929fcbab1b75d0611812dd14658362d870eb01950",
+          "status": "CURRENT"
+        },
+        "preliminary_estimate": {
+          "generator_version": "3",
+          "input_fingerprint": "sha256:81deb125b94c88223a0970aa1ffff09f9a3513bdac131ce7c5f187e5f6b6bed2",
+          "payload_fingerprint": "sha256:e52c7553c920d357eb5f8a9aefae773a7bfd85335a28e6ca2e353867ca272e46",
+          "status": "CURRENT"
+        },
+        "timber_schedule": {
+          "generator_version": "2",
+          "input_fingerprint": "sha256:a11ea274989995903698a6b06266eb215e45a579ccda3e0e8d9c2111262a5318",
+          "payload_fingerprint": "sha256:e7bf213a3149bfcc4739686c26b268fa742573571e2854ae0773fa36cf6147eb",
+          "status": "CURRENT"
+        }
+      },
+      "command_type": "RemoveOpening",
+      "revision_id": "5b85bdac-d4b1-567c-8d24-4c899095fdda",
+      "sequence": 15,
+      "snapshot_fingerprint": "sha256:65ff4f3bf6c7e9d62bc02cc3a1b89d84087477ccd5c1a3dbf60c9a17fd0f3d9d"
+    },
+    {
+      "artifacts": {
+        "assembly_schedule": {
+          "generator_version": "1",
           "input_fingerprint": "sha256:805de27fa7efcb8ce6861252fc35b3a0ccabef79bb7e2b22c049fb1c3c79030d",
           "payload_fingerprint": "sha256:c713edac586154268d5cb771fccde304eadfe36676ff9e6cda2deffdb2bb3445",
           "status": "CURRENT"
@@ -455,8 +607,8 @@
       },
       "command_type": "UndoToRevision",
       "revision_id": "63ba73f4-7973-58aa-8c36-bfd9bf4a5f7f",
-      "sequence": 12,
-      "snapshot_fingerprint": "sha256:781c3e3acc78f6ccc657ede3251c6f46ca193b0f7a4a37cd317b04ca3f7bf25a"
+      "sequence": 16,
+      "snapshot_fingerprint": "sha256:dae546ac996f48777ce2dce1a3d12569358a09272195f04a3234b0ddc9dcb514"
     }
   ],
   "steps": [
@@ -604,6 +756,78 @@
       "replayed": false,
       "status": 422,
       "step": "frame-purlins-minus-1"
+    },
+    {
+      "code": null,
+      "impacted_artifacts": [
+        "assembly_schedule",
+        "mesh3d",
+        "plan2d",
+        "preliminary_estimate"
+      ],
+      "replayed": false,
+      "status": 201,
+      "step": "add-window-near-brace"
+    },
+    {
+      "code": "UNSUPPORTED_CONFIGURATION",
+      "replayed": false,
+      "status": 422,
+      "step": "assembly-stud-infill-crosses-brace"
+    },
+    {
+      "code": null,
+      "impacted_artifacts": [
+        "assembly_schedule",
+        "mesh3d",
+        "plan2d",
+        "preliminary_estimate"
+      ],
+      "replayed": false,
+      "status": 201,
+      "step": "center-window"
+    },
+    {
+      "code": null,
+      "impacted_artifacts": [
+        "assembly_schedule",
+        "mesh3d",
+        "plan2d",
+        "preliminary_estimate"
+      ],
+      "replayed": false,
+      "status": 201,
+      "step": "assembly-stud-infill"
+    },
+    {
+      "code": "UNSUPPORTED_CONFIGURATION",
+      "replayed": false,
+      "status": 422,
+      "step": "window-level-1-8ft"
+    },
+    {
+      "code": "UNSUPPORTED_CONFIGURATION",
+      "replayed": false,
+      "status": 422,
+      "step": "overlapping-window"
+    },
+    {
+      "code": null,
+      "impacted_artifacts": [
+        "assembly_schedule",
+        "mesh3d",
+        "plan2d",
+        "preliminary_estimate"
+      ],
+      "replayed": false,
+      "status": 201,
+      "step": "remove-north-window"
+    },
+    {
+      "code": "VALIDATION_FAILED",
+      "replayed": false,
+      "status": 422,
+      "step": "remove-north-window-again"
     },
     {
       "code": null,

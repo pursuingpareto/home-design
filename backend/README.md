@@ -65,11 +65,11 @@ uv run python -m homedesign.timber.fixture        # regenerate the Reference Hou
 uv run python -m homedesign.api.ui_fixtures        # regenerate the frontend's captured Reference House 001 fixtures
 uv run python tests/integration/golden.py          # regenerate the golden scenario record (review the diff; TEST-001 §6)
 HYPOTHESIS_PROFILE=thorough uv run pytest tests/integration/test_sequences.py   # 500 random command sequences instead of 40
-uv run pytest tests/integration/test_sequences.py --hypothesis-show-statistics   # what the 40 `ci` sequences reach (TEST-002 §7)
-uv run pytest tests/test_budgets.py                # payload size and time budgets; prints each measurement (TEST-002 §8, D063)
+uv run pytest tests/integration/test_sequences.py --hypothesis-show-statistics   # what the 40 `ci` sequences reach (TEST-002 §7, TEST-003 §7)
+uv run pytest tests/test_budgets.py                # payload size and time budgets; prints each measurement (D063, D090)
 ```
 
-The golden scenario (`tests/integration/scenario.py`) runs every command over HTTP, `SetFrameParameters` and `SetConnectionType` included, with a rejection of each (TEST-001 §5, TEST-002 §6). Under the default `ci` profile, `test_sequences.py` also gates what its 40 sequences reach: every command accepted, every command with out-of-bounds draws rejected, and the narrow impacts of TEST-002 §7. A change to the draw, or to the test function's source (it seeds the derandomized run), can change what they reach; the gate then names what is missing.
+The golden scenario (`tests/integration/scenario.py`) runs every command over HTTP, `SetFrameParameters`, `SetConnectionType`, and the four wall commands included, with a rejection of each (TEST-001 §5, TEST-002 §6, TEST-003 §6). `check_transition` also checks, at every accepted step, that walls and wall framing keep their IDs and that no opening moves, appears, or disappears silently (TEST-003 §7.3). Under the default `ci` profile, `test_sequences.py` also gates what its 40 sequences reach: every command accepted, every command with out-of-bounds draws rejected, the narrow impacts of TEST-002 §7 and TEST-003 §7.4, and fit rejections of both opening commands and of a frame command. The sequences draw without Hypothesis's local constants (literals it finds in loaded modules), so the file draws the same alone as inside the full suite (TEST-003 §17); `--hypothesis-seed` has no effect under the derandomized `ci` profile. A change to the draw, or to the test function's source (it seeds the derandomized run), can change what they reach; the gate then names what is missing.
 
 ## Using the library
 
@@ -104,7 +104,7 @@ else:
 | `src/homedesign/api/` | FastAPI app factory, routes, strict bodies, error envelope, request IDs, settings, development authentication (API-001) |
 | `src/homedesign/project/` | `ProjectService` (create, preview, commit, reads), in-memory and PostgreSQL stores, preview tokens, migrations |
 | `src/homedesign/timber/` | Rule registry, `vs02-frame-1` (`generate`), shared member and connection conformance, the fixture builder (`fixture.py`), and the `timber_schedule` builder (EST-001) |
-| `tests/integration/` | Reference-house scenario, whole-house invariants, golden record, and property-based sequences with their outcome gate (TEST-001, TEST-002) |
-| `tests/test_traceability.py` | The VS-01 and VS-02 traceability matrices are complete and match their sources (TEST-001 §4, TEST-002 §5) |
-| `tests/test_budgets.py` | Payload size and time budgets (TEST-002 §8, D063) |
+| `tests/integration/` | Reference-house scenario, whole-house invariants, golden record, and property-based sequences with their outcome gate (TEST-001, TEST-002, TEST-003) |
+| `tests/test_traceability.py` | The VS-01, VS-02, and VS-02b traceability matrices are complete and match their sources (TEST-001 §4, TEST-002 §5, TEST-003 §5) |
+| `tests/test_budgets.py` | Payload size and time budgets, including the stud infill house and the named largest wall case (D063, D090) |
 | `tests/` | Fixture, mutation table, generator, JCS and inventory vectors, property tests, catalog-doc sync |

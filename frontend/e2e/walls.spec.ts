@@ -251,13 +251,20 @@ test.describe("9. UI-004 end to end", () => {
   });
 });
 
-// UI-004 §13: timings for TEST-003, reported and not gated (D063's browser ceilings stay in connections.spec.ts).
-// Each is the median of 5 runs in the e2e setup (the Vite dev server, unbundled).
+// D090 (TEST-003 §8.3): UI-004's three timings, gated at D063's browser ceilings (10 s to render, 3 s to a dialog).
+// Each is the median of 5 runs in the e2e setup (the Vite dev server, unbundled; not a production build), with no
+// retries. They catch order-of-magnitude regressions; they are not user-facing targets. If a CI median passes half
+// its ceiling, report it to the product owner rather than raising the ceiling (D063). D063's own case stays in
+// connections.spec.ts.
 const RUNS = 5;
 const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)] ?? Number.NaN;
-const reportTiming = (what: string, times: number[]) => console.log(`[UI-004 timing] ${what}: median ${median(times)} ms of ${times.length} (${times.join(", ")} ms)`);
+const budget = (what: string, times: number[], ceilingMs: number) => {
+  const m = median(times);
+  console.log(`[budget] ${what}: median ${m} ms of ${times.length} (${times.join(", ")} ms), ${Math.round((100 * m) / ceilingMs)}% of the ${ceilingMs / 1000} s ceiling`);
+  expect(m, `${what}: median ${m} ms is over the ${ceilingMs} ms budget (D090)`).toBeLessThanOrEqual(ceilingMs);
+};
 
-test("timings (reported): the created house's views and schedules, the SetWallAssembly dialog, and the stud infill house's views", async ({ page }) => {
+test("budgets: the created house's views and schedules within 10 s, the SetWallAssembly dialog within 3 s, and the stud infill house's views within 10 s", async ({ page }) => {
   test.setTimeout(240_000);
   await page.goto("/#/projects");
   await page.getByLabel("Development token").fill(TOKENS.a);
@@ -302,7 +309,7 @@ test("timings (reported): the created house's views and schedules, the SetWallAs
     studs.push(Date.now() - start);
   }
 
-  reportTiming("browser: Create pressed until 2D, 3D, the timber schedule, and the assembly schedule are shown", created);
-  reportTiming("browser: Preview pressed until the SetWallAssembly dialog shows", previewed);
-  reportTiming("browser: the stud infill house reloaded until both views show (largest mesh, 219,188 bytes)", studs);
+  budget("browser: Create pressed until 2D, 3D, the timber schedule, and the assembly schedule are shown", created, 10_000);
+  budget("browser: Preview pressed until the SetWallAssembly dialog shows", previewed, 3_000);
+  budget("browser: the stud infill house reloaded until both views show (largest mesh, 219,188 bytes)", studs, 10_000);
 });

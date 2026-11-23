@@ -1,13 +1,16 @@
-"""TEST-002 §8 and D063: payload size and time budgets.
+"""TEST-002 §8, TEST-003 §8, D063, and D090: payload size and time budgets.
 
-**Sizes** (§8.1): each payload's RFC 8785 canonical bytes are at most 256 KiB for Reference House 001 (v3,
-straw bale) and at most 2,000,000 bytes for the largest supported case (TIMBER-002 §5.3). ART-003 §9.4 also
-reports both cases with stud infill, without gating them (TEST-003 decides). Canonical bytes are
-deterministic and independent of the server's JSON settings and of compression, so the check has no tolerance.
+**Sizes:** each payload's RFC 8785 canonical bytes are at most 256 KiB for Reference House 001 v3 and at most
+2,000,000 bytes for the largest cases, each with both wall assemblies (D090: the stud infill house is gated):
+D063's largest frame (TIMBER-002 §5.3) and D090's named largest case for walls (`conftest.largest_wall_case`). The
+named wall case is a named case, not a bound: openings have no bounds beyond the fit (D077). Canonical bytes do
+not depend on the server's JSON settings or on compression, so the check has no tolerance. The largest frame's
+bytes differ slightly between machines (TEST-003 §4); CI's are the gated ones.
 
-**Times** (§8.2): through the service, in-process, with the in-memory store, the median of 5 runs and no
-retries: a reference-house preview within 1 s, a largest-case preview within 5 s, and a largest-case commit
-that derives all five artifacts within 5 s. The browser ceilings are in `frontend/e2e/connections.spec.ts`.
+**Times:** through the service, in-process, with the in-memory store, the median of 5 runs and no retries: a
+reference-house width preview within 1 s and `SetOpening` preview within 1 s; on the named wall case, a width
+preview, a `SetWallAssembly` preview, and a commit that derives all five artifacts, each within 5 s. The browser
+ceilings are in `frontend/e2e/connections.spec.ts` (D063) and `frontend/e2e/walls.spec.ts` (D090).
 
 The ceilings catch regressions; they are not targets to tune toward. If a CI measurement exceeds half its
 ceiling, report it to the product owner rather than raising the ceiling (D063). Every check prints its
@@ -24,7 +27,7 @@ from typing import Any, Callable
 import pytest
 
 from api_support import FULL_PRICES, book
-from conftest import FIXTURE, STUD_INFILL, largest_doc, with_assembly
+from conftest import FIXTURE, STUD_INFILL, largest_doc, largest_wall_case, with_assembly
 from homedesign.assemblies.schedule import build_assembly_schedule, select_assembly_schedule
 from homedesign.estimating import build_estimate
 from homedesign.geometry import build_mesh3d, build_plan2d, select_mesh3d, select_plan2d
@@ -69,34 +72,32 @@ def payload_sizes(doc: dict[str, Any]) -> dict[str, int]:
     return {kind: len(canonical_json(payload)) for kind, payload in payloads.items()}
 
 
+SIZE_CASES = [
+    ("Reference House 001 v3", lambda: FIXTURE, REFERENCE_HOUSE_CEILING),
+    ("Reference House 001 v3, stud infill", lambda: STUD_INFILL, REFERENCE_HOUSE_CEILING),
+    ("largest supported frame", largest_doc, LARGEST_CASE_CEILING),
+    ("largest supported frame, stud infill", lambda: with_assembly(largest_doc()), LARGEST_CASE_CEILING),
+    ("named largest wall case, stud infill", largest_wall_case, LARGEST_CASE_CEILING),
+    ("named largest wall case, straw bale", lambda: largest_wall_case("straw-bale"), LARGEST_CASE_CEILING),
+]
+
+
 @pytest.mark.parametrize(
-    "case,doc,ceiling",
-    [("Reference House 001 v3", lambda: FIXTURE, REFERENCE_HOUSE_CEILING), ("largest supported case", largest_doc, LARGEST_CASE_CEILING)],
-    ids=["reference-house", "largest-case"],
+    "case,doc,ceiling", SIZE_CASES,
+    ids=["reference-house", "reference-house-stud-infill", "largest-frame", "largest-frame-stud-infill", "wall-case", "wall-case-straw-bale"],
 )
 def test_payload_sizes_are_within_budget(case, doc, ceiling, capsys):
     sizes = payload_sizes(doc())
     _print_sizes(capsys, case, sizes, ceiling)
     over = {kind: size for kind, size in sizes.items() if size > ceiling}
-    assert not over, f"{case}: payloads over the {ceiling:,}-byte budget (TEST-002 §8.1): {over}"
+    assert not over, f"{case}: payloads over the {ceiling:,}-byte budget (D063, D090): {over}"
 
 
 def _print_sizes(capsys, case: str, sizes: dict[str, int], ceiling: int) -> None:
     with capsys.disabled():
         print()
         for kind, size in sizes.items():
-            print(f"[TEST-002 budget] {case}: {kind} = {size:,} canonical bytes ({size / ceiling:.0%} of {ceiling:,})")
-
-
-@pytest.mark.parametrize(
-    "case,doc,ceiling",
-    [("Reference House 001 v3, stud infill", lambda: STUD_INFILL, REFERENCE_HOUSE_CEILING),
-     ("largest supported case, stud infill", lambda: with_assembly(largest_doc()), LARGEST_CASE_CEILING)],
-    ids=["reference-house-stud-infill", "largest-case-stud-infill"],
-)
-def test_stud_infill_payload_sizes_are_reported(case, doc, ceiling, capsys):
-    """ART-003 §9.4: measured and reported, not gated; TEST-003 decides whether these become budget cases (D086)."""
-    _print_sizes(capsys, case, payload_sizes(doc()), ceiling)
+            print(f"[budget] {case}: {kind} = {size:,} canonical bytes ({size / ceiling:.0%} of {ceiling:,})")
 
 
 # --- time (§8.2) ------------------------------------------------------------------------------
@@ -117,7 +118,7 @@ def _median_seconds(run: Callable[[int], Any]) -> tuple[float, list[float]]:
 def _report(capsys, what: str, ceiling: float, median: float, times: list[float]) -> None:
     with capsys.disabled():
         runs = ", ".join(f"{t * 1000:.0f}" for t in times)
-        print(f"\n[TEST-002 budget] {what}: median {median * 1000:.0f} ms of {RUNS} ({runs} ms), "
+        print(f"\n[budget] {what}: median {median * 1000:.0f} ms of {RUNS} ({runs} ms), "
               f"{median / ceiling:.0%} of the {ceiling:g} s ceiling")
     assert median <= ceiling, f"{what}: median {median:.3f} s is over the {ceiling:g} s budget (TEST-002 §8.2, D063)"
 
@@ -128,10 +129,10 @@ def _width_edit(svc: ProjectService, pid: str) -> dict[str, Any]:
     return envelope(svc, pid, "SetFootprintDimensions", {"width_m": footprint.width_m - FT, "depth_m": footprint.depth_m})
 
 
-def _seeded_largest_case(svc: ProjectService) -> str:
-    """A project whose head is the largest supported case, with a complete price book and its five
-    artifacts derived, so a preview or commit starts from stored payloads as in use."""
-    doc = Snapshot.model_validate(largest_doc()).model_dump(mode="json")
+def _seeded(svc: ProjectService, source: dict[str, Any]) -> str:
+    """A project whose head is ``source`` (a large case), with a complete price book and its five artifacts
+    derived, so a preview or commit starts from stored payloads as in use."""
+    doc = Snapshot.model_validate(source).model_dump(mode="json")
     doc["project_id"], doc["revision_id"] = str(uuid.uuid4()), str(uuid.uuid4())
     snapshot = Snapshot.model_validate(doc)
     with svc.store.transaction() as tx:
@@ -152,19 +153,46 @@ def test_reference_house_preview_time(capsys):
     _report(capsys, "preview, Reference House 001 v3, width edit", 1.0, median, times)
 
 
-def test_largest_case_preview_time(capsys):
+def test_reference_house_set_opening_preview_time(capsys):
+    """D090: the routine edit a homeowner makes most, one opening 1" wider, previewed on the reference house."""
     svc = ProjectService(MemoryStore(), token_key=KEY)
-    pid = _seeded_largest_case(svc)
+    pid = create(svc).project_id
+    opening = sorted((e for e in head(svc, pid).entities if e.kind == "Opening"), key=lambda o: o.id)[0]
+    args = {"opening_id": opening.id, "width_m": opening.width_m + 0.0254, "height_m": opening.height_m, "sill_height_m": opening.sill_height_m, "offset_m": opening.offset_m}
+    command = envelope(svc, pid, "SetOpening", args)
+    assert len(svc.preview(pid, command, actor_id=ACTOR, now=at(1)).impacted_artifacts) == 4  # warm-up, not timed
+    median, times = _median_seconds(lambda i: svc.preview(pid, command, actor_id=ACTOR, now=at(2 + i)))
+    _report(capsys, "preview, Reference House 001 v3, SetOpening", 1.0, median, times)
+
+
+def test_largest_wall_case_preview_time(capsys):
+    """D090: the named wall case replaces D063's largest frame for the time checks."""
+    svc = ProjectService(MemoryStore(), token_key=KEY)
+    pid = _seeded(svc, largest_wall_case())
     command = _width_edit(svc, pid)
     assert len(svc.preview(pid, command, actor_id=ACTOR, now=at(1)).impacted_artifacts) == 5  # warm-up, not timed
     median, times = _median_seconds(lambda i: svc.preview(pid, command, actor_id=ACTOR, now=at(2 + i)))
-    _report(capsys, "preview, largest supported case, width edit", 5.0, median, times)
+    _report(capsys, "preview, named largest wall case, width edit", 5.0, median, times)
 
 
-def test_largest_case_commit_time(capsys):
-    """The commit and the derivation of all five artifacts for the new revision (dependencies.md §6)."""
+def test_largest_wall_case_set_wall_assembly_preview_time(capsys):
+    """D090: switching the named wall case to straw bale replaces every one of its stud infill pieces."""
     svc = ProjectService(MemoryStore(), token_key=KEY)
-    pids = [_seeded_largest_case(svc) for _ in range(RUNS)]  # a commit is not repeatable, so one project per run
+    pid = _seeded(svc, largest_wall_case())
+    snapshot = head(svc, pid)
+    straw_bale = next(e.id for e in snapshot.entities if e.kind == "AssemblyDefinition" and e.label == "straw-bale")
+    command = envelope(svc, pid, "SetWallAssembly", {"assembly_definition_id": straw_bale})
+    assert len(svc.preview(pid, command, actor_id=ACTOR, now=at(1)).impacted_artifacts) == 4  # warm-up, not timed
+    median, times = _median_seconds(lambda i: svc.preview(pid, command, actor_id=ACTOR, now=at(2 + i)))
+    _report(capsys, "preview, named largest wall case, SetWallAssembly to straw bale", 5.0, median, times)
+
+
+def test_largest_wall_case_commit_time(capsys):
+    """The commit and the derivation of all five artifacts for the new revision (dependencies.md §6), on the
+    named wall case (D090)."""
+    svc = ProjectService(MemoryStore(), token_key=KEY)
+    doc = largest_wall_case()
+    pids = [_seeded(svc, doc) for _ in range(RUNS)]  # a commit is not repeatable, so one project per run
     previewed = []
     for pid in pids:
         command = _width_edit(svc, pid)
@@ -176,4 +204,4 @@ def test_largest_case_commit_time(capsys):
         assert result.http_status == 201 and set(result.artifact_statuses.values()) == {"CURRENT"}, result
 
     median, times = _median_seconds(run)
-    _report(capsys, "commit with all five artifacts derived, largest supported case, width edit", 5.0, median, times)
+    _report(capsys, "commit with all five artifacts derived, named largest wall case, width edit", 5.0, median, times)

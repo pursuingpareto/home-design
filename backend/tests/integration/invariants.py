@@ -338,12 +338,16 @@ def check_artifact_connections(view: RevisionView, plan, mesh, schedule) -> None
     assert [t["connection_type"] for t in schedule["connection_catalog"]["types"]] == sorted({t for _, t in counts})
 
 
-def check_transition(before: RevisionView, after: RevisionView, *, preserve_ids: bool = True) -> None:
-    """Surviving generation keys keep their member and connection IDs (building-model §9.4, D042;
-    CONN-001 §5.2), and a surviving connection keeps its members. Not for undo (D044)."""
+def check_transition(before: RevisionView, after: RevisionView, *, preserve_ids: bool = True, command: dict[str, Any] | None = None) -> None:
+    """Surviving generation keys keep their member, connection, wall, and wall framing IDs (building-model §9.4,
+    D042; CONN-001 §5.2; ASM-001 §6.2), and a surviving connection keeps its members. Not for undo (D044).
+
+    With the step's `command`, openings never move silently (TEST-003 §7.3, D069, principle 3): an opening in both
+    revisions is unchanged unless the command is a `SetOpening` on it; one that disappears is the target of a
+    `RemoveOpening` or was on a wall the step removed; only an `AddOpening` adds one, and only one."""
     if not preserve_ids:
         return
-    for kind in ("TimberMember", "Connection"):
+    for kind in ("TimberMember", "Connection", "Wall", "WallFramingPiece"):
         old = {m["generation_key"]: m["id"] for m in before.entities(kind)}
         new = {m["generation_key"]: m["id"] for m in after.entities(kind)}
         changed = {k for k in old.keys() & new.keys() if old[k] != new[k]}
@@ -351,6 +355,27 @@ def check_transition(before: RevisionView, after: RevisionView, *, preserve_ids:
     old_members = {c["generation_key"]: c["member_ids"] for c in before.entities("Connection")}
     for c in after.entities("Connection"):
         assert old_members.get(c["generation_key"], c["member_ids"]) == c["member_ids"], c["generation_key"]
+    if command is not None:
+        check_openings_transition(before, after, command)
+
+
+def check_openings_transition(before: RevisionView, after: RevisionView, command: dict[str, Any]) -> None:
+    type_, target = command["type"], command["args"].get("opening_id")
+    old = {o["id"]: o for o in before.entities("Opening")}
+    new = {o["id"]: o for o in after.entities("Opening")}
+    removed_walls = {w["id"] for w in before.entities("Wall")} - {w["id"] for w in after.entities("Wall")}
+    for opening_id, opening in old.items():
+        if opening_id in new:
+            if type_ == "SetOpening" and opening_id == target:
+                assert (new[opening_id]["wall_id"], new[opening_id]["opening_kind"]) == (opening["wall_id"], opening["opening_kind"]), opening_id
+            else:
+                assert new[opening_id] == opening, f"opening {opening_id} changed silently under {type_}"
+        else:
+            assert (type_ == "RemoveOpening" and opening_id == target) or opening["wall_id"] in removed_walls, (
+                f"opening {opening_id} disappeared under {type_}, and its wall was not removed"
+            )
+    added = new.keys() - old.keys()
+    assert len(added) == (1 if type_ == "AddOpening" else 0), f"{type_} added openings {sorted(added)}"
 
 
 @dataclass(frozen=True)

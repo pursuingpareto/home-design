@@ -1,4 +1,5 @@
-"""TEST-001 §4 and TEST-002 §5: the VS-01 and VS-02 traceability matrices are complete, and every test they name exists."""
+"""TEST-001 §4, TEST-002 §5, and TEST-003 §5: the VS-01, VS-02, and VS-02b traceability matrices are complete, and every
+test they name exists."""
 
 from __future__ import annotations
 
@@ -11,6 +12,7 @@ from conftest import REPO_ROOT
 
 MATRIX = REPO_ROOT / "docs" / "implementation" / "acceptance-tests" / "vs-01-traceability.md"
 VS02_MATRIX = REPO_ROOT / "docs" / "implementation" / "acceptance-tests" / "vs-02-traceability.md"
+VS02B_MATRIX = REPO_ROOT / "docs" / "implementation" / "acceptance-tests" / "vs-02b-traceability.md"
 DOCS = REPO_ROOT / "docs"
 
 
@@ -127,14 +129,13 @@ def normalize(text: str) -> str:
     return " ".join(text.replace("**", "").split())
 
 
-def vs02_source_items() -> dict[str, str]:
-    """ID -> text for the three VS-02 sources: vs-02.md §12.1 (one item per bullet, or per criterion without
-    bullets), artifacts.md §10's "Version 2 reconciliation" bullets, and dependencies.md §8's "VS-02 examples"."""
+def criteria_items(path: str, start: str, end: str, prefix: str) -> dict[str, str]:
+    """ID -> raw text for one slice's criteria: one item per bullet, or per criterion without bullets (D063)."""
     items: dict[str, str] = {}
     criteria: dict[str, tuple[str, list[str]]] = {}
     current = None
-    for line in _section(DOCS / "implementation/acceptance-tests/vs-02.md", "### 12.1", "### 12.2").splitlines():
-        if match := re.match(r"^- \*\*(AC2-\d\d): (.+)$", line):
+    for line in _section(DOCS / path, start, end).splitlines():
+        if match := re.match(rf"^- \*\*({re.escape(prefix)}\d\d): (.+)$", line):
             current = match.group(1)
             assert current not in criteria, f"duplicate criterion {current}"
             criteria[current] = ("**" + match.group(2), [])
@@ -148,26 +149,54 @@ def vs02_source_items() -> dict[str, str]:
             items.update({f"{criterion}.{k}": bullet for k, bullet in enumerate(bullets, 1)})
         else:
             items[criterion] = text
-    for prefix, path, start, end in (
-        ("ART2", "architecture/artifacts.md", "Version 2 reconciliation", "\n## "),
-        ("DEP2", "architecture/dependencies.md", "VS-02 examples", "\n## "),
-    ):
-        bullets = re.findall(r"^- (.+)$", _section(DOCS / path, start, end), re.M)
-        items.update({f"{prefix}-{k}": bullet for k, bullet in enumerate(bullets, 1)})
+    return items
+
+
+def bullet_items(prefix: str, path: str, start: str, end: str) -> dict[str, str]:
+    """ID -> raw text for a contract-check bullet list, in order (`ART2-1`, ...)."""
+    bullets = re.findall(r"^- (.+)$", _section(DOCS / path, start, end), re.M)
+    return {f"{prefix}-{k}": bullet for k, bullet in enumerate(bullets, 1)}
+
+
+def vs02_source_items() -> dict[str, str]:
+    """ID -> text for the three VS-02 sources: vs-02.md §12.1, artifacts.md §10's "Version 2 reconciliation" bullets,
+    and dependencies.md §8's "VS-02 examples". Each list ends where its VS-02b list begins (TEST-003 §5.3)."""
+    items = criteria_items("implementation/acceptance-tests/vs-02.md", "### 12.1", "### 12.2", "AC2-")
+    items |= bullet_items("ART2", "architecture/artifacts.md", "Version 2 reconciliation", "VS-02b reconciliation")
+    items |= bullet_items("DEP2", "architecture/dependencies.md", "VS-02 examples", "VS-02b examples")
     return {item: normalize(text) for item, text in items.items()}
 
 
-def vs02_matrix_rows(text: str) -> dict[str, tuple[str, str]]:
+def vs02b_source_items() -> dict[str, str]:
+    """ID -> text for the three VS-02b sources (TEST-003 §5): vs-02b.md §15, artifacts.md §10's "VS-02b
+    reconciliation" bullets, and dependencies.md §8's "VS-02b examples"."""
+    items = criteria_items("implementation/acceptance-tests/vs-02b.md", "## 15.", "## 16.", "AC2b-")
+    items |= bullet_items("ART2b", "architecture/artifacts.md", "VS-02b reconciliation", "\n## ")
+    items |= bullet_items("DEP2b", "architecture/dependencies.md", "VS-02b examples", "\n## ")
+    return {item: normalize(text) for item, text in items.items()}
+
+
+ROW_PATTERNS = {
+    "vs02": r"(?:AC2-\d\d(?:\.\d+)?)|(?:ART2|DEP2)-\d+",
+    "vs02b": r"(?:AC2b-\d\d(?:\.\d+)?)|(?:ART2b|DEP2b)-\d+",
+}
+
+
+def slice_matrix_rows(text: str, ids: str) -> dict[str, tuple[str, str]]:
     rows: dict[str, tuple[str, str]] = {}
     for line in text.splitlines():
-        match = re.match(r"^\| ((?:AC2-\d\d(?:\.\d+)?)|(?:ART2|DEP2)-\d+) \| ([^|]+) \| (.+) \|$", line)
+        match = re.match(rf"^\| ({ids}) \| ([^|]+) \| (.+) \|$", line)
         if match:
             assert match.group(1) not in rows, f"duplicate row {match.group(1)}"
             rows[match.group(1)] = (match.group(2), match.group(3))
     return rows
 
 
-def vs02_problems(rows: dict[str, tuple[str, str]], sources: dict[str, str]) -> list[str]:
+def vs02_matrix_rows(text: str) -> dict[str, tuple[str, str]]:
+    return slice_matrix_rows(text, ROW_PATTERNS["vs02"])
+
+
+def slice_problems(rows: dict[str, tuple[str, str]], sources: dict[str, str]) -> list[str]:
     problems = []
     if set(rows) != set(sources):
         problems.append(f"missing rows: {sorted(set(sources) - set(rows))}; unknown rows: {sorted(set(rows) - set(sources))}")
@@ -181,25 +210,25 @@ def vs02_problems(rows: dict[str, tuple[str, str]], sources: dict[str, str]) -> 
 def test_every_vs02_item_is_traced():
     sources = vs02_source_items()
     assert len(sources) == 24, f"the source lists changed size ({len(sources)} items); update the matrix and this check"
-    problems = vs02_problems(vs02_matrix_rows(VS02_MATRIX.read_text(encoding="utf-8")), sources)
+    problems = slice_problems(vs02_matrix_rows(VS02_MATRIX.read_text(encoding="utf-8")), sources)
     assert not problems, "\n".join(problems)
 
 
 def test_vs02_check_rejects_reworded_missing_and_untested_rows():
     sources = vs02_source_items()
     rows = vs02_matrix_rows(VS02_MATRIX.read_text(encoding="utf-8"))
-    assert vs02_problems(rows, sources) == []
+    assert slice_problems(rows, sources) == []
     criterion, cell = rows["AC2-03.2"]
     reworded = {**rows, "AC2-03.2": (criterion.replace("validated", "checked"), cell)}
-    assert [p.split(":")[0] for p in vs02_problems(reworded, sources)] == ["AC2-03.2"]
+    assert [p.split(":")[0] for p in slice_problems(reworded, sources)] == ["AC2-03.2"]
     spaced = {**rows, "AC2-03.2": ("  " + criterion.replace(" ", "\n "), cell)}  # whitespace alone is not a rewording
-    assert vs02_problems(spaced, sources) == []
+    assert slice_problems(spaced, sources) == []
     missing = {k: v for k, v in rows.items() if k != "DEP2-4"}
-    assert vs02_problems(missing, sources) == ["missing rows: ['DEP2-4']; unknown rows: []"]
+    assert slice_problems(missing, sources) == ["missing rows: ['DEP2-4']; unknown rows: []"]
     untested = {**rows, "ART2-3": (rows["ART2-3"][0], "nothing yet")}
-    assert vs02_problems(untested, sources) == ["ART2-3: no tests and no N/A reason"]
+    assert slice_problems(untested, sources) == ["ART2-3: no tests and no N/A reason"]
     renamed = {**rows, "AC2-01": (rows["AC2-01"][0], "`backend/tests/test_timber.py::test_registry_renamed`")}
-    assert vs02_problems(renamed, sources) == ["AC2-01: backend/tests/test_timber.py::test_registry_renamed does not exist, is skipped, or is not a unique test title"]
+    assert slice_problems(renamed, sources) == ["AC2-01: backend/tests/test_timber.py::test_registry_renamed does not exist, is skipped, or is not a unique test title"]
     assert normalize("**A** [D060](../x.md#y)  rows") == "A D060 rows"
 
 
@@ -254,3 +283,35 @@ def test_reference_checks_reject_missing_tests(tmp_path):
     skipped_module = tmp_path / "test_skipped_module.py"
     skipped_module.write_text("import pytest\n\npytestmark = [pytest.mark.slow, pytest.mark.skip]\n\ndef test_live():\n    pass\n", encoding="utf-8")
     assert not reference_exists(f"{skipped_module}::test_live")
+
+
+# --- VS-02b (TEST-003 §5) ---------------------------------------------------------------------
+
+
+def test_every_vs02b_item_is_traced():
+    sources = vs02b_source_items()
+    assert len(sources) == 33, f"the source lists changed size ({len(sources)} items); update the matrix and this check"
+    problems = slice_problems(slice_matrix_rows(VS02B_MATRIX.read_text(encoding="utf-8"), ROW_PATTERNS["vs02b"]), sources)
+    assert not problems, "\n".join(problems)
+
+
+def test_vs02b_check_rejects_reworded_missing_and_untested_rows():
+    sources = vs02b_source_items()
+    rows = slice_matrix_rows(VS02B_MATRIX.read_text(encoding="utf-8"), ROW_PATTERNS["vs02b"])
+    assert slice_problems(rows, sources) == []
+    criterion, cell = rows["AC2b-04.2"]
+    reworded = {**rows, "AC2b-04.2": (criterion.replace("rejected", "refused"), cell)}
+    assert [p.split(":")[0] for p in slice_problems(reworded, sources)] == ["AC2b-04.2"]
+    spaced = {**rows, "AC2b-04.2": ("  " + criterion.replace(" ", "\n "), cell)}  # whitespace alone is not a rewording
+    assert slice_problems(spaced, sources) == []
+    missing = {k: v for k, v in rows.items() if k != "DEP2b-6"}
+    assert slice_problems(missing, sources) == ["missing rows: ['DEP2b-6']; unknown rows: []"]
+    untested = {**rows, "ART2b-4": (rows["ART2b-4"][0], "nothing yet")}
+    assert slice_problems(untested, sources) == ["ART2b-4: no tests and no N/A reason"]
+    renamed = {**rows, "AC2b-01": (rows["AC2b-01"][0], "`backend/tests/test_walls_model.py::test_version_2_is_rejected_renamed`")}
+    assert slice_problems(renamed, sources) == [
+        "AC2b-01: backend/tests/test_walls_model.py::test_version_2_is_rejected_renamed does not exist, is skipped, or is not a unique test title"
+    ]
+    # Each VS-02 list ends where its VS-02b list begins, so neither slice reads the other's bullets (TEST-003 §5.3).
+    vs02 = vs02_source_items()
+    assert set(vs02.values()).isdisjoint(text for item, text in sources.items() if item.startswith(("ART2b", "DEP2b")))

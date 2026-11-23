@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import math
 import uuid
+from collections import Counter
 from contextlib import contextmanager
 from datetime import timedelta
 from pathlib import Path
@@ -61,6 +62,7 @@ class Scenario:
         self.commands: dict[str, dict[str, Any]] = {}  # committed commands by step name, for an exact retry
         self.head_view: RevisionView | None = None
         self.impacts: list[tuple[str, str, list[str]]] = []  # (base, new revision, impacted_artifacts) per previewed commit
+        self.last_preview: dict[str, Any] | None = None  # the last committed step's preview body
 
     # --- plumbing -------------------------------------------------------------------------------
 
@@ -83,12 +85,12 @@ class Scenario:
             step["impacted_artifacts"] = impacted  # from the step's preview (DEP-001 §10)
         self.steps.append(step)
 
-    def accepted(self, name: str, response, impacted: list[str] | None = None, *, preserve_ids: bool = True) -> RevisionView:
+    def accepted(self, name: str, response, impacted: list[str] | None = None, *, preserve_ids: bool = True, command: dict[str, Any] | None = None) -> RevisionView:
         assert response.status_code == 201, (name, response.status_code, response.text)
         self.record(name, response, impacted)
         view = check_revision(self.api, self.pid, response.json()["revision_id"])
         if self.head_view is not None:
-            check_transition(self.head_view, view, preserve_ids=preserve_ids)
+            check_transition(self.head_view, view, preserve_ids=preserve_ids, command=command)
             if impacted is not None:
                 check_impact(self.head_view, view, impacted)  # AC2-04
                 self.impacts.append((self.head_view.revision_id, view.revision_id, impacted))
@@ -101,14 +103,16 @@ class Scenario:
         preview = self.api.preview(self.pid, command)
         assert preview.status_code == 200 and preview.json()["confirmation_required"], (name, preview.text)
         impacted = preview.json()["impacted_artifacts"]
-        return self.accepted(name, self.api.commit(self.pid, command, preview.json()["preview_token"]), impacted, **kw)
+        self.last_preview = preview.json()
+        return self.accepted(name, self.api.commit(self.pid, command, preview.json()["preview_token"]), impacted, command=command, **kw)
 
     def routine(self, name: str, type_: str, args: dict[str, Any]) -> RevisionView:
         self.tick()
         command = self.command(name, type_, args)
         preview = self.api.preview(self.pid, command)  # previewed for its impact; committed without a token (dependencies §4.1)
         assert preview.status_code == 200 and not preview.json()["confirmation_required"], (name, preview.text)
-        return self.accepted(name, self.api.commit(self.pid, command), preview.json()["impacted_artifacts"])
+        self.last_preview = preview.json()
+        return self.accepted(name, self.api.commit(self.pid, command), preview.json()["impacted_artifacts"], command=command)
 
     def rejected(self, name: str, type_: str, args: dict[str, Any], code: str) -> dict[str, Any]:
         self.tick()
@@ -148,6 +152,11 @@ class Scenario:
         x_lines = [{"id": "x0", "fraction": 0}, {"id": "x1", "fraction": 0.25}, {"id": "x2", "fraction": 0.5}, {"fraction": 0.75}, {"id": "x3", "fraction": 1}]
         view = self.consequential("grid-x-4", "SetTimberGrid", {"x_lines": x_lines, "y_lines": grid["y_lines"]})
         assert [line["id"] for line in view.one("TimberGrid")["x_lines"]] == ["x0", "x1", "x2", "x4", "x3"]
+        # The x2-x3 bay's 4 walls are replaced, and their 4 openings are removed with them; the preview lists them (D069, AC2b-04).
+        walls = self.last_preview["walls"]
+        assert (len(walls["added"]), len(walls["removed"]), len(walls["updated"])) == (8, 4, 8)
+        removed = [c for c in self.last_preview["changes"] if c["entity_kind"] == "Opening" and c["after"] is None and c["field"] == ""]
+        assert len(removed) == 4 and len(view.entities("Opening")) == 16
 
         # 4. 76' now fits four bays; 100' is outside the supported range and changes nothing (AC-06).
         self.consequential("width-76", "SetFootprintDimensions", {"width_m": 76 * FT, "depth_m": footprint["depth_m"]})
@@ -196,6 +205,9 @@ class Scenario:
         error = self.rejected("frame-purlins-minus-1", "SetFrameParameters", frame, "VALIDATION_FAILED")
         assert [(d["code"], d["path"].endswith(".parameters.purlins_per_slope")) for d in error["details"]] == [("OUT_OF_RANGE", True)], error
 
+        # 7f–7m. The four wall commands (TEST-003 §6), on the 76' × 24' straw bale house with 16 openings, Level 0 braces only.
+        self.wall_steps()
+
         # 8. A retry is replayed; a stale base conflicts. Neither changes anything (interfaces §9 tests 4–5).
         before = project_state(api, pid)
         retry = api.commit(pid, self.commands["beam-10x12"])  # same command_id and payload
@@ -213,10 +225,77 @@ class Scenario:
         # Every payload of the target is reused, with its fingerprint (DEP-001 §7.2).
         for kind, envelope in view.envelopes.items():
             assert envelope["input_fingerprint"] == self.views[rev2_target].envelopes[kind]["input_fingerprint"], kind
+        # Straw bale and revision 2's 20 openings are back, with their IDs: 7l's removed window returns, 7f's is gone (D044).
+        assert sorted(o["id"] for o in view.entities("Opening")) == sorted(o["id"] for o in self.views[rev2_target].entities("Opening"))
+        assert len(view.entities("Opening")) == 20 and view.one("WallSystem") == self.views[rev2_target].one("WallSystem")
 
         # 10. Replaying the operation log in a fresh store reproduces every revision (AC-09).
         self.replay()
         return self.golden()
+
+    def wall_steps(self) -> None:
+        """Steps 7f–7m (TEST-003 §6.1): each wall command committed, and a rejection of each."""
+        view = self.head_view
+        wall = lambda key: next(w for w in self.head_view.entities("Wall") if w["generation_key"] == key)  # noqa: E731
+        opening_in = lambda key: next(o for o in self.head_view.entities("Opening") if o["wall_id"] == wall(key)["id"])  # noqa: E731
+        stud_infill = next(d["id"] for d in view.entities("AssemblyDefinition") if d["label"] == "stud-infill")
+        not_timber = sorted(kind for kind in view.envelopes if kind != "timber_schedule")
+        counts = lambda v: Counter(p["piece_kind"] for p in v.entities("WallFramingPiece"))  # noqa: E731
+
+        def single_detail(error: dict[str, Any], code: str, path_end: str, related_first: str | None = None) -> dict[str, Any]:
+            (detail,) = error["details"]
+            assert (detail["code"], detail["path"].endswith(path_end)) == (code, True), error
+            if related_first is not None:
+                assert detail["related_paths"][0] == related_first, error
+            return detail
+
+        # 7f. A routine AddOpening: a 3' × 4' window 6" from the start post, under the Level 0 brace. Bucks fit there.
+        near_brace = "wall/axis-x/y0/x4-x3/level-0"
+        window = {"wall_id": wall(near_brace)["id"], "opening_kind": "WINDOW", "width_m": 3 * FT, "height_m": 4 * FT, "sill_height_m": 3 * FT, "offset_m": 0.5 * FT}
+        view = self.routine("add-window-near-brace", "AddOpening", window)
+        assert sorted(self.impacts[-1][2]) == not_timber
+        added = next(o for o in view.entities("Opening") if o["wall_id"] == window["wall_id"])
+        assert (len(view.entities("Opening")), len(view.entities("WallFramingPiece"))) == (17, 67)
+
+        # 7g. Stud infill's kings and header would meet the brace: rejected through SetWallAssembly, naming the window and the argument.
+        error = self.rejected("assembly-stud-infill-crosses-brace", "SetWallAssembly", {"assembly_definition_id": stud_infill}, "UNSUPPORTED_CONFIGURATION")
+        single_detail(error, "OPENING_CROSSES_BRACE", f"entities[{added['id']}].offset_m", "args.assembly_definition_id")
+
+        # 7h. Centering it moves it along its wall. A buck sill total changes in its last bit (15.240000000000004 -> 15.24 m),
+        # so the estimate is impacted too: exact under D056 (DEP2b-3).
+        view = self.routine("center-window", "SetOpening", {"opening_id": added["id"], **{k: window[k] for k in ("width_m", "height_m", "sill_height_m")}, "offset_m": 8 * FT})
+        assert sorted(self.impacts[-1][2]) == not_timber
+
+        # 7i. SetWallAssembly to stud infill: every wall and its framing, never a member or connection (D068, AC2b-03).
+        view = self.consequential("assembly-stud-infill", "SetWallAssembly", {"assembly_definition_id": stud_infill})
+        assert sorted(self.impacts[-1][2]) == not_timber
+        framing = self.last_preview["wall_framing"]
+        assert (len(self.last_preview["walls"]["updated"]), len(framing["added"]), len(framing["removed"])) == (24, 311, 67)
+        assert counts(view) == {"STUD": 164, "GIRT": 41, "KING": 34, "JACK": 2, "HEADER": 17, "ROUGH_SILL": 16, "CRIPPLE": 37}
+        assert (len(view.members()), len(view.connections())) == (238, 382)
+        estimate = view.envelopes["preliminary_estimate"]
+        assert (estimate["payload"]["coverage"], estimate["payload"]["totals"]["grand_total_minor"]) == ("partial", None)
+        assert "PRICE_ROWS_UNUSED" in [w["code"] for w in estimate["warnings"]]  # the buck rows; the stud infill lines are unpriced, never 0
+        assert all(not line["priced"] and line["amount_minor"] is None for line in estimate["payload"]["line_items"] if line["key"].startswith(("wallframing.STUD", "assembly.stud-infill")))
+
+        # 7j–7k. An opening command's fit rejections: a head above the wall (Level 1 has no braces now), and an overlap.
+        tall = opening_in("wall/axis-x/y0/x0-x1/level-1")
+        error = self.rejected("window-level-1-8ft", "SetOpening", {"opening_id": tall["id"], "width_m": tall["width_m"], "height_m": 8 * FT, "sill_height_m": tall["sill_height_m"], "offset_m": tall["offset_m"]}, "UNSUPPORTED_CONFIGURATION")
+        single_detail(error, "OPENING_OUTSIDE_WALL", f"entities[{tall['id']}].height_m", "args.height_m")
+        error = self.rejected("overlapping-window", "AddOpening", {**window, "offset_m": 9 * FT}, "UNSUPPORTED_CONFIGURATION")
+        detail = single_detail(error, "OPENINGS_OVERLAP", ".offset_m", "args.offset_m")
+        named = [detail["path"], *detail["related_paths"]]  # one opening carries the detail, the other is related: both are named
+        assert f"entities[{added['id']}].offset_m" in named and sum(p.endswith(".offset_m") and p.startswith("entities[") for p in named) == 2, error
+
+        # 7l–7m. A routine RemoveOpening of a fixture window (the undo restores it), then the same ID again.
+        north = opening_in("wall/axis-x/y2/x0-x1/level-1")["id"]
+        view = self.routine("remove-north-window", "RemoveOpening", {"opening_id": north})
+        assert sorted(self.impacts[-1][2]) == not_timber
+        framing = self.last_preview["wall_framing"]
+        assert (len(framing["added"]), len(framing["removed"]), len(framing["updated"])) == (1, 7, 1)
+        assert (len(view.entities("Opening")), len(view.entities("WallFramingPiece"))) == (16, 305)
+        error = self.rejected("remove-north-window-again", "RemoveOpening", {"opening_id": north}, "VALIDATION_FAILED")
+        single_detail(error, "DANGLING_REFERENCE", "args.opening_id")
 
     def replay(self) -> None:
         service = self.api.service

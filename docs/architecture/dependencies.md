@@ -130,7 +130,14 @@ VS-02 examples ([DEP-001](../implementation/tasks/DEP-001.md) §8, measured on R
 - **An overhang-only roof edit:** `plan2d` and `mesh3d` only; no member moves.
 - **A price-book change:** no revision; only the head's estimate reads `STALE` and is recomputed on read.
 
-VS-02b examples ([ART-003](../implementation/tasks/ART-003.md) §8.3, measured on Reference House 001 v3 with straw bale; `tests/test_impact.py` checks both families). An opening added, removed, or narrowed impacts `plan2d`, `mesh3d`, `assembly_schedule`, and `preliminary_estimate`. Moving an opening along its wall impacts the two views and `assembly_schedule`, and changing only its sill height `mesh3d` and `assembly_schedule`: the schedule has no positions and the quantities are unchanged in exact arithmetic, but piece lengths and face areas are evaluated from the moved positions as written and change in their last bit. The estimate's sums are unchanged there, so it is reused, unless a stud infill piece really changes length. `SetWallAssembly` impacts every artifact but `timber_schedule`. A frame edit that moves no wall piece (on the straw bale house, the brace leg, the eave braces, or a connection type) impacts every artifact but `assembly_schedule`. No wall edit impacts `timber_schedule`.
+VS-02b examples ([ART-003](../implementation/tasks/ART-003.md) §8.3, measured on Reference House 001 v3 with straw bale; `tests/test_impact.py` checks both families; traced as `DEP2b-1` to `DEP2b-6` in [vs-02b-traceability.md](../implementation/acceptance-tests/vs-02b-traceability.md), [TEST-003](../implementation/tasks/TEST-003.md) §5.3):
+
+- An opening added, removed, or narrowed impacts `plan2d`, `mesh3d`, `assembly_schedule`, and `preliminary_estimate`.
+- Moving an opening along its wall impacts the two views and `assembly_schedule`, and changing only its sill height `mesh3d` and `assembly_schedule`: the schedule has no positions and the quantities are unchanged in exact arithmetic, but piece lengths and face areas are evaluated from the moved positions as written and change in their last bit.
+- The estimate is reused when its sums are unchanged. It is impacted when a piece really changes length (a stud infill cripple, for example), or when a summed length changes in its last bit (measured on the golden scenario's house, TEST-003 §6).
+- `SetWallAssembly` impacts every artifact but `timber_schedule`.
+- A frame edit that moves no wall piece (on the straw bale house, the brace leg, the eave braces, or a connection type) impacts every artifact but `assembly_schedule`.
+- No wall edit impacts `timber_schedule`.
 
 ## 9. Observability
 

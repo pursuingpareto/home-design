@@ -1,6 +1,6 @@
 # D090 — VS-02b budgets: the stud infill house, a named largest case for walls, and time budgets
 
-**Status:** Confirmed; to be implemented by [TEST-003](../../implementation/tasks/TEST-003.md) (VS-02b)  
+**Status:** Confirmed; implemented ([TEST-003](../../implementation/tasks/TEST-003.md), VS-02b, 2026-11-23)  
 **Date:** 2026-11-23  
 **Scope:** The size and time budgets for VS-02b's payloads and flows. Approved from [TEST-003](../../implementation/tasks/TEST-003.md) §13, judgment items 9–11. The routine items 1–8 (the traceability matrix and its check, the contract checks as bullets, the golden steps, the sequences, and how sizes are reported) are specified in the task file. Item 12, UI-004's twelve flagged choices, is decided separately.  
 **Builds on:** [D063](D063-vs02-traceability-and-budgets.md) (per-payload ceilings, time ceilings, and the stop-and-report rule), vs-02b.md §6 routine item 15 (D063's ceilings apply to every payload), [D077](D077-vs02b-definition-supported-ranges.md) (openings have no size bounds beyond > 0 and the fit), and [D086](D086-vs02b-wall-framing-ids-in-views.md) (the stud infill gate left to `TEST-003`).
@@ -21,7 +21,7 @@
   - stud infill with D077's densest framing: studs at 12", 4 girts;
   - a centered 3'-0" × 4'-0" window, sill 3'-0", in every wall.
 
-  Measured: 48 walls, 48 openings, 1,239 pieces; largest payload `mesh3d` at 1,268,294 bytes (63%), reported under D063's rule.
+  Measured: 48 walls, 48 openings, 1,224 pieces; largest payload `mesh3d` at 1,265,481 bytes (63%), reported under D063's rule. *Corrected during implementation (2026-11-23):* the drafting measurement (1,239 pieces, 1,268,294 bytes) kept the fixture's 10 surviving openings, a door and two 5'-0" windows among them, and added windows only to the other walls. The case as defined, a centered 3'-0" × 4'-0" window in every wall, is the one built and gated (`conftest.largest_wall_case`).
 - It is gated at **2 MB** in both families, beside D063's case, which stays as it is.
 - **It is a named case, not a bound.** The 2 MB ceiling guards the wall payloads against regressions; it does not limit what a user can build. The roadmap says so.
 - **Bounds on openings** (a minimum rough-opening size, or a maximum per wall) are raised as a separate product question, for a task of its own.
