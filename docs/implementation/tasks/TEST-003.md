@@ -1,6 +1,6 @@
 # TEST-003 — VS-02b traceability, the golden scenario's wall commands, sequences, and budgets
 
-**Status:** Implemented (2026-11-23); stopped under D063's rule, awaiting judgment item 13 (two CI times over half their ceilings, §17). Implementation notes are in §17. Approved 2026-11-23: routine items 1–8 together. Judgment items 9–11 were approved as recommended and are recorded as [D090](../../product/decisions/D090-vs02b-budgets-and-named-wall-case.md). Item 12 confirmed UI-004's twelve choices as implemented, recorded in UI-004 §20 (§13).  
+**Status:** Done (2026-11-23). Implementation notes are in §17. Judgment item 13 (§17: two CI times over half their ceilings) was settled with option (a) and recorded as an amendment to D090. Approved 2026-11-23: routine items 1–8 together. Judgment items 9–11 were approved as recommended and are recorded as [D090](../../product/decisions/D090-vs02b-budgets-and-named-wall-case.md). Item 12 confirmed UI-004's twelve choices as implemented, recorded in UI-004 §20 (§13).  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes. Two architecture documents change wording only, as their contract checks become rows (§5.3).  
 **Slice:** VS-02b  
 **Depends on:** `MODEL-006`, `ASM-001`, `ART-003`, and `UI-004` (all done; `main` at `9ca3301`). Merges on its own, with CI passing ([vs-02b.md](../acceptance-tests/vs-02b.md) §16).  
@@ -455,7 +455,7 @@ Items 9–11 are approved and recorded as **[D090](../../product/decisions/D090-
 - **Budgets (items 9–11, D090):**
   - `conftest.largest_wall_case(label)` builds the named case;
   - `test_payload_sizes_are_within_budget` has six gated cases: the reference house and D063's largest frame, each in both families, and the named wall case in both;
-  - the time checks: `test_reference_house_preview_time` (unchanged), `test_reference_house_set_opening_preview_time`, and, on the named wall case, `test_largest_wall_case_preview_time`, `test_largest_wall_case_set_wall_assembly_preview_time`, and `test_largest_wall_case_commit_time`, which replace D063's largest-frame preview and commit;
+  - the time checks: `test_reference_house_preview_time` (unchanged), `test_reference_house_set_opening_preview_time`, `test_largest_wall_case_set_wall_assembly_preview_time`, and `test_largest_case_preview_time` and `test_largest_case_commit_time`, gated on D063's largest frame and reported on the named wall case. As first implemented they were gated on the named wall case; item 13 changed that;
   - `walls.spec.ts`: UI-004's timing test is now `budgets: …`, gated at 10 s, 3 s, and 10 s. `connections.spec.ts` is unchanged.
 - **Documents:** vs-02b.md (status block, §16 row), `tests/README.md`, `backend/README.md`, D090 (implemented; numbers corrected, below) and the register, UI-004 §20 (item 12), and the roadmap.
 
@@ -519,3 +519,5 @@ Every estimate is under 7,000 bytes. Above half a ceiling, as D063 asks to repor
     - **(b) Keep D090 as approved.** The named case stays gated at 5 s, and the flake risk is accepted. D090 records the CI shares.
     - **(c) Speed up the commit first.** A product task (profiling the commit's derivation on the named case), with `main` waiting on it.
     - **(d) Raise the named case's ceilings** (for example to 10 s). This adds a new number, which D063 says not to do as the automatic response.
+
+    **Settled (2026-11-23): option (a).** Recorded as an amendment to D090. `test_largest_case_preview_time` and `test_largest_case_commit_time` are parametrized over D063's largest frame, which is gated at 5 s, and the named wall case, which is printed as `reported, not gated`. `test_largest_wall_case_set_wall_assembly_preview_time` stays gated. The matrix's AC2b-11 row now cites the gated commit check. Measured locally afterwards (`scripts/check.sh`, 1,006 backend tests): the largest frame's width preview 971 ms (19%) and commit 1,151 ms (23%), both gated; the named wall case's width preview 1,369 ms and commit 1,588 ms, both reported; its `SetWallAssembly` preview 1,121 ms (22%), gated. PR #22's final CI run holds the CI values.

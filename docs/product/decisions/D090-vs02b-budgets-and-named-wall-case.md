@@ -1,6 +1,6 @@
 # D090 — VS-02b budgets: the stud infill house, a named largest case for walls, and time budgets
 
-**Status:** Confirmed; implemented ([TEST-003](../../implementation/tasks/TEST-003.md), VS-02b, 2026-11-23)  
+**Status:** Confirmed; implemented ([TEST-003](../../implementation/tasks/TEST-003.md), VS-02b, 2026-11-23); amended by TEST-003 item 13 (2026-11-23): the width preview and commit time gates stay on D063's largest frame  
 **Date:** 2026-11-23  
 **Scope:** The size and time budgets for VS-02b's payloads and flows. Approved from [TEST-003](../../implementation/tasks/TEST-003.md) §13, judgment items 9–11. The routine items 1–8 (the traceability matrix and its check, the contract checks as bullets, the golden steps, the sequences, and how sizes are reported) are specified in the task file. Item 12, UI-004's twelve flagged choices, is decided separately.  
 **Builds on:** [D063](D063-vs02-traceability-and-budgets.md) (per-payload ceilings, time ceilings, and the stop-and-report rule), vs-02b.md §6 routine item 15 (D063's ceilings apply to every payload), [D077](D077-vs02b-definition-supported-ranges.md) (openings have no size bounds beyond > 0 and the fit), and [D086](D086-vs02b-wall-framing-ids-in-views.md) (the stud infill gate left to `TEST-003`).
@@ -32,8 +32,8 @@ Each is the median of 5 runs, gated in CI, with no retries, and D063's stop-and-
 
 | Check | Ceiling |
 |---|---|
-| Preview, the named wall case, width edit (replaces D063's largest-case preview) | 5 s |
-| Commit with all five artifacts derived, the named wall case (replaces D063's largest-case commit) | 5 s |
+| Preview, D063's largest frame, width edit (unchanged; item 13) | 5 s |
+| Commit with all five artifacts derived, D063's largest frame (unchanged; item 13) | 5 s |
 | Preview, the named wall case, `SetWallAssembly` | 5 s |
 | Preview, reference house, `SetOpening` | 1 s |
 | Browser: Create until both views, the timber schedule, and the assembly schedule | 10 s |
@@ -44,11 +44,21 @@ Each is the median of 5 runs, gated in CI, with no retries, and D063's stop-and-
 - The browser ceilings describe the dev-server e2e setup, not a production build, as D063's do.
 - Expected against half: the named wall case's commit is estimated at about 48% in CI (1,612 ms locally, with CI about 1.5× slower). If CI measures more than half, the implementation stops and reports.
 
+### Amended: the named wall case's width preview and commit are reported (item 13, 2026-11-23)
+
+As approved, item 11's table gated the named wall case's width preview and commit at 5 s, replacing D063's largest-frame checks. In PR #22's CI they measured **2,632 ms (53%)** and **3,077 ms (62%)**, on a runner about 1.9× slower than the development machine. D063's rule stopped the merge, and the product owner chose option (a) of TEST-003 item 13:
+
+- The width preview and the commit are gated on **D063's largest frame**, as before TEST-003 (5 s each).
+- The named wall case's width preview and commit are **printed, not gated** (`[budget] … reported, not gated`).
+- The named wall case's `SetWallAssembly` preview stays gated at 5 s (42% in that CI run).
+
+Why: D063 set its time ceilings at several times the measured times, because shared runners vary by several times and the gates have no retries. At 62%, a runner 1.6× slower would fail the commit gate and block `main`. The cost: a slowdown specific to walls is caught only when it also slows the largest frame or the `SetWallAssembly` preview, or when someone reads the printed lines. The alternatives were keeping item 11 as approved, speeding up the commit first, or raising the named case's ceilings, which adds a new number.
+
 ## Rationale
 
 - **Stud infill gated:** one command reaches it from every project, and D008's comparison has two assemblies. A ceiling that checks only one leaves the other unbounded. Being at 84% makes the next growth in the mesh a reviewed choice.
 - **A named case:** D063's largest case keeps only 10 openings and the fixture's framing, so it barely exercises the wall payloads. Without opening bounds there is no true maximum, and saying so is better than implying one. One window per wall matches D072's pattern.
-- **Time checks on the named case:** it is the heaviest named regeneration. The browser checks reuse D063's ceilings, so no new number is introduced for them.
+- **Time checks on the named case:** it is the heaviest named regeneration. The browser checks reuse D063's ceilings, so no new number is introduced for them. (Item 13 kept only its `SetWallAssembly` preview gated; see the amendment.)
 
 ## Alternatives considered
 

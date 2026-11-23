@@ -8,9 +8,11 @@ not depend on the server's JSON settings or on compression, so the check has no 
 bytes differ slightly between machines (TEST-003 §4); CI's are the gated ones.
 
 **Times:** through the service, in-process, with the in-memory store, the median of 5 runs and no retries: a
-reference-house width preview within 1 s and `SetOpening` preview within 1 s; on the named wall case, a width
-preview, a `SetWallAssembly` preview, and a commit that derives all five artifacts, each within 5 s. The browser
-ceilings are in `frontend/e2e/connections.spec.ts` (D063) and `frontend/e2e/walls.spec.ts` (D090).
+reference-house width preview within 1 s and `SetOpening` preview within 1 s; on D063's largest frame, a width
+preview and a commit that derives all five artifacts, each within 5 s; on the named wall case, a `SetWallAssembly`
+preview within 5 s. The named wall case's width preview and commit are printed, not gated (TEST-003 item 13: they
+measured over half their ceilings in CI, so the gates stay on the largest frame and keep D063's headroom). The
+browser ceilings are in `frontend/e2e/connections.spec.ts` (D063) and `frontend/e2e/walls.spec.ts` (D090).
 
 The ceilings catch regressions; they are not targets to tune toward. If a CI measurement exceeds half its
 ceiling, report it to the product owner rather than raising the ceiling (D063). Every check prints its
@@ -115,12 +117,13 @@ def _median_seconds(run: Callable[[int], Any]) -> tuple[float, list[float]]:
     return statistics.median(times), times
 
 
-def _report(capsys, what: str, ceiling: float, median: float, times: list[float]) -> None:
+def _report(capsys, what: str, ceiling: float, median: float, times: list[float], *, gated: bool = True) -> None:
     with capsys.disabled():
         runs = ", ".join(f"{t * 1000:.0f}" for t in times)
-        print(f"\n[budget] {what}: median {median * 1000:.0f} ms of {RUNS} ({runs} ms), "
-              f"{median / ceiling:.0%} of the {ceiling:g} s ceiling")
-    assert median <= ceiling, f"{what}: median {median:.3f} s is over the {ceiling:g} s budget (TEST-002 §8.2, D063)"
+        share = f"{median / ceiling:.0%} of the {ceiling:g} s ceiling" if gated else f"reported, not gated ({median / ceiling:.0%} of {ceiling:g} s)"
+        print(f"\n[budget] {what}: median {median * 1000:.0f} ms of {RUNS} ({runs} ms), {share}")
+    if gated:
+        assert median <= ceiling, f"{what}: median {median:.3f} s is over the {ceiling:g} s budget (TEST-002 §8.2, D063)"
 
 
 def _width_edit(svc: ProjectService, pid: str) -> dict[str, Any]:
@@ -165,14 +168,22 @@ def test_reference_house_set_opening_preview_time(capsys):
     _report(capsys, "preview, Reference House 001 v3, SetOpening", 1.0, median, times)
 
 
-def test_largest_wall_case_preview_time(capsys):
-    """D090: the named wall case replaces D063's largest frame for the time checks."""
+# TEST-003 item 13: the width preview and the commit are gated on D063's largest frame and reported on the named
+# wall case, whose CI times were over half their ceilings.
+LARGE_TIME_CASES = [
+    pytest.param("largest supported frame", largest_doc, True, id="largest-frame"),
+    pytest.param("named largest wall case", largest_wall_case, False, id="wall-case-reported"),
+]
+
+
+@pytest.mark.parametrize("case,source,gated", LARGE_TIME_CASES)
+def test_largest_case_preview_time(case, source, gated, capsys):
     svc = ProjectService(MemoryStore(), token_key=KEY)
-    pid = _seeded(svc, largest_wall_case())
+    pid = _seeded(svc, source())
     command = _width_edit(svc, pid)
     assert len(svc.preview(pid, command, actor_id=ACTOR, now=at(1)).impacted_artifacts) == 5  # warm-up, not timed
     median, times = _median_seconds(lambda i: svc.preview(pid, command, actor_id=ACTOR, now=at(2 + i)))
-    _report(capsys, "preview, named largest wall case, width edit", 5.0, median, times)
+    _report(capsys, f"preview, {case}, width edit", 5.0, median, times, gated=gated)
 
 
 def test_largest_wall_case_set_wall_assembly_preview_time(capsys):
@@ -187,11 +198,11 @@ def test_largest_wall_case_set_wall_assembly_preview_time(capsys):
     _report(capsys, "preview, named largest wall case, SetWallAssembly to straw bale", 5.0, median, times)
 
 
-def test_largest_wall_case_commit_time(capsys):
-    """The commit and the derivation of all five artifacts for the new revision (dependencies.md §6), on the
-    named wall case (D090)."""
+@pytest.mark.parametrize("case,source,gated", LARGE_TIME_CASES)
+def test_largest_case_commit_time(case, source, gated, capsys):
+    """The commit and the derivation of all five artifacts for the new revision (dependencies.md §6)."""
     svc = ProjectService(MemoryStore(), token_key=KEY)
-    doc = largest_wall_case()
+    doc = source()
     pids = [_seeded(svc, doc) for _ in range(RUNS)]  # a commit is not repeatable, so one project per run
     previewed = []
     for pid in pids:
@@ -204,4 +215,4 @@ def test_largest_wall_case_commit_time(capsys):
         assert result.http_status == 201 and set(result.artifact_statuses.values()) == {"CURRENT"}, result
 
     median, times = _median_seconds(run)
-    _report(capsys, "commit with all five artifacts derived, named largest wall case, width edit", 5.0, median, times)
+    _report(capsys, f"commit with all five artifacts derived, {case}, width edit", 5.0, median, times, gated=gated)
