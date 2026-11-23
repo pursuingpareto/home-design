@@ -1,6 +1,6 @@
 # TEST-003 — VS-02b traceability, the golden scenario's wall commands, sequences, and budgets
 
-**Status:** Drafted, awaiting approval (2026-11-22). Twelve proposals (§13): routine items 1–8 can be approved together; judgment items 9–12 are put to the product owner one at a time, in order.  
+**Status:** Drafted (2026-11-22), partly approved. Routine items 1–8 were approved together (2026-11-23). Judgment item 9 was approved as recommended (2026-11-23). Items 10–12 are put to the product owner one at a time, in order (§13).  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes. Two architecture documents change wording only, as their contract checks become rows (§5.3).  
 **Slice:** VS-02b  
 **Depends on:** `MODEL-006`, `ASM-001`, `ART-003`, and `UI-004` (all done; `main` at `9ca3301`). Merges on its own, with CI passing ([vs-02b.md](../acceptance-tests/vs-02b.md) §16).  
@@ -252,7 +252,7 @@ No product document sets a size or time target (D063). Routine item 15 of vs-02b
 
 **How measured:** RFC 8785 canonical bytes, by `test_budgets.payload_sizes`, which builds each payload from a snapshot, the estimate with a book that prices every line. Snapshots were built with `conftest`'s helpers (`largest_doc`, `with_assembly`, `with_frame_parameters`, `regenerate`) and validated with `validate_bytes` (the fit included); every case below is valid. Times are the median of 5 through the service, in-process, with the in-memory store, after one untimed warm-up, as `test_budgets.py` does. The machine is an Apple A18 Pro, otherwise idle. CI numbers are from the backend and e2e jobs of PR #20's run 45072276767, the last CI run on `main`'s code.
 
-### 8.1 The stud infill house (item 9, judgment; D086's open question)
+### 8.1 The stud infill house (item 9, judgment; D086's open question; approved as recommended 2026-11-23)
 
 | Payload | Reference house, straw bale (gated) | Reference house, stud infill (reported) | Largest case, straw bale (gated) | Largest case, stud infill (reported) |
 |---|---|---|---|---|
@@ -391,7 +391,7 @@ Any choice not confirmed becomes a small UI change of its own, outside this task
 
 ## 13. Proposals for approval
 
-**Routine** (they follow from vs-02b.md §6 item 15, D063, TEST-002, D055, and D056; they can be approved together):
+**Routine** (they follow from vs-02b.md §6 item 15, D063, TEST-002, D055, and D056). **All eight approved together (2026-11-23).**
 
 1. **Matrix and check** (§5.1–5.2): `vs-02b-traceability.md` with 22 AC rows and 11 contract rows, checked against vs-02b.md's IDs and wording with a count guard of 33, by a generalized form of the VS-02 check.
 2. **Contract checks as bullets** (§5.3): artifacts.md §10's and dependencies.md §8's VS-02b prose as 5 and 6 bullets, sentences kept, **with DEP2b-3 corrected to the measured rule** (the estimate is also impacted when a summed length changes in its last bit); the VS-02 parser stops at the VS-02b headings.
@@ -404,7 +404,7 @@ Any choice not confirmed becomes a small UI change of its own, outside this task
 
 **Your judgment** (one at a time, in this order):
 
-9. **Gate the stud infill house** (§8.1) at the same ceilings as straw bale: 256 KiB for the reference house, 2 MB for the largest case. Its mesh is at 84%, reported here under D063's rule. *Alternatives:* reported only, as today; a separate, higher ceiling.
+9. **Gate the stud infill house** (§8.1) at the same ceilings as straw bale: 256 KiB for the reference house, 2 MB for the largest case. Its mesh is at 84%, reported here under D063's rule. *Alternatives:* reported only, as today; a separate, higher ceiling. **Approved as recommended (2026-11-23).**
 10. **A named largest case for walls** (§8.2): D063's frame, stud infill with D077's densest framing (12", 4 girts, 1'-6" brace legs), and a centered 3'-0" × 4'-0" window in every wall (1,239 pieces; largest payload 63%), gated at 2 MB in both families beside D063's case; stated as a named case, not a bound, because openings are unbounded (a valid snapshot reaches 2.4–2.8 MB); **opening bounds raised as a separate product question.** *Alternatives:* D063's case only; two windows per wall; bound openings first.
 11. **Time budgets** (§8.3): the largest-case preview and commit on the named wall case (5 s), a `SetWallAssembly` preview there (5 s), a reference-house `SetOpening` preview (1 s); UI-004's three browser timings gated at D063's 10 s and 3 s. *Alternatives:* backend checks on D063's case only; browser timings reported only.
 12. **UI-004's twelve flagged choices** (§10), each confirmed as implemented, or changed in a UI change of its own.
