@@ -1,6 +1,6 @@
 # Decision register
 
-**Status:** Confirmed product decisions D001–D089. Numbered decisions D001–D024 are retained from the discovery conversation.
+**Status:** Confirmed product decisions D001–D090. Numbered decisions D001–D024 are retained from the discovery conversation.
 
 - D001: Hybrid 2D/3D/AI design environment.
 - D002–003: Heavy timber post-and-beam is the initial structural specialty.
@@ -89,6 +89,7 @@
 - D087: [VS-02b browser Walls tab](D087-vs02b-browser-walls-tab.md) — an eighth editor tab holds `SetWallAssembly` and the opening editor; picking an opening or a wall in a view or the schedule makes it current there, and the active tab never changes by itself (approved from UI-004 item 1, 2026-11-22; implemented in UI-004, 2026-11-22).
 - D088: [VS-02b removed-openings warning](D088-vs02b-removed-openings-warning.md) — the confirmation dialog lists every opening an edit removes with its walls, by name and size, in a warning block above Confirm, with no extra acknowledgment (approved from UI-004 item 2, 2026-11-22; implemented in UI-004, 2026-11-22).
 - D089: [VS-02b thermal display units](D089-vs02b-thermal-display-units.md) — thermal figures follow the units switch: SI as served in metric, IT-Btu imperial units in imperial, display only, always with the unit (approved from UI-004 item 3, 2026-11-22; implemented in UI-004, 2026-11-22).
+- D090: [VS-02b budgets and a named wall case](D090-vs02b-budgets-and-named-wall-case.md) — the stud infill house gated at 256 KiB and 2 MB; openings are unbounded, so a named largest wall case (largest frame, densest D077 framing, a window in every wall) is gated at 2 MB as a named case, not a bound; time ceilings for the wall flows and UI-004's browser timings (approved from TEST-003 items 9–11, 2026-11-23; to be implemented in TEST-003).
 
 **Next recommended work:** Write executable task files (`MODEL-001` onward) against D025–D050. Do not reopen D001–D050 to accommodate implementation shortcuts.
 

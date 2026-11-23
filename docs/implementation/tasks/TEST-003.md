@@ -1,6 +1,6 @@
 # TEST-003 — VS-02b traceability, the golden scenario's wall commands, sequences, and budgets
 
-**Status:** Drafted (2026-11-22), partly approved. Routine items 1–8 were approved together (2026-11-23). Judgment items 9 and 10 were approved as recommended (2026-11-23). Items 11–12 are put to the product owner one at a time, in order (§13).  
+**Status:** Drafted (2026-11-22), partly approved. Routine items 1–8 were approved together (2026-11-23). Judgment items 9–11 were approved as recommended (2026-11-23) and are recorded as [D090](../../product/decisions/D090-vs02b-budgets-and-named-wall-case.md). Item 12 is put to the product owner (§13).  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes. Two architecture documents change wording only, as their contract checks become rows (§5.3).  
 **Slice:** VS-02b  
 **Depends on:** `MODEL-006`, `ASM-001`, `ART-003`, and `UI-004` (all done; `main` at `9ca3301`). Merges on its own, with CI passing ([vs-02b.md](../acceptance-tests/vs-02b.md) §16).  
@@ -299,7 +299,7 @@ The last row is a valid snapshot whose `mesh3d` and `assembly_schedule` exceed D
 - **The two-per-wall row** as the named case: larger (68%), but two windows per wall is no more principled than one; one matches D072's pattern.
 - **Bound openings first, then set the case:** the most correct, but it blocks VS-02b's completion on a product change.
 
-### 8.3 Time budgets (item 11, judgment)
+### 8.3 Time budgets (item 11, judgment; approved as recommended 2026-11-23)
 
 **Backend** (local; CI is from PR #20, where backend times ran about 1.5× local):
 
@@ -406,10 +406,10 @@ Any choice not confirmed becomes a small UI change of its own, outside this task
 
 9. **Gate the stud infill house** (§8.1) at the same ceilings as straw bale: 256 KiB for the reference house, 2 MB for the largest case. Its mesh is at 84%, reported here under D063's rule. *Alternatives:* reported only, as today; a separate, higher ceiling. **Approved as recommended (2026-11-23).**
 10. **A named largest case for walls** (§8.2): D063's frame, stud infill with D077's densest framing (12", 4 girts, 1'-6" brace legs), and a centered 3'-0" × 4'-0" window in every wall (1,239 pieces; largest payload 63%), gated at 2 MB in both families beside D063's case; stated as a named case, not a bound, because openings are unbounded (a valid snapshot reaches 2.4–2.8 MB); **opening bounds raised as a separate product question.** *Alternatives:* D063's case only; two windows per wall; bound openings first. **Approved as recommended (2026-11-23).**
-11. **Time budgets** (§8.3): the largest-case preview and commit on the named wall case (5 s), a `SetWallAssembly` preview there (5 s), a reference-house `SetOpening` preview (1 s); UI-004's three browser timings gated at D063's 10 s and 3 s. *Alternatives:* backend checks on D063's case only; browser timings reported only.
+11. **Time budgets** (§8.3): the largest-case preview and commit on the named wall case (5 s), a `SetWallAssembly` preview there (5 s), a reference-house `SetOpening` preview (1 s); UI-004's three browser timings gated at D063's 10 s and 3 s. *Alternatives:* backend checks on D063's case only; browser timings reported only. **Approved as recommended (2026-11-23).**
 12. **UI-004's twelve flagged choices** (§10), each confirmed as implemented, or changed in a UI change of its own.
 
-Items 9–11 are recorded together as **D090** once approved.
+Items 9–11 are approved and recorded as **[D090](../../product/decisions/D090-vs02b-budgets-and-named-wall-case.md)**.
 
 ## 14. Acceptance criteria and automated tests
 
