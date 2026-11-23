@@ -1,6 +1,6 @@
 # TEST-003 — VS-02b traceability, the golden scenario's wall commands, sequences, and budgets
 
-**Status:** Drafted (2026-11-22), partly approved. Routine items 1–8 were approved together (2026-11-23). Judgment item 9 was approved as recommended (2026-11-23). Items 10–12 are put to the product owner one at a time, in order (§13).  
+**Status:** Drafted (2026-11-22), partly approved. Routine items 1–8 were approved together (2026-11-23). Judgment items 9 and 10 were approved as recommended (2026-11-23). Items 11–12 are put to the product owner one at a time, in order (§13).  
 **Owner module:** tests and tooling: `backend/tests/`, `frontend/tests/`, `frontend/e2e/`, `tests/vectors/scenarios/`, `docs/implementation/acceptance-tests/`. No product code changes. Two architecture documents change wording only, as their contract checks become rows (§5.3).  
 **Slice:** VS-02b  
 **Depends on:** `MODEL-006`, `ASM-001`, `ART-003`, and `UI-004` (all done; `main` at `9ca3301`). Merges on its own, with CI passing ([vs-02b.md](../acceptance-tests/vs-02b.md) §16).  
@@ -272,7 +272,7 @@ Ceilings: 262,144 bytes for the reference house, 2,000,000 for the largest case.
 - **Keep it reported, not gated** (today). Nothing fails if the stud infill mesh passes 256 KiB.
 - **A separate, higher ceiling for the stud infill house** (for example 384 KiB). Room to grow, but a new number with no basis but today's size.
 
-### 8.2 A largest case for walls (item 10, judgment)
+### 8.2 A largest case for walls (item 10, judgment; approved as recommended 2026-11-23)
 
 D063's largest case is the largest frame: 7 × 7 stations over 80' × 80', 12" joists, 4 purlins, both brace planes. On it, walls take the fixture's definitions and **only 10 openings** survive (ART-003 §17), so it does not bound walls at all. For the frame, "largest" was a real maximum: every parameter has a bound. **For walls it is not.** D077 bounds the definitions (stud spacing 12"–48", girts 0–4), but openings have no bounds beyond positive width and height and the fit ("Openings have no size bounds beyond width and height greater than 0 and the fit rules").
 
@@ -405,7 +405,7 @@ Any choice not confirmed becomes a small UI change of its own, outside this task
 **Your judgment** (one at a time, in this order):
 
 9. **Gate the stud infill house** (§8.1) at the same ceilings as straw bale: 256 KiB for the reference house, 2 MB for the largest case. Its mesh is at 84%, reported here under D063's rule. *Alternatives:* reported only, as today; a separate, higher ceiling. **Approved as recommended (2026-11-23).**
-10. **A named largest case for walls** (§8.2): D063's frame, stud infill with D077's densest framing (12", 4 girts, 1'-6" brace legs), and a centered 3'-0" × 4'-0" window in every wall (1,239 pieces; largest payload 63%), gated at 2 MB in both families beside D063's case; stated as a named case, not a bound, because openings are unbounded (a valid snapshot reaches 2.4–2.8 MB); **opening bounds raised as a separate product question.** *Alternatives:* D063's case only; two windows per wall; bound openings first.
+10. **A named largest case for walls** (§8.2): D063's frame, stud infill with D077's densest framing (12", 4 girts, 1'-6" brace legs), and a centered 3'-0" × 4'-0" window in every wall (1,239 pieces; largest payload 63%), gated at 2 MB in both families beside D063's case; stated as a named case, not a bound, because openings are unbounded (a valid snapshot reaches 2.4–2.8 MB); **opening bounds raised as a separate product question.** *Alternatives:* D063's case only; two windows per wall; bound openings first. **Approved as recommended (2026-11-23).**
 11. **Time budgets** (§8.3): the largest-case preview and commit on the named wall case (5 s), a `SetWallAssembly` preview there (5 s), a reference-house `SetOpening` preview (1 s); UI-004's three browser timings gated at D063's 10 s and 3 s. *Alternatives:* backend checks on D063's case only; browser timings reported only.
 12. **UI-004's twelve flagged choices** (§10), each confirmed as implemented, or changed in a UI change of its own.
 

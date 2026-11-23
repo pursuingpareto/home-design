@@ -6,7 +6,7 @@ The single status document for the project ([AGENTS.md](../../AGENTS.md), "Docum
 
 ## Next steps
 
-1. Finish approving [`TEST-003`](tasks/TEST-003.md) (drafted 2026-11-22; routine items 1–8 and judgment item 9 approved 2026-11-23), then implement it in its own session: `vs-02b-traceability.md` for AC2b-01 to AC2b-11 with the VS-02b contract checks as bullets, the golden scenario's wall commands and their rejections, the wall commands in the sequences, and budgets for the new payloads. Judgment items 10–12 remain, one at a time: a named largest case for walls (openings have no bounds, so a valid snapshot exceeds the 2 MB ceiling), the time budgets, and UI-004's twelve flagged choices.
+1. Finish approving [`TEST-003`](tasks/TEST-003.md) (drafted 2026-11-22; routine items 1–8 and judgment items 9–10 approved 2026-11-23), then implement it in its own session: `vs-02b-traceability.md` for AC2b-01 to AC2b-11 with the VS-02b contract checks as bullets, the golden scenario's wall commands and their rejections, the wall commands in the sequences, and budgets for the new payloads. Judgment items 11–12 remain, one at a time: the time budgets, and UI-004's twelve flagged choices.
 2. ~~Add a ruleset on `main` that requires the four CI checks (`backend`, `vectors`, `frontend`, `e2e`) and blocks force pushes.~~ **Done** (2026-11-21, by the product owner). CI no longer runs on pushes to `main` ([TEST-001](tasks/TEST-001.md) §8, amended 2026-11-20), so the ruleset is what keeps an unchecked commit off `main`.
 
 ## Slices
@@ -51,7 +51,7 @@ The [task index](tasks/README.md) describes what a task file contains.
 | [ASM-001](tasks/ASM-001.md) | VS-02b: wall rule `vs02b-walls-1` (walls, studs, girts, opening framing, bucks, keys, identity), the template definitions, sections, and materials, Reference House 001 v3 (20 walls, 20 openings, 79 buck pieces; 246 pieces with stud infill), ECMAScript oracle; merges together with MODEL-006 | Done (2026-11-22; [D078](../product/decisions/D078-vs02b-opening-framing-details.md)–[D081](../product/decisions/D081-reference-house-001-v3-template-text.md)), with MODEL-006 |
 | [ART-003](tasks/ART-003.md) | VS-02b: `assembly_schedule` (walls, openings, wall framing, aggregates, assumptions, D071's thermal figures), walls and framing in `plan2d` and `mesh3d` for the two switches, `assembly.` (`m2`) and `wallframing.` (`m`) estimate lines, selectors, and the browser interim | Done (2026-11-22; [D082](../product/decisions/D082-vs02b-framing-layer-fill-quantity.md)–[D086](../product/decisions/D086-vs02b-wall-framing-ids-in-views.md)) |
 | [UI-004](tasks/UI-004.md) | VS-02b: browser support for walls, openings, and wall framing (2D and 3D, the "Wall layers" and "Wall framing" switches), a Walls tab with the assembly selector and the opening editor, the dialog's wall counts and removed openings, and the assembly schedule panel with thermal figures | Done (2026-11-22; [D087](../product/decisions/D087-vs02b-browser-walls-tab.md)–[D089](../product/decisions/D089-vs02b-thermal-display-units.md)) |
-| [TEST-003](tasks/TEST-003.md) | VS-02b: traceability for AC2b-01 to AC2b-11 (with the VS-02b contract checks), the golden scenario's wall commands and their rejections, the wall commands in the sequences with opening and wall identity invariants, and budgets for the new payloads (the stud infill house, a named largest case for walls, the browser timings) | Drafted (2026-11-22); items 1–9 approved (2026-11-23), 10–12 awaiting approval |
+| [TEST-003](tasks/TEST-003.md) | VS-02b: traceability for AC2b-01 to AC2b-11 (with the VS-02b contract checks), the golden scenario's wall commands and their rejections, the wall commands in the sequences with opening and wall identity invariants, and budgets for the new payloads (the stud infill house, a named largest case for walls, the browser timings) | Drafted (2026-11-22); items 1–10 approved (2026-11-23), 11–12 awaiting approval |
 
 ## Current limitations
 
@@ -62,5 +62,6 @@ The [task index](tasks/README.md) describes what a task file contains.
 
 ## Open items
 
+- Bounds on openings (a minimum rough-opening size, or a maximum per wall): D077 bounds only the definitions, so walls have no largest supported case, and a valid snapshot exceeds D063's 2 MB ceiling ([TEST-003](tasks/TEST-003.md) §8.2, raised by item 10, approved 2026-11-23). A product decision for a task of its own.
 - Hosting, the production identity provider, and operations (open question 8).
 - Not to be reopened while unresolved: the exact CAD kernel, Vermont code editions, datasets, and drawing export formats. See [open questions](../product/open-questions.md).
